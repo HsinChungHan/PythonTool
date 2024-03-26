@@ -1,0 +1,4243 @@
+1
+00:00:01.333 --> 00:00:03.833
+Hello Mike, hey Caio
+
+2
+00:00:03.833 --> 00:00:06.633
+so last time we started the URLSession
+
+3
+00:00:06.633 --> 00:00:08.233
+HTTPClient
+
+4
+00:00:08.233 --> 00:00:10.466
+and in this lecture we will continue
+
+5
+00:00:10.466 --> 00:00:11.500
+implementing it
+
+6
+00:00:11.500 --> 00:00:13.333
+so it's going to be a hands-on episode
+
+7
+00:00:13.333 --> 00:00:14.766
+and we'll be going fast
+
+8
+00:00:14.766 --> 00:00:17.100
+we'll show you a lot of code following
+
+9
+00:00:17.100 --> 00:00:18.700
+all the principles we've been exercising
+
+10
+00:00:18.700 --> 00:00:20.066
+throughout the case study
+
+11
+00:00:20.066 --> 00:00:22.066
+sounds awesome okay so to start with I
+
+12
+00:00:22.066 --> 00:00:23.600
+would like to re-evaluate
+
+13
+00:00:23.600 --> 00:00:26.800
+our choice of using a stub here by
+
+14
+00:00:26.800 --> 00:00:27.266
+showing
+
+15
+00:00:27.266 --> 00:00:29.833
+a downside of relying too much on stubs
+
+16
+00:00:29.833 --> 00:00:31.733
+to test the behavior we expect
+
+17
+00:00:31.733 --> 00:00:34.000
+okay so what would that be let's start
+
+18
+00:00:34.000 --> 00:00:35.600
+by making this test fail
+
+19
+00:00:35.600 --> 00:00:37.733
+let's say we have a wrong implementation
+
+20
+00:00:37.733 --> 00:00:39.600
+that somehow is using the wrong
+
+21
+00:00:39.600 --> 00:00:43.666
+URL right let me run the tests
+
+22
+00:00:43.666 --> 00:00:46.700
+and it fails perfect right
+
+23
+00:00:46.700 --> 00:00:49.500
+right but the problem is how can we find
+
+24
+00:00:49.500 --> 00:00:50.066
+out
+
+25
+00:00:50.066 --> 00:00:52.366
+that the problem was the URL right first
+
+26
+00:00:52.366 --> 00:00:53.666
+of all we are getting
+
+27
+00:00:53.666 --> 00:00:56.233
+a network error which means we actually
+
+28
+00:00:56.233 --> 00:00:56.866
+tried
+
+29
+00:00:56.866 --> 00:00:59.433
+to make a network request and it failed
+
+30
+00:00:59.433 --> 00:01:01.100
+but this test has nothing to do with
+
+31
+00:01:01.100 --> 00:01:02.700
+URLs
+
+32
+00:01:02.700 --> 00:01:04.866
+in the setup we are stubbing with an
+
+33
+00:01:04.866 --> 00:01:06.700
+error and we expect to get this error
+
+34
+00:01:06.700 --> 00:01:07.200
+back
+
+35
+00:01:07.200 --> 00:01:09.433
+and nothing in this assertion failure
+
+36
+00:01:09.433 --> 00:01:11.733
+tells us that the problem was the URL
+
+37
+00:01:11.733 --> 00:01:14.133
+I see so the only way to find out the
+
+38
+00:01:14.133 --> 00:01:15.433
+problem is to debug
+
+39
+00:01:15.433 --> 00:01:17.266
+the code and our tests can be more
+
+40
+00:01:17.266 --> 00:01:19.200
+valuable when they say precisely where
+
+41
+00:01:19.200 --> 00:01:21.100
+the problem is without having to debug
+
+42
+00:01:21.100 --> 00:01:21.600
+it
+
+43
+00:01:21.600 --> 00:01:23.433
+if you have to debug to find test
+
+44
+00:01:23.433 --> 00:01:25.500
+failure you are diminishing the value of
+
+45
+00:01:25.500 --> 00:01:26.300
+your test
+
+46
+00:01:26.300 --> 00:01:28.466
+exactly and in this case the problem is
+
+47
+00:01:28.466 --> 00:01:30.133
+that we only stub
+
+48
+00:01:30.133 --> 00:01:32.400
+specific URLs so if the URLs don't match
+
+49
+00:01:32.400 --> 00:01:33.900
+we are telling the URL loading system
+
+50
+00:01:33.900 --> 00:01:35.500
+that we are not going to handle this
+
+51
+00:01:35.500 --> 00:01:36.133
+request
+
+52
+00:01:36.133 --> 00:01:38.000
+so it goes through the normal URL
+
+53
+00:01:38.000 --> 00:01:40.233
+handling making a real HTTP
+
+54
+00:01:40.233 --> 00:01:42.533
+request so I think we can improve it by
+
+55
+00:01:42.533 --> 00:01:44.300
+removing this URL-based
+
+56
+00:01:44.300 --> 00:01:46.233
+stubbing and intercepting all of the
+
+57
+00:01:46.233 --> 00:01:48.633
+requests and adding a separate test
+
+58
+00:01:48.633 --> 00:01:49.833
+to make sure that we are passing the
+
+59
+00:01:49.833 --> 00:01:52.366
+right URL so if the URL test
+
+60
+00:01:52.366 --> 00:01:54.466
+fails we know the problem is the URL and
+
+61
+00:01:54.466 --> 00:01:56.766
+if the request error test fails we know
+
+62
+00:01:56.766 --> 00:01:57.733
+it's because of the
+
+63
+00:01:57.733 --> 00:02:00.000
+URL request's error so we need to separate
+
+64
+00:02:00.000 --> 00:02:01.100
+these two concerns
+
+65
+00:02:01.100 --> 00:02:03.733
+that sounds great so to do it we can
+
+66
+00:02:03.733 --> 00:02:04.633
+stop
+
+67
+00:02:04.633 --> 00:02:08.133
+investigating the URL in our stub and
+
+68
+00:02:08.133 --> 00:02:10.000
+intercept all of the requests by
+
+69
+00:02:10.000 --> 00:02:12.000
+returning true in the canInit
+
+70
+00:02:12.000 --> 00:02:14.000
+method so we don't need to pass a URL
+
+71
+00:02:14.000 --> 00:02:16.400
+anymore when we stub
+
+72
+00:02:16.400 --> 00:02:18.133
+and now our stub now doesn't need to
+
+73
+00:02:18.133 --> 00:02:20.466
+be a dictionary of URL and Stubs
+
+74
+00:02:20.466 --> 00:02:22.800
+it can be just a stub and we can make
+
+75
+00:02:22.800 --> 00:02:24.400
+it optional because maybe we
+
+76
+00:02:24.400 --> 00:02:27.033
+don't have a stub so in the setup of the
+
+77
+00:02:27.033 --> 00:02:28.000
+stub method
+
+78
+00:02:28.000 --> 00:02:30.633
+we can now just assign the stubbed data
+
+79
+00:02:30.633 --> 00:02:32.300
+to our stub property
+
+80
+00:02:32.300 --> 00:02:35.266
+and when we stop intercepting we remove
+
+81
+00:02:35.266 --> 00:02:38.233
+the stub
+
+82
+00:02:38.233 --> 00:02:40.133
+in the start loading method since we are
+
+83
+00:02:40.133 --> 00:02:41.666
+handling all the requests
+
+84
+00:02:41.666 --> 00:02:43.266
+we don't need to check for the URLs
+
+85
+00:02:43.266 --> 00:02:46.633
+anymore as long as we have a stub
+
+86
+00:02:46.633 --> 00:02:49.333
+we pass the data forward to the URL
+
+87
+00:02:49.333 --> 00:02:50.866
+loading system
+
+88
+00:02:50.866 --> 00:02:52.633
+otherwise we just completed with no
+
+89
+00:02:52.633 --> 00:02:54.066
+values okay
+
+90
+00:02:54.066 --> 00:02:58.466
+let's change the test
+
+91
+00:02:58.466 --> 00:03:00.533
+so the test is passing now which means
+
+92
+00:03:00.533 --> 00:03:02.000
+we are intercepting all the requests
+
+93
+00:03:02.000 --> 00:03:04.133
+regardless of the URL so we can focus
+
+94
+00:03:04.133 --> 00:03:05.266
+these tests on
+
+95
+00:03:05.266 --> 00:03:07.833
+handling errors instead of implicitly
+
+96
+00:03:07.833 --> 00:03:09.333
+also testing that we are passing the
+
+97
+00:03:09.333 --> 00:03:10.133
+right URL
+
+98
+00:03:10.133 --> 00:03:11.200
+and I think that's enough for us to
+
+99
+00:03:11.200 --> 00:03:13.566
+commit before we move on to the URL
+
+100
+00:03:13.566 --> 00:03:16.066
+test just to recap we're doing two main
+
+101
+00:03:16.066 --> 00:03:16.800
+things here
+
+102
+00:03:16.800 --> 00:03:20.000
+A. we don't ever hit the network
+
+103
+00:03:20.000 --> 00:03:22.933
+as we are always intercepting the
+
+104
+00:03:22.933 --> 00:03:23.733
+requests
+
+105
+00:03:23.733 --> 00:03:25.666
+regardless if they're coming from the
+
+106
+00:03:25.666 --> 00:03:26.766
+right URL
+
+107
+00:03:26.766 --> 00:03:29.433
+and 2. we want to have accurate
+
+108
+00:03:29.433 --> 00:03:30.466
+assertions
+
+109
+00:03:30.466 --> 00:03:34.133
+so when a test fails we want to know why
+
+110
+00:03:34.133 --> 00:03:37.266
+is it failing so we increase the value
+
+111
+00:03:37.266 --> 00:03:40.300
+of our tests exactly alright
+
+112
+00:03:40.300 --> 00:03:42.233
+sounds good so I'm going to commit to
+
+113
+00:03:42.233 --> 00:03:43.833
+the changes so far but I'm not going to
+
+114
+00:03:43.833 --> 00:03:44.300
+add
+
+115
+00:03:44.300 --> 00:03:47.733
+the wrong URL right everything else goes
+
+116
+00:03:47.733 --> 00:03:51.266
+so we made the URLProtocolStub
+
+117
+00:03:51.266 --> 00:03:54.300
+intercept every network
+
+118
+00:03:54.300 --> 00:03:57.733
+request instead of URL
+
+119
+00:03:57.733 --> 00:04:01.100
+based mocking since we don't
+
+120
+00:04:01.100 --> 00:04:04.533
+want to ever perform a network
+
+121
+00:04:04.533 --> 00:04:08.000
+request during tests also we
+
+122
+00:04:08.000 --> 00:04:12.700
+want our assertions to be more precise
+
+123
+00:04:12.700 --> 00:04:16.233
+about the error when they fail
+
+124
+00:04:16.233 --> 00:04:19.100
+yeah very descriptive as it should be
+
+125
+00:04:19.100 --> 00:04:19.600
+okay
+
+126
+00:04:19.600 --> 00:04:21.833
+but by doing this change we lost the
+
+127
+00:04:21.833 --> 00:04:22.800
+value of
+
+128
+00:04:22.800 --> 00:04:24.933
+checking the URL right but since that's
+
+129
+00:04:24.933 --> 00:04:26.066
+a different concern
+
+130
+00:04:26.066 --> 00:04:28.000
+we can move it to a separate test with a
+
+131
+00:04:28.000 --> 00:04:29.666
+more precise assertion
+
+132
+00:04:29.666 --> 00:04:33.033
+exactly we can test it in isolation
+
+133
+00:04:33.033 --> 00:04:36.066
+so get from URL performs
+
+134
+00:04:36.066 --> 00:04:39.600
+GET request with URL okay
+
+135
+00:04:39.600 --> 00:04:43.166
+so we need to intercept requests
+
+136
+00:04:43.166 --> 00:04:47.033
+and also stop intercepting requests
+
+137
+00:04:47.033 --> 00:04:50.400
+what we need to do is somehow observe
+
+138
+00:04:50.400 --> 00:04:54.000
+all requests with some kind of observer
+
+139
+00:04:54.000 --> 00:04:56.233
+closure right that we can get a request
+
+140
+00:04:56.233 --> 00:04:58.933
+in and we can run our assertions
+
+141
+00:04:58.933 --> 00:05:02.133
+for example that the request URL was a
+
+142
+00:05:02.133 --> 00:05:03.166
+given URL
+
+143
+00:05:03.166 --> 00:05:06.400
+and we can test that the HTTP method
+
+144
+00:05:06.400 --> 00:05:09.666
+of the request is GET so let's implement
+
+145
+00:05:09.666 --> 00:05:10.000
+this
+
+146
+00:05:10.000 --> 00:05:17.600
+observer, observe requests
+
+147
+00:05:17.600 --> 00:05:21.033
+so we can pass an observer closure
+
+148
+00:05:21.033 --> 00:05:23.166
+that is going to forward all of the
+
+149
+00:05:23.166 --> 00:05:26.300
+requests
+
+150
+00:05:26.300 --> 00:05:29.333
+it's a func yes and we can capture
+
+151
+00:05:29.333 --> 00:05:34.133
+the closure so it needs to be escaping
+
+152
+00:05:34.133 --> 00:05:37.600
+okay so we can define our static
+
+153
+00:05:37.600 --> 00:05:40.700
+variable request observer we can even
+
+154
+00:05:40.700 --> 00:05:41.733
+make it optional
+
+155
+00:05:41.733 --> 00:05:44.300
+like we did with the stub let's not
+
+156
+00:05:44.300 --> 00:05:45.433
+forget
+
+157
+00:05:45.433 --> 00:05:47.033
+to set it to nil when we stop
+
+158
+00:05:47.033 --> 00:05:49.166
+intercepting requests
+
+159
+00:05:49.166 --> 00:05:52.466
+and every time a request is initiated
+
+160
+00:05:52.466 --> 00:05:54.233
+we can invoke the observer passing the
+
+161
+00:05:54.233 --> 00:05:56.800
+request that should do it
+
+162
+00:05:56.800 --> 00:05:59.733
+okay the compiler is happy but we need
+
+163
+00:05:59.733 --> 00:06:00.700
+to define a
+
+164
+00:06:00.700 --> 00:06:03.333
+URL so I guess we can just copy the one
+
+165
+00:06:03.333 --> 00:06:05.166
+from the previous test
+
+166
+00:06:05.166 --> 00:06:06.533
+and since this block is invoked
+
+167
+00:06:06.533 --> 00:06:08.400
+asynchronously it's better
+
+168
+00:06:08.400 --> 00:06:10.633
+to make sure it was invoked with an
+
+169
+00:06:10.633 --> 00:06:12.533
+expectation
+
+170
+00:06:12.533 --> 00:06:17.166
+wait for request so we can fulfill
+
+171
+00:06:17.166 --> 00:06:19.166
+the expectation inside the block after
+
+172
+00:06:19.166 --> 00:06:20.400
+the assertions
+
+173
+00:06:20.400 --> 00:06:22.933
+and wait for the expectation with a
+
+174
+00:06:22.933 --> 00:06:24.133
+timeout
+
+175
+00:06:24.133 --> 00:06:26.533
+and we need to call our get method
+
+176
+00:06:26.533 --> 00:06:27.733
+exactly
+
+177
+00:06:27.733 --> 00:06:30.700
+if we don't call the get method this
+
+178
+00:06:30.700 --> 00:06:31.833
+would never
+
+179
+00:06:31.833 --> 00:06:34.633
+pass so we call it with the URL we
+
+180
+00:06:34.633 --> 00:06:35.333
+expect
+
+181
+00:06:35.333 --> 00:06:36.866
+and we can pass an empty completion
+
+182
+00:06:36.866 --> 00:06:39.333
+block so if we invoke get method with the
+
+183
+00:06:39.333 --> 00:06:39.833
+URL
+
+184
+00:06:39.833 --> 00:06:42.800
+we expect a request to be executed with
+
+185
+00:06:42.800 --> 00:06:44.933
+the right URL and method
+
+186
+00:06:44.933 --> 00:06:46.633
+I like that I think this test
+
+187
+00:06:46.633 --> 00:06:48.066
+complements very nicely
+
+188
+00:06:48.066 --> 00:06:50.466
+the previous one and if it fails as you
+
+189
+00:06:50.466 --> 00:06:51.166
+said before
+
+190
+00:06:51.166 --> 00:06:53.333
+we are going to get a tailored message
+
+191
+00:06:53.333 --> 00:06:55.500
+here showing exactly
+
+192
+00:06:55.500 --> 00:06:58.466
+why this test failed we can even show it
+
+193
+00:06:58.466 --> 00:06:58.933
+failing
+
+194
+00:06:58.933 --> 00:07:02.133
+by putting back the wrong URL
+
+195
+00:07:02.133 --> 00:07:04.933
+perfect tells us precisely where the
+
+196
+00:07:04.933 --> 00:07:06.233
+problem is
+
+197
+00:07:06.233 --> 00:07:09.666
+that's great okay so let's get rid of
+
+198
+00:07:09.666 --> 00:07:10.466
+this
+
+199
+00:07:10.466 --> 00:07:13.566
+let's tidy up the code a little bit
+
+200
+00:07:13.566 --> 00:07:16.466
+run the test again it's passing so we
+
+201
+00:07:16.466 --> 00:07:18.466
+separated the concerns of testing
+
+202
+00:07:18.466 --> 00:07:20.866
+the requested URL and handling the
+
+203
+00:07:20.866 --> 00:07:22.066
+request errors
+
+204
+00:07:22.066 --> 00:07:25.100
+I like that agreed so guarantees
+
+205
+00:07:25.100 --> 00:07:28.133
+correct URL and HTTP
+
+206
+00:07:28.133 --> 00:07:31.333
+method on get requests
+
+207
+00:07:31.333 --> 00:07:33.166
+so we can use the same mechanism to test
+
+208
+00:07:33.166 --> 00:07:35.500
+POST requests and also investigate the
+
+209
+00:07:35.500 --> 00:07:36.866
+body of the request
+
+210
+00:07:36.866 --> 00:07:38.300
+we can also investigate the query
+
+211
+00:07:38.300 --> 00:07:40.466
+parameters of the request any request
+
+212
+00:07:40.466 --> 00:07:41.100
+related
+
+213
+00:07:41.100 --> 00:07:43.433
+data that we care about can be asserted
+
+214
+00:07:43.433 --> 00:07:44.700
+through these observers
+
+215
+00:07:44.700 --> 00:07:47.566
+and without hitting the network exactly
+
+216
+00:07:47.566 --> 00:07:49.333
+which makes them reliable and fast
+
+217
+00:07:49.333 --> 00:07:51.733
+yeah moving on I see a bunch of
+
+218
+00:07:51.733 --> 00:07:54.300
+duplication here
+
+219
+00:07:54.300 --> 00:07:57.266
+yeah I think it's time and the start and
+
+220
+00:07:57.266 --> 00:07:59.266
+stop method invocations can be moved
+
+221
+00:07:59.266 --> 00:08:01.733
+to the setup and teardown so if you're
+
+222
+00:08:01.733 --> 00:08:02.633
+not familiar with
+
+223
+00:08:02.633 --> 00:08:04.800
+XCTestCase the setUp and tearDown
+
+224
+00:08:04.800 --> 00:08:05.666
+methods
+
+225
+00:08:05.666 --> 00:08:08.400
+are invoked for each test case so the
+
+226
+00:08:08.400 --> 00:08:08.933
+setUp
+
+227
+00:08:08.933 --> 00:08:11.666
+is invoked before each test method and
+
+228
+00:08:11.666 --> 00:08:12.933
+the tearDown is invoked
+
+229
+00:08:12.933 --> 00:08:15.566
+after each test method so we can safely
+
+230
+00:08:15.566 --> 00:08:16.233
+move
+
+231
+00:08:16.233 --> 00:08:18.866
+the start and stop to the setUp and tear
+
+232
+00:08:18.866 --> 00:08:19.833
+Down methods
+
+233
+00:08:19.833 --> 00:08:22.700
+you can do the same for this test and as
+
+234
+00:08:22.700 --> 00:08:23.833
+you keep adding tests
+
+235
+00:08:23.833 --> 00:08:25.666
+we can guarantee that we are
+
+236
+00:08:25.666 --> 00:08:26.866
+intercepting requests
+
+237
+00:08:26.866 --> 00:08:30.633
+in all the test methods alright
+
+238
+00:08:30.633 --> 00:08:33.666
+let's commit move start
+
+239
+00:08:33.666 --> 00:08:37.033
+and stop intercepting requests
+
+240
+00:08:37.033 --> 00:08:42.466
+choose setUp and tearDown methods
+
+241
+00:08:42.466 --> 00:08:45.266
+okay so we can move the sut creation to
+
+242
+00:08:45.266 --> 00:08:46.366
+makeSUT
+
+243
+00:08:46.366 --> 00:08:48.766
+factory right this way we protect our
+
+244
+00:08:48.766 --> 00:08:49.733
+tests from any
+
+245
+00:08:49.733 --> 00:08:53.033
+API changes okay so I think we can even
+
+246
+00:08:53.033 --> 00:08:53.666
+do the
+
+247
+00:08:53.666 --> 00:08:55.833
+get in one line I think so create the
+
+248
+00:08:55.833 --> 00:08:57.433
+sut
+
+249
+00:08:57.433 --> 00:09:00.700
+and we can do the same in here yep okay
+
+250
+00:09:00.700 --> 00:09:02.633
+so this guarantees that as we keep
+
+251
+00:09:02.633 --> 00:09:04.466
+implementing the URLSession if we ever
+
+252
+00:09:04.466 --> 00:09:06.800
+have to change its APIs for example
+
+253
+00:09:06.800 --> 00:09:08.633
+to add some dependencies in here we
+
+254
+00:09:08.633 --> 00:09:10.466
+don't break tests that don't care about
+
+255
+00:09:10.466 --> 00:09:12.000
+this dependency
+
+256
+00:09:12.000 --> 00:09:14.533
+classic factory method and another thing
+
+257
+00:09:14.533 --> 00:09:15.733
+that we could do here
+
+258
+00:09:15.733 --> 00:09:19.333
+is return the HTTPClient protocol
+
+259
+00:09:19.333 --> 00:09:22.366
+the URLSessionHTTPClient is supposed
+
+260
+00:09:22.366 --> 00:09:22.800
+to
+
+261
+00:09:22.800 --> 00:09:25.100
+conform to the protocol but it doesn't
+
+262
+00:09:25.100 --> 00:09:26.800
+yet yes unfortunately
+
+263
+00:09:26.800 --> 00:09:29.433
+but that's fine we will add a mental
+
+264
+00:09:29.433 --> 00:09:30.066
+note
+
+265
+00:09:30.066 --> 00:09:32.366
+and do it at the end okay as soon as
+
+266
+00:09:32.366 --> 00:09:33.833
+we've implemented the protocol we can
+
+267
+00:09:33.833 --> 00:09:35.500
+make the factory method return
+
+268
+00:09:35.500 --> 00:09:37.500
+an abstraction rather than the concrete
+
+269
+00:09:37.500 --> 00:09:39.600
+type so we can protect our tests from
+
+270
+00:09:39.600 --> 00:09:41.100
+implementation details as well
+
+271
+00:09:41.100 --> 00:09:44.133
+I really like that so move the
+
+272
+00:09:44.133 --> 00:09:47.433
+URLSessionHTTPClient well
+
+273
+00:09:47.433 --> 00:09:51.200
+the system under test or
+
+274
+00:09:51.200 --> 00:09:54.866
+sut creation to a factory
+
+275
+00:09:54.866 --> 00:09:58.366
+method to protect our tests
+
+276
+00:09:58.366 --> 00:10:01.500
+from breaking changes
+
+277
+00:10:01.500 --> 00:10:04.533
+that's it nice okay so since we're doing
+
+278
+00:10:04.533 --> 00:10:05.500
+this
+
+279
+00:10:05.500 --> 00:10:07.666
+we could also add the memory leak
+
+280
+00:10:07.666 --> 00:10:09.500
+tracking as we did in other tests
+
+281
+00:10:09.500 --> 00:10:12.633
+yep that sounds good track memory leaks
+
+282
+00:10:12.633 --> 00:10:14.866
+we have this method here we used in the
+
+283
+00:10:14.866 --> 00:10:16.533
+other component
+
+284
+00:10:16.533 --> 00:10:19.600
+let's just copy here for now yeah I like
+
+285
+00:10:19.600 --> 00:10:21.200
+that we can do it in two steps
+
+286
+00:10:21.200 --> 00:10:24.066
+so we can run the track memory leaks by
+
+287
+00:10:24.066 --> 00:10:25.433
+passing the sut
+
+288
+00:10:25.433 --> 00:10:28.633
+the file and the line so we can get a
+
+289
+00:10:28.633 --> 00:10:30.300
+nice assertion in the right place
+
+290
+00:10:30.300 --> 00:10:32.633
+which means we need to get the final
+
+291
+00:10:32.633 --> 00:10:34.633
+line in the makeSUT method
+
+292
+00:10:34.633 --> 00:10:38.066
+that's it that should be enough okay
+
+293
+00:10:38.066 --> 00:10:41.433
+let's commit add memory leak
+
+294
+00:10:41.433 --> 00:10:44.866
+tracking and since we have this
+
+295
+00:10:44.866 --> 00:10:47.200
+duplicated method we can move it yeah
+
+296
+00:10:47.200 --> 00:10:48.800
+it's being used in two test files
+
+297
+00:10:48.800 --> 00:10:50.933
+already so I'm happy to do that
+
+298
+00:10:50.933 --> 00:10:52.633
+so let me create a helper's folder in
+
+299
+00:10:52.633 --> 00:10:54.700
+the test target
+
+300
+00:10:54.700 --> 00:10:58.800
+and I'm going to create a XCTestCase
+
+301
+00:10:58.800 --> 00:11:03.900
+MemoryLeakTracking helper
+
+302
+00:11:03.900 --> 00:11:06.300
+okay so let's create an extension on
+
+303
+00:11:06.300 --> 00:11:07.833
+XCTestCase
+
+304
+00:11:07.833 --> 00:11:11.433
+and move the track memory leak helper
+
+305
+00:11:11.433 --> 00:11:14.933
+to this shared scope we can remove now
+
+306
+00:11:14.933 --> 00:11:20.066
+previous functions there very nice
+
+307
+00:11:20.066 --> 00:11:22.866
+let's run the tests alright they're
+
+308
+00:11:22.866 --> 00:11:25.266
+passing so let's commit
+
+309
+00:11:25.266 --> 00:11:28.300
+extract memory leak
+
+310
+00:11:28.300 --> 00:11:32.133
+tracking helper method to a shared
+
+311
+00:11:32.133 --> 00:11:36.866
+extension on XCTestCase
+
+312
+00:11:36.866 --> 00:11:40.233
+nice anything else you see
+
+313
+00:11:40.233 --> 00:11:42.366
+I think the URL creation is with the
+
+314
+00:11:42.366 --> 00:11:44.366
+same string so perhaps this can go in a
+
+315
+00:11:44.366 --> 00:11:46.000
+helper function as well
+
+316
+00:11:46.000 --> 00:11:50.066
+okay so since this is any URL
+
+317
+00:11:50.066 --> 00:11:52.466
+we can create a factory method and we
+
+318
+00:11:52.466 --> 00:11:53.666
+can even call it any
+
+319
+00:11:53.666 --> 00:11:56.800
+URL yeah it gives some context
+
+320
+00:11:56.800 --> 00:12:00.066
+in the test as well so let's use it
+
+321
+00:12:00.066 --> 00:12:05.600
+in the first test and in the second test
+
+322
+00:12:05.600 --> 00:12:07.733
+we can even move it inline I think it's
+
+323
+00:12:07.733 --> 00:12:09.200
+very explicit here
+
+324
+00:12:09.200 --> 00:12:11.033
+any URL it doesn't matter we are
+
+325
+00:12:11.033 --> 00:12:12.300
+stubbing so it doesn't matter
+
+326
+00:12:12.300 --> 00:12:14.800
+let's run the tests that looks neat
+
+327
+00:12:14.800 --> 00:12:16.633
+let's commit
+
+328
+00:12:16.633 --> 00:12:19.733
+move URL creation to a
+
+329
+00:12:19.733 --> 00:12:23.033
+shared factory method nice
+
+330
+00:12:23.033 --> 00:12:25.266
+very neat and you can see as part of the
+
+331
+00:12:25.266 --> 00:12:26.866
+process we keep refactoring
+
+332
+00:12:26.866 --> 00:12:29.333
+the production code and the test code
+
+333
+00:12:29.333 --> 00:12:30.000
+exactly
+
+334
+00:12:30.000 --> 00:12:32.300
+and we are protecting our code and our
+
+335
+00:12:32.300 --> 00:12:33.033
+sanity
+
+336
+00:12:33.033 --> 00:12:35.600
+with these changes here because it may
+
+337
+00:12:35.600 --> 00:12:36.066
+become
+
+338
+00:12:36.066 --> 00:12:38.066
+cumbersome and we don't want that we
+
+339
+00:12:38.066 --> 00:12:39.333
+want to be proactive
+
+340
+00:12:39.333 --> 00:12:42.233
+and take a few minutes and do these
+
+341
+00:12:42.233 --> 00:12:43.900
+changes now so we don't have to pay the
+
+342
+00:12:43.900 --> 00:12:44.866
+price later
+
+343
+00:12:44.866 --> 00:12:46.800
+exactly clean as you go so we don't
+
+344
+00:12:46.800 --> 00:12:48.633
+accumulate cruft
+
+345
+00:12:48.633 --> 00:12:51.100
+exactly so let's move on and implement
+
+346
+00:12:51.100 --> 00:12:53.600
+the invalid cases
+
+347
+00:12:53.600 --> 00:12:55.833
+so let me bring on the table with all
+
+348
+00:12:55.833 --> 00:12:58.233
+the invalid cases here
+
+349
+00:12:58.233 --> 00:13:01.033
+let's make some space here so as you can
+
+350
+00:13:01.033 --> 00:13:02.933
+see we have a bunch of invalid cases
+
+351
+00:13:02.933 --> 00:13:05.100
+that may never happen right but since
+
+352
+00:13:05.100 --> 00:13:06.000
+the URL system
+
+353
+00:13:06.000 --> 00:13:09.733
+APIs represents the output as optional
+
+354
+00:13:09.733 --> 00:13:12.300
+for example by combining the Data, URL
+
+355
+00:13:12.300 --> 00:13:14.066
+Response and Error and we only care
+
+356
+00:13:14.066 --> 00:13:15.266
+about cases where
+
+357
+00:13:15.266 --> 00:13:18.000
+we have an Error and no response and
+
+358
+00:13:18.000 --> 00:13:18.633
+Data
+
+359
+00:13:18.633 --> 00:13:22.366
+and when we have Data and an HTTPURL
+
+360
+00:13:22.366 --> 00:13:24.233
+Response and no Error
+
+361
+00:13:24.233 --> 00:13:26.066
+as you can see the URLResponse is a
+
+362
+00:13:26.066 --> 00:13:28.466
+class and HTTPURLResponse is a
+
+363
+00:13:28.466 --> 00:13:30.233
+subclass of URLResponse
+
+364
+00:13:30.233 --> 00:13:33.600
+that's unfortunate because it adds to
+
+365
+00:13:33.600 --> 00:13:34.633
+the complexity
+
+366
+00:13:34.633 --> 00:13:36.633
+look at all these cases basically every
+
+367
+00:13:36.633 --> 00:13:38.133
+time there's a URLResponse we need to
+
+368
+00:13:38.133 --> 00:13:38.700
+check
+
+369
+00:13:38.700 --> 00:13:41.433
+for an HTTPURLResponse as well because
+
+370
+00:13:41.433 --> 00:13:43.333
+it's a subtype of URLResponse
+
+371
+00:13:43.333 --> 00:13:46.800
+exactly so we increase the number of
+
+372
+00:13:46.800 --> 00:13:48.633
+invalid scenarios because of the
+
+373
+00:13:48.633 --> 00:13:51.033
+subtyping so we can make the case that
+
+374
+00:13:51.033 --> 00:13:53.333
+we trust the framework since those are
+
+375
+00:13:53.333 --> 00:13:55.433
+results that should never happen
+
+376
+00:13:55.433 --> 00:13:57.433
+but since it can be represented and
+
+377
+00:13:57.433 --> 00:13:59.166
+there is some obscure side to this
+
+378
+00:13:59.166 --> 00:13:59.833
+framework
+
+379
+00:13:59.833 --> 00:14:01.266
+since we cannot even see the
+
+380
+00:14:01.266 --> 00:14:02.933
+implementation of those types
+
+381
+00:14:02.933 --> 00:14:05.166
+we can add some extra tests to guarantee
+
+382
+00:14:05.166 --> 00:14:07.433
+that we are covering all the edge cases
+
+383
+00:14:07.433 --> 00:14:09.900
+so when using third-party APIs it's
+
+384
+00:14:09.900 --> 00:14:12.000
+advised to add extra tests
+
+385
+00:14:12.000 --> 00:14:14.466
+to validate assumptions plus when there
+
+386
+00:14:14.466 --> 00:14:15.833
+is a new version of
+
+387
+00:14:15.833 --> 00:14:17.833
+the third party framework we are using
+
+388
+00:14:17.833 --> 00:14:19.733
+we can happily upgrade and guarantee the
+
+389
+00:14:19.733 --> 00:14:20.700
+framework changes
+
+390
+00:14:20.700 --> 00:14:22.700
+didn't break our assumptions and
+
+391
+00:14:22.700 --> 00:14:23.900
+expectations
+
+392
+00:14:23.900 --> 00:14:26.066
+so let's start with the first one the
+
+393
+00:14:26.066 --> 00:14:27.900
+invalid case where we got
+
+394
+00:14:27.900 --> 00:14:30.300
+nil, nil and nil for the Data, URL
+
+395
+00:14:30.300 --> 00:14:32.066
+Response and Error
+
+396
+00:14:32.066 --> 00:14:36.633
+okay copy the test
+
+397
+00:14:36.633 --> 00:14:39.733
+so fails on
+
+398
+00:14:39.733 --> 00:14:44.000
+all nil values so we don't have an error
+
+399
+00:14:44.000 --> 00:14:46.933
+data is new response is new and error is
+
+400
+00:14:46.933 --> 00:14:47.600
+nil
+
+401
+00:14:47.600 --> 00:14:49.900
+now we don't have any kind of error to
+
+402
+00:14:49.900 --> 00:14:50.866
+check against
+
+403
+00:14:50.866 --> 00:14:53.833
+in this case we want it to be a failure
+
+404
+00:14:53.833 --> 00:14:54.233
+but
+
+405
+00:14:54.233 --> 00:14:56.300
+to be fair since it's an invalid case I
+
+406
+00:14:56.300 --> 00:14:57.600
+just want it to be a failure I don't
+
+407
+00:14:57.600 --> 00:14:58.000
+care about
+
+408
+00:14:58.000 --> 00:15:00.366
+which error got there there's no great
+
+409
+00:15:00.366 --> 00:15:01.033
+way of
+
+410
+00:15:01.033 --> 00:15:03.333
+handling or recovering from this error
+
+411
+00:15:03.333 --> 00:15:04.133
+apart from
+
+412
+00:15:04.133 --> 00:15:07.733
+retrying yeah it's an invalid case and
+
+413
+00:15:07.733 --> 00:15:09.266
+it should never happen
+
+414
+00:15:09.266 --> 00:15:11.166
+we don't want to pollute our tests with
+
+415
+00:15:11.166 --> 00:15:12.700
+specific error types there
+
+416
+00:15:12.700 --> 00:15:15.500
+I think and we also don't want the app
+
+417
+00:15:15.500 --> 00:15:16.300
+to crash
+
+418
+00:15:16.300 --> 00:15:18.000
+because although it should never happen
+
+419
+00:15:18.000 --> 00:15:19.500
+it may happen so
+
+420
+00:15:19.500 --> 00:15:21.033
+it should be a failure the user should
+
+421
+00:15:21.033 --> 00:15:23.266
+be able to retry it shouldn't crash
+
+422
+00:15:23.266 --> 00:15:24.866
+but I also don't care which kind of
+
+423
+00:15:24.866 --> 00:15:26.466
+error since this case would be a
+
+424
+00:15:26.466 --> 00:15:28.366
+programmer error or a framework
+
+425
+00:15:28.366 --> 00:15:32.466
+error so let's see our test should fail
+
+426
+00:15:32.466 --> 00:15:35.900
+yes it failed so that should be easy
+
+427
+00:15:35.900 --> 00:15:39.033
+to make it pass we can just create an
+
+428
+00:15:39.033 --> 00:15:40.933
+else case and complete
+
+429
+00:15:40.933 --> 00:15:43.733
+with a failure with any error here right
+
+430
+00:15:43.733 --> 00:15:45.833
+and we can create our own type there
+
+431
+00:15:45.833 --> 00:15:49.100
+so since this is an unexpected case
+
+432
+00:15:49.100 --> 00:15:52.000
+we can create an unexpected values
+
+433
+00:15:52.000 --> 00:15:53.033
+representation
+
+434
+00:15:53.033 --> 00:15:57.100
+ever yep exactly okay it can be
+
+435
+00:15:57.100 --> 00:15:59.833
+for example instruct the conforms to the
+
+436
+00:15:59.833 --> 00:16:01.033
+Swift Error protocol
+
+437
+00:16:01.033 --> 00:16:03.433
+alright let's see if it passes that should
+
+438
+00:16:03.433 --> 00:16:04.533
+do it I guess
+
+439
+00:16:04.533 --> 00:16:07.033
+okay it's passing beautiful so in this
+
+440
+00:16:07.033 --> 00:16:08.700
+case we chose not to check
+
+441
+00:16:08.700 --> 00:16:10.866
+the specific error because this is an
+
+442
+00:16:10.866 --> 00:16:13.266
+invalid scenario that can be represented
+
+443
+00:16:13.266 --> 00:16:15.266
+but if you really care about this
+
+444
+00:16:15.266 --> 00:16:16.800
+scenario you better add
+
+445
+00:16:16.800 --> 00:16:20.000
+a type check here in your tests but I'm
+
+446
+00:16:20.000 --> 00:16:20.800
+happy with this
+
+447
+00:16:20.800 --> 00:16:22.366
+so far and we can change our minds in
+
+448
+00:16:22.366 --> 00:16:25.100
+the future so let's commit
+
+449
+00:16:25.100 --> 00:16:28.466
+delivers unexpected values
+
+450
+00:16:28.466 --> 00:16:32.000
+error when request completes
+
+451
+00:16:32.000 --> 00:16:35.033
+with data, response and error
+
+452
+00:16:35.033 --> 00:16:39.033
+as nil, okay and it seems that we have
+
+453
+00:16:39.033 --> 00:16:41.033
+some duplication now with the two
+
+454
+00:16:41.033 --> 00:16:43.733
+failed cases so why don't we extract the
+
+455
+00:16:43.733 --> 00:16:45.833
+duplicate code
+
+456
+00:16:45.833 --> 00:16:48.133
+so we have different setups here but the
+
+457
+00:16:48.133 --> 00:16:50.133
+algorithm is very similar
+
+458
+00:16:50.133 --> 00:16:52.700
+okay so we can move this to a helper
+
+459
+00:16:52.700 --> 00:16:53.733
+method
+
+460
+00:16:53.733 --> 00:16:57.333
+yes so result
+
+461
+00:16:57.333 --> 00:17:00.700
+error for data
+
+462
+00:17:00.700 --> 00:17:04.700
+response and error
+
+463
+00:17:04.700 --> 00:17:06.866
+and it should return the error and it's
+
+464
+00:17:06.866 --> 00:17:09.033
+optional because if it was a success
+
+465
+00:17:09.033 --> 00:17:11.266
+result we don't have an error yeah
+
+466
+00:17:11.266 --> 00:17:12.066
+exactly
+
+467
+00:17:12.066 --> 00:17:16.300
+so let me copy this setup
+
+468
+00:17:16.300 --> 00:17:18.000
+let's see what we need to change here so
+
+469
+00:17:18.000 --> 00:17:20.700
+we need to pass the data the response
+
+470
+00:17:20.700 --> 00:17:23.666
+and the error we wait for the completion
+
+471
+00:17:23.666 --> 00:17:24.633
+that's fine
+
+472
+00:17:24.633 --> 00:17:27.833
+but now we need to capture the error
+
+473
+00:17:27.833 --> 00:17:31.833
+so receivedError is an Error optional
+
+474
+00:17:31.833 --> 00:17:36.066
+let's get the error
+
+475
+00:17:36.066 --> 00:17:38.866
+and we return the error at the end so we
+
+476
+00:17:38.866 --> 00:17:40.400
+need to keep the failed
+
+477
+00:17:40.400 --> 00:17:43.100
+assertion in the case that we got a
+
+478
+00:17:43.100 --> 00:17:44.300
+success
+
+479
+00:17:44.300 --> 00:17:46.866
+but we better pass the file and line
+
+480
+00:17:46.866 --> 00:17:49.033
+exactly since this is in a helper now
+
+481
+00:17:49.033 --> 00:17:51.666
+and it's going to be used a bunch of
+
+482
+00:17:51.666 --> 00:17:52.233
+times
+
+483
+00:17:52.233 --> 00:17:54.300
+from other tests we want to know exactly
+
+484
+00:17:54.300 --> 00:17:55.833
+where we're failing
+
+485
+00:17:55.833 --> 00:17:58.066
+otherwise the tests lose their
+
+486
+00:17:58.066 --> 00:17:59.433
+importance
+
+487
+00:17:59.433 --> 00:18:02.233
+and since the makeSUT also expects
+
+488
+00:18:02.233 --> 00:18:03.266
+file and line
+
+489
+00:18:03.266 --> 00:18:05.266
+to display the failed assertions in the
+
+490
+00:18:05.266 --> 00:18:07.200
+right place we better put this into a
+
+491
+00:18:07.200 --> 00:18:08.300
+variable
+
+492
+00:18:08.300 --> 00:18:11.666
+as well okay that looks like the setup
+
+493
+00:18:11.666 --> 00:18:12.300
+we need
+
+494
+00:18:12.300 --> 00:18:14.866
+now let's refactor the tests to use it
+
+495
+00:18:14.866 --> 00:18:16.400
+so in the first test
+
+496
+00:18:16.400 --> 00:18:18.533
+we don't need to invoke the stub anymore
+
+497
+00:18:18.533 --> 00:18:19.500
+we just need to get
+
+498
+00:18:19.500 --> 00:18:23.900
+the receivedError
+
+499
+00:18:23.900 --> 00:18:27.433
+when we pass nil, nil and the
+
+500
+00:18:27.433 --> 00:18:32.400
+error and then we can keep the assertion
+
+501
+00:18:32.400 --> 00:18:34.233
+that they receivedError but now we need
+
+502
+00:18:34.233 --> 00:18:36.066
+to cast it to NSError yeah
+
+503
+00:18:36.066 --> 00:18:37.733
+that's it basically is equal to the passed
+
+504
+00:18:37.733 --> 00:18:38.933
+error so let's give
+
+505
+00:18:38.933 --> 00:18:41.433
+even more context by saying request
+
+506
+00:18:41.433 --> 00:18:42.000
+error
+
+507
+00:18:42.000 --> 00:18:44.400
+nice it matches the name of the test as
+
+508
+00:18:44.400 --> 00:18:45.333
+well
+
+509
+00:18:45.333 --> 00:18:47.500
+exactly so failures and requests over so
+
+510
+00:18:47.500 --> 00:18:48.933
+here's the request error
+
+511
+00:18:48.933 --> 00:18:50.866
+we pass the error to the helper function
+
+512
+00:18:50.866 --> 00:18:52.633
+and we expect the received error
+
+513
+00:18:52.633 --> 00:18:54.866
+to be the same as the request error
+
+514
+00:18:54.866 --> 00:18:56.766
+let's see if it passes
+
+515
+00:18:56.766 --> 00:18:59.666
+it does fantastic what about the second
+
+516
+00:18:59.666 --> 00:19:00.700
+test
+
+517
+00:19:00.700 --> 00:19:02.766
+since we don't care about the error type
+
+518
+00:19:02.766 --> 00:19:05.200
+we just care that there is an error
+
+519
+00:19:05.200 --> 00:19:08.766
+we can use the assert not nil helper
+
+520
+00:19:08.766 --> 00:19:12.133
+by bypassing the result error for data
+
+521
+00:19:12.133 --> 00:19:15.333
+nil, response, nil and error
+
+522
+00:19:15.333 --> 00:19:17.733
+nil the match is the invalid case we
+
+523
+00:19:17.733 --> 00:19:18.533
+care about
+
+524
+00:19:18.533 --> 00:19:22.300
+so far let's see if it passes
+
+525
+00:19:22.300 --> 00:19:24.700
+it does that was a great refactoring
+
+526
+00:19:24.700 --> 00:19:25.333
+look how
+
+527
+00:19:25.333 --> 00:19:28.066
+simple the test method is now I think
+
+528
+00:19:28.066 --> 00:19:28.700
+that's an
+
+529
+00:19:28.700 --> 00:19:31.500
+extremely valuable refactoring alright
+
+530
+00:19:31.500 --> 00:19:32.400
+so
+
+531
+00:19:32.400 --> 00:19:36.000
+let's commit extract duplicate
+
+532
+00:19:36.000 --> 00:19:39.666
+code into a shared reusable
+
+533
+00:19:39.666 --> 00:19:42.866
+helper method to simplify
+
+534
+00:19:42.866 --> 00:19:47.266
+tests yep fantastic
+
+535
+00:19:47.266 --> 00:19:50.466
+should we add one test method for each
+
+536
+00:19:50.466 --> 00:19:52.700
+invalid case I think we can group them
+
+537
+00:19:52.700 --> 00:19:53.600
+in one test
+
+538
+00:19:53.600 --> 00:19:56.700
+and name it fails for all
+
+539
+00:19:56.700 --> 00:19:59.433
+invalid cases or something like that
+
+540
+00:19:59.433 --> 00:20:01.500
+okay so failures on all
+
+541
+00:20:01.500 --> 00:20:04.933
+invalid representation cases yes and we
+
+542
+00:20:04.933 --> 00:20:06.000
+can add all the assertions
+
+543
+00:20:06.000 --> 00:20:09.266
+here exactly exactly so here's for the
+
+544
+00:20:09.266 --> 00:20:09.833
+second
+
+545
+00:20:09.833 --> 00:20:12.000
+invalid case where we have new data we
+
+546
+00:20:12.000 --> 00:20:14.133
+have a response but it's unknown
+
+547
+00:20:14.133 --> 00:20:17.433
+HTTPURLResponse yes and
+
+548
+00:20:17.433 --> 00:20:20.066
+no error so it's the second case here so
+
+549
+00:20:20.066 --> 00:20:21.733
+what is a non
+
+550
+00:20:21.733 --> 00:20:25.333
+HTTP response it's a URLResponse
+
+551
+00:20:25.333 --> 00:20:28.133
+let's create one here with any URL let's
+
+552
+00:20:28.133 --> 00:20:29.500
+use our helper method
+
+553
+00:20:29.500 --> 00:20:31.266
+we don't need to give a mime type
+
+554
+00:20:31.266 --> 00:20:33.266
+content length or
+
+555
+00:20:33.266 --> 00:20:35.600
+encoding okay that's the second case
+
+556
+00:20:35.600 --> 00:20:37.666
+let's see if passes
+
+557
+00:20:37.666 --> 00:20:40.700
+it does fantastic so let's move on in
+
+558
+00:20:40.700 --> 00:20:41.833
+the same commit
+
+559
+00:20:41.833 --> 00:20:44.766
+so here we have a HTTPURLResponse
+
+560
+00:20:44.766 --> 00:20:45.900
+actually any
+
+561
+00:20:45.900 --> 00:20:48.533
+any, yes HTTP response should generate
+
+562
+00:20:48.533 --> 00:20:49.433
+this error so
+
+563
+00:20:49.433 --> 00:20:54.533
+let's create our HTTP response here
+
+564
+00:20:54.533 --> 00:20:58.766
+so we have again anyURL any status code
+
+565
+00:20:58.766 --> 00:21:00.866
+and we don't need anything else okay
+
+566
+00:21:00.866 --> 00:21:02.866
+this should pass as well
+
+567
+00:21:02.866 --> 00:21:06.400
+fantastic now next test
+
+568
+00:21:06.400 --> 00:21:09.266
+when we have data like any data but
+
+569
+00:21:09.266 --> 00:21:10.400
+everything else is nil
+
+570
+00:21:10.400 --> 00:21:12.466
+this is also an invalid case so let me
+
+571
+00:21:12.466 --> 00:21:15.666
+create our any data
+
+572
+00:21:15.666 --> 00:21:19.266
+value any data it should pass
+
+573
+00:21:19.266 --> 00:21:22.700
+because it returns an error fantastic
+
+574
+00:21:22.700 --> 00:21:25.900
+now the next case we have any data
+
+575
+00:21:25.900 --> 00:21:30.066
+and an error but no response
+
+576
+00:21:30.066 --> 00:21:33.266
+okay so any error let's say it's an
+
+577
+00:21:33.266 --> 00:21:35.500
+NSError because it's easy to create
+
+578
+00:21:35.500 --> 00:21:38.533
+any error it should pass because we are
+
+579
+00:21:38.533 --> 00:21:40.300
+returning an error for this case
+
+580
+00:21:40.300 --> 00:21:43.600
+as well fantastic
+
+581
+00:21:43.600 --> 00:21:46.700
+now it's the case where data is nil we
+
+582
+00:21:46.700 --> 00:21:49.666
+have a non HTTPURLResponse
+
+583
+00:21:49.666 --> 00:21:51.733
+and we have an error it should also be
+
+584
+00:21:51.733 --> 00:21:54.066
+invalid
+
+585
+00:21:54.066 --> 00:21:57.266
+passing moving on next case
+
+586
+00:21:57.266 --> 00:22:00.466
+we have nil data we have
+
+587
+00:22:00.466 --> 00:22:04.000
+a HTTPURLResponse but also with an
+
+588
+00:22:04.000 --> 00:22:04.400
+error
+
+589
+00:22:04.400 --> 00:22:07.733
+this is invalid so we should pass
+
+590
+00:22:07.733 --> 00:22:11.333
+fantastic okay next case we have
+
+591
+00:22:11.333 --> 00:22:12.066
+everything
+
+592
+00:22:12.066 --> 00:22:15.600
+any data we have a response but it's a
+
+593
+00:22:15.600 --> 00:22:18.000
+non HTTPURLResponse and we have an
+
+594
+00:22:18.000 --> 00:22:18.933
+error
+
+595
+00:22:18.933 --> 00:22:22.133
+this is also invalid it should pass
+
+596
+00:22:22.133 --> 00:22:25.666
+fantastic the same but now it's an
+
+597
+00:22:25.666 --> 00:22:28.933
+HTTPURLResponse
+
+598
+00:22:28.933 --> 00:22:33.333
+also invalid case fantastic
+
+599
+00:22:33.333 --> 00:22:36.866
+now it's the last scenario where we have
+
+600
+00:22:36.866 --> 00:22:41.333
+data a non HTTPURLResponse
+
+601
+00:22:41.333 --> 00:22:43.900
+and no error this is almost correct yeah
+
+602
+00:22:43.900 --> 00:22:44.533
+it's close
+
+603
+00:22:44.533 --> 00:22:47.033
+but the only problem is that it's not a
+
+604
+00:22:47.033 --> 00:22:47.900
+HTTP
+
+605
+00:22:47.900 --> 00:22:51.033
+URLResponse not quite there yeah okay
+
+606
+00:22:51.033 --> 00:22:52.766
+they are all passing so we are covering
+
+607
+00:22:52.766 --> 00:22:54.633
+all invalid scenarios now
+
+608
+00:22:54.633 --> 00:22:58.233
+fantastic let's commit delivers
+
+609
+00:22:58.233 --> 00:23:02.233
+error on all invalid or unexpected
+
+610
+00:23:02.233 --> 00:23:05.600
+representation cases that's it
+
+611
+00:23:05.600 --> 00:23:07.433
+okay finally we are done with all the
+
+612
+00:23:07.433 --> 00:23:08.866
+invalid scenarios
+
+613
+00:23:08.866 --> 00:23:10.533
+validating our assumptions about the
+
+614
+00:23:10.533 --> 00:23:12.133
+framework yeah
+
+615
+00:23:12.133 --> 00:23:14.300
+but can we extract these constants into
+
+616
+00:23:14.300 --> 00:23:15.733
+helper functions as well
+
+617
+00:23:15.733 --> 00:23:18.766
+okay it's a bit noisy isn't it yeah I
+
+618
+00:23:18.766 --> 00:23:20.466
+think so
+
+619
+00:23:20.466 --> 00:23:24.866
+so we can create the anyData helper
+
+620
+00:23:24.866 --> 00:23:30.933
+that returns data
+
+621
+00:23:30.933 --> 00:23:34.833
+so now we can just use the helper
+
+622
+00:23:34.833 --> 00:23:38.233
+everywhere you can also do the same
+
+623
+00:23:38.233 --> 00:23:43.100
+with the error
+
+624
+00:23:43.100 --> 00:23:45.100
+and since this is an NSError I would
+
+625
+00:23:45.100 --> 00:23:46.766
+call any NSError
+
+626
+00:23:46.766 --> 00:23:49.733
+right very specific but it could also be
+
+627
+00:23:49.733 --> 00:23:50.633
+any error
+
+628
+00:23:50.633 --> 00:23:52.766
+yeah exactly but we are specific about
+
+629
+00:23:52.766 --> 00:23:54.633
+the type so let's be specific in the
+
+630
+00:23:54.633 --> 00:23:56.533
+name as well
+
+631
+00:23:56.533 --> 00:23:59.600
+okay so we can replace
+
+632
+00:23:59.600 --> 00:24:03.733
+two inline calls to the anyNSError
+
+633
+00:24:03.733 --> 00:24:07.600
+helper method okay so we can do the same
+
+634
+00:24:07.600 --> 00:24:09.433
+with the HTTPURL
+
+635
+00:24:09.433 --> 00:24:13.033
+Response anyHTTP
+
+636
+00:24:13.033 --> 00:24:22.400
+URLResponse
+
+637
+00:24:22.400 --> 00:24:24.233
+and just for completion sake let's do
+
+638
+00:24:24.233 --> 00:24:25.666
+the same with the non
+
+639
+00:24:25.666 --> 00:24:32.933
+HTTPURLResponse
+
+640
+00:24:32.933 --> 00:24:37.433
+non HTTPURLResponse returns a URL
+
+641
+00:24:37.433 --> 00:24:45.200
+Response
+
+642
+00:24:45.200 --> 00:24:48.233
+let's run the tests fantastic
+
+643
+00:24:48.233 --> 00:24:51.433
+much cleaner let's commit
+
+644
+00:24:51.433 --> 00:24:54.933
+extract test values creation
+
+645
+00:24:54.933 --> 00:24:59.200
+to shared factory methods that's it
+
+646
+00:24:59.200 --> 00:25:00.866
+we can even do the same in the first
+
+647
+00:25:00.866 --> 00:25:03.200
+test and use the anyNSError
+
+648
+00:25:03.200 --> 00:25:05.333
+right so in this case we can amend this
+
+649
+00:25:05.333 --> 00:25:07.266
+change to the previous commit
+
+650
+00:25:07.266 --> 00:25:10.766
+I'm happy to do it so since this is the
+
+651
+00:25:10.766 --> 00:25:11.600
+only change
+
+652
+00:25:11.600 --> 00:25:14.533
+we can add it to the stage and we can
+
+653
+00:25:14.533 --> 00:25:15.100
+amend
+
+654
+00:25:15.100 --> 00:25:18.766
+to the previous commit fantastic
+
+655
+00:25:18.766 --> 00:25:21.100
+okay it's time for the happy path all
+
+656
+00:25:21.100 --> 00:25:22.866
+right finally we're gonna deal with the
+
+657
+00:25:22.866 --> 00:25:24.066
+valid case
+
+658
+00:25:24.066 --> 00:25:27.100
+so test
+
+659
+00:25:27.100 --> 00:25:31.333
+get from URL succeeds
+
+660
+00:25:31.333 --> 00:25:34.766
+on HTTPURLResponse with
+
+661
+00:25:34.766 --> 00:25:38.466
+data
+
+662
+00:25:38.466 --> 00:25:41.733
+so we need to stub the protocol with
+
+663
+00:25:41.733 --> 00:25:43.200
+some data
+
+664
+00:25:43.200 --> 00:25:46.466
+with a response and no error
+
+665
+00:25:46.466 --> 00:25:49.666
+just like in this first valid case
+
+666
+00:25:49.666 --> 00:25:53.433
+so data is anyData and response
+
+667
+00:25:53.433 --> 00:25:56.933
+is also anyHTTPURLResponse
+
+668
+00:25:56.933 --> 00:26:00.000
+exactly okay so we need to make
+
+669
+00:26:00.000 --> 00:26:03.033
+our sut and say get from any
+
+670
+00:26:03.033 --> 00:26:06.533
+URL let's get the result
+
+671
+00:26:06.533 --> 00:26:09.100
+let's switch on the result and now we
+
+672
+00:26:09.100 --> 00:26:10.133
+care about
+
+673
+00:26:10.133 --> 00:26:13.600
+the success case with the received
+
+674
+00:26:13.600 --> 00:26:16.700
+data and received response
+
+675
+00:26:16.700 --> 00:26:19.900
+now we need to assert that we got the
+
+676
+00:26:19.900 --> 00:26:22.066
+right values so the received data should
+
+677
+00:26:22.066 --> 00:26:23.333
+be the passed
+
+678
+00:26:23.333 --> 00:26:26.533
+data and the received
+
+679
+00:26:26.533 --> 00:26:30.066
+response should be the response
+
+680
+00:26:30.066 --> 00:26:34.233
+else for any other case we should fail
+
+681
+00:26:34.233 --> 00:26:36.833
+yeah we expect success so we should fail
+
+682
+00:26:36.833 --> 00:26:38.000
+there
+
+683
+00:26:38.000 --> 00:26:41.033
+so expected success got result
+
+684
+00:26:41.033 --> 00:26:45.200
+instead nice let's fulfill
+
+685
+00:26:45.200 --> 00:26:48.233
+okay so it's asynchronous we need to
+
+686
+00:26:48.233 --> 00:26:50.400
+follow the same dance
+
+687
+00:26:50.400 --> 00:26:53.900
+let's wait for completion
+
+688
+00:26:53.900 --> 00:26:57.900
+and fulfill after
+
+689
+00:26:57.900 --> 00:27:00.933
+our assertions and then we need to
+
+690
+00:27:00.933 --> 00:27:03.100
+wait for the expectation to complete
+
+691
+00:27:03.100 --> 00:27:04.066
+with a timeout
+
+692
+00:27:04.066 --> 00:27:06.633
+fantastic let's run this test and we
+
+693
+00:27:06.633 --> 00:27:07.900
+should get
+
+694
+00:27:07.900 --> 00:27:10.300
+failing tests yes we expected success
+
+695
+00:27:10.300 --> 00:27:11.733
+but it failed
+
+696
+00:27:11.733 --> 00:27:13.833
+with unexpected values representation
+
+697
+00:27:13.833 --> 00:27:15.500
+because we haven't implemented
+
+698
+00:27:15.500 --> 00:27:18.933
+this behavior yet alright let's do it
+
+699
+00:27:18.933 --> 00:27:22.133
+we need another else case here if we
+
+700
+00:27:22.133 --> 00:27:23.666
+have data
+
+701
+00:27:23.666 --> 00:27:27.266
+and we have a response and this response
+
+702
+00:27:27.266 --> 00:27:30.300
+is an HTTPURLResponse
+
+703
+00:27:30.300 --> 00:27:33.500
+exactly then we can complete with
+
+704
+00:27:33.500 --> 00:27:34.700
+success
+
+705
+00:27:34.700 --> 00:27:37.900
+with the data and response
+
+706
+00:27:37.900 --> 00:27:39.900
+of course we need to name the variables
+
+707
+00:27:39.900 --> 00:27:41.500
+data and response
+
+708
+00:27:41.500 --> 00:27:45.600
+passed to the completion closure
+
+709
+00:27:45.600 --> 00:27:47.733
+oh it should have passed but we got a
+
+710
+00:27:47.733 --> 00:27:50.633
+failing test let's have a look at this
+
+711
+00:27:50.633 --> 00:27:53.900
+what happened there we got two failing
+
+712
+00:27:53.900 --> 00:27:54.933
+tests here
+
+713
+00:27:54.933 --> 00:27:57.266
+first of all the invalid case when we
+
+714
+00:27:57.266 --> 00:27:58.300
+have nil
+
+715
+00:27:58.300 --> 00:28:01.500
+data and an HTTPURLResponse started
+
+716
+00:28:01.500 --> 00:28:02.233
+failing
+
+717
+00:28:02.233 --> 00:28:04.366
+hmm we need to investigate this and the
+
+718
+00:28:04.366 --> 00:28:05.500
+next one was that
+
+719
+00:28:05.500 --> 00:28:07.100
+we didn't receive the same response
+
+720
+00:28:07.100 --> 00:28:08.700
+let's have a look at it right
+
+721
+00:28:08.700 --> 00:28:12.133
+so NSHTTPURLResponse is a class
+
+722
+00:28:12.133 --> 00:28:14.700
+as we already discussed and internally
+
+723
+00:28:14.700 --> 00:28:16.066
+the URL loading system
+
+724
+00:28:16.066 --> 00:28:18.866
+is somehow replacing the passed response
+
+725
+00:28:18.866 --> 00:28:20.466
+with their own response here
+
+726
+00:28:20.466 --> 00:28:22.300
+so it's comparing the pointers and they
+
+727
+00:28:22.300 --> 00:28:23.600
+are not the same
+
+728
+00:28:23.600 --> 00:28:26.066
+as you can see right the address is
+
+729
+00:28:26.066 --> 00:28:26.700
+different
+
+730
+00:28:26.700 --> 00:28:28.933
+so they are not equal because when you
+
+731
+00:28:28.933 --> 00:28:31.200
+compare classes they often compare the
+
+732
+00:28:31.200 --> 00:28:32.000
+pointer
+
+733
+00:28:32.000 --> 00:28:34.766
+so we can just check the values the URL
+
+734
+00:28:34.766 --> 00:28:36.133
+and status code for instance
+
+735
+00:28:36.133 --> 00:28:39.433
+that's what we care for now okay
+
+736
+00:28:39.433 --> 00:28:41.266
+that makes sense that should be enough
+
+737
+00:28:41.266 --> 00:28:42.933
+for us to make sure we got
+
+738
+00:28:42.933 --> 00:28:46.066
+a comprehensive response okay let's see
+
+739
+00:28:46.066 --> 00:28:47.900
+if we solve this problem now
+
+740
+00:28:47.900 --> 00:28:49.433
+alright we are getting the right
+
+741
+00:28:49.433 --> 00:28:51.100
+response it's just that
+
+742
+00:28:51.100 --> 00:28:53.500
+somehow the framework replaced it with
+
+743
+00:28:53.500 --> 00:28:54.533
+another instance
+
+744
+00:28:54.533 --> 00:28:56.066
+but the values are still the same so I'm
+
+745
+00:28:56.066 --> 00:28:58.000
+happy with it now let's have a look at
+
+746
+00:28:58.000 --> 00:28:58.766
+this failure
+
+747
+00:28:58.766 --> 00:29:00.300
+what is happening here what does the
+
+748
+00:29:00.300 --> 00:29:02.000
+error say
+
+749
+00:29:02.000 --> 00:29:03.900
+well we expected a failure of course but
+
+750
+00:29:03.900 --> 00:29:05.033
+we got a success
+
+751
+00:29:05.033 --> 00:29:08.133
+with data with zero bytes data and a
+
+752
+00:29:08.133 --> 00:29:08.866
+response
+
+753
+00:29:08.866 --> 00:29:12.066
+right okay so okay we thought
+
+754
+00:29:12.066 --> 00:29:13.666
+that this would generate an invalid
+
+755
+00:29:13.666 --> 00:29:15.600
+scenario but somehow the URL loading
+
+756
+00:29:15.600 --> 00:29:16.066
+system
+
+757
+00:29:16.066 --> 00:29:19.100
+is replacing our nil data with
+
+758
+00:29:19.100 --> 00:29:22.000
+an empty data of zero bytes in the case
+
+759
+00:29:22.000 --> 00:29:22.533
+where
+
+760
+00:29:22.533 --> 00:29:25.833
+we returned a valid HTTPURLResponse
+
+761
+00:29:25.833 --> 00:29:26.366
+right
+
+762
+00:29:26.366 --> 00:29:29.033
+we are completing with success from our
+
+763
+00:29:29.033 --> 00:29:30.366
+production side
+
+764
+00:29:30.366 --> 00:29:32.700
+yes so what we thought to be an invalid
+
+765
+00:29:32.700 --> 00:29:34.633
+case and it would be an invalid case if
+
+766
+00:29:34.633 --> 00:29:35.500
+the framework
+
+767
+00:29:35.500 --> 00:29:38.633
+ever delivered the nil data with an HTTP
+
+768
+00:29:38.633 --> 00:29:39.733
+URLResponse
+
+769
+00:29:39.733 --> 00:29:41.600
+is actually valid because the framework
+
+770
+00:29:41.600 --> 00:29:43.100
+replaces the nil data
+
+771
+00:29:43.100 --> 00:29:46.300
+with an empty data there is a real
+
+772
+00:29:46.300 --> 00:29:48.933
+instance of data here with zero bytes
+
+773
+00:29:48.933 --> 00:29:51.433
+and I believe this is a valid scenario
+
+774
+00:29:51.433 --> 00:29:52.866
+right but I don't want to deal with this
+
+775
+00:29:52.866 --> 00:29:53.900
+in the same commit
+
+776
+00:29:53.900 --> 00:29:56.300
+so one thing we can do here to make this
+
+777
+00:29:56.300 --> 00:29:58.366
+pass is just to check that the
+
+778
+00:29:58.366 --> 00:30:00.866
+bytes of the data the count is bigger
+
+779
+00:30:00.866 --> 00:30:02.633
+than zero so it's not empty
+
+780
+00:30:02.633 --> 00:30:04.633
+yeah I agree with that we shouldn't
+
+781
+00:30:04.633 --> 00:30:07.200
+commit a failing test
+
+782
+00:30:07.200 --> 00:30:09.433
+and I don't see the point of commenting
+
+783
+00:30:09.433 --> 00:30:11.733
+out the assertion or the whole test
+
+784
+00:30:11.733 --> 00:30:12.366
+there
+
+785
+00:30:12.366 --> 00:30:15.600
+so I like that
+
+786
+00:30:15.600 --> 00:30:18.633
+okay so delivers data and
+
+787
+00:30:18.633 --> 00:30:22.700
+response on successful HTTP
+
+788
+00:30:22.700 --> 00:30:26.233
+URL request
+
+789
+00:30:26.233 --> 00:30:28.633
+okay but of course we don't want this in
+
+790
+00:30:28.633 --> 00:30:31.266
+here right
+
+791
+00:30:31.266 --> 00:30:33.833
+so this is the invalid case that is
+
+792
+00:30:33.833 --> 00:30:34.466
+actually
+
+793
+00:30:34.466 --> 00:30:36.766
+made valid by the framework so let me
+
+794
+00:30:36.766 --> 00:30:38.533
+remove it and move it to a separate
+
+795
+00:30:38.533 --> 00:30:39.900
+assertion because we need to know what's
+
+796
+00:30:39.900 --> 00:30:40.766
+going on here
+
+797
+00:30:40.766 --> 00:30:44.066
+yeah for sure so let me copy this
+
+798
+00:30:44.066 --> 00:30:47.333
+and let's recreate this scenario so we
+
+799
+00:30:47.333 --> 00:30:47.733
+have
+
+800
+00:30:47.733 --> 00:30:51.900
+an HTTPURLResponse but we have no data
+
+801
+00:30:51.900 --> 00:30:55.033
+so I don't need this data here and we
+
+802
+00:30:55.033 --> 00:30:56.233
+expect
+
+803
+00:30:56.233 --> 00:30:59.733
+empty data in this case so the test is
+
+804
+00:30:59.733 --> 00:31:03.200
+succeeds with empty data
+
+805
+00:31:03.200 --> 00:31:06.633
+on HTTPURLResponse with nil data yeah
+
+806
+00:31:06.633 --> 00:31:08.066
+so this is an assumption we had about
+
+807
+00:31:08.066 --> 00:31:10.233
+the framework that was proven wrong
+
+808
+00:31:10.233 --> 00:31:14.066
+that's the value of adding the tests
+
+809
+00:31:14.066 --> 00:31:16.633
+alright it's failing because of our
+
+810
+00:31:16.633 --> 00:31:18.466
+condition here and I don't want this
+
+811
+00:31:18.466 --> 00:31:19.733
+condition here
+
+812
+00:31:19.733 --> 00:31:22.533
+because an empty data representation is
+
+813
+00:31:22.533 --> 00:31:24.700
+a valid representation yeah for example
+
+814
+00:31:24.700 --> 00:31:26.533
+there's an HTTP status code that
+
+815
+00:31:26.533 --> 00:31:28.233
+represents no content data
+
+816
+00:31:28.233 --> 00:31:31.266
+the 204 status code so empty data is a
+
+817
+00:31:31.266 --> 00:31:32.633
+valid HTTP
+
+818
+00:31:32.633 --> 00:31:35.733
+response so we better add the test
+
+819
+00:31:35.733 --> 00:31:37.500
+to validate our assumption about the
+
+820
+00:31:37.500 --> 00:31:38.766
+framework
+
+821
+00:31:38.766 --> 00:31:40.466
+so it's passing now and we removed the
+
+822
+00:31:40.466 --> 00:31:41.900
+conditional fantastic
+
+823
+00:31:41.900 --> 00:31:43.266
+but I would like to have some more
+
+824
+00:31:43.266 --> 00:31:45.666
+context about this data here
+
+825
+00:31:45.666 --> 00:31:49.666
+so let's create an empty data
+
+826
+00:31:49.666 --> 00:31:51.433
+just to give more context yeah what we
+
+827
+00:31:51.433 --> 00:31:53.500
+are asserting here it's an empty data
+
+828
+00:31:53.500 --> 00:31:55.600
+representation that matches the test
+
+829
+00:31:55.600 --> 00:31:57.900
+name it helps the developers and helps
+
+830
+00:31:57.900 --> 00:31:59.733
+ourselves if we ever have to maintain
+
+831
+00:31:59.733 --> 00:32:00.933
+this test in the future
+
+832
+00:32:00.933 --> 00:32:02.633
+exactly we're being a good citizen
+
+833
+00:32:02.633 --> 00:32:05.033
+here alright it's passing so let's
+
+834
+00:32:05.033 --> 00:32:06.633
+commit
+
+835
+00:32:06.633 --> 00:32:09.200
+you see how valuable it is to add those
+
+836
+00:32:09.200 --> 00:32:09.733
+tests
+
+837
+00:32:09.733 --> 00:32:12.933
+against the real frameworks so delivers
+
+838
+00:32:12.933 --> 00:32:16.000
+empty data and response
+
+839
+00:32:16.000 --> 00:32:19.433
+on successful HTTP response with
+
+840
+00:32:19.433 --> 00:32:23.033
+nil data since the URL loading
+
+841
+00:32:23.033 --> 00:32:26.300
+system completes the request with
+
+842
+00:32:26.300 --> 00:32:30.066
+a known nil empty data value
+
+843
+00:32:30.066 --> 00:32:33.733
+well zero bytes yeah which is a valid
+
+844
+00:32:33.733 --> 00:32:34.466
+case
+
+845
+00:32:34.466 --> 00:32:37.600
+for example HTTP 204
+
+846
+00:32:37.600 --> 00:32:40.766
+no content response fantastic and we
+
+847
+00:32:40.766 --> 00:32:42.533
+leave some documentation in our commit
+
+848
+00:32:42.533 --> 00:32:43.733
+messages as well
+
+849
+00:32:43.733 --> 00:32:47.033
+to explain this scenario okay and since
+
+850
+00:32:47.033 --> 00:32:47.733
+we have two
+
+851
+00:32:47.733 --> 00:32:50.700
+successful cases they're sharing code so
+
+852
+00:32:50.700 --> 00:32:52.000
+I think we can extract
+
+853
+00:32:52.000 --> 00:32:54.366
+the shared code as we did with the
+
+854
+00:32:54.366 --> 00:32:55.333
+failure case
+
+855
+00:32:55.333 --> 00:32:59.333
+okay so we can create another function
+
+856
+00:32:59.333 --> 00:33:02.700
+for example result
+
+857
+00:33:02.700 --> 00:33:05.833
+values right here we're returning the
+
+858
+00:33:05.833 --> 00:33:08.000
+success case
+
+859
+00:33:08.000 --> 00:33:09.333
+so we're going to have our received
+
+860
+00:33:09.333 --> 00:33:11.266
+values that we're going to return and
+
+861
+00:33:11.266 --> 00:33:12.066
+what is the type
+
+862
+00:33:12.066 --> 00:33:15.200
+of the received values it's a Data and
+
+863
+00:33:15.200 --> 00:33:18.366
+HTTPURLResponse tuple
+
+864
+00:33:18.366 --> 00:33:22.000
+yeah okay so let's
+
+865
+00:33:22.000 --> 00:33:24.700
+change our type signature here and this
+
+866
+00:33:24.700 --> 00:33:25.433
+is the
+
+867
+00:33:25.433 --> 00:33:29.200
+success case with data and response
+
+868
+00:33:29.200 --> 00:33:32.933
+so the received values will be data
+
+869
+00:33:32.933 --> 00:33:36.700
+and response so expected success
+
+870
+00:33:36.700 --> 00:33:40.133
+got result instead okay
+
+871
+00:33:40.133 --> 00:33:41.666
+let's see if we can refactor the test
+
+872
+00:33:41.666 --> 00:33:43.500
+now
+
+873
+00:33:43.500 --> 00:33:47.600
+so receivedValues is result values for
+
+874
+00:33:47.600 --> 00:33:51.333
+data nil, response and error
+
+875
+00:33:51.333 --> 00:33:54.300
+nil okay that's it let's replace it now
+
+876
+00:33:54.300 --> 00:33:55.500
+with the stub
+
+877
+00:33:55.500 --> 00:34:00.133
+we can just grab our assertions
+
+878
+00:34:00.133 --> 00:34:02.366
+and now check against the received
+
+879
+00:34:02.366 --> 00:34:03.200
+values
+
+880
+00:34:03.200 --> 00:34:06.633
+data receivedValues response URL and
+
+881
+00:34:06.633 --> 00:34:07.900
+receivedValues
+
+882
+00:34:07.900 --> 00:34:10.533
+response statusCode that's it let's see
+
+883
+00:34:10.533 --> 00:34:13.033
+if it passes
+
+884
+00:34:13.033 --> 00:34:16.300
+fantastic okay
+
+885
+00:34:16.300 --> 00:34:18.700
+for the previous test we can do the same
+
+886
+00:34:18.700 --> 00:34:20.000
+let me copy this setup
+
+887
+00:34:20.000 --> 00:34:24.133
+here but now we are passing the data
+
+888
+00:34:24.133 --> 00:34:26.300
+and we want to investigate the right
+
+889
+00:34:26.300 --> 00:34:29.033
+data here
+
+890
+00:34:29.033 --> 00:34:32.866
+so given, when
+
+891
+00:34:32.866 --> 00:34:36.466
+then, given, when
+
+892
+00:34:36.466 --> 00:34:39.833
+then yeah it looks very clean alright
+
+893
+00:34:39.833 --> 00:34:41.433
+it's passing
+
+894
+00:34:41.433 --> 00:34:44.933
+yeah but I think we're duplicating some
+
+895
+00:34:44.933 --> 00:34:48.000
+code in the test helpers now so perhaps
+
+896
+00:34:48.000 --> 00:34:50.366
+we can extract this shared code into a
+
+897
+00:34:50.366 --> 00:34:52.800
+new private function
+
+898
+00:34:52.800 --> 00:34:56.300
+okay so let's create a function result
+
+899
+00:34:56.300 --> 00:34:59.733
+for let me copy this signature here
+
+900
+00:34:59.733 --> 00:35:01.566
+but we are going to return the result
+
+901
+00:35:01.566 --> 00:35:03.500
+now HTTPClient
+
+902
+00:35:03.500 --> 00:35:05.666
+result and it's not optional because you
+
+903
+00:35:05.666 --> 00:35:07.566
+always have a result
+
+904
+00:35:07.566 --> 00:35:12.300
+okay let me copy this setup in here
+
+905
+00:35:12.300 --> 00:35:13.900
+so instead of received error we have
+
+906
+00:35:13.900 --> 00:35:16.000
+received result
+
+907
+00:35:16.000 --> 00:35:18.000
+that we are going to return and the
+
+908
+00:35:18.000 --> 00:35:19.566
+result is of type
+
+909
+00:35:19.566 --> 00:35:22.466
+ClientResult and since we don't have a
+
+910
+00:35:22.466 --> 00:35:23.166
+value
+
+911
+00:35:23.166 --> 00:35:25.566
+yet we need to force and wrap it in the
+
+912
+00:35:25.566 --> 00:35:26.866
+type definition
+
+913
+00:35:26.866 --> 00:35:28.533
+but it's safe to do so in this case
+
+914
+00:35:28.533 --> 00:35:30.866
+because we always get a result
+
+915
+00:35:30.866 --> 00:35:32.400
+we don't care about assertions in this
+
+916
+00:35:32.400 --> 00:35:34.066
+case we just get the result
+
+917
+00:35:34.066 --> 00:35:36.400
+we fulfill and we return the result
+
+918
+00:35:36.400 --> 00:35:38.800
+fantastic
+
+919
+00:35:38.800 --> 00:35:40.000
+now in this case we need to get the
+
+920
+00:35:40.000 --> 00:35:42.133
+result so
+
+921
+00:35:42.133 --> 00:35:45.166
+result is resolved for
+
+922
+00:35:45.166 --> 00:35:48.533
+data, response, error
+
+923
+00:35:48.533 --> 00:35:52.000
+file and line we don't need to stub
+
+924
+00:35:52.000 --> 00:35:53.500
+anymore
+
+925
+00:35:53.500 --> 00:35:56.833
+and just capture the error yeah much
+
+926
+00:35:56.833 --> 00:35:59.166
+simpler you can even just return
+
+927
+00:35:59.166 --> 00:36:03.433
+it straight away here
+
+928
+00:36:03.433 --> 00:36:06.466
+and we return nil in this case because
+
+929
+00:36:06.466 --> 00:36:07.333
+we have no error
+
+930
+00:36:07.333 --> 00:36:10.700
+exactly it is still passing
+
+931
+00:36:10.700 --> 00:36:15.100
+fantastic so we can use the same setup
+
+932
+00:36:15.100 --> 00:36:18.866
+for the result values for our success
+
+933
+00:36:18.866 --> 00:36:19.433
+case
+
+934
+00:36:19.433 --> 00:36:22.300
+okay we don't need this anymore we just
+
+935
+00:36:22.300 --> 00:36:23.900
+return
+
+936
+00:36:23.900 --> 00:36:27.200
+the success values or nil
+
+937
+00:36:27.200 --> 00:36:30.400
+in any other case
+
+938
+00:36:30.400 --> 00:36:33.733
+that should do it fantastic
+
+939
+00:36:33.733 --> 00:36:37.433
+let's commit extract duplicate
+
+940
+00:36:37.433 --> 00:36:41.033
+code into a new shared reusable
+
+941
+00:36:41.033 --> 00:36:44.800
+helper method to simplify tests
+
+942
+00:36:44.800 --> 00:36:47.333
+that's it and I think we are done with
+
+943
+00:36:47.333 --> 00:36:48.633
+all the cases yeah we
+
+944
+00:36:48.633 --> 00:36:50.400
+validated our assumptions about the
+
+945
+00:36:50.400 --> 00:36:52.133
+framework we
+
+946
+00:36:52.133 --> 00:36:54.466
+left a trace of documentation of how to
+
+947
+00:36:54.466 --> 00:36:55.500
+use this thing
+
+948
+00:36:55.500 --> 00:36:58.133
+I think it paid off we mentioned that
+
+949
+00:36:58.133 --> 00:36:59.266
+you can make the case that you don't
+
+950
+00:36:59.266 --> 00:37:01.333
+need to test the cases that are invalid
+
+951
+00:37:01.333 --> 00:37:03.266
+if you trust the framework but we kind
+
+952
+00:37:03.266 --> 00:37:04.633
+of learned a lot about
+
+953
+00:37:04.633 --> 00:37:07.266
+this third-party framework by exercising
+
+954
+00:37:07.266 --> 00:37:09.733
+our assumptions and expectations
+
+955
+00:37:09.733 --> 00:37:12.000
+exactly I think that's very important
+
+956
+00:37:12.000 --> 00:37:13.733
+there not just for
+
+957
+00:37:13.733 --> 00:37:16.000
+covering you know about these edge cases
+
+958
+00:37:16.000 --> 00:37:17.666
+but actually seeing how
+
+959
+00:37:17.666 --> 00:37:20.533
+classes that you don't own operate and
+
+960
+00:37:20.533 --> 00:37:21.266
+they behave
+
+961
+00:37:21.266 --> 00:37:24.700
+basically so I was very happy about our
+
+962
+00:37:24.700 --> 00:37:27.666
+decision to test all invalid states
+
+963
+00:37:27.666 --> 00:37:28.066
+because
+
+964
+00:37:28.066 --> 00:37:31.666
+they can be represented as we proved
+
+965
+00:37:31.666 --> 00:37:34.300
+exactly so now we can make the URL
+
+966
+00:37:34.300 --> 00:37:35.100
+Session
+
+967
+00:37:35.100 --> 00:37:37.833
+conform to the HTTPClient protocol
+
+968
+00:37:37.833 --> 00:37:38.700
+since we are done with the
+
+969
+00:37:38.700 --> 00:37:40.466
+implementation
+
+970
+00:37:40.466 --> 00:37:42.633
+alright and if you remember our mental
+
+971
+00:37:42.633 --> 00:37:45.500
+note we are going to make the makeSUT
+
+972
+00:37:45.500 --> 00:37:48.633
+function return the abstraction yes
+
+973
+00:37:48.633 --> 00:37:50.233
+and it should still pass because we
+
+974
+00:37:50.233 --> 00:37:52.000
+don't want the tests depending
+
+975
+00:37:52.000 --> 00:37:54.700
+on too much implementation details
+
+976
+00:37:54.700 --> 00:37:55.333
+fantastic
+
+977
+00:37:55.333 --> 00:37:59.333
+look at that let's commit make
+
+978
+00:37:59.333 --> 00:38:02.400
+URLSessionHTTPClient
+
+979
+00:38:02.400 --> 00:38:05.833
+conform to the HTTPClient
+
+980
+00:38:05.833 --> 00:38:09.433
+protocol okay and since this is done we
+
+981
+00:38:09.433 --> 00:38:10.800
+can move it to
+
+982
+00:38:10.800 --> 00:38:13.100
+its own file now so let me get rid of
+
+983
+00:38:13.100 --> 00:38:24.800
+this table we don't need it anymore
+
+984
+00:38:24.800 --> 00:38:28.466
+okay here it is so now access control
+
+985
+00:38:28.466 --> 00:38:31.566
+this is a public class public
+
+986
+00:38:31.566 --> 00:38:33.500
+initializer
+
+987
+00:38:33.500 --> 00:38:35.333
+this struct we don't need to expose it
+
+988
+00:38:35.333 --> 00:38:36.800
+yet so
+
+989
+00:38:36.800 --> 00:38:38.533
+let's make it private until we need it
+
+990
+00:38:38.533 --> 00:38:40.066
+to be exposed
+
+991
+00:38:40.066 --> 00:38:43.666
+I agree yes and the get function is
+
+992
+00:38:43.666 --> 00:38:44.633
+public
+
+993
+00:38:44.633 --> 00:38:47.666
+as part of the HTTPClient interface
+
+994
+00:38:47.666 --> 00:38:50.133
+let's see if the test has access to this
+
+995
+00:38:50.133 --> 00:38:51.733
+type and everything is still
+
+996
+00:38:51.733 --> 00:38:55.333
+passing ok it is fantastic
+
+997
+00:38:55.333 --> 00:38:59.100
+let's commit move URLSessionHTTP
+
+998
+00:38:59.100 --> 00:38:59.666
+Client
+
+999
+00:38:59.666 --> 00:39:04.300
+to its own file in production
+
+1000
+00:39:04.300 --> 00:39:06.866
+fantastic and just to show the power of
+
+1001
+00:39:06.866 --> 00:39:07.733
+abstracting
+
+1002
+00:39:07.733 --> 00:39:09.833
+even your tests of the implementation
+
+1003
+00:39:09.833 --> 00:39:11.833
+details is that we can easily
+
+1004
+00:39:11.833 --> 00:39:14.066
+refactor this implementation to be just
+
+1005
+00:39:14.066 --> 00:39:16.233
+an extension
+
+1006
+00:39:16.233 --> 00:39:19.566
+on URLSession
+
+1007
+00:39:19.566 --> 00:39:21.333
+so we don't need to use the session
+
+1008
+00:39:21.333 --> 00:39:22.800
+instance anymore we can just call the
+
+1009
+00:39:22.800 --> 00:39:24.700
+method on itself
+
+1010
+00:39:24.700 --> 00:39:28.000
+yep so in our test we just replace the
+
+1011
+00:39:28.000 --> 00:39:29.566
+makeSUT to use the
+
+1012
+00:39:29.566 --> 00:39:32.800
+URLSession shared instance so I'm going
+
+1013
+00:39:32.800 --> 00:39:33.900
+to remove the track
+
+1014
+00:39:33.900 --> 00:39:35.733
+memory leaks because the shared instance
+
+1015
+00:39:35.733 --> 00:39:38.066
+never goes away it's a singleton
+
+1016
+00:39:38.066 --> 00:39:41.200
+yes let's run the tests
+
+1017
+00:39:41.200 --> 00:39:43.100
+as you can see they still pass so look
+
+1018
+00:39:43.100 --> 00:39:44.933
+how easily we refactored
+
+1019
+00:39:44.933 --> 00:39:47.333
+a type into another type extension
+
+1020
+00:39:47.333 --> 00:39:48.866
+without breaking any tests
+
+1021
+00:39:48.866 --> 00:39:51.033
+just by replacing the factory method and
+
+1022
+00:39:51.033 --> 00:39:52.300
+this is the power of
+
+1023
+00:39:52.300 --> 00:39:54.933
+using abstractions even in your tests
+
+1024
+00:39:54.933 --> 00:39:56.466
+how powerful is that
+
+1025
+00:39:56.466 --> 00:39:58.700
+yeah I'd say especially in your test as
+
+1026
+00:39:58.700 --> 00:39:59.566
+well
+
+1027
+00:39:59.566 --> 00:40:02.233
+it's extremely important because you
+
+1028
+00:40:02.233 --> 00:40:04.133
+want to be flexible you want to be able
+
+1029
+00:40:04.133 --> 00:40:05.733
+to make these types of changes
+
+1030
+00:40:05.733 --> 00:40:08.800
+at any given time so personally
+
+1031
+00:40:08.800 --> 00:40:11.666
+I love this so I'm going to revert that
+
+1032
+00:40:11.666 --> 00:40:12.400
+change
+
+1033
+00:40:12.400 --> 00:40:16.700
+right
+
+1034
+00:40:16.700 --> 00:40:19.500
+alright we are back with our adapter
+
+1035
+00:40:19.500 --> 00:40:20.533
+type here
+
+1036
+00:40:20.533 --> 00:40:22.866
+and if you prefer having an extension on
+
+1037
+00:40:22.866 --> 00:40:24.466
+the Foundation type
+
+1038
+00:40:24.466 --> 00:40:26.933
+URLSession that's fine as well I'm just
+
+1039
+00:40:26.933 --> 00:40:27.833
+concerned that
+
+1040
+00:40:27.833 --> 00:40:30.400
+we might have a method conflict at some
+
+1041
+00:40:30.400 --> 00:40:31.200
+point
+
+1042
+00:40:31.200 --> 00:40:33.100
+if they ever create a method called get
+
+1043
+00:40:33.100 --> 00:40:35.433
+from URL it might never happen but
+
+1044
+00:40:35.433 --> 00:40:37.100
+I'm cautious so it's my personal
+
+1045
+00:40:37.100 --> 00:40:38.633
+preference to create my own
+
+1046
+00:40:38.633 --> 00:40:40.633
+adapter types but you are free to make
+
+1047
+00:40:40.633 --> 00:40:41.833
+your own choice
+
+1048
+00:40:41.833 --> 00:40:44.866
+control what you can I guess and in this
+
+1049
+00:40:44.866 --> 00:40:46.233
+case we can control
+
+1050
+00:40:46.233 --> 00:40:49.266
+our class our new type so yeah I agree
+
+1051
+00:40:49.266 --> 00:40:50.633
+with you I'm happy
+
+1052
+00:40:50.633 --> 00:40:53.100
+to leave it as it is so that's it that
+
+1053
+00:40:53.100 --> 00:40:54.633
+was a very intense episode
+
+1054
+00:40:54.633 --> 00:40:57.200
+we've done a bunch of hands-on coding
+
+1055
+00:40:57.200 --> 00:40:58.066
+and refactoring
+
+1056
+00:40:58.066 --> 00:40:59.500
+don't forget to read the description to
+
+1057
+00:40:59.500 --> 00:41:01.500
+learn more about the techniques used in
+
+1058
+00:41:01.500 --> 00:41:02.400
+this episode
+
+1059
+00:41:02.400 --> 00:41:04.466
+and we'll see you again next time bye
+
+1060
+00:41:04.466 --> 00:41:05.433
+y'all
+
+1061
+00:41:05.433 --> 00:41:07.266
+see ya

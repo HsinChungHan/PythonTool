@@ -1,0 +1,1967 @@
+1
+00:00:00.466 --> 00:00:04.133
+Hello Mike, hey Caio so in this lecture
+
+2
+00:00:04.133 --> 00:00:06.066
+we're gonna finish the last details in
+
+3
+00:00:06.066 --> 00:00:07.200
+this application
+
+4
+00:00:07.200 --> 00:00:09.833
+and push it to the App Store Connect
+
+5
+00:00:09.833 --> 00:00:10.400
+okay
+
+6
+00:00:10.400 --> 00:00:13.100
+let's do it so before we publish this
+
+7
+00:00:13.100 --> 00:00:14.000
+application
+
+8
+00:00:14.000 --> 00:00:15.100
+there are a couple of things we need to
+
+9
+00:00:15.100 --> 00:00:17.333
+do first we don't have an icon
+
+10
+00:00:17.333 --> 00:00:20.533
+yet and if you don't have an icon
+
+11
+00:00:20.533 --> 00:00:23.900
+Apple will reject your binary exactly
+
+12
+00:00:23.900 --> 00:00:26.866
+so let's add an icon to the assets
+
+13
+00:00:26.866 --> 00:00:28.533
+catalog
+
+14
+00:00:28.533 --> 00:00:31.566
+okay let's run
+
+15
+00:00:31.566 --> 00:00:34.933
+now as you can see we have a nice
+
+16
+00:00:34.933 --> 00:00:39.600
+icon okay so let's commit
+
+17
+00:00:39.600 --> 00:00:43.033
+add app icon
+
+18
+00:00:43.033 --> 00:00:45.033
+and next I don't know if you noticed but
+
+19
+00:00:45.033 --> 00:00:46.866
+when we run the application
+
+20
+00:00:46.866 --> 00:00:48.466
+there's a transition from an empty
+
+21
+00:00:48.466 --> 00:00:51.033
+screen to the feed which is embedded in
+
+22
+00:00:51.033 --> 00:00:52.933
+a navigation controller
+
+23
+00:00:52.933 --> 00:00:56.233
+let's run it again right that's not a
+
+24
+00:00:56.233 --> 00:00:57.433
+problem
+
+25
+00:00:57.433 --> 00:01:00.933
+but if our launch screen matches
+
+26
+00:01:00.933 --> 00:01:03.600
+the style of this initial screen it
+
+27
+00:01:03.600 --> 00:01:06.066
+looks like the application loads faster
+
+28
+00:01:06.066 --> 00:01:08.866
+it's a better user experience exactly so
+
+29
+00:01:08.866 --> 00:01:10.766
+we can change the launch screen
+
+30
+00:01:10.766 --> 00:01:12.766
+to be as similar as possible to the
+
+31
+00:01:12.766 --> 00:01:13.833
+first screen
+
+32
+00:01:13.833 --> 00:01:15.333
+which is the feed embedded in the
+
+33
+00:01:15.333 --> 00:01:17.033
+navigation controller
+
+34
+00:01:17.033 --> 00:01:20.233
+so we can embed the launch screen
+
+35
+00:01:20.233 --> 00:01:23.833
+in a navigation controller as well
+
+36
+00:01:23.833 --> 00:01:26.633
+so when we run the app now looks like it
+
+37
+00:01:26.633 --> 00:01:28.533
+loads much faster because the launch
+
+38
+00:01:28.533 --> 00:01:29.333
+screen
+
+39
+00:01:29.333 --> 00:01:32.700
+is very similar to the first view
+
+40
+00:01:32.700 --> 00:01:34.633
+that's just a little touch you can do to
+
+41
+00:01:34.633 --> 00:01:35.833
+make your application look
+
+42
+00:01:35.833 --> 00:01:38.300
+better and faster it's a smoother
+
+43
+00:01:38.300 --> 00:01:39.200
+transition
+
+44
+00:01:39.200 --> 00:01:41.200
+I quite like it to be honest let's
+
+45
+00:01:41.200 --> 00:01:42.533
+commit
+
+46
+00:01:42.533 --> 00:01:45.666
+so embed launch screen
+
+47
+00:01:45.666 --> 00:01:48.766
+into a navigation controller for a
+
+48
+00:01:48.766 --> 00:01:50.133
+smoother
+
+49
+00:01:50.133 --> 00:01:53.600
+initial app transition
+
+50
+00:01:53.600 --> 00:01:56.700
+commit okay that's enough
+
+51
+00:01:56.700 --> 00:01:58.466
+but there's one more thing I would like
+
+52
+00:01:58.466 --> 00:02:00.366
+to do which is to remove the Main
+
+53
+00:02:00.366 --> 00:02:01.200
+storyboard
+
+54
+00:02:01.200 --> 00:02:04.300
+because we are not using it by default
+
+55
+00:02:04.300 --> 00:02:05.900
+when you create an application
+
+56
+00:02:05.900 --> 00:02:08.800
+you get this Main storyboard but all the
+
+57
+00:02:08.800 --> 00:02:10.133
+configuration
+
+58
+00:02:10.133 --> 00:02:13.333
+is happening in code
+
+59
+00:02:13.333 --> 00:02:15.033
+so if you don't need the Main storyboard
+
+60
+00:02:15.033 --> 00:02:16.700
+it's better not to have it there
+
+61
+00:02:16.700 --> 00:02:19.900
+exactly so there are a couple things we
+
+62
+00:02:19.900 --> 00:02:22.400
+need to do to remove the storyboard
+
+63
+00:02:22.400 --> 00:02:24.933
+yeah just deleting the file is not
+
+64
+00:02:24.933 --> 00:02:25.433
+enough
+
+65
+00:02:25.433 --> 00:02:26.466
+because if you try to run the
+
+66
+00:02:26.466 --> 00:02:29.333
+application now it crashes
+
+67
+00:02:29.333 --> 00:02:32.800
+exactly because this Main storyboard
+
+68
+00:02:32.800 --> 00:02:35.733
+is loaded automagically as part of the
+
+69
+00:02:35.733 --> 00:02:37.566
+application load
+
+70
+00:02:37.566 --> 00:02:40.400
+so we need to select here the app
+
+71
+00:02:40.400 --> 00:02:41.266
+project
+
+72
+00:02:41.266 --> 00:02:44.233
+the app target, go to general and first
+
+73
+00:02:44.233 --> 00:02:45.500
+of all you need to remove
+
+74
+00:02:45.500 --> 00:02:48.466
+the main interface, Main from the
+
+75
+00:02:48.466 --> 00:02:49.566
+application target
+
+76
+00:02:49.566 --> 00:02:52.866
+configuration and if you are using the
+
+77
+00:02:52.866 --> 00:02:54.800
+new iOS 13
+
+78
+00:02:54.800 --> 00:02:57.566
+SceneDelegate APIs you also need to
+
+79
+00:02:57.566 --> 00:02:58.800
+remove it
+
+80
+00:02:58.800 --> 00:03:01.733
+from the Info.plist in the Application
+
+81
+00:03:01.733 --> 00:03:03.100
+Scene Manifest
+
+82
+00:03:03.100 --> 00:03:05.666
+Scene Configuration, Application Session
+
+83
+00:03:05.666 --> 00:03:07.200
+Role
+
+84
+00:03:07.200 --> 00:03:10.233
+Storyboard Name just remove the row from
+
+85
+00:03:10.233 --> 00:03:11.500
+the configuration
+
+86
+00:03:11.500 --> 00:03:13.833
+okay and that should not crash the
+
+87
+00:03:13.833 --> 00:03:14.633
+application
+
+88
+00:03:14.633 --> 00:03:16.300
+because it's not going to try to load
+
+89
+00:03:16.300 --> 00:03:17.900
+the Main storyboard that doesn't exist
+
+90
+00:03:17.900 --> 00:03:19.266
+anymore
+
+91
+00:03:19.266 --> 00:03:20.933
+but as you can see the application
+
+92
+00:03:20.933 --> 00:03:22.300
+doesn't load anymore
+
+93
+00:03:22.300 --> 00:03:26.066
+it doesn't have a window it's all black
+
+94
+00:03:26.066 --> 00:03:27.566
+and that's because when you're loading
+
+95
+00:03:27.566 --> 00:03:29.033
+your initial screen from the Main
+
+96
+00:03:29.033 --> 00:03:29.733
+storyboard
+
+97
+00:03:29.733 --> 00:03:32.000
+it creates the window for you
+
+98
+00:03:32.000 --> 00:03:33.266
+automatically
+
+99
+00:03:33.266 --> 00:03:35.033
+but if you're doing it in code you need
+
+100
+00:03:35.033 --> 00:03:37.333
+to create your window in code
+
+101
+00:03:37.333 --> 00:03:40.866
+as well so here when we are going to
+
+102
+00:03:40.866 --> 00:03:43.200
+connect to a session
+
+103
+00:03:43.200 --> 00:03:46.066
+we need to create our window with the
+
+104
+00:03:46.066 --> 00:03:48.066
+window scene
+
+105
+00:03:48.066 --> 00:03:51.200
+which is the window scene we received
+
+106
+00:03:51.200 --> 00:03:54.400
+here okay let's run the application
+
+107
+00:03:54.400 --> 00:03:56.300
+again
+
+108
+00:03:56.300 --> 00:03:58.133
+and it still doesn't work because when
+
+109
+00:03:58.133 --> 00:03:59.566
+you create your own window
+
+110
+00:03:59.566 --> 00:04:02.400
+you also need to make it the key window
+
+111
+00:04:02.400 --> 00:04:04.400
+and you also need to make it visible
+
+112
+00:04:04.400 --> 00:04:07.200
+so why don't we test this behavior right
+
+113
+00:04:07.200 --> 00:04:08.000
+because
+
+114
+00:04:08.000 --> 00:04:09.833
+this could break our application if it
+
+115
+00:04:09.833 --> 00:04:12.133
+doesn't have the right setup
+
+116
+00:04:12.133 --> 00:04:16.300
+exactly so let's add a test
+
+117
+00:04:16.300 --> 00:04:19.666
+configure window is the method we are
+
+118
+00:04:19.666 --> 00:04:21.100
+going to invoke
+
+119
+00:04:21.100 --> 00:04:24.633
+sets window as key
+
+120
+00:04:24.633 --> 00:04:27.666
+and visible
+
+121
+00:04:27.666 --> 00:04:30.933
+okay so let's create here our window
+
+122
+00:04:30.933 --> 00:04:34.000
+let's create the system under test
+
+123
+00:04:34.000 --> 00:04:37.733
+the SceneDelegate let's set
+
+124
+00:04:37.733 --> 00:04:40.300
+the SceneDelegate window to be our
+
+125
+00:04:40.300 --> 00:04:41.433
+window
+
+126
+00:04:41.433 --> 00:04:44.533
+and let's call configure window and we
+
+127
+00:04:44.533 --> 00:04:45.900
+expect
+
+128
+00:04:45.900 --> 00:04:52.933
+the window to be the key window
+
+129
+00:04:52.933 --> 00:04:56.233
+and make sure that it is
+
+130
+00:04:56.233 --> 00:04:59.033
+not hidden so assert false window is
+
+131
+00:04:59.033 --> 00:04:59.900
+hidden
+
+132
+00:04:59.900 --> 00:05:04.933
+so expected window to be visible
+
+133
+00:05:04.933 --> 00:05:08.400
+alright let's run this test
+
+134
+00:05:08.400 --> 00:05:12.400
+both failed as they should okay
+
+135
+00:05:12.400 --> 00:05:15.033
+so SceneDelegate when we set up the
+
+136
+00:05:15.033 --> 00:05:17.500
+window we also need to make it
+
+137
+00:05:17.500 --> 00:05:21.100
+first of all make key let's run the test
+
+138
+00:05:21.100 --> 00:05:23.333
+again
+
+139
+00:05:23.333 --> 00:05:25.833
+okay the first assertion passed it is
+
+140
+00:05:25.833 --> 00:05:26.700
+key window now
+
+141
+00:05:26.700 --> 00:05:29.033
+but the second assertion that it is
+
+142
+00:05:29.033 --> 00:05:31.666
+visible is not passing so
+
+143
+00:05:31.666 --> 00:05:35.033
+makeKeyAndVisible
+
+144
+00:05:35.033 --> 00:05:38.466
+let's run the test again
+
+145
+00:05:38.466 --> 00:05:41.833
+passing fantastic let's run the
+
+146
+00:05:41.833 --> 00:05:44.133
+application again
+
+147
+00:05:44.133 --> 00:05:46.133
+and now everything works and we have
+
+148
+00:05:46.133 --> 00:05:48.233
+tests to guarantee that the window is
+
+149
+00:05:48.233 --> 00:05:49.100
+being configured
+
+150
+00:05:49.100 --> 00:05:52.700
+correctly without the Main storyboard
+
+151
+00:05:52.700 --> 00:05:56.300
+awesome let's commit
+
+152
+00:05:56.300 --> 00:06:00.700
+remove unnecessary Main storyboard
+
+153
+00:06:00.700 --> 00:06:05.433
+the initial setup happens in code
+
+154
+00:06:05.433 --> 00:06:06.400
+because we don't need the Main
+
+155
+00:06:06.400 --> 00:06:08.066
+storyboard but if you need it there's no
+
+156
+00:06:08.066 --> 00:06:08.633
+problem
+
+157
+00:06:08.633 --> 00:06:12.000
+just keep it there okay
+
+158
+00:06:12.000 --> 00:06:14.533
+one more thing I notice here is that the
+
+159
+00:06:14.533 --> 00:06:15.333
+second
+
+160
+00:06:15.333 --> 00:06:18.133
+test name mentions that it is testing
+
+161
+00:06:18.133 --> 00:06:20.233
+the scene will connect to session method
+
+162
+00:06:20.233 --> 00:06:21.433
+but we are actually testing the
+
+163
+00:06:21.433 --> 00:06:24.233
+configure window so we could rename it
+
+164
+00:06:24.233 --> 00:06:27.433
+to configure window to be more precise
+
+165
+00:06:27.433 --> 00:06:29.433
+yeah every time you see something in a
+
+166
+00:06:29.433 --> 00:06:31.100
+test and test name
+
+167
+00:06:31.100 --> 00:06:33.033
+you need to improve it just like your
+
+168
+00:06:33.033 --> 00:06:34.533
+code exactly
+
+169
+00:06:34.533 --> 00:06:36.866
+tests is also code and you need to keep
+
+170
+00:06:36.866 --> 00:06:37.833
+improving it
+
+171
+00:06:37.833 --> 00:06:40.533
+improving names refactoring just like
+
+172
+00:06:40.533 --> 00:06:43.033
+you would with your production code
+
+173
+00:06:43.033 --> 00:06:47.433
+so improve a test name
+
+174
+00:06:47.433 --> 00:06:50.000
+and now we are ready to deploy this
+
+175
+00:06:50.000 --> 00:06:50.800
+application
+
+176
+00:06:50.800 --> 00:06:54.000
+to the App Store Connect and then we can
+
+177
+00:06:54.000 --> 00:06:54.933
+choose to
+
+178
+00:06:54.933 --> 00:06:57.266
+send it to the App Store or send to Test
+
+179
+00:06:57.266 --> 00:06:58.800
+Flight testers
+
+180
+00:06:58.800 --> 00:07:00.933
+it could be customers stakeholders
+
+181
+00:07:00.933 --> 00:07:02.633
+friends, family
+
+182
+00:07:02.633 --> 00:07:05.900
+whoever you want awesome so
+
+183
+00:07:05.900 --> 00:07:08.000
+let's go to the App Store Connect
+
+184
+00:07:08.000 --> 00:07:09.566
+website
+
+185
+00:07:09.566 --> 00:07:13.566
+let's create a new application
+
+186
+00:07:13.566 --> 00:07:16.066
+in our case it's an iOS app so let's
+
+187
+00:07:16.066 --> 00:07:18.633
+select only iOS platform
+
+188
+00:07:18.633 --> 00:07:22.000
+let's give it a name Essential
+
+189
+00:07:22.000 --> 00:07:25.166
+App, language
+
+190
+00:07:25.166 --> 00:07:29.266
+English let's select the bundle ID
+
+191
+00:07:29.266 --> 00:07:31.433
+in our case it was generated by Xcode
+
+192
+00:07:31.433 --> 00:07:33.566
+that's why it has the xc
+
+193
+00:07:33.566 --> 00:07:36.933
+prefix but if you want you can create
+
+194
+00:07:36.933 --> 00:07:38.066
+your own bundle ID
+
+195
+00:07:38.066 --> 00:07:40.533
+it just need to be unique and needs to
+
+196
+00:07:40.533 --> 00:07:42.000
+match the bundle ID
+
+197
+00:07:42.000 --> 00:07:45.333
+that you set up in Xcode so for us
+
+198
+00:07:45.333 --> 00:07:48.133
+it's the EssentialAppCaseStudy bundle
+
+199
+00:07:48.133 --> 00:07:49.433
+ID
+
+200
+00:07:49.433 --> 00:07:51.733
+then you can set up an SKU whatever
+
+201
+00:07:51.733 --> 00:07:53.566
+makes sense for your application
+
+202
+00:07:53.566 --> 00:07:57.166
+for us just EssentialAppCaseStudy
+
+203
+00:07:57.166 --> 00:07:58.933
+and select a user access that makes
+
+204
+00:07:58.933 --> 00:08:00.800
+sense to your application for us
+
+205
+00:08:00.800 --> 00:08:03.833
+full access okay let's create the
+
+206
+00:08:03.833 --> 00:08:05.100
+application
+
+207
+00:08:05.100 --> 00:08:06.400
+they are going to fill all the
+
+208
+00:08:06.400 --> 00:08:09.566
+information privacy policy, URL
+
+209
+00:08:09.566 --> 00:08:12.700
+subtitle, the primary category, secondary
+
+210
+00:08:12.700 --> 00:08:14.300
+category
+
+211
+00:08:14.300 --> 00:08:17.100
+but we are interested in sending a build
+
+212
+00:08:17.100 --> 00:08:18.233
+for TestFlight
+
+213
+00:08:18.233 --> 00:08:21.433
+users so let's go to TestFlight
+
+214
+00:08:21.433 --> 00:08:24.866
+and let's add the missing information
+
+215
+00:08:24.866 --> 00:08:26.400
+here again you need to fill whatever
+
+216
+00:08:26.400 --> 00:08:29.433
+makes sense to your application
+
+217
+00:08:29.433 --> 00:08:32.866
+save it and that's it
+
+218
+00:08:32.866 --> 00:08:35.666
+now we need to upload a build as you can
+
+219
+00:08:35.666 --> 00:08:36.466
+see we have
+
+220
+00:08:36.466 --> 00:08:39.900
+no builds so let's do it let's go back
+
+221
+00:08:39.900 --> 00:08:41.333
+to Xcode
+
+222
+00:08:41.333 --> 00:08:44.533
+and the bundle identifier needs to match
+
+223
+00:08:44.533 --> 00:08:46.766
+the bundle identifier in the App Store
+
+224
+00:08:46.766 --> 00:08:48.066
+Connect
+
+225
+00:08:48.066 --> 00:08:52.833
+so it's EssentialAppCaseStudy
+
+226
+00:08:52.833 --> 00:08:55.333
+exactly so update app bundle ID
+
+227
+00:08:55.333 --> 00:08:59.500
+to match App Store Connect
+
+228
+00:08:59.500 --> 00:09:02.866
+make sure you select the Generic
+
+229
+00:09:02.866 --> 00:09:05.900
+iOS Device otherwise you won't be able
+
+230
+00:09:05.900 --> 00:09:09.266
+to generate an archive as you can see
+
+231
+00:09:09.266 --> 00:09:13.266
+archive is disabled unless you select
+
+232
+00:09:13.266 --> 00:09:17.500
+the Generic iOS Device or a real device
+
+233
+00:09:17.500 --> 00:09:20.533
+so let's select a generic one
+
+234
+00:09:20.533 --> 00:09:23.266
+and now we can generate an archive that
+
+235
+00:09:23.266 --> 00:09:23.733
+can be
+
+236
+00:09:23.733 --> 00:09:26.233
+uploaded to App Store Connect let's
+
+237
+00:09:26.233 --> 00:09:28.700
+archive
+
+238
+00:09:28.700 --> 00:09:31.433
+there it is we now have an archive that
+
+239
+00:09:31.433 --> 00:09:32.700
+we can distribute
+
+240
+00:09:32.700 --> 00:09:35.666
+to the App Store so select the archive
+
+241
+00:09:35.666 --> 00:09:37.100
+you would like to upload
+
+242
+00:09:37.100 --> 00:09:40.133
+and press Distribute App, App Store
+
+243
+00:09:40.133 --> 00:09:42.366
+Connect
+
+244
+00:09:42.366 --> 00:09:45.733
+upload
+
+245
+00:09:45.733 --> 00:09:47.333
+then you select the settings that makes
+
+246
+00:09:47.333 --> 00:09:49.433
+sense for your application
+
+247
+00:09:49.433 --> 00:09:51.500
+in this case we are using automatic
+
+248
+00:09:51.500 --> 00:09:52.866
+signing but if you have
+
+249
+00:09:52.866 --> 00:09:54.800
+manual signing you need to select
+
+250
+00:09:54.800 --> 00:09:57.433
+whatever makes sense to your application
+
+251
+00:09:57.433 --> 00:09:59.666
+make sure that everything is correct the
+
+252
+00:09:59.666 --> 00:10:02.066
+profile used for signing
+
+253
+00:10:02.066 --> 00:10:05.500
+the team selected, the bundle Identifier
+
+254
+00:10:05.500 --> 00:10:10.000
+entitlements and press upload
+
+255
+00:10:10.000 --> 00:10:12.133
+if everything's fine you get a
+
+256
+00:10:12.133 --> 00:10:14.133
+successful response
+
+257
+00:10:14.133 --> 00:10:17.200
+that's it and that's it
+
+258
+00:10:17.200 --> 00:10:19.900
+let's go back to the App Store Connect
+
+259
+00:10:19.900 --> 00:10:22.366
+refresh the page
+
+260
+00:10:22.366 --> 00:10:25.900
+there it is our build is now processing
+
+261
+00:10:25.900 --> 00:10:28.000
+fantastic it takes a couple of minutes
+
+262
+00:10:28.000 --> 00:10:29.833
+to process
+
+263
+00:10:29.833 --> 00:10:32.800
+let's reload again boom there it is
+
+264
+00:10:32.800 --> 00:10:33.733
+everything
+
+265
+00:10:33.733 --> 00:10:36.533
+worked so now we have a build that we
+
+266
+00:10:36.533 --> 00:10:37.266
+can either
+
+267
+00:10:37.266 --> 00:10:39.500
+send straight to the App Store to
+
+268
+00:10:39.500 --> 00:10:40.300
+customers
+
+269
+00:10:40.300 --> 00:10:42.800
+or we can send to TestFlight for a
+
+270
+00:10:42.800 --> 00:10:44.233
+group of people that can test the
+
+271
+00:10:44.233 --> 00:10:45.833
+application before we actually send it
+
+272
+00:10:45.833 --> 00:10:47.733
+to the App Store
+
+273
+00:10:47.733 --> 00:10:49.500
+so we can select a group of people or
+
+274
+00:10:49.500 --> 00:10:52.133
+individual testers to test that build
+
+275
+00:10:52.133 --> 00:10:54.533
+and once you're happy you ship it to
+
+276
+00:10:54.533 --> 00:10:55.833
+everyone in the App Store
+
+277
+00:10:55.833 --> 00:10:58.933
+fantastic that's great but it requires a
+
+278
+00:10:58.933 --> 00:11:00.533
+lot of manual work
+
+279
+00:11:00.533 --> 00:11:02.866
+exactly ideally this process should be
+
+280
+00:11:02.866 --> 00:11:04.466
+automated
+
+281
+00:11:04.466 --> 00:11:06.800
+and it can be automated just like we
+
+282
+00:11:06.800 --> 00:11:08.066
+have CI servers
+
+283
+00:11:08.066 --> 00:11:10.366
+for automating the build and testing of
+
+284
+00:11:10.366 --> 00:11:11.433
+the application
+
+285
+00:11:11.433 --> 00:11:14.533
+we can also automate the build and
+
+286
+00:11:14.533 --> 00:11:15.100
+deploy
+
+287
+00:11:15.100 --> 00:11:17.833
+to the App Store or to TestFlight so
+
+288
+00:11:17.833 --> 00:11:18.633
+whatever
+
+289
+00:11:18.633 --> 00:11:20.800
+build server you're using you should be
+
+290
+00:11:20.800 --> 00:11:22.066
+able to automate
+
+291
+00:11:22.066 --> 00:11:25.333
+this process for example every time
+
+292
+00:11:25.333 --> 00:11:28.233
+you push code to master it automatically
+
+293
+00:11:28.233 --> 00:11:29.266
+sends a build
+
+294
+00:11:29.266 --> 00:11:31.333
+to testers or to customers to
+
+295
+00:11:31.333 --> 00:11:32.800
+stakeholders
+
+296
+00:11:32.800 --> 00:11:35.200
+so you're constantly delivering value to
+
+297
+00:11:35.200 --> 00:11:36.466
+them
+
+298
+00:11:36.466 --> 00:11:39.200
+several times a day several times a week
+
+299
+00:11:39.200 --> 00:11:40.533
+they can see the new updates and they
+
+300
+00:11:40.533 --> 00:11:42.300
+can interact with it
+
+301
+00:11:42.300 --> 00:11:45.733
+and it's all automatic exactly
+
+302
+00:11:45.733 --> 00:11:48.700
+plus you're always ready to submit to
+
+303
+00:11:48.700 --> 00:11:49.900
+the App Store
+
+304
+00:11:49.900 --> 00:11:52.000
+you're always one click away from
+
+305
+00:11:52.000 --> 00:11:53.666
+submitting it
+
+306
+00:11:53.666 --> 00:11:55.333
+and that's the dream you should always
+
+307
+00:11:55.333 --> 00:11:56.933
+be ready to push
+
+308
+00:11:56.933 --> 00:11:59.733
+to production exactly that should be
+
+309
+00:11:59.733 --> 00:12:01.600
+just a business decision
+
+310
+00:12:01.600 --> 00:12:04.133
+for example after your stakeholders are
+
+311
+00:12:04.133 --> 00:12:05.833
+happy with a build
+
+312
+00:12:05.833 --> 00:12:08.233
+it should be a matter of pressing a
+
+313
+00:12:08.233 --> 00:12:10.066
+button to release in the App Store you
+
+314
+00:12:10.066 --> 00:12:12.066
+shouldn't have any ceremony
+
+315
+00:12:12.066 --> 00:12:14.633
+it should be super easy to send builds
+
+316
+00:12:14.633 --> 00:12:15.666
+to the App Store
+
+317
+00:12:15.666 --> 00:12:18.000
+it should be automated and it should
+
+318
+00:12:18.000 --> 00:12:19.433
+generate builds
+
+319
+00:12:19.433 --> 00:12:22.533
+several times a week several times a day
+
+320
+00:12:22.533 --> 00:12:24.933
+even so we always have a build ready to
+
+321
+00:12:24.933 --> 00:12:26.366
+be tested or pushed
+
+322
+00:12:26.366 --> 00:12:28.700
+to production and that's continuous
+
+323
+00:12:28.700 --> 00:12:30.533
+delivery you're continuously
+
+324
+00:12:30.533 --> 00:12:34.000
+delivering value several times
+
+325
+00:12:34.000 --> 00:12:37.033
+a day and again you can achieve that
+
+326
+00:12:37.033 --> 00:12:37.433
+with
+
+327
+00:12:37.433 --> 00:12:40.700
+any build server you're using yes you
+
+328
+00:12:40.700 --> 00:12:41.666
+can do it with
+
+329
+00:12:41.666 --> 00:12:44.866
+any build server you have maybe locally
+
+330
+00:12:44.866 --> 00:12:48.000
+or a remote server like Circle CI, Travis
+
+331
+00:12:48.000 --> 00:12:48.466
+CI
+
+332
+00:12:48.466 --> 00:12:52.066
+Bitrise so we're going to show you how
+
+333
+00:12:52.066 --> 00:12:52.800
+we did it
+
+334
+00:12:52.800 --> 00:12:55.200
+with GitHub Actions which is a free
+
+335
+00:12:55.200 --> 00:12:56.233
+solution
+
+336
+00:12:56.233 --> 00:12:59.900
+provided by GitHub, so on GitHub
+
+337
+00:12:59.900 --> 00:13:03.266
+we've created this .github folder
+
+338
+00:13:03.266 --> 00:13:05.500
+where you can set workflows for your
+
+339
+00:13:05.500 --> 00:13:07.666
+GitHub Actions
+
+340
+00:13:07.666 --> 00:13:11.333
+and to deploy an application you need
+
+341
+00:13:11.333 --> 00:13:14.466
+three things an Apple distribution
+
+342
+00:13:14.466 --> 00:13:16.000
+certificate
+
+343
+00:13:16.000 --> 00:13:19.666
+the provisioning profile and you need
+
+344
+00:13:19.666 --> 00:13:22.866
+export options for exporting your
+
+345
+00:13:22.866 --> 00:13:24.000
+archive
+
+346
+00:13:24.000 --> 00:13:25.733
+and there are tutorials for all of these
+
+347
+00:13:25.733 --> 00:13:27.600
+you just need to follow Apple's
+
+348
+00:13:27.600 --> 00:13:30.233
+documentation I'm going to set a link in
+
+349
+00:13:30.233 --> 00:13:31.433
+this lecture
+
+350
+00:13:31.433 --> 00:13:33.200
+but the important thing is that you
+
+351
+00:13:33.200 --> 00:13:34.533
+don't want to just upload
+
+352
+00:13:34.533 --> 00:13:36.800
+the certificate in the provisioning
+
+353
+00:13:36.800 --> 00:13:37.833
+profile as
+
+354
+00:13:37.833 --> 00:13:41.733
+plain text to GitHub those are secrets
+
+355
+00:13:41.733 --> 00:13:44.700
+so what we did we encrypted both of them
+
+356
+00:13:44.700 --> 00:13:46.133
+with GPG
+
+357
+00:13:46.133 --> 00:13:48.533
+so this is an encrypted blob that needs
+
+358
+00:13:48.533 --> 00:13:50.000
+to be decrypted before
+
+359
+00:13:50.000 --> 00:13:52.800
+used exactly so those are the assets we
+
+360
+00:13:52.800 --> 00:13:53.500
+need
+
+361
+00:13:53.500 --> 00:13:55.266
+to deploy our application the
+
+362
+00:13:55.266 --> 00:13:58.066
+certificate the provisioning profile
+
+363
+00:13:58.066 --> 00:14:01.666
+and export options
+
+364
+00:14:01.666 --> 00:14:04.933
+and then we set workflows
+
+365
+00:14:04.933 --> 00:14:06.533
+so we have the continuous integration
+
+366
+00:14:06.533 --> 00:14:08.533
+workflows that just build and test the
+
+367
+00:14:08.533 --> 00:14:09.600
+application
+
+368
+00:14:09.600 --> 00:14:12.866
+and we have a deploy workflow
+
+369
+00:14:12.866 --> 00:14:15.100
+just a YAML config file to tell GitHub
+
+370
+00:14:15.100 --> 00:14:16.300
+actions the steps
+
+371
+00:14:16.300 --> 00:14:19.166
+in your workflow automation so the
+
+372
+00:14:19.166 --> 00:14:20.933
+deploy automation
+
+373
+00:14:20.933 --> 00:14:23.433
+the way we set it up is that every time
+
+374
+00:14:23.433 --> 00:14:24.933
+there's a push to master every time
+
+375
+00:14:24.933 --> 00:14:26.866
+there's a new change to master
+
+376
+00:14:26.866 --> 00:14:30.000
+we're going to run this workflow that's
+
+377
+00:14:30.000 --> 00:14:30.366
+because
+
+378
+00:14:30.366 --> 00:14:33.600
+master is our main branch is our trunk
+
+379
+00:14:33.600 --> 00:14:35.833
+every time we merge to the main branch
+
+380
+00:14:35.833 --> 00:14:37.433
+we want to generate a build
+
+381
+00:14:37.433 --> 00:14:39.500
+and upload it to App Store Connect so we
+
+382
+00:14:39.500 --> 00:14:41.733
+can send it to TestFlight or deploy
+
+383
+00:14:41.733 --> 00:14:45.033
+to our customers but it depends on the
+
+384
+00:14:45.033 --> 00:14:47.033
+branching strategy you use
+
+385
+00:14:47.033 --> 00:14:48.366
+maybe you're going to choose every time
+
+386
+00:14:48.366 --> 00:14:50.133
+you push to a release branch
+
+387
+00:14:50.133 --> 00:14:52.233
+or to a develop branch whatever
+
+388
+00:14:52.233 --> 00:14:53.433
+branching strategy you use
+
+389
+00:14:53.433 --> 00:14:55.900
+you need to set it up here for us every
+
+390
+00:14:55.900 --> 00:14:57.433
+time we merge to master
+
+391
+00:14:57.433 --> 00:14:59.733
+you want to deploy a new build to the
+
+392
+00:14:59.733 --> 00:15:02.300
+App Store Connect
+
+393
+00:15:02.300 --> 00:15:04.366
+so every time we push you master we're
+
+394
+00:15:04.366 --> 00:15:05.600
+going to run
+
+395
+00:15:05.600 --> 00:15:09.166
+the build and deploy job
+
+396
+00:15:09.166 --> 00:15:13.500
+so it's going to run on a macOS image
+
+397
+00:15:13.500 --> 00:15:15.266
+and then we set the steps for the
+
+398
+00:15:15.266 --> 00:15:16.633
+workflow
+
+399
+00:15:16.633 --> 00:15:18.533
+first of all we need to check out the
+
+400
+00:15:18.533 --> 00:15:20.800
+repository
+
+401
+00:15:20.800 --> 00:15:22.466
+then we need to install the provisioning
+
+402
+00:15:22.466 --> 00:15:24.000
+profile
+
+403
+00:15:24.000 --> 00:15:27.266
+we need to decrypt it with our secret
+
+404
+00:15:27.266 --> 00:15:27.600
+key
+
+405
+00:15:27.600 --> 00:15:30.233
+that you can set up whatever build
+
+406
+00:15:30.233 --> 00:15:31.266
+server you're using
+
+407
+00:15:31.266 --> 00:15:34.366
+you have a space to add secrets
+
+408
+00:15:34.366 --> 00:15:36.866
+and after we decrypt it we can install
+
+409
+00:15:36.866 --> 00:15:37.600
+it
+
+410
+00:15:37.600 --> 00:15:40.133
+in the right folder then the same thing
+
+411
+00:15:40.133 --> 00:15:41.166
+we need to install
+
+412
+00:15:41.166 --> 00:15:43.100
+the keychain certificate we're going to
+
+413
+00:15:43.100 --> 00:15:44.800
+decrypt it
+
+414
+00:15:44.800 --> 00:15:47.033
+and follow a bunch of steps here to
+
+415
+00:15:47.033 --> 00:15:48.633
+install this certificate
+
+416
+00:15:48.633 --> 00:15:51.600
+in the image keychain then we're going
+
+417
+00:15:51.600 --> 00:15:52.300
+to select
+
+418
+00:15:52.300 --> 00:15:55.100
+the latest Xcode in our case it's
+
+419
+00:15:55.100 --> 00:15:57.266
+11.4.1
+
+420
+00:15:57.266 --> 00:15:59.100
+then we need to set the build number and
+
+421
+00:15:59.100 --> 00:16:00.933
+this needs to be a sequential
+
+422
+00:16:00.933 --> 00:16:03.266
+unique number every build needs to have
+
+423
+00:16:03.266 --> 00:16:04.700
+a unique number
+
+424
+00:16:04.700 --> 00:16:06.633
+otherwise Apple will reject it so we
+
+425
+00:16:06.633 --> 00:16:08.233
+just use the GitHub
+
+426
+00:16:08.233 --> 00:16:11.266
+run number and every build server have
+
+427
+00:16:11.266 --> 00:16:13.733
+something similar to this
+
+428
+00:16:13.733 --> 00:16:18.533
+then we build the archive for release
+
+429
+00:16:18.533 --> 00:16:22.000
+then we export the archive and we deploy
+
+430
+00:16:22.000 --> 00:16:24.700
+it to the App Store Connect simple as
+
+431
+00:16:24.700 --> 00:16:25.500
+that
+
+432
+00:16:25.500 --> 00:16:28.233
+that's it so whatever build server
+
+433
+00:16:28.233 --> 00:16:29.733
+you're using you can set up a
+
+434
+00:16:29.733 --> 00:16:30.633
+configuration
+
+435
+00:16:30.633 --> 00:16:33.500
+like this step by step so whatever
+
+436
+00:16:33.500 --> 00:16:34.933
+solution you're using
+
+437
+00:16:34.933 --> 00:16:38.133
+you can automate the deployment of your
+
+438
+00:16:38.133 --> 00:16:39.666
+applications
+
+439
+00:16:39.666 --> 00:16:41.733
+okay let's have a look at the workflow
+
+440
+00:16:41.733 --> 00:16:44.300
+in action
+
+441
+00:16:44.300 --> 00:16:47.600
+you can see the deploy workflow ran
+
+442
+00:16:47.600 --> 00:16:49.900
+once when we merged those changes to
+
+443
+00:16:49.900 --> 00:16:53.500
+master
+
+444
+00:16:53.500 --> 00:16:57.100
+and all steps succeeded so checkout
+
+445
+00:16:57.100 --> 00:16:59.600
+install the provisioning profile, install
+
+446
+00:16:59.600 --> 00:17:01.600
+the keychain certificate
+
+447
+00:17:01.600 --> 00:17:04.000
+selected the right Xcode, set the build
+
+448
+00:17:04.000 --> 00:17:05.033
+number
+
+449
+00:17:05.033 --> 00:17:08.133
+build the archive, export the IPA
+
+450
+00:17:08.133 --> 00:17:11.033
+and deploy to the App Store it all
+
+451
+00:17:11.033 --> 00:17:12.133
+worked
+
+452
+00:17:12.133 --> 00:17:14.400
+so if we go back to the App Store
+
+453
+00:17:14.400 --> 00:17:16.066
+Connect website now
+
+454
+00:17:16.066 --> 00:17:19.100
+boom there it is the build number 2
+
+455
+00:17:19.100 --> 00:17:21.666
+was uploaded automatically when we
+
+456
+00:17:21.666 --> 00:17:22.133
+merged
+
+457
+00:17:22.133 --> 00:17:25.733
+that change to master alright
+
+458
+00:17:25.733 --> 00:17:27.733
+now every time we merge to master we're
+
+459
+00:17:27.733 --> 00:17:29.566
+gonna automatically generate a build
+
+460
+00:17:29.566 --> 00:17:31.566
+that we can send to TestFlight or
+
+461
+00:17:31.566 --> 00:17:33.733
+straight to our customers
+
+462
+00:17:33.733 --> 00:17:35.666
+we are just a button away from releasing
+
+463
+00:17:35.666 --> 00:17:37.900
+the application all the time
+
+464
+00:17:37.900 --> 00:17:40.000
+and several times a day every time we
+
+465
+00:17:40.000 --> 00:17:41.200
+merge to master
+
+466
+00:17:41.200 --> 00:17:43.266
+we can send this build to stakeholders
+
+467
+00:17:43.266 --> 00:17:44.466
+they can test it
+
+468
+00:17:44.466 --> 00:17:47.266
+on their own phones, testers can test it
+
+469
+00:17:47.266 --> 00:17:48.700
+QA can test it
+
+470
+00:17:48.700 --> 00:17:52.133
+so your work is visible at all times
+
+471
+00:17:52.133 --> 00:17:54.000
+this is going to improve so much your
+
+472
+00:17:54.000 --> 00:17:55.733
+communication with everyone
+
+473
+00:17:55.733 --> 00:17:58.000
+in the business because instead of
+
+474
+00:17:58.000 --> 00:17:59.266
+building up anxiety
+
+475
+00:17:59.266 --> 00:18:01.900
+of them waiting for weeks, for months to
+
+476
+00:18:01.900 --> 00:18:02.633
+get a build
+
+477
+00:18:02.633 --> 00:18:04.400
+to test the application they get it
+
+478
+00:18:04.400 --> 00:18:06.633
+daily, several times a day, several times
+
+479
+00:18:06.633 --> 00:18:07.333
+a week
+
+480
+00:18:07.333 --> 00:18:09.333
+and when there is a build that they test
+
+481
+00:18:09.333 --> 00:18:10.400
+and they think it's
+
+482
+00:18:10.400 --> 00:18:12.533
+pretty good they're happy to ship you
+
+483
+00:18:12.533 --> 00:18:14.133
+just press a button
+
+484
+00:18:14.133 --> 00:18:16.466
+and it's out to the customers and this
+
+485
+00:18:16.466 --> 00:18:18.233
+is continuous delivery
+
+486
+00:18:18.233 --> 00:18:21.033
+you're always ready to ship you're just
+
+487
+00:18:21.033 --> 00:18:22.066
+a button away
+
+488
+00:18:22.066 --> 00:18:25.200
+from sending your application to prod to
+
+489
+00:18:25.200 --> 00:18:26.300
+customers
+
+490
+00:18:26.300 --> 00:18:28.300
+awesome this is gonna do it for this
+
+491
+00:18:28.300 --> 00:18:30.133
+lecture we'll see you again
+
+492
+00:18:30.133 --> 00:18:43.900
+next time bye y'all, see ya

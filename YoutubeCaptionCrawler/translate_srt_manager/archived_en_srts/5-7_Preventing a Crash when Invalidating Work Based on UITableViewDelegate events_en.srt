@@ -1,0 +1,723 @@
+1
+00:00:00.933 --> 00:00:04.533
+Hello Mike, hello everyone, hey Caio
+
+2
+00:00:04.533 --> 00:00:07.100
+in this lecture we are going to fix a
+
+3
+00:00:07.100 --> 00:00:08.633
+potential bug
+
+4
+00:00:08.633 --> 00:00:12.233
+in the did end displaying cell method
+
+5
+00:00:12.233 --> 00:00:15.200
+okay so what is the problem the way
+
+6
+00:00:15.200 --> 00:00:16.700
+table views work
+
+7
+00:00:16.700 --> 00:00:18.700
+as you render cells on the screen for
+
+8
+00:00:18.700 --> 00:00:20.300
+example as you are scrolling
+
+9
+00:00:20.300 --> 00:00:23.666
+the table UIKit will call cell for row
+
+10
+00:00:23.666 --> 00:00:27.033
+at indexPath to create the cell then
+
+11
+00:00:27.033 --> 00:00:29.333
+before adding it to the view hierarchy
+
+12
+00:00:29.333 --> 00:00:30.233
+it will call
+
+13
+00:00:30.233 --> 00:00:34.300
+will display cell for row at indexPath
+
+14
+00:00:34.300 --> 00:00:36.300
+and when the cell is being removed from
+
+15
+00:00:36.300 --> 00:00:38.066
+the table view hierarchy
+
+16
+00:00:38.066 --> 00:00:40.066
+for example as you scroll and the cell
+
+17
+00:00:40.066 --> 00:00:41.833
+gets out of bounds
+
+18
+00:00:41.833 --> 00:00:44.300
+out of screen it will call did end
+
+19
+00:00:44.300 --> 00:00:45.100
+displaying
+
+20
+00:00:45.100 --> 00:00:49.100
+cell and in the did end displaying cell
+
+21
+00:00:49.100 --> 00:00:52.300
+we cancel loading the image for that
+
+22
+00:00:52.300 --> 00:00:52.933
+cell
+
+23
+00:00:52.933 --> 00:00:56.633
+at indexPath which gets the model
+
+24
+00:00:56.633 --> 00:01:00.633
+at that indexPath and cancels the load
+
+25
+00:01:00.633 --> 00:01:02.933
+so that's very efficient because as this
+
+26
+00:01:02.933 --> 00:01:04.933
+cell gets out of the view hierarchy
+
+27
+00:01:04.933 --> 00:01:06.766
+we stop loading the image because we
+
+28
+00:01:06.766 --> 00:01:08.000
+don't need it anymore
+
+29
+00:01:08.000 --> 00:01:11.333
+yep the problem is that UIKit also
+
+30
+00:01:11.333 --> 00:01:14.133
+calls did end displaying cell
+
+31
+00:01:14.133 --> 00:01:18.466
+when you call reload data
+
+32
+00:01:18.466 --> 00:01:20.466
+so for example imagine we create the
+
+33
+00:01:20.466 --> 00:01:21.500
+view controller
+
+34
+00:01:21.500 --> 00:01:24.533
+and we tell it to display 2 cells so
+
+35
+00:01:24.533 --> 00:01:25.333
+we pass
+
+36
+00:01:25.333 --> 00:01:29.033
+a model with 2 cell controllers
+
+37
+00:01:29.033 --> 00:01:31.666
+then we call reload data and we are
+
+38
+00:01:31.666 --> 00:01:32.466
+going to render
+
+39
+00:01:32.466 --> 00:01:35.033
+those 2 cells but now let's say the
+
+40
+00:01:35.033 --> 00:01:36.233
+user requested
+
+41
+00:01:36.233 --> 00:01:39.266
+to load the feed again but now we get
+
+42
+00:01:39.266 --> 00:01:42.366
+0 cells back so an empty array
+
+43
+00:01:42.366 --> 00:01:44.866
+for example if someone removed images
+
+44
+00:01:44.866 --> 00:01:46.066
+from the feed
+
+45
+00:01:46.066 --> 00:01:48.866
+then when we tell UIKit to reload the
+
+46
+00:01:48.866 --> 00:01:49.600
+data
+
+47
+00:01:49.600 --> 00:01:51.666
+it will remove the 2 cells that were
+
+48
+00:01:51.666 --> 00:01:53.266
+there on screen
+
+49
+00:01:53.266 --> 00:01:56.300
+and call did end displaying cell for
+
+50
+00:01:56.300 --> 00:01:59.600
+both indexPaths but now
+
+51
+00:01:59.600 --> 00:02:02.766
+if we try to cancel the load request
+
+52
+00:02:02.766 --> 00:02:06.000
+for that specific cell controller this
+
+53
+00:02:06.000 --> 00:02:06.633
+will crash
+
+54
+00:02:06.633 --> 00:02:09.733
+because we have 0 cell controllers
+
+55
+00:02:09.733 --> 00:02:12.533
+in the table model array that's it UI
+
+56
+00:02:12.533 --> 00:02:14.466
+Kit will call ddn displaying cell
+
+57
+00:02:14.466 --> 00:02:17.733
+after the model was updated and it's
+
+58
+00:02:17.733 --> 00:02:19.200
+empty now
+
+59
+00:02:19.200 --> 00:02:21.333
+so we transitioned from 2 items to
+
+60
+00:02:21.333 --> 00:02:22.233
+0
+
+61
+00:02:22.233 --> 00:02:25.833
+which means we will try to get a value
+
+62
+00:02:25.833 --> 00:02:28.633
+for an index that doesn't exist anymore
+
+63
+00:02:28.633 --> 00:02:30.066
+and that's gonna crash
+
+64
+00:02:30.066 --> 00:02:33.733
+with an index out of bounds error yep
+
+65
+00:02:33.733 --> 00:02:35.433
+so this is not crashing right now
+
+66
+00:02:35.433 --> 00:02:37.100
+because we cannot delete images
+
+67
+00:02:37.100 --> 00:02:39.100
+from the feed but we cannot assume that
+
+68
+00:02:39.100 --> 00:02:41.033
+the backend will always behave like
+
+69
+00:02:41.033 --> 00:02:42.066
+this
+
+70
+00:02:42.066 --> 00:02:45.266
+okay we need to fix this but first let's
+
+71
+00:02:45.266 --> 00:02:48.400
+prove that this bug exists with a test
+
+72
+00:02:48.400 --> 00:02:50.933
+okay so here's the test where we prove
+
+73
+00:02:50.933 --> 00:02:52.300
+that we are rendering
+
+74
+00:02:52.300 --> 00:02:54.933
+the feed successfully on the screen so
+
+75
+00:02:54.933 --> 00:02:57.500
+let's duplicate it
+
+76
+00:02:57.500 --> 00:03:00.066
+and let's call it render successfully
+
+77
+00:03:00.066 --> 00:03:01.033
+loaded
+
+78
+00:03:01.033 --> 00:03:04.700
+empty feed after non
+
+79
+00:03:04.700 --> 00:03:07.833
+empty feed makes sense
+
+80
+00:03:07.833 --> 00:03:10.633
+yep that's it and we don't care about
+
+81
+00:03:10.633 --> 00:03:11.200
+values
+
+82
+00:03:11.200 --> 00:03:13.666
+in this test so let's just create 2
+
+83
+00:03:13.666 --> 00:03:16.133
+images
+
+84
+00:03:16.133 --> 00:03:19.666
+let's load those 2 images in the first
+
+85
+00:03:19.666 --> 00:03:23.200
+load
+
+86
+00:03:23.200 --> 00:03:26.533
+and then if we load again but we receive
+
+87
+00:03:26.533 --> 00:03:27.733
+an empty
+
+88
+00:03:27.733 --> 00:03:30.766
+array of images it should render an
+
+89
+00:03:30.766 --> 00:03:31.500
+empty
+
+90
+00:03:31.500 --> 00:03:35.266
+feed, that's it, it shouldn't crash
+
+91
+00:03:35.266 --> 00:03:40.133
+let's run a test and it's passing
+
+92
+00:03:40.133 --> 00:03:43.200
+so we do have that problem but this test
+
+93
+00:03:43.200 --> 00:03:45.100
+is passing
+
+94
+00:03:45.100 --> 00:03:48.300
+okay how is that possible well again we
+
+95
+00:03:48.300 --> 00:03:50.866
+need to understand how UIKit works
+
+96
+00:03:50.866 --> 00:03:53.266
+when you tell a table view to reload for
+
+97
+00:03:53.266 --> 00:03:54.000
+performance
+
+98
+00:03:54.000 --> 00:03:58.000
+reasons it doesn't do it immediately
+
+99
+00:03:58.000 --> 00:04:00.066
+so when you're running tests and you
+
+100
+00:04:00.066 --> 00:04:01.200
+want to ensure
+
+101
+00:04:01.200 --> 00:04:02.866
+that you are actually rendering the
+
+102
+00:04:02.866 --> 00:04:04.466
+table view cells
+
+103
+00:04:04.466 --> 00:04:07.566
+we need to force the table view to
+
+104
+00:04:07.566 --> 00:04:08.633
+layout
+
+105
+00:04:08.633 --> 00:04:12.400
+by calling layoutIfNeeded
+
+106
+00:04:12.400 --> 00:04:17.600
+and let's run the main RunLoop
+
+107
+00:04:17.600 --> 00:04:21.900
+okay let's run the test again
+
+108
+00:04:21.900 --> 00:04:24.700
+boom now it crashes exactly where we
+
+109
+00:04:24.700 --> 00:04:25.333
+want
+
+110
+00:04:25.333 --> 00:04:28.633
+look at that yep fatal error
+
+111
+00:04:28.633 --> 00:04:31.733
+index out of range so now with a test we
+
+112
+00:04:31.733 --> 00:04:33.433
+were able to replicate
+
+113
+00:04:33.433 --> 00:04:35.666
+exactly the problem we would have in
+
+114
+00:04:35.666 --> 00:04:36.633
+production
+
+115
+00:04:36.633 --> 00:04:39.433
+if the server ever returns a response
+
+116
+00:04:39.433 --> 00:04:41.033
+with less items
+
+117
+00:04:41.033 --> 00:04:45.600
+then we had before on screen that's it
+
+118
+00:04:45.600 --> 00:04:48.000
+the simple way to solve it is to add a
+
+119
+00:04:48.000 --> 00:04:48.700
+guard
+
+120
+00:04:48.700 --> 00:04:54.700
+to check the bounds
+
+121
+00:04:54.700 --> 00:04:57.266
+okay the test is passing now but this is
+
+122
+00:04:57.266 --> 00:04:59.500
+not exactly what we want
+
+123
+00:04:59.500 --> 00:05:01.266
+since UIKit calls did the end display
+
+124
+00:05:01.266 --> 00:05:03.733
+in cell after we changed the model
+
+125
+00:05:03.733 --> 00:05:07.333
+it means that we would be calling cancel
+
+126
+00:05:07.333 --> 00:05:10.066
+on the new models not on the old ones
+
+127
+00:05:10.066 --> 00:05:10.466
+yeah
+
+128
+00:05:10.466 --> 00:05:13.433
+exactly that's not what we want that
+
+129
+00:05:13.433 --> 00:05:14.466
+solves the problem
+
+130
+00:05:14.466 --> 00:05:16.466
+but maybe it's better to get a reference
+
+131
+00:05:16.466 --> 00:05:18.133
+for the currently loading view
+
+132
+00:05:18.133 --> 00:05:20.000
+controllers
+
+133
+00:05:20.000 --> 00:05:23.100
+okay so let's create a new property
+
+134
+00:05:23.100 --> 00:05:27.100
+private var loading controllers
+
+135
+00:05:27.100 --> 00:05:29.600
+which can be a dictionary of indexPath
+
+136
+00:05:29.600 --> 00:05:30.233
+as key
+
+137
+00:05:30.233 --> 00:05:34.700
+and FeedImageCellController as value
+
+138
+00:05:34.700 --> 00:05:37.600
+and every time we get a new model to
+
+139
+00:05:37.600 --> 00:05:38.400
+display
+
+140
+00:05:38.400 --> 00:05:42.466
+we reset it
+
+141
+00:05:42.466 --> 00:05:45.433
+and cancel now will be the loading
+
+142
+00:05:45.433 --> 00:05:46.133
+controller
+
+143
+00:05:46.133 --> 00:05:49.900
+at indexPath if any
+
+144
+00:05:49.900 --> 00:05:52.633
+and we can set it to nil because after
+
+145
+00:05:52.633 --> 00:05:53.266
+you cancel
+
+146
+00:05:53.266 --> 00:05:54.800
+you don't want to hold a reference to it
+
+147
+00:05:54.800 --> 00:05:56.633
+anymore okay
+
+148
+00:05:56.633 --> 00:05:58.133
+now we also need to hold a reference
+
+149
+00:05:58.133 --> 00:06:00.133
+to the cell controller and we can do it
+
+150
+00:06:00.133 --> 00:06:01.600
+here
+
+151
+00:06:01.600 --> 00:06:04.066
+controller is the cell controller at
+
+152
+00:06:04.066 --> 00:06:05.333
+indexPath
+
+153
+00:06:05.333 --> 00:06:11.333
+in the loading controllers
+
+154
+00:06:11.333 --> 00:06:14.400
+all right let's run the tests
+
+155
+00:06:14.400 --> 00:06:18.466
+it's passing okay let's commit
+
+156
+00:06:18.466 --> 00:06:21.500
+okay so fix a potential bug
+
+157
+00:06:21.500 --> 00:06:24.233
+when cancelling requests in the did end
+
+158
+00:06:24.233 --> 00:06:26.133
+displaying cell method
+
+159
+00:06:26.133 --> 00:06:28.800
+this method is invoked after calling
+
+160
+00:06:28.800 --> 00:06:30.300
+reload data
+
+161
+00:06:30.300 --> 00:06:32.800
+so we would be cancelling requests in
+
+162
+00:06:32.800 --> 00:06:34.233
+the wrong models
+
+163
+00:06:34.233 --> 00:06:36.633
+or crash in case the model has less
+
+164
+00:06:36.633 --> 00:06:37.600
+items
+
+165
+00:06:37.600 --> 00:06:40.300
+than the previous model yep so you need
+
+166
+00:06:40.300 --> 00:06:41.033
+to be careful
+
+167
+00:06:41.033 --> 00:06:43.900
+when canceling requests in the did end
+
+168
+00:06:43.900 --> 00:06:45.100
+displaying cell
+
+169
+00:06:45.100 --> 00:06:48.300
+method of a table view
+
+170
+00:06:48.300 --> 00:06:50.800
+and that's the process for fixing bugs
+
+171
+00:06:50.800 --> 00:06:52.800
+in your codebases
+
+172
+00:06:52.800 --> 00:06:55.266
+prove the bug exists with a failing test
+
+173
+00:06:55.266 --> 00:06:56.800
+make the test pass
+
+174
+00:06:56.800 --> 00:06:59.666
+and refactor without a failing test you
+
+175
+00:06:59.666 --> 00:07:00.633
+cannot prove
+
+176
+00:07:00.633 --> 00:07:03.166
+the bug exists you cannot prove that you
+
+177
+00:07:03.166 --> 00:07:04.533
+actually fixed it
+
+178
+00:07:04.533 --> 00:07:08.300
+exactly that's precisely the TDD process
+
+179
+00:07:08.300 --> 00:07:10.533
+all right so that's it for this lecture
+
+180
+00:07:10.533 --> 00:07:11.833
+we'll see you all again
+
+181
+00:07:11.833 --> 00:07:21.800
+next time bye y'all, see ya

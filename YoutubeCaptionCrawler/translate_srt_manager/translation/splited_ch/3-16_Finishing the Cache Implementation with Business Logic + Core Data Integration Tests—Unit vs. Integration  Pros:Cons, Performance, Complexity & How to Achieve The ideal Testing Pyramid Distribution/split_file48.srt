@@ -1,0 +1,43 @@
+475
+00:16:18,466 --> 00:16:20,000
+and I believe we should keep the Core
+我相信我們應該保持 Core
+
+476
+00:16:20,000 --> 00:16:22,300
+Data one since it's a more
+
+477
+00:16:22,300 --> 00:16:25,733
+robust solution yeah I agree exploring
+強壯的解決方法，對，我同意探討
+
+478
+00:16:25,733 --> 00:16:26,466
+Core Data
+Core Data
+
+479
+00:16:26,466 --> 00:16:28,466
+in future lectures will be much more
+在未來的課程中將會更有
+
+480
+00:16:28,466 --> 00:16:29,900
+valuable so
+價值，所以
+
+481
+00:16:29,900 --> 00:16:31,433
+we can discard the CodableFeedStore
+我們可以捨棄 CodableFeedStore
+
+482
+00:16:31,433 --> 00:16:33,033
+for now
+對於現在來說
+
+483
+00:16:33,033 --> 00:16:34,700
+okay I'm removing the production and
+好的，我正在移除生產並且

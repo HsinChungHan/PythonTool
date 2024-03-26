@@ -1,0 +1,1479 @@
+1
+00:00:01.266 --> 00:00:03.500
+Hello Mike, hey Caio so in the previous
+
+2
+00:00:03.500 --> 00:00:04.766
+episode we finished the
+
+3
+00:00:04.766 --> 00:00:06.700
+RemoteFeedLoader implementation and
+
+4
+00:00:06.700 --> 00:00:08.700
+now it's time to make it conform
+
+5
+00:00:08.700 --> 00:00:11.033
+to the FeedLoader protocol in the Feed
+
+6
+00:00:11.033 --> 00:00:12.000
+Feature module
+
+7
+00:00:12.000 --> 00:00:14.466
+yep so the FeedLoader protocol has a
+
+8
+00:00:14.466 --> 00:00:15.100
+function
+
+9
+00:00:15.100 --> 00:00:17.433
+load with completion and the LoadFeed
+
+10
+00:00:17.433 --> 00:00:18.133
+Result
+
+11
+00:00:18.133 --> 00:00:20.800
+type right and our implementation is
+
+12
+00:00:20.800 --> 00:00:22.933
+very similar but we use the
+
+13
+00:00:22.933 --> 00:00:26.000
+Result type here and our own domain
+
+14
+00:00:26.000 --> 00:00:28.933
+specific Error type right but the
+
+15
+00:00:28.933 --> 00:00:30.933
+FeedLoader Error type is just the
+
+16
+00:00:30.933 --> 00:00:34.233
+Swift Error protocol this might cause
+
+17
+00:00:34.233 --> 00:00:35.266
+some trouble
+
+18
+00:00:35.266 --> 00:00:37.900
+well we could move the FeedLoader Error
+
+19
+00:00:37.900 --> 00:00:39.033
+type to the Feed
+
+20
+00:00:39.033 --> 00:00:42.300
+Feature module exposing this API
+
+21
+00:00:42.300 --> 00:00:44.633
+implementation detail in the shared
+
+22
+00:00:44.633 --> 00:00:45.500
+Feature module
+
+23
+00:00:45.500 --> 00:00:48.633
+and I don't like that no since the Feed
+
+24
+00:00:48.633 --> 00:00:49.266
+Feature
+
+25
+00:00:49.266 --> 00:00:51.833
+is agnostic module doesn't know if the
+
+26
+00:00:51.833 --> 00:00:52.866
+error is going to be
+
+27
+00:00:52.866 --> 00:00:55.333
+connectivity, invalid data meaning coming
+
+28
+00:00:55.333 --> 00:00:56.300
+from an API
+
+29
+00:00:56.300 --> 00:00:59.333
+or local from a database or future
+
+30
+00:00:59.333 --> 00:01:00.533
+implementations as well
+
+31
+00:01:00.533 --> 00:01:02.700
+right so we don't want any kind of
+
+32
+00:01:02.700 --> 00:01:04.633
+knowledge of the Feed Feature
+
+33
+00:01:04.633 --> 00:01:07.833
+for the provenance of the errors not yet
+
+34
+00:01:07.833 --> 00:01:09.266
+maybe in the future we're going to
+
+35
+00:01:09.266 --> 00:01:10.933
+notice that there's some similarities
+
+36
+00:01:10.933 --> 00:01:12.400
+and we can create a domain
+
+37
+00:01:12.400 --> 00:01:14.400
+specific error for the Feed Feature
+
+38
+00:01:14.400 --> 00:01:16.066
+module right but I'm not feeling
+
+39
+00:01:16.066 --> 00:01:16.700
+confident
+
+40
+00:01:16.700 --> 00:01:20.533
+still to do it yup so what would take us
+
+41
+00:01:20.533 --> 00:01:24.000
+to make this use the LoadFeedResult
+
+42
+00:01:24.000 --> 00:01:28.066
+let's see first of all this is a public
+
+43
+00:01:28.066 --> 00:01:29.033
+method
+
+44
+00:01:29.033 --> 00:01:34.300
+so we need to make it public
+
+45
+00:01:34.300 --> 00:01:37.600
+and we call this success and failure
+
+46
+00:01:37.600 --> 00:01:39.666
+but here is success and error I think I
+
+47
+00:01:39.666 --> 00:01:41.666
+prefer failure to be fair
+
+48
+00:01:41.666 --> 00:01:45.900
+yeah I agree okay but now since the
+
+49
+00:01:45.900 --> 00:01:49.033
+LoadFeedResult exposes the Swift Error
+
+50
+00:01:49.033 --> 00:01:49.666
+protocol
+
+51
+00:01:49.666 --> 00:01:51.600
+we need to give it some more type
+
+52
+00:01:51.600 --> 00:01:53.266
+information here right
+
+53
+00:01:53.266 --> 00:01:56.066
+so this error is the domain level error
+
+54
+00:01:56.066 --> 00:01:59.666
+for the RemoteFeedLoader
+
+55
+00:01:59.666 --> 00:02:02.933
+and now the FeedItemsMapper is using
+
+56
+00:02:02.933 --> 00:02:05.433
+the RemoteFeedLoader.Result right
+
+57
+00:02:05.433 --> 00:02:08.000
+I think we can fix that by using a type
+
+58
+00:02:08.000 --> 00:02:08.633
+alias
+
+59
+00:02:08.633 --> 00:02:12.066
+then yeah so we can make this Result
+
+60
+00:02:12.066 --> 00:02:13.500
+type just a typealias
+
+61
+00:02:13.500 --> 00:02:16.233
+for the LoadFeedResult so the other
+
+62
+00:02:16.233 --> 00:02:18.033
+components that are using Remote
+
+63
+00:02:18.033 --> 00:02:19.833
+FeedLoader.Result can still
+
+64
+00:02:19.833 --> 00:02:22.933
+work exactly it's an abstraction
+
+65
+00:02:22.933 --> 00:02:26.133
+okay we solved the return issue but now
+
+66
+00:02:26.133 --> 00:02:27.433
+we also need to add some
+
+67
+00:02:27.433 --> 00:02:29.666
+type information now yeah some
+
+68
+00:02:29.666 --> 00:02:32.233
+instructions there
+
+69
+00:02:32.233 --> 00:02:34.000
+okay looks like we solved all the
+
+70
+00:02:34.000 --> 00:02:36.066
+problems in the production module
+
+71
+00:02:36.066 --> 00:02:38.400
+now in the tests file we have a bunch of
+
+72
+00:02:38.400 --> 00:02:39.733
+issues as well
+
+73
+00:02:39.733 --> 00:02:41.833
+yeah we need more instructions there for
+
+74
+00:02:41.833 --> 00:02:43.500
+the errors
+
+75
+00:02:43.500 --> 00:02:46.000
+and we're using assert equal which will
+
+76
+00:02:46.000 --> 00:02:46.866
+force our
+
+77
+00:02:46.866 --> 00:02:50.066
+enum to be Equatable right but the Error
+
+78
+00:02:50.066 --> 00:02:51.500
+is generic and we don't know if
+
+79
+00:02:51.500 --> 00:02:54.400
+the passed error conforms to Equatable
+
+80
+00:02:54.400 --> 00:02:55.200
+right
+
+81
+00:02:55.200 --> 00:02:57.833
+well one solution is to use generics
+
+82
+00:02:57.833 --> 00:02:58.300
+here
+
+83
+00:02:58.300 --> 00:03:01.500
+yeah and have our own generic type
+
+84
+00:03:01.500 --> 00:03:03.833
+now we can create an extension on the
+
+85
+00:03:03.833 --> 00:03:05.333
+LoadFeedResult
+
+86
+00:03:05.333 --> 00:03:08.466
+where the Error is Equatable so if the
+
+87
+00:03:08.466 --> 00:03:09.566
+Error is Equatable
+
+88
+00:03:09.566 --> 00:03:11.333
+this can also be Equatable and the
+
+89
+00:03:11.333 --> 00:03:13.033
+compiler can synthesize the Equatable
+
+90
+00:03:13.033 --> 00:03:14.133
+implementation for us
+
+91
+00:03:14.133 --> 00:03:16.633
+which is very nice but now we need to
+
+92
+00:03:16.633 --> 00:03:18.000
+carry type information here
+
+93
+00:03:18.000 --> 00:03:20.133
+what kind of Error right well I don't
+
+94
+00:03:20.133 --> 00:03:22.233
+know I want the errors to be generic
+
+95
+00:03:22.233 --> 00:03:25.733
+so we can also define our own associated
+
+96
+00:03:25.733 --> 00:03:26.766
+type in the protocol
+
+97
+00:03:26.766 --> 00:03:28.933
+yeah and this is starting to get messy
+
+98
+00:03:28.933 --> 00:03:30.866
+yeah to say the least
+
+99
+00:03:30.866 --> 00:03:33.100
+especially for an implementation that is
+
+100
+00:03:33.100 --> 00:03:34.533
+not being used yet
+
+101
+00:03:34.533 --> 00:03:38.766
+yes so we can define now
+
+102
+00:03:38.766 --> 00:03:41.333
+our LoadFeedResult with our domain
+
+103
+00:03:41.333 --> 00:03:42.466
+Error type
+
+104
+00:03:42.466 --> 00:03:44.766
+we can just use the Result typealias in
+
+105
+00:03:44.766 --> 00:03:47.433
+the return type
+
+106
+00:03:47.433 --> 00:03:49.833
+and it's passing now and with these type
+
+107
+00:03:49.833 --> 00:03:51.500
+alias and the generic
+
+108
+00:03:51.500 --> 00:03:54.000
+Rrror type I think we can even get rid
+
+109
+00:03:54.000 --> 00:03:54.633
+of the
+
+110
+00:03:54.633 --> 00:03:58.633
+extra type information we added yes
+
+111
+00:03:58.633 --> 00:04:00.766
+you can probably do the same in here
+
+112
+00:04:00.766 --> 00:04:02.133
+since the types are now
+
+113
+00:04:02.133 --> 00:04:05.733
+annotated so this is a working solution
+
+114
+00:04:05.733 --> 00:04:07.900
+but look at this we are only making the
+
+115
+00:04:07.900 --> 00:04:09.500
+LoadFeedResult Equatable
+
+116
+00:04:09.500 --> 00:04:11.433
+because of the tests and this is
+
+117
+00:04:11.433 --> 00:04:12.866
+production code
+
+118
+00:04:12.866 --> 00:04:15.666
+yeah exactly and we had to add these
+
+119
+00:04:15.666 --> 00:04:17.100
+associated types
+
+120
+00:04:17.100 --> 00:04:20.700
+generic types, type constraints and
+
+121
+00:04:20.700 --> 00:04:22.466
+I think this complicates a lot our
+
+122
+00:04:22.466 --> 00:04:24.633
+production code absolutely
+
+123
+00:04:24.633 --> 00:04:26.800
+we have constrained our types and our
+
+124
+00:04:26.800 --> 00:04:28.133
+code just because
+
+125
+00:04:28.133 --> 00:04:30.933
+of the test and I don't like that yeah
+
+126
+00:04:30.933 --> 00:04:32.866
+the production code has no requirement
+
+127
+00:04:32.866 --> 00:04:34.066
+for it to be Equatable
+
+128
+00:04:34.066 --> 00:04:35.900
+yep but since it's passing I think we
+
+129
+00:04:35.900 --> 00:04:37.100
+should commit and rethink this
+
+130
+00:04:37.100 --> 00:04:37.900
+implementation
+
+131
+00:04:37.900 --> 00:04:40.000
+exactly I agree this is a working
+
+132
+00:04:40.000 --> 00:04:41.166
+solution so
+
+133
+00:04:41.166 --> 00:04:43.500
+I think we should commit and try to find
+
+134
+00:04:43.500 --> 00:04:44.466
+a better one
+
+135
+00:04:44.466 --> 00:04:46.066
+by the way have you noticed that you
+
+136
+00:04:46.066 --> 00:04:47.900
+didn't require any changes in the tests
+
+137
+00:04:47.900 --> 00:04:50.466
+right so kudos to the Swift type
+
+138
+00:04:50.466 --> 00:04:52.800
+inference in there yep
+
+139
+00:04:52.800 --> 00:04:56.933
+so replace RemoteFeedLoader.
+
+140
+00:04:56.933 --> 00:05:01.266
+Result enum with the pre-defined
+
+141
+00:05:01.266 --> 00:05:04.800
+LoadFeedResult enum
+
+142
+00:05:04.800 --> 00:05:08.233
+from the Feed module and this is in
+
+143
+00:05:08.233 --> 00:05:11.833
+preparation to conform to the
+
+144
+00:05:11.833 --> 00:05:15.500
+FeedLoader protocol
+
+145
+00:05:15.500 --> 00:05:18.633
+so that should be enough for us to make
+
+146
+00:05:18.633 --> 00:05:20.533
+the RemoteFeedLoader conform to the
+
+147
+00:05:20.533 --> 00:05:23.033
+Loader protocol
+
+148
+00:05:23.033 --> 00:05:24.800
+and it is perfect let's commit this as
+
+149
+00:05:24.800 --> 00:05:26.400
+well yeah for sure and
+
+150
+00:05:26.400 --> 00:05:30.233
+this was our goal right yes we made the
+
+151
+00:05:30.233 --> 00:05:33.500
+RemoteFeedLoader conform
+
+152
+00:05:33.500 --> 00:05:37.666
+to the FeedLoader protocol
+
+153
+00:05:37.666 --> 00:05:39.333
+we achieved the goal for this episode
+
+154
+00:05:39.333 --> 00:05:40.533
+but we are not happy with the
+
+155
+00:05:40.533 --> 00:05:41.900
+implementation yeah
+
+156
+00:05:41.900 --> 00:05:43.900
+or I am not happy with implementation
+
+157
+00:05:43.900 --> 00:05:45.833
+right no I'm not either
+
+158
+00:05:45.833 --> 00:05:48.866
+but we follow the same principle
+
+159
+00:05:48.866 --> 00:05:51.166
+as we've done in test-driven development
+
+160
+00:05:51.166 --> 00:05:52.300
+so far which
+
+161
+00:05:52.300 --> 00:05:54.933
+is make it work and then make it pretty
+
+162
+00:05:54.933 --> 00:05:56.233
+or make it faster
+
+163
+00:05:56.233 --> 00:05:58.700
+optimize and I think this is the same
+
+164
+00:05:58.700 --> 00:05:59.433
+case here
+
+165
+00:05:59.433 --> 00:06:02.300
+we made it work if we were to go back to
+
+166
+00:06:02.300 --> 00:06:03.666
+our diagram
+
+167
+00:06:03.666 --> 00:06:06.400
+we can connect the right arrow from the
+
+168
+00:06:06.400 --> 00:06:07.333
+Feed API
+
+169
+00:06:07.333 --> 00:06:10.866
+to the Feed Feature this is done exactly
+
+170
+00:06:10.866 --> 00:06:12.800
+so what we want to do is to remove these
+
+171
+00:06:12.800 --> 00:06:14.866
+type constraints and we only have this
+
+172
+00:06:14.866 --> 00:06:16.700
+because of the Equatable requirement
+
+173
+00:06:16.700 --> 00:06:17.900
+from our tests
+
+174
+00:06:17.900 --> 00:06:20.066
+so if you can get rid of this Equatable
+
+175
+00:06:20.066 --> 00:06:21.433
+requirement
+
+176
+00:06:21.433 --> 00:06:23.166
+we should be able to get rid of the
+
+177
+00:06:23.166 --> 00:06:24.800
+generic constraints
+
+178
+00:06:24.800 --> 00:06:26.700
+exactly that's the goal now that's a new
+
+179
+00:06:26.700 --> 00:06:29.333
+goal so let's see where it breaks
+
+180
+00:06:29.333 --> 00:06:32.000
+exactly where we expected in the assert
+
+181
+00:06:32.000 --> 00:06:32.866
+equals
+
+182
+00:06:32.866 --> 00:06:34.533
+yeah the thing is we are not going to
+
+183
+00:06:34.533 --> 00:06:35.900
+capture results anymore
+
+184
+00:06:35.900 --> 00:06:38.133
+and compare the values we're going to
+
+185
+00:06:38.133 --> 00:06:39.500
+have to unwrap
+
+186
+00:06:39.500 --> 00:06:41.900
+the result type and compare the values
+
+187
+00:06:41.900 --> 00:06:42.633
+inside
+
+188
+00:06:42.633 --> 00:06:45.500
+the result right so there is no capture
+
+189
+00:06:45.500 --> 00:06:46.866
+results anymore
+
+190
+00:06:46.866 --> 00:06:50.400
+what we get here is the received
+
+191
+00:06:50.400 --> 00:06:54.233
+result and we also have an expected
+
+192
+00:06:54.233 --> 00:06:56.633
+result yep and we need to compare them
+
+193
+00:06:56.633 --> 00:06:58.066
+so we're going to have to unwrap
+
+194
+00:06:58.066 --> 00:07:00.233
+the enums yep both of them and we can
+
+195
+00:07:00.233 --> 00:07:01.900
+use pattern matching here which is a
+
+196
+00:07:01.900 --> 00:07:02.633
+very nice
+
+197
+00:07:02.633 --> 00:07:04.466
+Swift feature so we can combine these
+
+198
+00:07:04.466 --> 00:07:05.833
+two in a switch statement
+
+199
+00:07:05.833 --> 00:07:07.833
+and use the pattern matching here to
+
+200
+00:07:07.833 --> 00:07:09.166
+unwrap when
+
+201
+00:07:09.166 --> 00:07:11.100
+both of them are a success which means
+
+202
+00:07:11.100 --> 00:07:13.500
+they they match their cases
+
+203
+00:07:13.500 --> 00:07:16.000
+so we're gonna get in a success case the
+
+204
+00:07:16.000 --> 00:07:17.900
+receivedItems
+
+205
+00:07:17.900 --> 00:07:22.700
+and the expectedItems on the right side
+
+206
+00:07:22.700 --> 00:07:27.166
+and then we can compare them
+
+207
+00:07:27.166 --> 00:07:29.500
+that's it so this is the success case
+
+208
+00:07:29.500 --> 00:07:31.833
+yep but we also have
+
+209
+00:07:31.833 --> 00:07:34.933
+the failure case where we get a received
+
+210
+00:07:34.933 --> 00:07:38.633
+error and an expected
+
+211
+00:07:38.633 --> 00:07:41.500
+error we do something similar we can
+
+212
+00:07:41.500 --> 00:07:42.800
+just compare the two
+
+213
+00:07:42.800 --> 00:07:46.133
+receivedError expectedError but
+
+214
+00:07:46.133 --> 00:07:48.466
+maybe we were expecting success but we
+
+215
+00:07:48.466 --> 00:07:50.466
+got failure or we were expecting failure
+
+216
+00:07:50.466 --> 00:07:51.166
+and we got
+
+217
+00:07:51.166 --> 00:07:53.100
+success so we need to have a default
+
+218
+00:07:53.100 --> 00:07:55.166
+case right which means that cases don't
+
+219
+00:07:55.166 --> 00:07:55.833
+match
+
+220
+00:07:55.833 --> 00:07:58.533
+and we should just fail straight away we
+
+221
+00:07:58.533 --> 00:08:01.166
+always expect a failure there yeah
+
+222
+00:08:01.166 --> 00:08:04.633
+so expected result and expected
+
+223
+00:08:04.633 --> 00:08:08.000
+result we got received
+
+224
+00:08:08.000 --> 00:08:11.100
+result instead you can also add the file
+
+225
+00:08:11.100 --> 00:08:13.100
+and line so we get a nice
+
+226
+00:08:13.100 --> 00:08:15.166
+error message in the right place
+
+227
+00:08:15.166 --> 00:08:17.033
+beautiful but since this is
+
+228
+00:08:17.033 --> 00:08:18.233
+asynchronous
+
+229
+00:08:18.233 --> 00:08:20.400
+we need a way to make sure that we got
+
+230
+00:08:20.400 --> 00:08:21.733
+inside this closure
+
+231
+00:08:21.733 --> 00:08:24.300
+and also that we only got there once and
+
+232
+00:08:24.300 --> 00:08:25.566
+we can achieve the same behavior by
+
+233
+00:08:25.566 --> 00:08:26.466
+using
+
+234
+00:08:26.466 --> 00:08:29.500
+expectations which is a nice feature on
+
+235
+00:08:29.500 --> 00:08:31.433
+XCTestCase
+
+236
+00:08:31.433 --> 00:08:35.433
+wait for load completion is our message
+
+237
+00:08:35.433 --> 00:08:38.466
+and we are going to fulfill
+
+238
+00:08:38.466 --> 00:08:41.333
+regardless of the result and we just
+
+239
+00:08:41.333 --> 00:08:42.633
+need to wait
+
+240
+00:08:42.633 --> 00:08:46.533
+for the expectation with a timeout
+
+241
+00:08:46.533 --> 00:08:49.266
+let's run this test okay now it's
+
+242
+00:08:49.266 --> 00:08:50.366
+passing and we don't need
+
+243
+00:08:50.366 --> 00:08:52.766
+the Equatable anymore beautiful because
+
+244
+00:08:52.766 --> 00:08:54.066
+the way we are asserting this is
+
+245
+00:08:54.066 --> 00:08:55.266
+actually unwrapping it
+
+246
+00:08:55.266 --> 00:08:57.200
+we have a little bit more code in our
+
+247
+00:08:57.200 --> 00:08:58.466
+test module
+
+248
+00:08:58.466 --> 00:09:01.200
+but we simplify our production code so
+
+249
+00:09:01.200 --> 00:09:01.666
+often
+
+250
+00:09:01.666 --> 00:09:04.000
+this is a good trade-off at least in
+
+251
+00:09:04.000 --> 00:09:06.000
+this case I believe it was because it
+
+252
+00:09:06.000 --> 00:09:06.366
+was
+
+253
+00:09:06.366 --> 00:09:08.866
+complicating the production code this
+
+254
+00:09:08.866 --> 00:09:10.300
+feels like a bargain to me
+
+255
+00:09:10.300 --> 00:09:12.800
+it's basically nothing compared to all
+
+256
+00:09:12.800 --> 00:09:14.366
+the constraints we added
+
+257
+00:09:14.366 --> 00:09:17.100
+when we didn't even use them and we keep
+
+258
+00:09:17.100 --> 00:09:19.033
+the same behavior we are checking that
+
+259
+00:09:19.033 --> 00:09:20.800
+this was invoked because if we don't
+
+260
+00:09:20.800 --> 00:09:22.366
+fulfill the expectation we're gonna get
+
+261
+00:09:22.366 --> 00:09:23.500
+a failure here
+
+262
+00:09:23.500 --> 00:09:25.666
+right also we are unwrapping and
+
+263
+00:09:25.666 --> 00:09:26.533
+checking the values
+
+264
+00:09:26.533 --> 00:09:28.866
+inside the results and if they don't
+
+265
+00:09:28.866 --> 00:09:31.200
+match we're gonna get also a failure
+
+266
+00:09:31.200 --> 00:09:34.000
+with a very nice message telling us
+
+267
+00:09:34.000 --> 00:09:34.800
+exactly
+
+268
+00:09:34.800 --> 00:09:37.033
+where the problem is so I'm happy with
+
+269
+00:09:37.033 --> 00:09:38.466
+this and it's a trade-off
+
+270
+00:09:38.466 --> 00:09:40.800
+maybe in the future we will have all
+
+271
+00:09:40.800 --> 00:09:42.300
+those associated types
+
+272
+00:09:42.300 --> 00:09:44.233
+and generic types and then we can
+
+273
+00:09:44.233 --> 00:09:45.500
+simplify our tests
+
+274
+00:09:45.500 --> 00:09:47.600
+but only if this is a requirement of the
+
+275
+00:09:47.600 --> 00:09:48.800
+production code
+
+276
+00:09:48.800 --> 00:09:52.633
+agreed so let's commit
+
+277
+00:09:52.633 --> 00:09:54.800
+and we still have to remove those type
+
+278
+00:09:54.800 --> 00:09:55.733
+constraints but
+
+279
+00:09:55.733 --> 00:09:58.000
+we have passing tests no warnings let's
+
+280
+00:09:58.000 --> 00:09:59.266
+commit yep
+
+281
+00:09:59.266 --> 00:10:02.866
+so remove LoadFeedResult
+
+282
+00:10:02.866 --> 00:10:06.533
+Equatable conformance from production
+
+283
+00:10:06.533 --> 00:10:09.600
+since it's a test only
+
+284
+00:10:09.600 --> 00:10:13.433
+requirement that's it
+
+285
+00:10:13.433 --> 00:10:15.733
+yeah I think now it's time to get rid of
+
+286
+00:10:15.733 --> 00:10:17.666
+those generics
+
+287
+00:10:17.666 --> 00:10:20.000
+let's see if we remove these we can also
+
+288
+00:10:20.000 --> 00:10:21.033
+remove
+
+289
+00:10:21.033 --> 00:10:24.633
+the associated type
+
+290
+00:10:24.633 --> 00:10:26.700
+so we can remove the type annotation
+
+291
+00:10:26.700 --> 00:10:28.233
+here and we're going to have to be a
+
+292
+00:10:28.233 --> 00:10:29.666
+little bit more explicit
+
+293
+00:10:29.666 --> 00:10:33.100
+with our types
+
+294
+00:10:33.100 --> 00:10:35.833
+which is also a trade-off yeah because
+
+295
+00:10:35.833 --> 00:10:36.466
+of the
+
+296
+00:10:36.466 --> 00:10:39.100
+Swift generic Error type we are using in
+
+297
+00:10:39.100 --> 00:10:39.833
+the Result
+
+298
+00:10:39.833 --> 00:10:42.933
+enum okay same the tests
+
+299
+00:10:42.933 --> 00:10:45.433
+let's add some type annotation here to
+
+300
+00:10:45.433 --> 00:10:50.700
+help the compiler
+
+301
+00:10:50.700 --> 00:10:53.666
+and we also need to cast this yeah and
+
+302
+00:10:53.666 --> 00:10:54.800
+we can do it
+
+303
+00:10:54.800 --> 00:10:57.100
+using the pattern matching feature which
+
+304
+00:10:57.100 --> 00:10:58.533
+is gonna unwrap them
+
+305
+00:10:58.533 --> 00:11:01.433
+only if you can cast them otherwise it's
+
+306
+00:11:01.433 --> 00:11:01.900
+gonna
+
+307
+00:11:01.900 --> 00:11:03.900
+default to an error because they need to
+
+308
+00:11:03.900 --> 00:11:05.333
+match, fantastic
+
+309
+00:11:05.333 --> 00:11:07.333
+okay so that's the trade-off when using
+
+310
+00:11:07.333 --> 00:11:09.266
+the generic Swift Error
+
+311
+00:11:09.266 --> 00:11:10.800
+and maybe you need to add a little bit
+
+312
+00:11:10.800 --> 00:11:12.366
+more type information to help the
+
+313
+00:11:12.366 --> 00:11:13.100
+compiler
+
+314
+00:11:13.100 --> 00:11:15.600
+but I think it's paying off so far now
+
+315
+00:11:15.600 --> 00:11:16.466
+we can rethink this
+
+316
+00:11:16.466 --> 00:11:19.100
+in the future and maybe roll back we are
+
+317
+00:11:19.100 --> 00:11:19.500
+free
+
+318
+00:11:19.500 --> 00:11:21.733
+to do so that's one of the main reasons
+
+319
+00:11:21.733 --> 00:11:22.800
+we have git
+
+320
+00:11:22.800 --> 00:11:27.333
+exactly let's commit remove the generic
+
+321
+00:11:27.333 --> 00:11:30.466
+error type from the
+
+322
+00:11:30.466 --> 00:11:34.133
+LoadFeedResult to simplify
+
+323
+00:11:34.133 --> 00:11:39.500
+type constraints that's it
+
+324
+00:11:39.500 --> 00:11:41.500
+I saw the errors that you added there
+
+325
+00:11:41.500 --> 00:11:42.800
+these ones yeah
+
+326
+00:11:42.800 --> 00:11:44.066
+I think we can simplify them a little
+
+327
+00:11:44.066 --> 00:11:46.233
+bit maybe we can create a helper
+
+328
+00:11:46.233 --> 00:11:47.100
+function
+
+329
+00:11:47.100 --> 00:11:48.933
+so instead of .failure we can say
+
+330
+00:11:48.933 --> 00:11:50.300
+failure
+
+331
+00:11:50.300 --> 00:11:53.333
+and we can go back to just passing the
+
+332
+00:11:53.333 --> 00:11:54.800
+enum case
+
+333
+00:11:54.800 --> 00:11:58.800
+right exactly
+
+334
+00:11:58.800 --> 00:12:01.500
+so we can have our private factory
+
+335
+00:12:01.500 --> 00:12:02.633
+method
+
+336
+00:12:02.633 --> 00:12:06.133
+failure with the error and this returns
+
+337
+00:12:06.133 --> 00:12:08.466
+Result yeah it's a Result and then we
+
+338
+00:12:08.466 --> 00:12:09.200
+just
+
+339
+00:12:09.200 --> 00:12:12.066
+create the Result with that error yeah
+
+340
+00:12:12.066 --> 00:12:14.366
+let's see if the test passes
+
+341
+00:12:14.366 --> 00:12:17.033
+yeah I like it I think it's a nice clean
+
+342
+00:12:17.033 --> 00:12:17.833
+up
+
+343
+00:12:17.833 --> 00:12:20.300
+all right it reads nicely, expect sut to
+
+344
+00:12:20.300 --> 00:12:21.600
+complete with a failure
+
+345
+00:12:21.600 --> 00:12:24.466
+invalid data when something happens yeah
+
+346
+00:12:24.466 --> 00:12:25.100
+nice one
+
+347
+00:12:25.100 --> 00:12:28.800
+let's commit simplify type
+
+348
+00:12:28.800 --> 00:12:31.900
+declarations with a helper
+
+349
+00:12:31.900 --> 00:12:35.666
+function I think that's it right
+
+350
+00:12:35.666 --> 00:12:38.133
+yes and I'm pretty happy with the
+
+351
+00:12:38.133 --> 00:12:39.100
+results
+
+352
+00:12:39.100 --> 00:12:41.666
+I'm very happy with the result yes the
+
+353
+00:12:41.666 --> 00:12:42.233
+fact that
+
+354
+00:12:42.233 --> 00:12:44.300
+we got rid of these constraints yeah it
+
+355
+00:12:44.300 --> 00:12:45.500
+made me happy
+
+356
+00:12:45.500 --> 00:12:47.900
+you can also make the FeedLoader
+
+357
+00:12:47.900 --> 00:12:50.133
+protocol public so it can be implemented
+
+358
+00:12:50.133 --> 00:12:52.066
+by other modules it just happens that
+
+359
+00:12:52.066 --> 00:12:53.666
+everything is in the same module at this
+
+360
+00:12:53.666 --> 00:12:54.366
+moment
+
+361
+00:12:54.366 --> 00:12:57.666
+yeah that's a good catch there so make
+
+362
+00:12:57.666 --> 00:13:00.700
+the FeedLoader protocol
+
+363
+00:13:00.700 --> 00:13:04.233
+public, that's it
+
+364
+00:13:04.233 --> 00:13:05.733
+the RemoteFeedLoader now conforms to
+
+365
+00:13:05.733 --> 00:13:07.600
+the FeedLoader and we just need to
+
+366
+00:13:07.600 --> 00:13:08.300
+implement
+
+367
+00:13:08.300 --> 00:13:11.433
+an HTTPClient fantastic all right so
+
+368
+00:13:11.433 --> 00:13:12.533
+thanks for watching
+
+369
+00:13:12.533 --> 00:13:14.233
+and we'll see you in the next episode
+
+370
+00:13:14.233 --> 00:13:25.733
+bye y'all

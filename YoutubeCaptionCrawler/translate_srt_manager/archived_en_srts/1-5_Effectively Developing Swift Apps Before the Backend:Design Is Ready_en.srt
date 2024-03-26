@@ -1,0 +1,1219 @@
+1
+00:00:01.266 --> 00:00:03.333
+Hello Mike, hey Caio
+
+2
+00:00:03.333 --> 00:00:05.433
+so today we're going to continue the
+
+3
+00:00:05.433 --> 00:00:07.900
+Feed Feature case study we started last
+
+4
+00:00:07.900 --> 00:00:08.700
+time
+
+5
+00:00:08.700 --> 00:00:12.133
+exactly so I've created a GitHub repo
+
+6
+00:00:12.133 --> 00:00:14.466
+with all the BDD specs we created in
+
+7
+00:00:14.466 --> 00:00:17.600
+previous episodes, use cases
+
+8
+00:00:17.600 --> 00:00:20.800
+flowchart and the initial proposed
+
+9
+00:00:20.800 --> 00:00:22.533
+architecture
+
+10
+00:00:22.533 --> 00:00:24.633
+but we are still missing the user
+
+11
+00:00:24.633 --> 00:00:26.233
+interface design
+
+12
+00:00:26.233 --> 00:00:29.566
+and a backend, right I think we can
+
+13
+00:00:29.566 --> 00:00:30.000
+manage
+
+14
+00:00:30.000 --> 00:00:32.466
+without them you can start you can
+
+15
+00:00:32.466 --> 00:00:34.133
+communicate with the other team
+
+16
+00:00:34.133 --> 00:00:36.300
+what the contract between the server and
+
+17
+00:00:36.300 --> 00:00:37.600
+the client is going to be
+
+18
+00:00:37.600 --> 00:00:40.933
+then both teams can work their way to
+
+19
+00:00:40.933 --> 00:00:44.000
+the feature with unit tests always so
+
+20
+00:00:44.000 --> 00:00:45.433
+from the requirements we gather
+
+21
+00:00:45.433 --> 00:00:47.733
+we can come up with a model spec for the
+
+22
+00:00:47.733 --> 00:00:49.200
+Feed Item
+
+23
+00:00:49.200 --> 00:00:51.666
+so let's say by talking to the backhand
+
+24
+00:00:51.666 --> 00:00:52.366
+folks
+
+25
+00:00:52.366 --> 00:00:54.133
+you can come up very quickly with at
+
+26
+00:00:54.133 --> 00:00:55.600
+least a spec
+
+27
+00:00:55.600 --> 00:00:57.600
+that's not final of course things are
+
+28
+00:00:57.600 --> 00:00:58.933
+always changing but
+
+29
+00:00:58.933 --> 00:01:00.633
+at least something to start working on
+
+30
+00:01:00.633 --> 00:01:02.633
+some kind of contract as you said
+
+31
+00:01:02.633 --> 00:01:05.166
+so a Feed Item for example you can agree
+
+32
+00:01:05.166 --> 00:01:06.000
+that it has
+
+33
+00:01:06.000 --> 00:01:08.533
+an identifier and let's say it's a UUID
+
+34
+00:01:08.533 --> 00:01:10.133
+you may also have a description
+
+35
+00:01:10.133 --> 00:01:12.233
+in this case it's optional, location
+
+36
+00:01:12.233 --> 00:01:13.266
+that is also a String
+
+37
+00:01:13.266 --> 00:01:15.200
+that's optional and the URL to download
+
+38
+00:01:15.200 --> 00:01:16.933
+the image, right
+
+39
+00:01:16.933 --> 00:01:18.633
+normally those specs come from
+
+40
+00:01:18.633 --> 00:01:20.400
+conversations with the designers as well
+
+41
+00:01:20.400 --> 00:01:21.033
+because
+
+42
+00:01:21.033 --> 00:01:23.600
+they probably have some kind of sketches
+
+43
+00:01:23.600 --> 00:01:24.700
+already
+
+44
+00:01:24.700 --> 00:01:25.600
+and they know they're gonna have to
+
+45
+00:01:25.600 --> 00:01:27.900
+display the image we'll have some kind
+
+46
+00:01:27.900 --> 00:01:28.700
+of description
+
+47
+00:01:28.700 --> 00:01:32.000
+right now the id is a technical detail
+
+48
+00:01:32.000 --> 00:01:34.066
+that the backend developers and the
+
+49
+00:01:34.066 --> 00:01:35.833
+frontend developers agreed upon
+
+50
+00:01:35.833 --> 00:01:38.633
+yeah that's understandable so we can end
+
+51
+00:01:38.633 --> 00:01:40.400
+up with a payload contract
+
+52
+00:01:40.400 --> 00:01:42.866
+like this one we're going to execute a
+
+53
+00:01:42.866 --> 00:01:45.033
+GET request to a specific URL
+
+54
+00:01:45.033 --> 00:01:47.833
+to be defined and we expect to get a 200
+
+55
+00:01:47.833 --> 00:01:49.033
+response
+
+56
+00:01:49.033 --> 00:01:51.733
+right we're going to represent the Feed
+
+57
+00:01:51.733 --> 00:01:52.466
+Items
+
+58
+00:01:52.466 --> 00:01:55.666
+as an array of objects so for example
+
+59
+00:01:55.666 --> 00:01:57.833
+every Feed Item will have an id and an
+
+60
+00:01:57.833 --> 00:01:59.333
+image for sure
+
+61
+00:01:59.333 --> 00:02:01.433
+as defined in the model specs but
+
+62
+00:02:01.433 --> 00:02:02.700
+description and location
+
+63
+00:02:02.700 --> 00:02:05.266
+are optional so for example this object
+
+64
+00:02:05.266 --> 00:02:06.300
+doesn't have location
+
+65
+00:02:06.300 --> 00:02:08.366
+and this object doesn't have description
+
+66
+00:02:08.366 --> 00:02:10.633
+and this object doesn't have description
+
+67
+00:02:10.633 --> 00:02:12.933
+and location which means if we have a
+
+68
+00:02:12.933 --> 00:02:13.733
+missing
+
+69
+00:02:13.733 --> 00:02:16.866
+key in our object we can just ignore it
+
+70
+00:02:16.866 --> 00:02:19.033
+for description and location but id and
+
+71
+00:02:19.033 --> 00:02:20.866
+image should always be there
+
+72
+00:02:20.866 --> 00:02:23.900
+and an image should be a valid URL and
+
+73
+00:02:23.900 --> 00:02:25.200
+the id should be a valid
+
+74
+00:02:25.200 --> 00:02:28.400
+UUID, okay that makes sense let me also
+
+75
+00:02:28.400 --> 00:02:29.333
+point out here
+
+76
+00:02:29.333 --> 00:02:32.300
+that this is very very convenient for
+
+77
+00:02:32.300 --> 00:02:33.900
+anyone who is going to see
+
+78
+00:02:33.900 --> 00:02:36.866
+this contract as we mentioned last time
+
+79
+00:02:36.866 --> 00:02:38.133
+eliminating assumptions
+
+80
+00:02:38.133 --> 00:02:41.433
+is a key part for succeeding in making
+
+81
+00:02:41.433 --> 00:02:42.466
+good systems
+
+82
+00:02:42.466 --> 00:02:45.033
+and I think that the developer when he
+
+83
+00:02:45.033 --> 00:02:45.566
+sees
+
+84
+00:02:45.566 --> 00:02:47.266
+okay the location is optional the
+
+85
+00:02:47.266 --> 00:02:49.100
+description is optional and now they see
+
+86
+00:02:49.100 --> 00:02:51.666
+this picture here where you can see an
+
+87
+00:02:51.666 --> 00:02:52.466
+example
+
+88
+00:02:52.466 --> 00:02:55.333
+of the API response I think that might
+
+89
+00:02:55.333 --> 00:02:55.833
+help them
+
+90
+00:02:55.833 --> 00:02:58.866
+understand even better the requirement
+
+91
+00:02:58.866 --> 00:02:59.666
+I like that
+
+92
+00:02:59.666 --> 00:03:02.300
+we pretty much have a set of valid
+
+93
+00:03:02.300 --> 00:03:03.266
+responses
+
+94
+00:03:03.266 --> 00:03:05.433
+that we can even use in our unit tests
+
+95
+00:03:05.433 --> 00:03:06.933
+absolutely and this is the kind of
+
+96
+00:03:06.933 --> 00:03:09.100
+detail I like to have in requirements
+
+97
+00:03:09.100 --> 00:03:11.833
+yeah it's beneficial for everyone not
+
+98
+00:03:11.833 --> 00:03:13.200
+just the developer you know like
+
+99
+00:03:13.200 --> 00:03:14.133
+everyone that is gonna
+
+100
+00:03:14.133 --> 00:03:16.933
+contribute to this project we are all in
+
+101
+00:03:16.933 --> 00:03:17.333
+this
+
+102
+00:03:17.333 --> 00:03:19.100
+together you know we are on the same
+
+103
+00:03:19.100 --> 00:03:21.100
+team so at the end of the day
+
+104
+00:03:21.100 --> 00:03:24.466
+we make our lives easier as well, agreed
+
+105
+00:03:24.466 --> 00:03:27.733
+awesome so let's start definitely
+
+106
+00:03:27.733 --> 00:03:31.433
+but from where should we start right
+
+107
+00:03:31.433 --> 00:03:33.500
+I always like to start from the parts of
+
+108
+00:03:33.500 --> 00:03:35.733
+the system we have the most
+
+109
+00:03:35.733 --> 00:03:38.633
+information, yes so that would exclude
+
+110
+00:03:38.633 --> 00:03:39.266
+the UI
+
+111
+00:03:39.266 --> 00:03:41.433
+right now yes we know what we're going
+
+112
+00:03:41.433 --> 00:03:42.700
+to present in the UI
+
+113
+00:03:42.700 --> 00:03:44.833
+and we could come up with some
+
+114
+00:03:44.833 --> 00:03:46.233
+prototypes
+
+115
+00:03:46.233 --> 00:03:48.700
+it is an option but maybe in the Remote
+
+116
+00:03:48.700 --> 00:03:50.000
+FeedLoader we have
+
+117
+00:03:50.000 --> 00:03:52.233
+more confidence since we even have the
+
+118
+00:03:52.233 --> 00:03:53.733
+JSON payload contract
+
+119
+00:03:53.733 --> 00:03:55.266
+right we have everything that we need
+
+120
+00:03:55.266 --> 00:03:56.866
+except the URL which we
+
+121
+00:03:56.866 --> 00:03:58.700
+don't need to build the system so that's
+
+122
+00:03:58.700 --> 00:04:01.500
+option one and we want to separate
+
+123
+00:04:01.500 --> 00:04:03.666
+the RemoteFeedLoader from the user
+
+124
+00:04:03.666 --> 00:04:04.633
+interface
+
+125
+00:04:04.633 --> 00:04:07.033
+so the UI module would not talk directly
+
+126
+00:04:07.033 --> 00:04:08.466
+with the RemoteFeedLoader
+
+127
+00:04:08.466 --> 00:04:11.433
+we have an interface or a Feature module
+
+128
+00:04:11.433 --> 00:04:12.066
+in between
+
+129
+00:04:12.066 --> 00:04:15.100
+with the interfaces and data types
+
+130
+00:04:15.100 --> 00:04:16.766
+right and we could start from this place
+
+131
+00:04:16.766 --> 00:04:18.766
+as well right so you mean the Feed Item
+
+132
+00:04:18.766 --> 00:04:22.066
+could live in this module the protocol
+
+133
+00:04:22.066 --> 00:04:24.533
+or the abstraction for loading the feed
+
+134
+00:04:24.533 --> 00:04:25.833
+can live there as well
+
+135
+00:04:25.833 --> 00:04:27.833
+yes the representation of the Feed Item
+
+136
+00:04:27.833 --> 00:04:29.500
+model
+
+137
+00:04:29.500 --> 00:04:32.866
+will be in this shared module right and
+
+138
+00:04:32.866 --> 00:04:35.033
+this model can be created from a remote
+
+139
+00:04:35.033 --> 00:04:37.033
+representation or from the cache
+
+140
+00:04:37.033 --> 00:04:38.400
+representation
+
+141
+00:04:38.400 --> 00:04:40.933
+and we could now develop this feature in
+
+142
+00:04:40.933 --> 00:04:41.500
+parallel
+
+143
+00:04:41.500 --> 00:04:43.266
+I could implement the UI you could
+
+144
+00:04:43.266 --> 00:04:44.800
+implement the RemoteFeedLoader
+
+145
+00:04:44.800 --> 00:04:46.400
+and another developer could implement
+
+146
+00:04:46.400 --> 00:04:48.300
+the LocalFeedLoader
+
+147
+00:04:48.300 --> 00:04:50.533
+in parallel and at the end we just
+
+148
+00:04:50.533 --> 00:04:52.866
+compose all the implementations together
+
+149
+00:04:52.866 --> 00:04:55.733
+right so what I like about option two
+
+150
+00:04:55.733 --> 00:04:56.800
+the Feed Feature
+
+151
+00:04:56.800 --> 00:05:00.000
+is that all arrows point to that
+
+152
+00:05:00.000 --> 00:05:01.900
+meaning it doesn't depend on anything
+
+153
+00:05:01.900 --> 00:05:04.466
+else I think that's a good candidate
+
+154
+00:05:04.466 --> 00:05:07.666
+to start okay and at the end of this
+
+155
+00:05:07.666 --> 00:05:08.300
+series
+
+156
+00:05:08.300 --> 00:05:10.466
+we might end up with five different
+
+157
+00:05:10.466 --> 00:05:12.300
+modules meaning five different
+
+158
+00:05:12.300 --> 00:05:13.166
+frameworks
+
+159
+00:05:13.166 --> 00:05:16.000
+but let's start as a modular monolith
+
+160
+00:05:16.000 --> 00:05:17.900
+let's keep the code modular but the code
+
+161
+00:05:17.900 --> 00:05:18.300
+can
+
+162
+00:05:18.300 --> 00:05:21.266
+all live in the same project for now
+
+163
+00:05:21.266 --> 00:05:22.066
+I agree with that
+
+164
+00:05:22.066 --> 00:05:25.166
+and what I like to do is create a macOS
+
+165
+00:05:25.166 --> 00:05:26.066
+target
+
+166
+00:05:26.066 --> 00:05:29.333
+and separate the UI that is going to
+
+167
+00:05:29.333 --> 00:05:30.933
+live in an iOS target
+
+168
+00:05:30.933 --> 00:05:34.466
+in a different project and we can start
+
+169
+00:05:34.466 --> 00:05:36.933
+implementing all the components the Feed
+
+170
+00:05:36.933 --> 00:05:38.800
+Feature, the RemoteFeedLoader, the Local
+
+171
+00:05:38.800 --> 00:05:39.600
+FeedLoader
+
+172
+00:05:39.600 --> 00:05:41.900
+in the mac target right so all of those
+
+173
+00:05:41.900 --> 00:05:44.466
+modules here don't depend on UIKit
+
+174
+00:05:44.466 --> 00:05:46.633
+exactly so we can run it on a macOS
+
+175
+00:05:46.633 --> 00:05:48.866
+target and run our tests much faster
+
+176
+00:05:48.866 --> 00:05:50.300
+without the simulator
+
+177
+00:05:50.300 --> 00:05:53.100
+yes I prefer that, okay that makes sense
+
+178
+00:05:53.100 --> 00:05:53.666
+so
+
+179
+00:05:53.666 --> 00:05:57.600
+let's start as a macOS framework yes
+
+180
+00:05:57.600 --> 00:06:01.666
+let's call it EssentialFeed, yeah
+
+181
+00:06:01.666 --> 00:06:05.433
+okay clean project let's create a file
+
+182
+00:06:05.433 --> 00:06:08.800
+that's our FeedItem first okay so our
+
+183
+00:06:08.800 --> 00:06:09.666
+FeedItem
+
+184
+00:06:09.666 --> 00:06:15.500
+has an id
+
+185
+00:06:15.500 --> 00:06:18.866
+that's a UUID right it's not optional
+
+186
+00:06:18.866 --> 00:06:22.633
+description, the description is an
+
+187
+00:06:22.633 --> 00:06:23.900
+optional String
+
+188
+00:06:23.900 --> 00:06:28.000
+yes, location it's also optional
+
+189
+00:06:28.000 --> 00:06:30.000
+and the imageURL, that is a
+
+190
+00:06:30.000 --> 00:06:31.833
+non-optional URL
+
+191
+00:06:31.833 --> 00:06:34.233
+very nice so this FeedItem now is
+
+192
+00:06:34.233 --> 00:06:35.333
+internal
+
+193
+00:06:35.333 --> 00:06:37.500
+and we want several modules to create
+
+194
+00:06:37.500 --> 00:06:38.400
+this FeedItem
+
+195
+00:06:38.400 --> 00:06:40.800
+right it might be created from a remote
+
+196
+00:06:40.800 --> 00:06:41.733
+representation
+
+197
+00:06:41.733 --> 00:06:43.166
+or it might be created from a local
+
+198
+00:06:43.166 --> 00:06:44.800
+cache representation
+
+199
+00:06:44.800 --> 00:06:47.433
+yes, if we want external modules to be
+
+200
+00:06:47.433 --> 00:06:48.633
+able to create
+
+201
+00:06:48.633 --> 00:06:51.433
+FeedItems we need to provide a public
+
+202
+00:06:51.433 --> 00:06:52.633
+initializer
+
+203
+00:06:52.633 --> 00:06:54.233
+is this something we need to decide
+
+204
+00:06:54.233 --> 00:06:55.833
+right now we don't need to do it right
+
+205
+00:06:55.833 --> 00:06:56.233
+now
+
+206
+00:06:56.233 --> 00:06:58.800
+why don't we wait until we have a
+
+207
+00:06:58.800 --> 00:07:00.000
+compiler error
+
+208
+00:07:00.000 --> 00:07:03.266
+okay let's commit, all right so we have
+
+209
+00:07:03.266 --> 00:07:04.633
+actually a bunch of things here let's
+
+210
+00:07:04.633 --> 00:07:06.466
+commit first the project
+
+211
+00:07:06.466 --> 00:07:09.500
+okay create EssentialFeed
+
+212
+00:07:09.500 --> 00:07:13.266
+framework now let's commit to the Feed
+
+213
+00:07:13.266 --> 00:07:14.700
+Item
+
+214
+00:07:14.700 --> 00:07:18.866
+create the FeedItem model okay
+
+215
+00:07:18.866 --> 00:07:22.400
+beautiful so we have the FeedItem and
+
+216
+00:07:22.400 --> 00:07:25.500
+the interface yes that will separate
+
+217
+00:07:25.500 --> 00:07:28.133
+the modules right the boundary interface
+
+218
+00:07:28.133 --> 00:07:29.433
+yes
+
+219
+00:07:29.433 --> 00:07:32.400
+and we call it FeedLoader right we talked
+
+220
+00:07:32.400 --> 00:07:33.166
+extensively
+
+221
+00:07:33.166 --> 00:07:36.400
+about a closure version of it
+
+222
+00:07:36.400 --> 00:07:39.166
+or a protocol version of it I think we
+
+223
+00:07:39.166 --> 00:07:42.133
+can go with the protocol version here
+
+224
+00:07:42.133 --> 00:07:45.833
+okay so the protocol FeedLoader
+
+225
+00:07:45.833 --> 00:07:48.066
+yes what kind of behavior do we want
+
+226
+00:07:48.066 --> 00:07:50.233
+here to load items
+
+227
+00:07:50.233 --> 00:07:52.700
+so we will pass the completion block
+
+228
+00:07:52.700 --> 00:07:53.733
+right
+
+229
+00:07:53.733 --> 00:07:56.066
+and it needs to be escaping now we need
+
+230
+00:07:56.066 --> 00:07:56.933
+to think about
+
+231
+00:07:56.933 --> 00:07:59.566
+the return because previously we just
+
+232
+00:07:59.566 --> 00:08:00.233
+showed
+
+233
+00:08:00.233 --> 00:08:02.466
+the happy path yes when it works and it
+
+234
+00:08:02.466 --> 00:08:04.133
+returns an array of feed items for
+
+235
+00:08:04.133 --> 00:08:04.933
+example
+
+236
+00:08:04.933 --> 00:08:07.733
+yes now this may fail, loading the feed
+
+237
+00:08:07.733 --> 00:08:08.400
+may fail
+
+238
+00:08:08.400 --> 00:08:11.433
+right exactly so we can
+
+239
+00:08:11.433 --> 00:08:14.066
+create a Result type and we know that
+
+240
+00:08:14.066 --> 00:08:15.666
+for the success
+
+241
+00:08:15.666 --> 00:08:19.033
+case we want to pass along the Feed
+
+242
+00:08:19.033 --> 00:08:20.233
+Items
+
+243
+00:08:20.233 --> 00:08:22.933
+and now the error case is interesting
+
+244
+00:08:22.933 --> 00:08:24.400
+many things can go wrong
+
+245
+00:08:24.400 --> 00:08:27.100
+yeah how do you represent that well the
+
+246
+00:08:27.100 --> 00:08:29.100
+standard way in Swift is to use the
+
+247
+00:08:29.100 --> 00:08:31.733
+error protocol and it's up to the
+
+248
+00:08:31.733 --> 00:08:32.300
+clients
+
+249
+00:08:32.300 --> 00:08:35.033
+to cast it to a specific error type
+
+250
+00:08:35.033 --> 00:08:35.566
+right
+
+251
+00:08:35.566 --> 00:08:38.700
+if they care about the error type so
+
+252
+00:08:38.700 --> 00:08:41.100
+I'm happy to go with that right now but
+
+253
+00:08:41.100 --> 00:08:42.933
+starting from the Feed Feature starting
+
+254
+00:08:42.933 --> 00:08:43.733
+from these
+
+255
+00:08:43.733 --> 00:08:47.333
+abstractions it can bear risk because
+
+256
+00:08:47.333 --> 00:08:49.833
+for instance we could provide our own
+
+257
+00:08:49.833 --> 00:08:51.100
+error type here
+
+258
+00:08:51.100 --> 00:08:53.433
+perhaps we can provide a bunch of cases
+
+259
+00:08:53.433 --> 00:08:54.933
+that based on the
+
+260
+00:08:54.933 --> 00:08:56.700
+use cases and the requirements we have
+
+261
+00:08:56.700 --> 00:08:59.266
+already can represent some of the
+
+262
+00:08:59.266 --> 00:09:02.633
+sad paths however I feel that it is too
+
+263
+00:09:02.633 --> 00:09:03.833
+early in the project
+
+264
+00:09:03.833 --> 00:09:06.133
+to do that yeah so should we just go
+
+265
+00:09:06.133 --> 00:09:07.666
+with the protocol now and we change in
+
+266
+00:09:07.666 --> 00:09:08.700
+the future
+
+267
+00:09:08.700 --> 00:09:11.733
+yeah I think so okay so calling it
+
+268
+00:09:11.733 --> 00:09:14.066
+Result probably is not a good name
+
+269
+00:09:14.066 --> 00:09:15.266
+because result of
+
+270
+00:09:15.266 --> 00:09:19.200
+what, right, so why don't we call it Load
+
+271
+00:09:19.200 --> 00:09:22.000
+FeedResult yes much more specific here
+
+272
+00:09:22.000 --> 00:09:22.300
+if
+
+273
+00:09:22.300 --> 00:09:25.033
+at some point we decide to use a generic
+
+274
+00:09:25.033 --> 00:09:27.333
+result type we can have a typealias
+
+275
+00:09:27.333 --> 00:09:30.466
+yeah I think that makes sense okay so
+
+276
+00:09:30.466 --> 00:09:32.633
+this is what a FeedLoader should return
+
+277
+00:09:32.633 --> 00:09:34.866
+a LoadFeedResult it's either a success
+
+278
+00:09:34.866 --> 00:09:36.700
+with an array of with FeedItems
+
+279
+00:09:36.700 --> 00:09:39.600
+or an error, yes awesome so I think
+
+280
+00:09:39.600 --> 00:09:40.366
+that's it
+
+281
+00:09:40.366 --> 00:09:43.100
+that's the initial interface we'll be
+
+282
+00:09:43.100 --> 00:09:44.466
+working with
+
+283
+00:09:44.466 --> 00:09:48.066
+we only defined our data types and
+
+284
+00:09:48.066 --> 00:09:51.500
+our protocol boundary so we don't need
+
+285
+00:09:51.500 --> 00:09:52.533
+to test anything
+
+286
+00:09:52.533 --> 00:09:54.133
+we don't have any behavior here
+
+287
+00:09:54.133 --> 00:09:55.600
+everything we declared here
+
+288
+00:09:55.600 --> 00:09:58.366
+will be checked by the compiler yeah we
+
+289
+00:09:58.366 --> 00:09:59.266
+can commit
+
+290
+00:09:59.266 --> 00:10:01.733
+and then bundle those two files in a
+
+291
+00:10:01.733 --> 00:10:02.633
+folder
+
+292
+00:10:02.633 --> 00:10:05.900
+awesome let's commit create the
+
+293
+00:10:05.900 --> 00:10:08.933
+FeedLoader protocol
+
+294
+00:10:08.933 --> 00:10:12.300
+boundary yes and as you said we should
+
+295
+00:10:12.300 --> 00:10:14.066
+probably bundle these two things
+
+296
+00:10:14.066 --> 00:10:17.200
+into a folder and let's call it Feed
+
+297
+00:10:17.200 --> 00:10:18.366
+Feature yeah
+
+298
+00:10:18.366 --> 00:10:22.700
+okay you can always change it later yeah
+
+299
+00:10:22.700 --> 00:10:25.733
+Group Feed Feature
+
+300
+00:10:25.733 --> 00:10:29.100
+files yep perfect
+
+301
+00:10:29.100 --> 00:10:32.066
+so I think that's it for now and next
+
+302
+00:10:32.066 --> 00:10:33.333
+time we can
+
+303
+00:10:33.333 --> 00:10:36.133
+start doing the networking part
+
+304
+00:10:36.133 --> 00:10:36.800
+sounds good
+
+305
+00:10:36.800 --> 00:10:50.000
+perfect we'll see you all next time

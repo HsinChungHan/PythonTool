@@ -1,0 +1,2675 @@
+1
+00:00:01.433 --> 00:00:03.500
+Hello Mike, hey Caio
+
+2
+00:00:03.500 --> 00:00:05.200
+so we've been talking a lot about
+
+3
+00:00:05.200 --> 00:00:07.666
+architecture and we end up with this
+
+4
+00:00:07.666 --> 00:00:10.933
+modular diagram right it's just a proof
+
+5
+00:00:10.933 --> 00:00:11.666
+of concept
+
+6
+00:00:11.666 --> 00:00:13.333
+and we also discussed that sometimes
+
+7
+00:00:13.333 --> 00:00:15.266
+having a more monolithic
+
+8
+00:00:15.266 --> 00:00:17.600
+approach can actually be a better
+
+9
+00:00:17.600 --> 00:00:18.700
+solution
+
+10
+00:00:18.700 --> 00:00:20.633
+so what is a good architecture for me
+
+11
+00:00:20.633 --> 00:00:22.466
+it's an architecture that solves
+
+12
+00:00:22.466 --> 00:00:24.466
+the problem at hand and we came up with
+
+13
+00:00:24.466 --> 00:00:26.533
+this architecture while trying to create
+
+14
+00:00:26.533 --> 00:00:27.433
+a problem
+
+15
+00:00:27.433 --> 00:00:30.300
+and solving it right otherwise all
+
+16
+00:00:30.300 --> 00:00:32.300
+architectures are good
+
+17
+00:00:32.300 --> 00:00:34.700
+yes they need to solve something yes and
+
+18
+00:00:34.700 --> 00:00:35.500
+solve it well
+
+19
+00:00:35.500 --> 00:00:39.200
+in an elegant form yes so our point here
+
+20
+00:00:39.200 --> 00:00:39.833
+is that
+
+21
+00:00:39.833 --> 00:00:41.500
+to decide which architecture you're
+
+22
+00:00:41.500 --> 00:00:43.266
+going with it depends on the
+
+23
+00:00:43.266 --> 00:00:44.300
+requirements
+
+24
+00:00:44.300 --> 00:00:46.233
+so if you have bad requirements you can
+
+25
+00:00:46.233 --> 00:00:47.733
+end up with a better architecture as
+
+26
+00:00:47.733 --> 00:00:48.700
+well
+
+27
+00:00:48.700 --> 00:00:51.733
+exactly and the process of dealing
+
+28
+00:00:51.733 --> 00:00:54.700
+with the requirements and refining the
+
+29
+00:00:54.700 --> 00:00:56.066
+requirements as you go
+
+30
+00:00:56.066 --> 00:00:58.533
+and making more things known to the
+
+31
+00:00:58.533 --> 00:01:00.133
+developer team
+
+32
+00:01:00.133 --> 00:01:02.466
+I would make the bold claim that if you
+
+33
+00:01:02.466 --> 00:01:04.766
+have very good requirements
+
+34
+00:01:04.766 --> 00:01:07.200
+you will end up with good architecture
+
+35
+00:01:07.200 --> 00:01:08.300
+um
+
+36
+00:01:08.300 --> 00:01:10.466
+right probabilistically maybe I don't
+
+37
+00:01:10.466 --> 00:01:12.133
+know like it's not a
+
+38
+00:01:12.133 --> 00:01:14.700
+certainty okay it increases the chances
+
+39
+00:01:14.700 --> 00:01:15.433
+yes it's
+
+40
+00:01:15.433 --> 00:01:17.033
+it's definitely more probable I would
+
+41
+00:01:17.033 --> 00:01:18.700
+say because if you have well-defined
+
+42
+00:01:18.700 --> 00:01:19.433
+requirements
+
+43
+00:01:19.433 --> 00:01:21.900
+it's easier to design your system
+
+44
+00:01:21.900 --> 00:01:22.933
+absolutely because
+
+45
+00:01:22.933 --> 00:01:25.500
+you know what you need to build I think
+
+46
+00:01:25.500 --> 00:01:26.866
+most of the problems
+
+47
+00:01:26.866 --> 00:01:30.066
+occur when the assumptions are going to
+
+48
+00:01:30.066 --> 00:01:31.666
+be made by the developer
+
+49
+00:01:31.666 --> 00:01:34.233
+because of the miscommunication with
+
+50
+00:01:34.233 --> 00:01:35.033
+other
+
+51
+00:01:35.033 --> 00:01:36.866
+team members and I'm not saying the
+
+52
+00:01:36.866 --> 00:01:38.300
+developer is
+
+53
+00:01:38.300 --> 00:01:41.200
+the victim here no communication is the
+
+54
+00:01:41.200 --> 00:01:42.366
+victim here
+
+55
+00:01:42.366 --> 00:01:45.600
+you know from all parts but the goal of
+
+56
+00:01:45.600 --> 00:01:46.300
+the design
+
+57
+00:01:46.300 --> 00:01:49.333
+is not only to solve the current problem
+
+58
+00:01:49.333 --> 00:01:52.866
+because software is soft it's constantly
+
+59
+00:01:52.866 --> 00:01:55.266
+changing so you need to have a
+
+60
+00:01:55.266 --> 00:01:58.866
+trade-off with welcoming future changes
+
+61
+00:01:58.866 --> 00:02:00.633
+and solving the current problem you
+
+62
+00:02:00.633 --> 00:02:02.700
+don't want to abstract too much
+
+63
+00:02:02.700 --> 00:02:04.866
+to solve a future problem that might
+
+64
+00:02:04.866 --> 00:02:05.833
+never happen
+
+65
+00:02:05.833 --> 00:02:06.933
+but you also don't want to make your
+
+66
+00:02:06.933 --> 00:02:09.333
+architecture rigid enough that if you
+
+67
+00:02:09.333 --> 00:02:10.633
+need to change things
+
+68
+00:02:10.633 --> 00:02:13.733
+it's too hard absolutely and this is a
+
+69
+00:02:13.733 --> 00:02:14.800
+very very
+
+70
+00:02:14.800 --> 00:02:17.100
+difficult problem to solve basically you
+
+71
+00:02:17.100 --> 00:02:19.100
+need to facilitate
+
+72
+00:02:19.100 --> 00:02:21.433
+future needs at the same time you don't
+
+73
+00:02:21.433 --> 00:02:23.666
+know what these needs are going to be
+
+74
+00:02:23.666 --> 00:02:27.100
+so what do you do well you establish
+
+75
+00:02:27.100 --> 00:02:29.666
+good processes that's what you do from
+
+76
+00:02:29.666 --> 00:02:30.800
+the requirements
+
+77
+00:02:30.800 --> 00:02:33.666
+to planning, to designing, to architecting
+
+78
+00:02:33.666 --> 00:02:34.466
+to coding
+
+79
+00:02:34.466 --> 00:02:37.500
+everything, communicating of course very
+
+80
+00:02:37.500 --> 00:02:38.933
+very important there
+
+81
+00:02:38.933 --> 00:02:40.700
+and a good architecture is a form of
+
+82
+00:02:40.700 --> 00:02:43.333
+communication, of course it is
+
+83
+00:02:43.333 --> 00:02:45.333
+just like a requirement just like a
+
+84
+00:02:45.333 --> 00:02:48.066
+diagram or a planning session
+
+85
+00:02:48.066 --> 00:02:50.866
+exactly and we showed how bad
+
+86
+00:02:50.866 --> 00:02:51.900
+requirements
+
+87
+00:02:51.900 --> 00:02:55.033
+bad planning, bad execution might lead
+
+88
+00:02:55.033 --> 00:02:57.733
+you to end up with a very
+
+89
+00:02:57.733 --> 00:03:01.033
+rigid architecture where we have no
+
+90
+00:03:01.033 --> 00:03:02.400
+clear boundaries
+
+91
+00:03:02.400 --> 00:03:06.000
+we have no clear flow of control
+
+92
+00:03:06.000 --> 00:03:08.533
+the dependency graph here shows that
+
+93
+00:03:08.533 --> 00:03:10.133
+every module depends
+
+94
+00:03:10.133 --> 00:03:12.233
+on every other module which makes things
+
+95
+00:03:12.233 --> 00:03:13.433
+super rigid
+
+96
+00:03:13.433 --> 00:03:17.100
+and fragile, spaghetti architecture
+
+97
+00:03:17.100 --> 00:03:19.900
+let's not kid ourselves here yes and
+
+98
+00:03:19.900 --> 00:03:20.933
+most of the time
+
+99
+00:03:20.933 --> 00:03:22.700
+this is the byproduct of bad
+
+100
+00:03:22.700 --> 00:03:24.700
+requirements yes that's where
+
+101
+00:03:24.700 --> 00:03:27.433
+everything starts right if you're trying
+
+102
+00:03:27.433 --> 00:03:27.833
+to
+
+103
+00:03:27.833 --> 00:03:30.700
+fulfill the current requirement and
+
+104
+00:03:30.700 --> 00:03:32.300
+that's a bad requirement
+
+105
+00:03:32.300 --> 00:03:34.466
+and you have no long-term vision no
+
+106
+00:03:34.466 --> 00:03:35.666
+long-term goals
+
+107
+00:03:35.666 --> 00:03:38.633
+any architecture is fine it's like the
+
+108
+00:03:38.633 --> 00:03:39.266
+saying
+
+109
+00:03:39.266 --> 00:03:41.200
+if you don't know where you're going any
+
+110
+00:03:41.200 --> 00:03:42.300
+path is fine
+
+111
+00:03:42.300 --> 00:03:45.666
+right I like that yes that's exactly
+
+112
+00:03:45.666 --> 00:03:46.700
+right
+
+113
+00:03:46.700 --> 00:03:50.400
+and it's also the lack of discipline
+
+114
+00:03:50.400 --> 00:03:52.400
+in order to refine the requirements in
+
+115
+00:03:52.400 --> 00:03:54.933
+order to learn more, to care
+
+116
+00:03:54.933 --> 00:03:58.000
+to find out okay what should we do here
+
+117
+00:03:58.000 --> 00:03:59.433
+what should we do there you know
+
+118
+00:03:59.433 --> 00:04:02.766
+establish some branches of logic
+
+119
+00:04:02.766 --> 00:04:05.500
+some edge cases because the requirements
+
+120
+00:04:05.500 --> 00:04:07.266
+are bad it doesn't mean that the code
+
+121
+00:04:07.266 --> 00:04:09.033
+should be bad doesn't mean that the
+
+122
+00:04:09.033 --> 00:04:10.866
+product should have bugs or
+
+123
+00:04:10.866 --> 00:04:14.000
+mistakes so who's to blame the developer
+
+124
+00:04:14.000 --> 00:04:16.133
+to write the code the analyst that
+
+125
+00:04:16.133 --> 00:04:17.600
+writes the requirements
+
+126
+00:04:17.600 --> 00:04:19.666
+the product manager, the business who's
+
+127
+00:04:19.666 --> 00:04:21.166
+to blame right I don't like to blame
+
+128
+00:04:21.166 --> 00:04:22.000
+anyone
+
+129
+00:04:22.000 --> 00:04:23.833
+I think it's a communication problem
+
+130
+00:04:23.833 --> 00:04:25.333
+that can be solved it's
+
+131
+00:04:25.333 --> 00:04:27.100
+everyone's responsibility everyone
+
+132
+00:04:27.100 --> 00:04:29.100
+should hold themselves accountable
+
+133
+00:04:29.100 --> 00:04:31.166
+exactly in a functional team if a
+
+134
+00:04:31.166 --> 00:04:32.800
+developer sees that the requirement is
+
+135
+00:04:32.800 --> 00:04:34.933
+not good enough the developer will help
+
+136
+00:04:34.933 --> 00:04:37.166
+the analyst or whoever wrote it to
+
+137
+00:04:37.166 --> 00:04:38.000
+improve it
+
+138
+00:04:38.000 --> 00:04:40.533
+there's no blame and if an analyst sees
+
+139
+00:04:40.533 --> 00:04:41.100
+that
+
+140
+00:04:41.100 --> 00:04:43.833
+the end result the developers built
+
+141
+00:04:43.833 --> 00:04:44.800
+doesn't fulfill
+
+142
+00:04:44.800 --> 00:04:46.300
+actually the requirements they would
+
+143
+00:04:46.300 --> 00:04:48.133
+hold their developers accountable
+
+144
+00:04:48.133 --> 00:04:50.800
+right and that's the best case scenario
+
+145
+00:04:50.800 --> 00:04:51.833
+unfortunately
+
+146
+00:04:51.833 --> 00:04:54.866
+that's not the case everywhere so why
+
+147
+00:04:54.866 --> 00:04:57.433
+don't we show a progression of how you
+
+148
+00:04:57.433 --> 00:04:58.400
+can end up
+
+149
+00:04:58.400 --> 00:05:01.100
+in a state like you just mentioned okay
+
+150
+00:05:01.100 --> 00:05:03.100
+so we're talking about this Feed
+
+151
+00:05:03.100 --> 00:05:05.266
+feature so let's follow the same example
+
+152
+00:05:05.266 --> 00:05:06.400
+we've been using right
+
+153
+00:05:06.400 --> 00:05:09.666
+imagine we receive a new task
+
+154
+00:05:09.666 --> 00:05:12.466
+we open our project management tool and
+
+155
+00:05:12.466 --> 00:05:13.733
+we see this new story
+
+156
+00:05:13.733 --> 00:05:16.933
+assigned to us okay as you can see
+
+157
+00:05:16.933 --> 00:05:19.166
+as a user I want the app to load to the
+
+158
+00:05:19.166 --> 00:05:21.500
+feed so I can see the feed
+
+159
+00:05:21.500 --> 00:05:24.300
+okay we are laughing here but I see
+
+160
+00:05:24.300 --> 00:05:25.600
+those stories
+
+161
+00:05:25.600 --> 00:05:28.000
+all the time no absolutely, absolutely
+
+162
+00:05:28.000 --> 00:05:29.100
+this is out there
+
+163
+00:05:29.100 --> 00:05:30.533
+and the problem with these stories is
+
+164
+00:05:30.533 --> 00:05:32.533
+that first of all the developers don't
+
+165
+00:05:32.533 --> 00:05:34.066
+actually understand what kind of value
+
+166
+00:05:34.066 --> 00:05:34.933
+are we delivering
+
+167
+00:05:34.933 --> 00:05:37.266
+to our customers what are the benefits
+
+168
+00:05:37.266 --> 00:05:38.633
+of using this feature
+
+169
+00:05:38.633 --> 00:05:40.800
+why are we building this you know it's
+
+170
+00:05:40.800 --> 00:05:41.900
+so shallow
+
+171
+00:05:41.900 --> 00:05:43.500
+how I'm going to build this where are
+
+172
+00:05:43.500 --> 00:05:45.166
+the error cases
+
+173
+00:05:45.166 --> 00:05:48.000
+right what is the feed what does load
+
+174
+00:05:48.000 --> 00:05:50.533
+mean, load it from where
+
+175
+00:05:50.533 --> 00:05:52.400
+yes so then we look at the acceptance
+
+176
+00:05:52.400 --> 00:05:53.666
+criterias
+
+177
+00:05:53.666 --> 00:05:56.066
+given a user when the user opens the
+
+178
+00:05:56.066 --> 00:05:56.700
+feed
+
+179
+00:05:56.700 --> 00:06:00.066
+then the feed is displayed okay that
+
+180
+00:06:00.066 --> 00:06:02.400
+sounds a bit obvious but there's so many
+
+181
+00:06:02.400 --> 00:06:03.100
+questions
+
+182
+00:06:03.100 --> 00:06:05.033
+in there this is probably even gonna
+
+183
+00:06:05.033 --> 00:06:06.400
+drive
+
+184
+00:06:06.400 --> 00:06:09.500
+our tests, yes, but what kind of value are
+
+185
+00:06:09.500 --> 00:06:10.466
+we delivering
+
+186
+00:06:10.466 --> 00:06:12.066
+right exactly and this is a prime
+
+187
+00:06:12.066 --> 00:06:13.633
+example of the
+
+188
+00:06:13.633 --> 00:06:16.933
+miscommunication we mentioned before
+
+189
+00:06:16.933 --> 00:06:20.133
+so clearly here the
+
+190
+00:06:20.133 --> 00:06:22.533
+analyst or it doesn't matter someone
+
+191
+00:06:22.533 --> 00:06:23.900
+might be the developer as well
+
+192
+00:06:23.900 --> 00:06:26.466
+in some cases they have not communicated
+
+193
+00:06:26.466 --> 00:06:27.333
+properly
+
+194
+00:06:27.333 --> 00:06:30.866
+the intent of the system mentioning
+
+195
+00:06:30.866 --> 00:06:33.833
+edge cases and as you mentioned the
+
+196
+00:06:33.833 --> 00:06:35.733
+value where is the value for
+
+197
+00:06:35.733 --> 00:06:38.133
+the customer here so how can we improve
+
+198
+00:06:38.133 --> 00:06:40.233
+this because if I get a story like this
+
+199
+00:06:40.233 --> 00:06:42.533
+what I would do is to go back to the
+
+200
+00:06:42.533 --> 00:06:44.400
+analyst to whoever wrote it
+
+201
+00:06:44.400 --> 00:06:46.066
+and start asking questions like how can
+
+202
+00:06:46.066 --> 00:06:47.733
+we improve this and for me this is the
+
+203
+00:06:47.733 --> 00:06:48.466
+value
+
+204
+00:06:48.466 --> 00:06:50.866
+of doing BDD right for me it's the
+
+205
+00:06:50.866 --> 00:06:52.066
+conversation part
+
+206
+00:06:52.066 --> 00:06:53.500
+it's not about tools it's not about
+
+207
+00:06:53.500 --> 00:06:55.833
+testing, is understanding
+
+208
+00:06:55.833 --> 00:06:59.433
+what the maximum value you can
+
+209
+00:06:59.433 --> 00:07:02.133
+provide to the customer and sorry but
+
+210
+00:07:02.133 --> 00:07:03.333
+you're not going to provide that
+
+211
+00:07:03.333 --> 00:07:06.700
+with three lines written there
+
+212
+00:07:06.700 --> 00:07:09.166
+right you you need to dig deeper
+
+213
+00:07:09.166 --> 00:07:10.066
+basically
+
+214
+00:07:10.066 --> 00:07:12.300
+you need to understand deeper all the
+
+215
+00:07:12.300 --> 00:07:14.633
+possible scenarios that are out there
+
+216
+00:07:14.633 --> 00:07:16.533
+although this is a bad story for me this
+
+217
+00:07:16.533 --> 00:07:17.833
+is the beginning
+
+218
+00:07:17.833 --> 00:07:19.833
+of a very good conversation you're gonna
+
+219
+00:07:19.833 --> 00:07:21.100
+have with the business
+
+220
+00:07:21.100 --> 00:07:23.166
+to understand the value proposition
+
+221
+00:07:23.166 --> 00:07:24.633
+absolutely and if you go
+
+222
+00:07:24.633 --> 00:07:26.633
+and start the conversation by being
+
+223
+00:07:26.633 --> 00:07:27.900
+negative and
+
+224
+00:07:27.900 --> 00:07:30.133
+blaming others then I don't think you're
+
+225
+00:07:30.133 --> 00:07:31.566
+gonna reach very
+
+226
+00:07:31.566 --> 00:07:34.800
+far but that's the clear message
+
+227
+00:07:34.800 --> 00:07:37.033
+that the business is passing or this
+
+228
+00:07:37.033 --> 00:07:38.866
+analyst representing the business
+
+229
+00:07:38.866 --> 00:07:42.066
+is passing to you so it's in your hand
+
+230
+00:07:42.066 --> 00:07:46.533
+to understand more and go build a case
+
+231
+00:07:46.533 --> 00:07:48.700
+the biggest problem is when developers
+
+232
+00:07:48.700 --> 00:07:50.000
+see a story like this
+
+233
+00:07:50.000 --> 00:07:51.500
+and they are afraid of asking questions
+
+234
+00:07:51.500 --> 00:07:52.233
+because they think they're going to
+
+235
+00:07:52.233 --> 00:07:53.433
+sound silly right
+
+236
+00:07:53.433 --> 00:07:54.633
+they think they're going to lose
+
+237
+00:07:54.633 --> 00:07:56.933
+credibility because
+
+238
+00:07:56.933 --> 00:07:58.933
+they believe they should be able to read
+
+239
+00:07:58.933 --> 00:08:00.233
+these and imply
+
+240
+00:08:00.233 --> 00:08:01.566
+everything and that's the biggest
+
+241
+00:08:01.566 --> 00:08:04.300
+mistake right well I can't
+
+242
+00:08:04.300 --> 00:08:07.033
+so I'm always pro for the questions no
+
+243
+00:08:07.033 --> 00:08:08.133
+matter how
+
+244
+00:08:08.133 --> 00:08:10.633
+silly or it doesn't matter you know the
+
+245
+00:08:10.633 --> 00:08:11.166
+vision
+
+246
+00:08:11.166 --> 00:08:13.433
+is common for everyone or it should be
+
+247
+00:08:13.433 --> 00:08:14.533
+common for everyone
+
+248
+00:08:14.533 --> 00:08:16.700
+we're on the same team that's my
+
+249
+00:08:16.700 --> 00:08:18.400
+understanding of this thing
+
+250
+00:08:18.400 --> 00:08:20.933
+for me actually that's my job I have the
+
+251
+00:08:20.933 --> 00:08:22.300
+technical knowledge
+
+252
+00:08:22.300 --> 00:08:24.133
+to ask the right questions and get the
+
+253
+00:08:24.133 --> 00:08:25.666
+answers to deliver the highest amount of
+
+254
+00:08:25.666 --> 00:08:26.066
+value
+
+255
+00:08:26.066 --> 00:08:28.533
+to the customers and that's how we
+
+256
+00:08:28.533 --> 00:08:29.900
+create good products
+
+257
+00:08:29.900 --> 00:08:32.933
+you have good habits one of those is
+
+258
+00:08:32.933 --> 00:08:34.766
+asking a bunch of questions so you can
+
+259
+00:08:34.766 --> 00:08:36.366
+understand better
+
+260
+00:08:36.366 --> 00:08:39.566
+what is the need of the customer what is
+
+261
+00:08:39.566 --> 00:08:40.366
+the need
+
+262
+00:08:40.366 --> 00:08:43.200
+of the business and then you can
+
+263
+00:08:43.200 --> 00:08:44.300
+implement that need
+
+264
+00:08:44.300 --> 00:08:47.733
+through code, yes so what we would like
+
+265
+00:08:47.733 --> 00:08:49.033
+to end up with
+
+266
+00:08:49.033 --> 00:08:51.500
+is a document that is much more precise
+
+267
+00:08:51.500 --> 00:08:52.366
+than this
+
+268
+00:08:52.366 --> 00:08:55.600
+for example what started as just a
+
+269
+00:08:55.600 --> 00:08:58.133
+load the feed and show to the user can
+
+270
+00:08:58.133 --> 00:08:59.266
+end up as
+
+271
+00:08:59.266 --> 00:09:01.433
+as an online customer right it's a
+
+272
+00:09:01.433 --> 00:09:02.366
+customer with
+
+273
+00:09:02.366 --> 00:09:04.133
+connectivity right I want the app to
+
+274
+00:09:04.133 --> 00:09:06.866
+automatically load my latest image feed
+
+275
+00:09:06.866 --> 00:09:09.500
+so it's an image feed so I can always
+
+276
+00:09:09.500 --> 00:09:11.266
+enjoy the newest images
+
+277
+00:09:11.266 --> 00:09:14.133
+of my friends okay so now I can see the
+
+278
+00:09:14.133 --> 00:09:15.666
+value proposition here
+
+279
+00:09:15.666 --> 00:09:18.800
+yes we are zooming in, exactly
+
+280
+00:09:18.800 --> 00:09:21.333
+so we started from a super high level
+
+281
+00:09:21.333 --> 00:09:22.800
+view of what we're doing
+
+282
+00:09:22.800 --> 00:09:25.333
+but after having the right conversations
+
+283
+00:09:25.333 --> 00:09:26.800
+we learned that
+
+284
+00:09:26.800 --> 00:09:29.433
+well this feature is to connect friends
+
+285
+00:09:29.433 --> 00:09:30.800
+sharing their
+
+286
+00:09:30.800 --> 00:09:33.266
+images or their travels or their food or
+
+287
+00:09:33.266 --> 00:09:34.533
+whatever they want to share with their
+
+288
+00:09:34.533 --> 00:09:35.100
+friends
+
+289
+00:09:35.100 --> 00:09:36.633
+right and a bunch of other user
+
+290
+00:09:36.633 --> 00:09:38.300
+experience information
+
+291
+00:09:38.300 --> 00:09:41.200
+like automatically loading the latest
+
+292
+00:09:41.200 --> 00:09:41.600
+and
+
+293
+00:09:41.600 --> 00:09:45.266
+my feed right it's my latest feed
+
+294
+00:09:45.266 --> 00:09:47.666
+right it's customized right it has value
+
+295
+00:09:47.666 --> 00:09:48.800
+to the customer
+
+296
+00:09:48.800 --> 00:09:50.866
+okay so now we can start painting a much
+
+297
+00:09:50.866 --> 00:09:53.200
+better image
+
+298
+00:09:53.200 --> 00:09:56.300
+of the system, yes from this narrative
+
+299
+00:09:56.300 --> 00:09:58.933
+we can come up with the scenarios or the
+
+300
+00:09:58.933 --> 00:10:01.733
+acceptance criteria
+
+301
+00:10:01.733 --> 00:10:04.466
+for example given the customer has
+
+302
+00:10:04.466 --> 00:10:05.500
+connectivity
+
+303
+00:10:05.500 --> 00:10:08.133
+when the customer requests to see the
+
+304
+00:10:08.133 --> 00:10:08.700
+feed
+
+305
+00:10:08.700 --> 00:10:10.366
+then the app should display the latest
+
+306
+00:10:10.366 --> 00:10:12.233
+feed from remote
+
+307
+00:10:12.233 --> 00:10:15.333
+and replace the cache with the new feed
+
+308
+00:10:15.333 --> 00:10:17.733
+okay so we need to cache the feed
+
+309
+00:10:17.733 --> 00:10:18.466
+somehow
+
+310
+00:10:18.466 --> 00:10:20.933
+right exactly by asking the right
+
+311
+00:10:20.933 --> 00:10:21.900
+questions
+
+312
+00:10:21.900 --> 00:10:23.833
+for example what happens if I don't have
+
+313
+00:10:23.833 --> 00:10:26.000
+connectivity we came up with the concept
+
+314
+00:10:26.000 --> 00:10:27.200
+of caching
+
+315
+00:10:27.200 --> 00:10:30.233
+the latest downloaded feed and that
+
+316
+00:10:30.233 --> 00:10:30.933
+created a
+
+317
+00:10:30.933 --> 00:10:34.366
+second narrative as an offline customer
+
+318
+00:10:34.366 --> 00:10:36.933
+I want the app to show the latest saved
+
+319
+00:10:36.933 --> 00:10:38.366
+version of my image feed
+
+320
+00:10:38.366 --> 00:10:40.300
+so I can always enjoy images of my
+
+321
+00:10:40.300 --> 00:10:42.633
+friends right so if you are in the tube
+
+322
+00:10:42.633 --> 00:10:44.133
+and you open the app you still see
+
+323
+00:10:44.133 --> 00:10:45.666
+something you don't see just an error
+
+324
+00:10:45.666 --> 00:10:46.700
+message
+
+325
+00:10:46.700 --> 00:10:48.933
+absolutely just by asking questions but
+
+326
+00:10:48.933 --> 00:10:49.900
+look how we
+
+327
+00:10:49.900 --> 00:10:53.100
+expanded the value yes we're breaking
+
+328
+00:10:53.100 --> 00:10:54.066
+down
+
+329
+00:10:54.066 --> 00:10:56.866
+the system requirements and we can
+
+330
+00:10:56.866 --> 00:10:58.233
+branch out
+
+331
+00:10:58.233 --> 00:11:01.500
+to the online and the offline
+
+332
+00:11:01.500 --> 00:11:04.533
+user experience and from there we can
+
+333
+00:11:04.533 --> 00:11:04.933
+even
+
+334
+00:11:04.933 --> 00:11:08.466
+branch out to if we have a cached
+
+335
+00:11:08.466 --> 00:11:10.300
+version of the feed if we don't have a
+
+336
+00:11:10.300 --> 00:11:11.900
+cached version of the feed what should
+
+337
+00:11:11.900 --> 00:11:12.866
+happen there
+
+338
+00:11:12.866 --> 00:11:15.833
+which lead us to more scenarios for
+
+339
+00:11:15.833 --> 00:11:16.700
+example
+
+340
+00:11:16.700 --> 00:11:17.900
+when the customer doesn't have
+
+341
+00:11:17.900 --> 00:11:20.066
+connectivity and requests to see the
+
+342
+00:11:20.066 --> 00:11:21.033
+feed
+
+343
+00:11:21.033 --> 00:11:22.933
+then the app should display the latest
+
+344
+00:11:22.933 --> 00:11:24.366
+feeds saved
+
+345
+00:11:24.366 --> 00:11:27.200
+but if there's nothing in the cache then
+
+346
+00:11:27.200 --> 00:11:28.700
+the app should display an error
+
+347
+00:11:28.700 --> 00:11:30.700
+right but the value proposition is to
+
+348
+00:11:30.700 --> 00:11:32.866
+always try to show something to the user
+
+349
+00:11:32.866 --> 00:11:35.200
+and that's the kind of value you can
+
+350
+00:11:35.200 --> 00:11:37.033
+only get by having a conversation from
+
+351
+00:11:37.033 --> 00:11:38.066
+technical people
+
+352
+00:11:38.066 --> 00:11:40.800
+with the business bridging the business
+
+353
+00:11:40.800 --> 00:11:42.133
+and the technical side
+
+354
+00:11:42.133 --> 00:11:44.233
+is super important to deliver value to
+
+355
+00:11:44.233 --> 00:11:45.500
+the customers
+
+356
+00:11:45.500 --> 00:11:47.600
+and as you can see we can write some
+
+357
+00:11:47.600 --> 00:11:49.200
+high high level tests
+
+358
+00:11:49.200 --> 00:11:51.266
+from those scenarios not just the test
+
+359
+00:11:51.266 --> 00:11:52.700
+right but through the tests
+
+360
+00:11:52.700 --> 00:11:55.833
+you can see components emerging you can
+
+361
+00:11:55.833 --> 00:11:57.266
+see behaviors emerging
+
+362
+00:11:57.266 --> 00:12:00.233
+and this shouldn't take hours and long
+
+363
+00:12:00.233 --> 00:12:01.200
+meetings no
+
+364
+00:12:01.200 --> 00:12:03.666
+this could be an informal conversation I
+
+365
+00:12:03.666 --> 00:12:06.300
+wouldn't even call this a meeting
+
+366
+00:12:06.300 --> 00:12:08.633
+yes yes absolutely, and there are other
+
+367
+00:12:08.633 --> 00:12:09.433
+approaches
+
+368
+00:12:09.433 --> 00:12:12.133
+right BDD is not the only way of doing
+
+369
+00:12:12.133 --> 00:12:12.633
+this
+
+370
+00:12:12.633 --> 00:12:15.333
+right I know you are a big fan of Ivar
+
+371
+00:12:15.333 --> 00:12:16.633
+Jacobson
+
+372
+00:12:16.633 --> 00:12:19.666
+guilty, so why don't you explain to us a
+
+373
+00:12:19.666 --> 00:12:21.200
+little bit about use cases
+
+374
+00:12:21.200 --> 00:12:24.366
+right so we can represent in another
+
+375
+00:12:24.366 --> 00:12:25.333
+form
+
+376
+00:12:25.333 --> 00:12:28.000
+pretty much what we had in the scenarios
+
+377
+00:12:28.000 --> 00:12:29.200
+of course it's not the same
+
+378
+00:12:29.200 --> 00:12:32.533
+but here we can see an algorithmic view
+
+379
+00:12:32.533 --> 00:12:35.900
+of what the system should be doing so in
+
+380
+00:12:35.900 --> 00:12:38.133
+this case we have the Load Feed
+
+381
+00:12:38.133 --> 00:12:41.900
+which has as input a URL
+
+382
+00:12:41.900 --> 00:12:44.866
+represented by the data and then we have
+
+383
+00:12:44.866 --> 00:12:46.366
+a primary course
+
+384
+00:12:46.366 --> 00:12:49.600
+which for this case we have denoted as
+
+385
+00:12:49.600 --> 00:12:51.033
+happy path as well
+
+386
+00:12:51.033 --> 00:12:55.500
+and then we have a sequence of steps
+
+387
+00:12:55.500 --> 00:12:58.533
+a finite sequence of steps actually that
+
+388
+00:12:58.533 --> 00:13:01.600
+this component should do
+
+389
+00:13:01.600 --> 00:13:04.533
+and I like how this doesn't talk about
+
+390
+00:13:04.533 --> 00:13:06.366
+user interface or
+
+391
+00:13:06.366 --> 00:13:09.833
+showing a feed to a user or pressing a
+
+392
+00:13:09.833 --> 00:13:11.200
+button
+
+393
+00:13:11.200 --> 00:13:14.233
+or any kind of user interaction with the
+
+394
+00:13:14.233 --> 00:13:15.033
+system
+
+395
+00:13:15.033 --> 00:13:17.500
+it's a much more procedural approach to
+
+396
+00:13:17.500 --> 00:13:19.600
+it maybe more technical they don't have
+
+397
+00:13:19.600 --> 00:13:20.066
+to be
+
+398
+00:13:20.066 --> 00:13:22.000
+but they are more technical in this case
+
+399
+00:13:22.000 --> 00:13:24.000
+and for me they are a complement
+
+400
+00:13:24.000 --> 00:13:25.433
+of the user stories I don't think we
+
+401
+00:13:25.433 --> 00:13:27.033
+have to choose between
+
+402
+00:13:27.033 --> 00:13:30.000
+BDD or use cases no I think we can start
+
+403
+00:13:30.000 --> 00:13:30.700
+from
+
+404
+00:13:30.700 --> 00:13:33.200
+the BDD story we can have conversations
+
+405
+00:13:33.200 --> 00:13:35.266
+we can improve it we can document that
+
+406
+00:13:35.266 --> 00:13:36.800
+and then from what we learn from those
+
+407
+00:13:36.800 --> 00:13:38.700
+stories and from those scenarios
+
+408
+00:13:38.700 --> 00:13:41.166
+we can start stretching out the more
+
+409
+00:13:41.166 --> 00:13:42.300
+technical side of it
+
+410
+00:13:42.300 --> 00:13:44.466
+with the use cases right absolutely for
+
+411
+00:13:44.466 --> 00:13:46.366
+example we have a concept here of
+
+412
+00:13:46.366 --> 00:13:49.166
+invalid data that we could have written
+
+413
+00:13:49.166 --> 00:13:49.733
+it
+
+414
+00:13:49.733 --> 00:13:52.700
+in our scenarios in our BDD stories but
+
+415
+00:13:52.700 --> 00:13:53.500
+I like to
+
+416
+00:13:53.500 --> 00:13:55.600
+have this more technical approach in a
+
+417
+00:13:55.600 --> 00:13:57.100
+separate format
+
+418
+00:13:57.100 --> 00:13:59.666
+as a developer I find it more readable
+
+419
+00:13:59.666 --> 00:14:01.100
+easier to digest
+
+420
+00:14:01.100 --> 00:14:03.033
+yes because it's a recipe that's what it
+
+421
+00:14:03.033 --> 00:14:04.800
+is it's a checklist right
+
+422
+00:14:04.800 --> 00:14:07.166
+it's just a sequence of steps that your
+
+423
+00:14:07.166 --> 00:14:08.000
+component
+
+424
+00:14:08.000 --> 00:14:10.066
+needs to do that's how we understand
+
+425
+00:14:10.066 --> 00:14:12.133
+things you know if it has a
+
+426
+00:14:12.133 --> 00:14:14.933
+beginning a middle and an end it's much
+
+427
+00:14:14.933 --> 00:14:16.233
+easier to digest
+
+428
+00:14:16.233 --> 00:14:18.133
+and the error cases of course and we
+
+429
+00:14:18.133 --> 00:14:19.900
+need the error cases there as well
+
+430
+00:14:19.900 --> 00:14:22.700
+we have the data input/output for
+
+431
+00:14:22.700 --> 00:14:24.633
+example the input is a URL
+
+432
+00:14:24.633 --> 00:14:28.066
+and the output is the feed items right
+
+433
+00:14:28.066 --> 00:14:29.833
+but it doesn't say it's an array of feed
+
+434
+00:14:29.833 --> 00:14:32.366
+items that's up to the developer
+
+435
+00:14:32.366 --> 00:14:34.700
+yeah we don't know if this is too high
+
+436
+00:14:34.700 --> 00:14:36.066
+level to understand
+
+437
+00:14:36.066 --> 00:14:37.433
+right now you know how we're going to
+
+438
+00:14:37.433 --> 00:14:39.733
+implement that and even though it reads
+
+439
+00:14:39.733 --> 00:14:40.866
+like a procedural
+
+440
+00:14:40.866 --> 00:14:43.733
+step-by-step thing it doesn't have to be
+
+441
+00:14:43.733 --> 00:14:45.100
+procedural code
+
+442
+00:14:45.100 --> 00:14:47.833
+you can use OO here for example you can
+
+443
+00:14:47.833 --> 00:14:49.333
+have a functional approach
+
+444
+00:14:49.333 --> 00:14:50.800
+we can have a bunch of objects
+
+445
+00:14:50.800 --> 00:14:52.633
+collaborating to achieve this
+
+446
+00:14:52.633 --> 00:14:55.900
+or a bunch of functions or monads, yes
+
+447
+00:14:55.900 --> 00:14:58.133
+exactly it might look procedural but it
+
+448
+00:14:58.133 --> 00:14:58.933
+doesn't mean that
+
+449
+00:14:58.933 --> 00:15:01.166
+all these steps are gonna happen
+
+450
+00:15:01.166 --> 00:15:02.366
+procedurally
+
+451
+00:15:02.366 --> 00:15:05.333
+in one method for instance of course not
+
+452
+00:15:05.333 --> 00:15:06.533
+when the time comes
+
+453
+00:15:06.533 --> 00:15:09.500
+we're gonna have to dive into a more
+
+454
+00:15:09.500 --> 00:15:10.233
+detailed
+
+455
+00:15:10.233 --> 00:15:12.000
+level where we're going to have to
+
+456
+00:15:12.000 --> 00:15:13.666
+follow different kind of principles
+
+457
+00:15:13.666 --> 00:15:15.900
+and these principles they talk about
+
+458
+00:15:15.900 --> 00:15:17.166
+code how to
+
+459
+00:15:17.166 --> 00:15:20.066
+structure and write your code here we're
+
+460
+00:15:20.066 --> 00:15:21.733
+talking about requirements we're talking
+
+461
+00:15:21.733 --> 00:15:22.233
+about
+
+462
+00:15:22.233 --> 00:15:24.700
+business requirements in this case so
+
+463
+00:15:24.700 --> 00:15:25.500
+it's open
+
+464
+00:15:25.500 --> 00:15:28.700
+yes it's an algorithm but it's open
+
+465
+00:15:28.700 --> 00:15:30.866
+how we're going to implement it and
+
+466
+00:15:30.866 --> 00:15:32.066
+another example
+
+467
+00:15:32.066 --> 00:15:34.133
+expanding the use cases we can have a
+
+468
+00:15:34.133 --> 00:15:35.166
+separate use case
+
+469
+00:15:35.166 --> 00:15:37.100
+that is the Load Feed Fallback if the
+
+470
+00:15:37.100 --> 00:15:38.800
+Load Feed fails
+
+471
+00:15:38.800 --> 00:15:40.800
+so it's for the offline customer
+
+472
+00:15:40.800 --> 00:15:42.066
+following again
+
+473
+00:15:42.066 --> 00:15:45.100
+this algorithmic approach we have a
+
+474
+00:15:45.100 --> 00:15:47.500
+primary course the happy path
+
+475
+00:15:47.500 --> 00:15:51.333
+that specifies what the recipe
+
+476
+00:15:51.333 --> 00:15:54.700
+for retrieving feed items is and
+
+477
+00:15:54.700 --> 00:15:58.000
+again we specify well what happens if we
+
+478
+00:15:58.000 --> 00:15:58.700
+don't have
+
+479
+00:15:58.700 --> 00:16:01.833
+a cache or we have no items in the cache
+
+480
+00:16:01.833 --> 00:16:02.533
+in this case
+
+481
+00:16:02.533 --> 00:16:05.733
+well we deliver no feed items
+
+482
+00:16:05.733 --> 00:16:07.833
+yeah and what is no feed items well
+
+483
+00:16:07.833 --> 00:16:09.033
+it's up to the developers
+
+484
+00:16:09.033 --> 00:16:11.666
+again exactly anyone can understand this
+
+485
+00:16:11.666 --> 00:16:13.166
+although it's more technical
+
+486
+00:16:13.166 --> 00:16:15.600
+than the BDD style yes it complements
+
+487
+00:16:15.600 --> 00:16:16.800
+the BDD style
+
+488
+00:16:16.800 --> 00:16:18.866
+by bridging and getting closer and
+
+489
+00:16:18.866 --> 00:16:21.033
+closer to the technical side
+
+490
+00:16:21.033 --> 00:16:24.466
+and when it is written and read by
+
+491
+00:16:24.466 --> 00:16:26.866
+business people it improves the quality
+
+492
+00:16:26.866 --> 00:16:28.066
+of the process
+
+493
+00:16:28.066 --> 00:16:30.066
+absolutely it facilitates the whole
+
+494
+00:16:30.066 --> 00:16:32.133
+process of the development
+
+495
+00:16:32.133 --> 00:16:34.800
+and it improves communication for sure
+
+496
+00:16:34.800 --> 00:16:36.300
+just to be more precise not just
+
+497
+00:16:36.300 --> 00:16:38.000
+business people writing it but
+
+498
+00:16:38.000 --> 00:16:40.133
+in collaboration with developers when
+
+499
+00:16:40.133 --> 00:16:41.666
+they both sit down and write this
+
+500
+00:16:41.666 --> 00:16:42.633
+together
+
+501
+00:16:42.633 --> 00:16:44.233
+and yeah these are roles right it
+
+502
+00:16:44.233 --> 00:16:46.066
+doesn't mean that a developer cannot be
+
+503
+00:16:46.066 --> 00:16:47.033
+a
+
+504
+00:16:47.033 --> 00:16:49.333
+you know a "business person" in air quotes
+
+505
+00:16:49.333 --> 00:16:50.366
+oh yeah you can
+
+506
+00:16:50.366 --> 00:16:52.466
+right these are just roles I mean
+
+507
+00:16:52.466 --> 00:16:53.900
+usually there are separate people
+
+508
+00:16:53.900 --> 00:16:56.366
+conforming to these roles you know
+
+509
+00:16:56.366 --> 00:16:59.333
+but yeah it could be and finally the
+
+510
+00:16:59.333 --> 00:17:00.466
+last use case
+
+511
+00:17:00.466 --> 00:17:03.600
+would be to Save the Feed Items in the
+
+512
+00:17:03.600 --> 00:17:04.066
+cache
+
+513
+00:17:04.066 --> 00:17:06.466
+where we execute the save items command
+
+514
+00:17:06.466 --> 00:17:07.500
+with the data
+
+515
+00:17:07.500 --> 00:17:09.100
+provided then the system is going to
+
+516
+00:17:09.100 --> 00:17:10.700
+encode the items we're going to
+
+517
+00:17:10.700 --> 00:17:11.733
+timestamp it
+
+518
+00:17:11.733 --> 00:17:13.033
+it's going to replace the cache with the
+
+519
+00:17:13.033 --> 00:17:15.166
+new data and then deliver a success
+
+520
+00:17:15.166 --> 00:17:16.066
+message yes
+
+521
+00:17:16.066 --> 00:17:17.666
+if you have this requirement wouldn't it
+
+522
+00:17:17.666 --> 00:17:20.400
+be much easier to implement the feature
+
+523
+00:17:20.400 --> 00:17:22.400
+and now if you don't have 15 minutes to
+
+524
+00:17:22.400 --> 00:17:23.500
+half an hour
+
+525
+00:17:23.500 --> 00:17:25.733
+to come up with good requirements you
+
+526
+00:17:25.733 --> 00:17:26.866
+have bigger problems
+
+527
+00:17:26.866 --> 00:17:30.066
+exactly than bad requirements yes yes
+
+528
+00:17:30.066 --> 00:17:31.566
+right there's something wrong in there
+
+529
+00:17:31.566 --> 00:17:33.666
+that needs to be solved
+
+530
+00:17:33.666 --> 00:17:36.233
+but look at all the details we come up
+
+531
+00:17:36.233 --> 00:17:37.500
+with
+
+532
+00:17:37.500 --> 00:17:39.733
+from a basic story that's the process
+
+533
+00:17:39.733 --> 00:17:41.333
+you start with a bad story
+
+534
+00:17:41.333 --> 00:17:44.233
+and you improve it in collaboration with
+
+535
+00:17:44.233 --> 00:17:45.433
+the business
+
+536
+00:17:45.433 --> 00:17:48.533
+the goal is to crush the assumptions and
+
+537
+00:17:48.533 --> 00:17:49.900
+that's what this
+
+538
+00:17:49.900 --> 00:17:53.333
+process does you eliminate them
+
+539
+00:17:53.333 --> 00:17:55.666
+you know more and more and more about
+
+540
+00:17:55.666 --> 00:17:56.633
+the system
+
+541
+00:17:56.633 --> 00:17:58.700
+and about the requirements about what
+
+542
+00:17:58.700 --> 00:18:00.466
+the customer needs
+
+543
+00:18:00.466 --> 00:18:03.666
+that's why we believe it's so valuable
+
+544
+00:18:03.666 --> 00:18:06.000
+there are even other ways to represent
+
+545
+00:18:06.000 --> 00:18:07.666
+those requirements to improve
+
+546
+00:18:07.666 --> 00:18:10.933
+the knowledge sharing right other views
+
+547
+00:18:10.933 --> 00:18:13.100
+absolutely like the flowchart for
+
+548
+00:18:13.100 --> 00:18:14.000
+example
+
+549
+00:18:14.000 --> 00:18:16.133
+another problem of working with bad
+
+550
+00:18:16.133 --> 00:18:17.266
+stories is that
+
+551
+00:18:17.266 --> 00:18:19.100
+how would you make a flow chart for
+
+552
+00:18:19.100 --> 00:18:21.100
+example from this story
+
+553
+00:18:21.100 --> 00:18:24.233
+right it would be sequential very linear
+
+554
+00:18:24.233 --> 00:18:24.533
+right
+
+555
+00:18:24.533 --> 00:18:27.600
+very linear, Show feed screen
+
+556
+00:18:27.600 --> 00:18:30.533
+Fetch new items, Update screen, profit
+
+557
+00:18:30.533 --> 00:18:31.200
+yeah
+
+558
+00:18:31.200 --> 00:18:35.500
+well maybe, maybe hopefully
+
+559
+00:18:35.500 --> 00:18:38.000
+it's like is this the path we are
+
+560
+00:18:38.000 --> 00:18:39.100
+implementing here
+
+561
+00:18:39.100 --> 00:18:41.033
+I don't think so because the actual
+
+562
+00:18:41.033 --> 00:18:43.100
+value is better defined
+
+563
+00:18:43.100 --> 00:18:45.200
+in this detailed document now if we
+
+564
+00:18:45.200 --> 00:18:46.400
+drive a flow chart
+
+565
+00:18:46.400 --> 00:18:49.333
+from the detail requirements it will be
+
+566
+00:18:49.333 --> 00:18:50.633
+much more descriptive
+
+567
+00:18:50.633 --> 00:18:53.433
+like this one right look how we show the
+
+568
+00:18:53.433 --> 00:18:54.400
+feed screen
+
+569
+00:18:54.400 --> 00:18:56.866
+we fetch the new items and then we have
+
+570
+00:18:56.866 --> 00:18:58.066
+different paths
+
+571
+00:18:58.066 --> 00:19:01.333
+from that yes if it succeeds we cache
+
+572
+00:19:01.333 --> 00:19:02.700
+the new items
+
+573
+00:19:02.700 --> 00:19:05.033
+and we update the feed, if it does not
+
+574
+00:19:05.033 --> 00:19:06.933
+succeed to fetch the new items
+
+575
+00:19:06.933 --> 00:19:09.033
+then we try to load it from the cache
+
+576
+00:19:09.033 --> 00:19:10.133
+and update the feed screen
+
+577
+00:19:10.133 --> 00:19:12.233
+right this is much more descriptive and
+
+578
+00:19:12.233 --> 00:19:13.600
+anyone can understand this
+
+579
+00:19:13.600 --> 00:19:15.333
+I can show this to anyone in the
+
+580
+00:19:15.333 --> 00:19:17.033
+business side I can show this to
+
+581
+00:19:17.033 --> 00:19:19.733
+a developer as well it's very clear but
+
+582
+00:19:19.733 --> 00:19:21.666
+we can only come up with this flowchart
+
+583
+00:19:21.666 --> 00:19:22.933
+by understanding
+
+584
+00:19:22.933 --> 00:19:24.533
+what we are building and then we can
+
+585
+00:19:24.533 --> 00:19:26.400
+represent the detail requirements
+
+586
+00:19:26.400 --> 00:19:29.433
+in different visual forms and one of
+
+587
+00:19:29.433 --> 00:19:30.066
+those
+
+588
+00:19:30.066 --> 00:19:34.533
+is our beloved modular architecture
+
+589
+00:19:34.533 --> 00:19:38.066
+so look at that we started from the
+
+590
+00:19:38.066 --> 00:19:40.466
+bad requirement you know the zoomed out
+
+591
+00:19:40.466 --> 00:19:41.900
+version of the requirement and then we
+
+592
+00:19:41.900 --> 00:19:43.500
+dived in, we dived in
+
+593
+00:19:43.500 --> 00:19:46.400
+and at the end we come back to this
+
+594
+00:19:46.400 --> 00:19:47.200
+design
+
+595
+00:19:47.200 --> 00:19:49.833
+this is the byproduct of the whole
+
+596
+00:19:49.833 --> 00:19:50.766
+process
+
+597
+00:19:50.766 --> 00:19:53.033
+of breaking down the requirements and
+
+598
+00:19:53.033 --> 00:19:54.300
+ending up
+
+599
+00:19:54.300 --> 00:19:56.866
+here the architecture the design is
+
+600
+00:19:56.866 --> 00:19:58.233
+derived from
+
+601
+00:19:58.233 --> 00:20:00.066
+the requirements and by getting better
+
+602
+00:20:00.066 --> 00:20:02.233
+requirements we understand better
+
+603
+00:20:02.233 --> 00:20:03.500
+the problem we understand better
+
+604
+00:20:03.500 --> 00:20:05.200
+the value position and we may even
+
+605
+00:20:05.200 --> 00:20:06.000
+understand better
+
+606
+00:20:06.000 --> 00:20:07.666
+how this product can evolve in the
+
+607
+00:20:07.666 --> 00:20:10.000
+future so we can come up with better
+
+608
+00:20:10.000 --> 00:20:12.400
+designs for our code it's all
+
+609
+00:20:12.400 --> 00:20:13.333
+interconnected
+
+610
+00:20:13.333 --> 00:20:16.233
+you cannot separate architecture you cannot
+
+611
+00:20:16.233 --> 00:20:16.866
+separate
+
+612
+00:20:16.866 --> 00:20:18.766
+testing you cannot separate value we
+
+613
+00:20:18.766 --> 00:20:20.133
+cannot separate business it cannot
+
+614
+00:20:20.133 --> 00:20:21.333
+separate developers
+
+615
+00:20:21.333 --> 00:20:23.600
+everything is connected so the only way
+
+616
+00:20:23.600 --> 00:20:25.433
+to come up with good solutions
+
+617
+00:20:25.433 --> 00:20:27.900
+is to have good communication absolutely
+
+618
+00:20:27.900 --> 00:20:29.100
+in my opinion this is
+
+619
+00:20:29.100 --> 00:20:30.766
+the single most important thing
+
+620
+00:20:30.766 --> 00:20:32.633
+understand what is going on
+
+621
+00:20:32.633 --> 00:20:34.466
+eliminate assumptions I know we
+
+622
+00:20:34.466 --> 00:20:36.866
+mentioned so many times but it is true
+
+623
+00:20:36.866 --> 00:20:39.200
+so yeah we need to find a way to
+
+624
+00:20:39.200 --> 00:20:40.633
+eliminate the assumptions
+
+625
+00:20:40.633 --> 00:20:43.033
+and communicate with our team with the
+
+626
+00:20:43.033 --> 00:20:43.900
+developer team
+
+627
+00:20:43.900 --> 00:20:47.100
+with other teams even better that's the
+
+628
+00:20:47.100 --> 00:20:47.733
+process
+
+629
+00:20:47.733 --> 00:20:49.833
+as you said it doesn't take too much I
+
+630
+00:20:49.833 --> 00:20:51.200
+mean of course
+
+631
+00:20:51.200 --> 00:20:53.266
+when you start out it's going to take a
+
+632
+00:20:53.266 --> 00:20:54.300
+lot of time
+
+633
+00:20:54.300 --> 00:20:56.766
+you'll improve as with anything that we
+
+634
+00:20:56.766 --> 00:20:58.000
+do right
+
+635
+00:20:58.000 --> 00:21:01.333
+and 15 minutes, 20 minutes for something
+
+636
+00:21:01.333 --> 00:21:02.933
+for a feature like this yeah it's
+
+637
+00:21:02.933 --> 00:21:04.866
+definitely enough
+
+638
+00:21:04.866 --> 00:21:06.933
+even if it takes longer right what if it
+
+639
+00:21:06.933 --> 00:21:07.900
+takes
+
+640
+00:21:07.900 --> 00:21:11.033
+maybe an hour, two hours as long as it
+
+641
+00:21:11.033 --> 00:21:12.066
+pays off
+
+642
+00:21:12.066 --> 00:21:14.233
+as long as we gather the requirements we
+
+643
+00:21:14.233 --> 00:21:15.200
+need
+
+644
+00:21:15.200 --> 00:21:18.066
+yes absolutely what's the quote if I
+
+645
+00:21:18.066 --> 00:21:19.033
+have six hours
+
+646
+00:21:19.033 --> 00:21:21.333
+to cut down a tree I'm gonna spend four
+
+647
+00:21:21.333 --> 00:21:22.400
+hours
+
+648
+00:21:22.400 --> 00:21:25.200
+sharpening my axe right well that's it
+
+649
+00:21:25.200 --> 00:21:25.900
+right it's
+
+650
+00:21:25.900 --> 00:21:28.233
+pretty much the same thing here and we
+
+651
+00:21:28.233 --> 00:21:29.266
+do that
+
+652
+00:21:29.266 --> 00:21:33.033
+to eliminate the risk as much as we can
+
+653
+00:21:33.033 --> 00:21:34.866
+as much as we can yes we try to
+
+654
+00:21:34.866 --> 00:21:36.766
+eliminate the risk of doing mistakes
+
+655
+00:21:36.766 --> 00:21:39.266
+because mistakes are what are costing
+
+656
+00:21:39.266 --> 00:21:40.133
+businesses
+
+657
+00:21:40.133 --> 00:21:42.933
+a lot of money and we shouldn't be
+
+658
+00:21:42.933 --> 00:21:45.433
+accomplices in costing businesses a lot
+
+659
+00:21:45.433 --> 00:21:46.233
+of money
+
+660
+00:21:46.233 --> 00:21:48.000
+because we are hurting ourselves at the
+
+661
+00:21:48.000 --> 00:21:50.000
+end of the day, communication
+
+662
+00:21:50.000 --> 00:21:52.400
+is key so now that we laid out this
+
+663
+00:21:52.400 --> 00:21:53.100
+foundation
+
+664
+00:21:53.100 --> 00:21:55.666
+for our proposed architecture let's stop
+
+665
+00:21:55.666 --> 00:21:57.033
+here and in next episodes
+
+666
+00:21:57.033 --> 00:21:59.833
+we can start actually implementing it
+
+667
+00:21:59.833 --> 00:22:00.300
+yeah
+
+668
+00:22:00.300 --> 00:22:01.833
+can't wait for it and we'll see you
+
+669
+00:22:01.833 --> 00:22:13.900
+again next time

@@ -1,0 +1,10 @@
+1. 此講座涵蓋將大型 Model-View-Controller (MVC) 控制器重構成較小的 MVC 的內容。
+2. 重點在於一個特定的例子，即 FeedViewController，該例子管理 feed 加載與更新 UIRefreshControl view、處理 feed 狀態並填充一個表格視圖，創建並配對 FeedImageCells 與其相關數據，並處理圖像請求的加載狀態。
+3. 在此重構過程中，一項重要原則是，模型和視圖應該是精簡的，單一職責的實體，它們不應互相依賴。每個 MVC 組內的行動都是透過控制器來進行調解。
+4. 儘管碼落得整齊，FeedViewController 因新功能的增加而面臨依賴性和職責增加的問題，這需要智能的依賴性和職責管理。
+5. 重構過程的第一步是為 FeedViewController 的不同部分創建新的控制器。例如，創建了一個新的控制器 FeedRefreshViewController，用以管理 FeedLoader 狀態；另一個 FeedImageCellController，則負責為每個 cell 創建，配置和管理 feed 圖像狀態。
+6. 有了責任分配，FeedViewController 變得更加精簡。然而，它新獲得了創建與溝通新建的控制器的責任。這導致了更多的依賴性，並未解決最初的問題。
+7. 為瞭解決這個問題，創建了一個 FeedUIComposer 類，將創建依賴性的責任從 FeedViewController 移走。FeedViewController 則僅僅使用它的依賴性，而不是創建他們。
+8. 有了這樣的架構設計變更，FeedViewController 的依賴項，例如 FeedLoader, FeedImage, FeedImageDataLoader, DataLoaderTask，都移動到了 FeedUIComposer中。
+9. 講座的一個重要註解是，在整個過程中，檢查程序預期行為的測試都保持未變。
+10. 講座最後提及了再分配職責的可能進一步步驟，例如創建更特定的控制器，並介紹了下一講座的主題：Model-View-ViewModel (MVVM) 設計模式。

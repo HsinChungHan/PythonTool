@@ -1,0 +1,1661 @@
+
+1
+00:00:00.880 --> 00:00:10.000
+Hi everyone and welcome. We'll continue our series on tooling and our mini series on Crashes and Crash
+
+2
+00:00:10.000 --> 00:00:19.280
+reports with a practical session. Hopefully this will bring more light to past lectures we did
+
+3
+00:00:19.280 --> 00:00:27.360
+on a more theoretical part on Crashes and Crash reports. I know this might be a scary topic.
+
+4
+00:00:27.360 --> 00:00:35.760
+I remember when I was a junior developer he struggled with Crashes a lot and whenever somebody
+
+5
+00:00:35.760 --> 00:00:41.520
+assigned a Crash to me or I had to deal with that it was kind of an unknown territory. So
+
+6
+00:00:42.720 --> 00:00:49.920
+to help you with that we add to the curricula where we have already two lectures on the more
+
+7
+00:00:49.920 --> 00:00:56.320
+theoretical side like what's an app termination, why do they happen, how do you acquire Crash reports,
+
+8
+00:00:56.320 --> 00:01:05.680
+how do you symbolicate. So you see the full backtrace and this lecture today is on hands on
+
+9
+00:01:05.680 --> 00:01:16.560
+Crashes which happens on devices most commonly and how to approach this. So let's get into it.
+
+10
+00:01:18.640 --> 00:01:25.520
+The agenda for today pretty straightforward. We'll talk about a few types of Crashes and
+
+11
+00:01:25.520 --> 00:01:30.640
+how to approach them and at the end if we have questions we'll do a Q&A.
+
+12
+00:01:36.640 --> 00:01:44.800
+So the first type of Crash is a Swift runtime Crash now that a lot of apps have Swift code
+
+13
+00:01:44.800 --> 00:01:53.120
+into them and when it comes to programming Errors that lead to a Crash Swift and Objective-C are
+
+14
+00:01:53.120 --> 00:02:00.480
+different because in Objective-C different Errors will lead to different Crash types while almost
+
+15
+00:02:00.480 --> 00:02:07.760
+all the Errors related to Swift programming Errors will follow a similar pattern.
+
+16
+00:02:10.000 --> 00:02:15.040
+So depending on how much Swift code you have in your app you see more or less of these.
+
+17
+00:02:15.040 --> 00:02:24.080
+Swift uses memory safety techniques to catch programming Errors early and if you use like a
+
+18
+00:02:24.080 --> 00:02:32.000
+force unwrap on an optional type that can have a new value of course or if you use the forecasting
+
+19
+00:02:32.000 --> 00:02:42.000
+so as an exclamation mark to a wrong type then the Swift runtime will catch these Errors and
+
+20
+00:02:42.000 --> 00:02:50.880
+intentionally Crash the app. And I've simulated such such a Crash actually I've simulated multiple
+
+21
+00:02:51.440 --> 00:03:02.480
+types of Crashes with our EssentialApp repository and we'll kind of look at them see what's
+
+22
+00:03:02.480 --> 00:03:07.440
+different what's particular for each type. So for this one we're going to look at the
+
+23
+00:03:07.440 --> 00:03:12.480
+see what's different what's particular for each type. So for this first type
+
+24
+00:03:16.480 --> 00:03:24.240
+like I said most of these Crashes follow a pattern which is identifiable in the Crash report
+
+25
+00:03:26.000 --> 00:03:33.840
+because on ARM processors and ARM processors are on iOS, iPadOS, watchOS and tvOS
+
+26
+00:03:33.840 --> 00:03:41.280
+the exception type is this XCBreakpoint and the signal is seek trap. So
+
+27
+00:03:42.640 --> 00:03:47.360
+when we see XCBreakpoint and seek trap we're probably looking at the Swift runtime Crash.
+
+28
+00:03:52.000 --> 00:04:02.560
+While on inter processors which are the older Macs and the simulators we'll see a different
+
+29
+00:04:02.560 --> 00:04:08.160
+we'll see a different exception type which is the XC bad instruction and the sigil signal.
+
+30
+00:04:13.600 --> 00:04:15.120
+So back to our example here.
+
+31
+00:04:17.760 --> 00:04:22.080
+Additionally the Crash report shows the Thread that encountered the Error
+
+32
+00:04:22.080 --> 00:04:34.320
+and the first frames at the top of the Thread will indicate the culprit or the the line where
+
+33
+00:04:34.320 --> 00:04:46.320
+the problem exists. In our case here the first four so zero to three are just exception figures
+
+34
+00:04:46.320 --> 00:04:52.720
+are just exception figures and the first function call from the stack trace
+
+35
+00:04:53.680 --> 00:04:58.160
+that's inside the EssentialApp is this Main View body gather
+
+36
+00:04:58.160 --> 00:05:02.560
+and the Main View Swift line 11 that's where the problem lies.
+
+37
+00:05:05.600 --> 00:05:13.920
+And yeah like I said the breakpoint exception type this XCBreakpoint indicates a trace trap
+
+38
+00:05:13.920 --> 00:05:20.560
+that interrupted the process and a trace trap gives an attached debugger the chance to interrupt
+
+39
+00:05:20.560 --> 00:05:28.720
+the process at a specific point in its execution. The Swift runtime uses trace traps to specific
+
+40
+00:05:28.720 --> 00:05:36.160
+types of unrecoverable Errors so some lower level libraries such as dispatch or others
+
+41
+00:05:36.160 --> 00:05:42.800
+trap the process with this exception upon encountering an unrecoverable Error and they
+
+42
+00:05:42.800 --> 00:05:50.000
+log additional information about the Error in an additional information section of the Crash report.
+
+43
+00:05:50.560 --> 00:05:57.840
+In our case this is the application application specific information where we find a detailed
+
+44
+00:05:57.840 --> 00:06:05.680
+Error about the Crash so on line 11 in the Main View.Swift we have a fatal Error unexpectedly
+
+45
+00:06:05.680 --> 00:06:11.440
+found nil while unwrapping an optional value so this is super explicit we know that we're
+
+46
+00:06:11.440 --> 00:06:23.280
+force unwrapping an optional which is nil. But this specific explicit information
+
+47
+00:06:24.160 --> 00:06:30.720
+like I'm showing here is obfuscated from Crash reports that come from iOS, iPadOS,
+
+48
+00:06:30.720 --> 00:06:37.920
+watchOS and tvOS due to the user's privacy being protected so you won't always see this
+
+49
+00:06:37.920 --> 00:06:45.440
+extra information. That's why it's useful to try to replicate the Crash in your simulator
+
+50
+00:06:46.160 --> 00:06:50.400
+because that's when you'll be able to see this extra info.
+
+51
+00:06:56.720 --> 00:07:04.080
+So a few examples of Swift code that Result in this type of Crash. The first one is the one you
+
+52
+00:07:04.080 --> 00:07:09.120
+just saw so force unwrapping an optional with a nil value we just have an optional that has nil
+
+53
+00:07:09.120 --> 00:07:16.480
+and we force unwrap try to print it and it will Crash as you I'm sure you know. Another example
+
+54
+00:07:16.480 --> 00:07:24.240
+would be accessing an Array element with an out out of bound index so if we have an empty Array
+
+55
+00:07:24.240 --> 00:07:32.240
+and try to get the element with index one we'll also get a Crash same signature. Another example
+
+56
+00:07:32.240 --> 00:07:38.720
+would be force trying on an instruction that throws an exception so in this case we use the
+
+57
+00:07:38.720 --> 00:07:45.040
+JSONDecoder and try to decode into something from an empty data which will most likely fail.
+
+58
+00:07:49.680 --> 00:07:56.720
+And instructions which instantly generate a Crash or assertion failures or fatal Error.
+
+59
+00:07:56.720 --> 00:08:01.600
+The takeaway here is that when you see a Crash with the exception type XCBreakpoint and seek
+
+60
+00:08:01.600 --> 00:08:10.480
+trap as the signal or the XC bad instruction for inter processors there's a high chance it's coming
+
+61
+00:08:10.480 --> 00:08:16.880
+from a Swift runtime Error. So just inspect the backtrace of the Crash Thread and that should
+
+62
+00:08:16.880 --> 00:08:22.880
+give you the exact function and line where the Error happened. So depending on the actual code
+
+63
+00:08:22.880 --> 00:08:30.720
+on that line you should get an idea on how to proceed like for example use an E flat to unwrap
+
+64
+00:08:30.720 --> 00:08:37.520
+an optional or adding a catch block to avoid a forced try or something like that. So it really
+
+65
+00:08:37.520 --> 00:08:54.000
+depends on on the Error. Next I want to talk about an Objective-C type of Crash
+
+66
+00:08:54.960 --> 00:08:58.560
+which is coming from uncaught language exceptions.
+
+67
+00:08:58.560 --> 00:09:08.080
+So this Crash uses the xccrash Message and the seek abort signal and it indicates the process
+
+68
+00:09:08.080 --> 00:09:14.240
+terminated because it receives this abort signal. Typically this signal is sent because a function
+
+69
+00:09:14.240 --> 00:09:22.240
+in the process called abort such as when an app encounters an uncaught Objective-C or C++ language
+
+70
+00:09:22.240 --> 00:09:32.960
+exception. Again we have an example here. So like I said the exception type xccrash seek abort
+
+71
+00:09:35.520 --> 00:09:40.720
+and the uncaught exception handler provided by the OS logs the exception Message to the console
+
+72
+00:09:40.720 --> 00:09:46.720
+before terminating the process. So if you reproduce the Crash resulting from a language exception
+
+73
+00:09:46.720 --> 00:09:52.960
+with the Xcode debugger attached to your app you can see this Message. So similarly like in the
+
+74
+00:09:52.960 --> 00:09:59.760
+previous example there's an application specific information that you only get if you're on a
+
+75
+00:09:59.760 --> 00:10:08.640
+simulator because those are obfuscated on iOS, iPadOS and the other platforms. You'll see the exact
+
+76
+00:10:09.360 --> 00:10:16.640
+type of problem. So here is terminating with uncaught exception of type XC. So you can see
+
+77
+00:10:16.640 --> 00:10:27.200
+NSException and it's an NSRangeException where you see exactly like trying to get index one beyond
+
+78
+00:10:27.200 --> 00:10:34.880
+bounds of empty NSArray. So really explicit again. Also a Crash due to a language exception that
+
+79
+00:10:34.880 --> 00:10:45.040
+isn't caught has a last exception backtrace. So if you remember our Crash report structure
+
+80
+00:10:45.040 --> 00:10:52.560
+all of them have this Thread crashed and the stack but for the ones that have an uncaught
+
+81
+00:10:52.560 --> 00:11:00.000
+exception there's also a last exception backtrace which will show us exactly the trace that led to
+
+82
+00:11:00.000 --> 00:11:07.760
+the exception. Verify this backtrace is present to confirm the Crash is indeed coming from a language
+
+83
+00:11:07.760 --> 00:11:16.880
+exception. If we look at the first lines you see exception pre process and obfuscate exception
+
+84
+00:11:16.880 --> 00:11:22.160
+throw so we really confirm the hypothesis that we're looking at a language exception.
+
+85
+00:11:23.680 --> 00:11:33.520
+And the lines calling that give us the exact part of our code that called the method which
+
+86
+00:11:33.520 --> 00:11:41.360
+caused the exception. So in our case from my class.m line 11 we have a function which
+
+87
+00:11:41.360 --> 00:11:46.720
+I named Crash with index auto bound exception. So it's really clear. And then we see that
+
+88
+00:11:47.440 --> 00:11:53.360
+the Crash happens inside core Foundation on an NSArray object enumerator.
+
+89
+00:11:53.360 --> 00:12:04.000
+Enumerator. So again pretty straightforward. An example of code that generated this Crash
+
+90
+00:12:04.000 --> 00:12:11.120
+is just creating an empty NSArray and again trying to access the element with an index
+
+91
+00:12:11.120 --> 00:12:22.480
+auto bounds in this case index one. Another example would be to not implement the required
+
+92
+00:12:22.480 --> 00:12:30.160
+method of a Protocol because Objective-C is such a dynamic language that we can pass an object
+
+93
+00:12:30.880 --> 00:12:40.480
+using the ID type and then cast it to Protocol type. So if it's missing a required method from
+
+94
+00:12:40.480 --> 00:12:51.040
+that Protocol then we'll get an exception uncut exception Crash. And the takeaway here is that
+
+95
+00:12:51.040 --> 00:12:57.920
+Crashes caused by Objective-C or C++ uncut exceptions have this XC Crash and SIGABORT
+
+96
+00:12:59.680 --> 00:13:02.880
+exception Message. So they're easy to identify.
+
+97
+00:13:08.240 --> 00:13:16.320
+Next let's talk about watchdog Crashes. I've mentioned this a few times but it's never enough.
+
+98
+00:13:16.320 --> 00:13:23.920
+So iOS and watchOS employ a watchdog component that is a simple component that just monitors
+
+99
+00:13:23.920 --> 00:13:29.040
+launch times and app responsiveness and just terminates unresponsive apps.
+
+100
+00:13:30.320 --> 00:13:35.520
+When this happens the system will generate a Crash report. But please note that neither
+
+101
+00:13:35.520 --> 00:13:42.720
+Apple's service that collects Crash reports nor a third party service like Firebase Crashlytics,
+
+102
+00:13:42.720 --> 00:13:49.520
+none of them will collect and display these watchdog Crashes. So you need to get these directly
+
+103
+00:13:49.520 --> 00:13:55.360
+from the users as I have shown in the lecture about acquiring Crash reports. So they can either
+
+104
+00:13:55.360 --> 00:14:04.160
+send you the Crash report or but there's no service that will collect these watchdog Crashes. So
+
+105
+00:14:04.160 --> 00:14:13.040
+Crashes so they are a bit under the radar. To talk about their particularity they use the
+
+106
+00:14:13.040 --> 00:14:21.040
+XC Crash Message and the SIGKILL this time. So last time it was SIGKILL. This is SIGKILL signal
+
+107
+00:14:21.040 --> 00:14:27.200
+which indicates the OS terminated the process and the Crash report contains a termination reason
+
+108
+00:14:27.200 --> 00:14:32.880
+with a code that explains the reason for the Crash. And this code can have multiple values as
+
+109
+00:14:32.880 --> 00:14:41.040
+we'll see. If this code is 8 bad food then the operating system watchdog has terminated the app.
+
+110
+00:14:42.960 --> 00:14:51.200
+Let's see how an example looks. So the exception type XC Crash and SIGKILL
+
+111
+00:14:53.440 --> 00:14:59.600
+and we'll also see a bunch of information coming from the watchdog. So watchdog event,
+
+112
+00:14:59.600 --> 00:15:06.880
+watchdog visibility, CPU statistics and you also see this code I mentioned so 8 bad food
+
+113
+00:15:08.800 --> 00:15:12.080
+which is explicit to watchdog Crashes.
+
+114
+00:15:19.200 --> 00:15:24.960
+The watchdog terminates apps that block the Main Thread for a significant time and there are many
+
+115
+00:15:24.960 --> 00:15:32.000
+ways to block the Main Thread for an extended time such as synchronous Networking, processing
+
+116
+00:15:32.000 --> 00:15:40.000
+large amounts of data such as a large JSON File or 3d Model, triggering lightweight migration for
+
+117
+00:15:40.000 --> 00:15:47.440
+large CoreDataStore synchronously and more. And just to understand why blocking the Main Thread
+
+118
+00:15:47.440 --> 00:15:53.760
+is an issue consider this most common example. Loading data into the UI from a synchronous
+
+119
+00:15:53.760 --> 00:16:01.120
+Network call. If the Main Thread is busy with this Network call the system cannot handle UI events
+
+120
+00:16:01.120 --> 00:16:08.800
+such as multiple scroll events until after completing the Network call. So if this Network
+
+121
+00:16:08.800 --> 00:16:17.040
+call takes a long time there's a significant time when the user scrolls your UI and until the app
+
+122
+00:16:17.040 --> 00:16:23.360
+actually responds to those scroll events. And I know you already seen this in practice and you
+
+123
+00:16:23.360 --> 00:16:32.160
+know this makes the app feel really unresponsive. All the watchdog Crashes contain details about
+
+124
+00:16:32.160 --> 00:16:38.560
+the slow app state transition that caused the watchdog to close the app. And you can use the
+
+125
+00:16:38.560 --> 00:16:47.680
+Crash Thread backtrace to see what the culprits are. In our case we see it's the AppDelegate
+
+126
+00:16:47.680 --> 00:16:54.000
+application did finish launching and once we have this information we can use Instruments and in
+
+127
+00:16:54.000 --> 00:17:01.040
+this particular case time profiler is perfect to inspect the same app transition and just see why
+
+128
+00:17:01.040 --> 00:17:08.560
+it's taking so long so what's actually being executed there. And you might find ways to make
+
+129
+00:17:08.560 --> 00:17:16.080
+these operations faster but in some cases like in case of a Network call you need to make you might
+
+130
+00:17:16.080 --> 00:17:21.280
+just need to move the heavy work to a background Thread and leave the Main Thread available to
+
+131
+00:17:21.280 --> 00:17:28.880
+handle UI gestures and UI updates. So that might be the Strategy depending on what you find there.
+
+132
+00:17:32.400 --> 00:17:38.640
+So a good Strategy is to always return as fast as possible from UI key Delegate methods since
+
+133
+00:17:38.640 --> 00:17:44.160
+they are executed on the Main Thread and we want to quickly free up the Main Thread to handle these
+
+134
+00:17:44.160 --> 00:17:51.040
+UI events and updates. And the same goes for SceneDelegate AppDelegate method calls just return
+
+135
+00:17:51.040 --> 00:17:56.800
+fast and give back the control to the system to avoid any operations that might take a longer time
+
+136
+00:17:57.760 --> 00:18:04.080
+like a Network call loading from this or writing to this performing heavy computations and so on.
+
+137
+00:18:06.000 --> 00:18:12.560
+Remember that you will not get these watchdog Crashes in any dashboard so make sure to get
+
+138
+00:18:12.560 --> 00:18:19.440
+them from your testers if they tell you that it happened. Also you should be periodically
+
+139
+00:18:19.440 --> 00:18:25.440
+monitoring metrics like your app startup time and just be proactive about it and try to improve it.
+
+140
+00:18:26.640 --> 00:18:33.280
+Unless you're working on a really large app you should be able to start your app in half a second
+
+141
+00:18:33.280 --> 00:18:45.440
+that's Apple's recommendation so measure this and try to keep it on the half a second. Next
+
+142
+00:18:46.880 --> 00:18:56.240
+OS termination which uses the xccrash exception type and the SQL signal
+
+143
+00:18:56.240 --> 00:19:04.400
+and it indicates the OS terminated the process and the Crash report contains a termination reason
+
+144
+00:19:04.400 --> 00:19:12.080
+field that explains the reason for the Crash so exactly like before. We've seen the bad food code
+
+145
+00:19:12.080 --> 00:19:20.400
+8 bad food code previously and there are a few other types of codes which you might see here so
+
+146
+00:19:20.400 --> 00:19:27.680
+you might see here so let's go through them so you're prepared if you see this.
+
+147
+00:19:29.280 --> 00:19:37.360
+First there's this code I'm gonna just read the how you're supposed to read it so it's cool off
+
+148
+00:19:38.880 --> 00:19:44.800
+and the operating system terminates the app with this code due to a thermal event.
+
+149
+00:19:44.800 --> 00:19:49.760
+This can be an issue with the particular device that this Crash occurred on or the environment
+
+150
+00:19:49.760 --> 00:20:00.400
+it's operated in. Deadlock. The operating system terminated the app because it held on a File lock
+
+151
+00:20:00.400 --> 00:20:08.080
+or SQLite Database lock during suspension. You can request additional background execution time
+
+152
+00:20:08.080 --> 00:20:15.280
+on the Main Thread with the BeginBackgroundTask API. Just make sure you request this before
+
+153
+00:20:15.280 --> 00:20:25.280
+starting to write to the File. Bad call is when the OS terminated the app for failing to report
+
+154
+00:20:25.280 --> 00:20:32.240
+the call Kit call in response to a pushkit notification so a pretty explicit scenario.
+
+155
+00:20:32.240 --> 00:20:42.480
+Bad followed by five twos which is which happens when the OS terminates a voice over IP application
+
+156
+00:20:42.480 --> 00:20:55.920
+because it resumed too frequently and there are three very similar codes C51 bad 0 1 0 2 0 3 which
+
+157
+00:20:55.920 --> 00:21:05.040
+are exclusive to watchOS. So in the case of bad 0 1 watchOS terminated the app because it used
+
+158
+00:21:05.040 --> 00:21:14.880
+too much CPU time while performing a BackgroundTask. The 0 2 and 0 3 codes are also received on
+
+159
+00:21:14.880 --> 00:21:22.160
+watchOS when the app failed to complete the BackgroundTask within the allocated time.
+
+160
+00:21:22.160 --> 00:21:28.560
+And the takeaway here is that for each type of code for the exception you can try to reproduce
+
+161
+00:21:28.560 --> 00:21:34.560
+the issue or just understand why your app is causing that kind of problem. So for example if
+
+162
+00:21:34.560 --> 00:21:39.680
+you're dealing with a cool off Crash you can check the backtrace and see which functions are using a
+
+163
+00:21:39.680 --> 00:21:45.680
+lot of CPU time and profile them using time profiler. For a Deadlock Crash you can use the
+
+164
+00:21:45.680 --> 00:21:52.000
+backtrace to understand which operation is requiring that extra background execution and set it up
+
+165
+00:21:52.000 --> 00:22:00.640
+and so on. And I just want to mention that all these Crashes are similar to the watchdog Crash
+
+166
+00:22:00.640 --> 00:22:07.600
+we just talked about so you need to handle them in a similar way. So you need to monitor and acquire
+
+167
+00:22:07.600 --> 00:22:14.000
+them explicitly. So if you're dealing with a cool off Crash you can try to reproduce the issue or
+
+168
+00:22:14.000 --> 00:22:24.640
+just manage them explicitly. So the next type of Crash is a process terminated at the request of
+
+169
+00:22:24.640 --> 00:22:31.440
+another process and it uses the xccrash exception type and the seek quit signal this time.
+
+170
+00:22:33.440 --> 00:22:39.040
+And it indicates the process terminated at the request of another process with privileges to
+
+171
+00:22:39.040 --> 00:22:46.320
+lifetime. So seek quit does not mean the process crashed but it likely misbehaved in a detectable
+
+172
+00:22:46.320 --> 00:22:54.400
+manner. With iOS and iPadOS keyboard extensions the host app terminates the keyboard extension
+
+173
+00:22:54.400 --> 00:23:04.240
+if it takes too long to load and that's exactly the example I prepared here. So the exception type
+
+174
+00:23:04.240 --> 00:23:14.160
+xccrash seek quit and this is just a Crash that happens because
+
+175
+00:23:15.920 --> 00:23:19.440
+of a keyboard extension that takes too long to load.
+
+176
+00:23:22.240 --> 00:23:24.960
+So the Main app process will kill the extension.
+
+177
+00:23:24.960 --> 00:23:32.000
+Like you see from launchd.
+
+178
+00:23:36.960 --> 00:23:44.400
+Another type of Crash is a guarded Resource violation Crash which uses the exception type
+
+179
+00:23:44.400 --> 00:23:51.120
+XC guard and this indicates the process violated a guarded Resource protection.
+
+180
+00:23:51.120 --> 00:23:57.520
+Although there are multiple types of guarded system resources, most guarded resources Crashes
+
+181
+00:23:57.520 --> 00:24:04.880
+are from guarded File descriptors which have the guard type FD value in the exception subtype field.
+
+182
+00:24:06.000 --> 00:24:11.840
+And if you're unfamiliar with File descriptors, File descriptors are just an abstract handle to
+
+183
+00:24:11.840 --> 00:24:17.520
+an input or output data Resource such as a File. In other words, it's an abstraction that allows
+
+184
+00:24:17.520 --> 00:24:26.000
+writing in or reading from a File. The OS marks the File descriptor as guarded so that normal
+
+185
+00:24:26.000 --> 00:24:32.800
+File descriptor API can't modify them. This is a protection mechanism so whoever opens the File
+
+186
+00:24:32.800 --> 00:24:38.880
+can protect it from mutation so it's also responsible from closing it. And the guard
+
+187
+00:24:38.880 --> 00:24:44.400
+File description identifies these problems when they happen making it easier to address.
+
+188
+00:24:44.400 --> 00:24:49.040
+The exception Message field contains the specific violation which can be closed,
+
+189
+00:24:49.040 --> 00:24:56.320
+loop, File port, write and so on. I will link in the lecture article a doc page from Apple called
+
+190
+00:24:56.320 --> 00:25:02.000
+understanding the exception types in a Crash report that details these type of violations.
+
+191
+00:25:02.000 --> 00:25:12.160
+And let's see an example. This time I selected only the exception information from a Crash report so
+
+192
+00:25:12.160 --> 00:25:19.440
+it's a partial report because we only care about these four fields. So the exception type,
+
+193
+00:25:19.440 --> 00:25:25.280
+XC guard, the subtype guard type FD, which tells us that we're dealing with a
+
+194
+00:25:25.280 --> 00:25:33.680
+FD File descriptor guard issue. Like we said, the exception Message contains the violation
+
+195
+00:25:33.680 --> 00:25:42.000
+which is closed and we also know the Thread number which triggered this Crash. So we know
+
+196
+00:25:42.000 --> 00:25:48.400
+where to look because we can consult the backtrace of the Crash Thread and just see where the problem
+
+197
+00:25:48.400 --> 00:25:55.920
+comes from. Next, another type of Crash coming from a process that exceeded Resource consumption
+
+198
+00:25:55.920 --> 00:26:04.080
+limits. They use the XC Resource exception type and this is a notification from the OS that the
+
+199
+00:26:04.080 --> 00:26:12.240
+process exceeded a limit it set on a Resource consumption limit. So the exception type is
+
+200
+00:26:12.240 --> 00:26:18.720
+a notification from the OS that the process exceeded a limit it set on a Resource consumption.
+
+201
+00:26:22.320 --> 00:26:27.840
+So we have a few examples here. Again, all the exception types XC Resource
+
+202
+00:26:29.600 --> 00:26:38.400
+because we have three different sections of Crashes here and if the exception node
+
+203
+00:26:38.400 --> 00:26:45.120
+like in this case contains non fatal condition, then the process wasn't terminated even though
+
+204
+00:26:45.120 --> 00:26:52.640
+the OS generated the Crash report. So it's more like a warning. The exception Message field
+
+205
+00:26:54.720 --> 00:27:00.640
+describes the amount of resources consumed over a specific time interval. So in the first case
+
+206
+00:27:00.640 --> 00:27:13.760
+is wakeups, a lot of wakeups over a 300 seconds time period or in this case a lot of CPU usage
+
+207
+00:27:14.560 --> 00:27:24.080
+over a time frame of 180 seconds. And the Crash report List the specific Resource in the exception
+
+208
+00:27:24.080 --> 00:27:33.440
+subtype as you saw. So wakeups, CPU, memory. So let's see what other values we can have there. So
+
+209
+00:27:34.240 --> 00:27:42.880
+first, CPU or CPU fatal means a Thread in the process use too much CPU over a short period of time.
+
+210
+00:27:44.560 --> 00:27:49.120
+Memory happens when the process cross the memory limit imposed by the system
+
+211
+00:27:49.120 --> 00:27:56.480
+and after we get this warning we might see a termination for excessive memory usage,
+
+212
+00:27:56.480 --> 00:28:04.240
+but not necessarily. I.O. when the process caused an excessive amount of disk writes over a short
+
+213
+00:28:04.240 --> 00:28:11.920
+period of time and wakeups where Threads in the process woke up too many times per second which
+
+214
+00:28:11.920 --> 00:28:19.920
+just consumes battery life. Thread to Thread communication API such as perform on Thread or
+
+215
+00:28:19.920 --> 00:28:26.880
+async execute or dispatch async caused this when unwittingly called far more often than expected.
+
+216
+00:28:28.320 --> 00:28:32.800
+Because the communication that triggers this exception is happening so frequently,
+
+217
+00:28:33.840 --> 00:28:38.720
+there usually are multiple background Threads with very similar backtraces that indicate
+
+218
+00:28:38.720 --> 00:28:47.040
+the origin of the Thread communication. So the takeaway here is whenever your app is using
+
+219
+00:28:47.040 --> 00:28:53.440
+one of the resources extensively, you might see this type of Crash. So XC Resource is very specific.
+
+220
+00:28:54.560 --> 00:29:02.160
+You should probably use the Instruments to inspect your CPU usage, memory usage and try to
+
+221
+00:29:02.160 --> 00:29:11.280
+improve it. Now memory access issues. A very interesting category of Crashes because you see
+
+222
+00:29:11.280 --> 00:29:19.200
+that a lot. A Crash due to a memory access issue occurs when an app uses memory in an unexpected
+
+223
+00:29:19.200 --> 00:29:26.320
+way. Memory access problems have numerous causes such as dereferencing a pointer to an invalid
+
+224
+00:29:26.320 --> 00:29:32.480
+memory address, writing to read only memory or jumping to an instruction at an invalid
+
+225
+00:29:32.480 --> 00:29:39.200
+address and so on. A lot of Crashes you will encounter in production especially from Objective-C
+
+226
+00:29:39.200 --> 00:29:48.080
+are related to memory access issues. These Crashes are most often identified by the XC
+
+227
+00:29:48.080 --> 00:29:57.760
+bad access exception type and either the SIG SEGV signal which stands for Segment Violation
+
+228
+00:29:57.760 --> 00:30:10.480
+or the SIG bus signal. Let's see an example. You see the exception type XC bad access segment
+
+229
+00:30:10.480 --> 00:30:18.400
+violation and the exception subtype field contains a value describing the Error and the address of
+
+230
+00:30:18.400 --> 00:30:25.600
+memory that was in correct access. So in this case an invalid kernel address at this address
+
+231
+00:30:26.320 --> 00:30:34.080
+and there are several type of exception subtypes. Let's see what they are. So first the one we just
+
+232
+00:30:34.080 --> 00:30:43.440
+saw. Invalid address. When the Thread that crashed accessed unmapped memory. Then a protection
+
+233
+00:30:43.440 --> 00:30:49.040
+failure happens when the Crash Thread tried to use a valid memory address that's protected.
+
+234
+00:30:49.920 --> 00:30:58.560
+This can be a read only or non executable memory region. Then a memory Error when the
+
+235
+00:30:58.560 --> 00:31:04.240
+Thread tried to access memory that couldn't return data at the moment such as a memory mapped File
+
+236
+00:31:04.240 --> 00:31:12.800
+that just became unavailable. And the last is an ARMDA align which happens when the Crash Thread
+
+237
+00:31:12.800 --> 00:31:18.880
+tried to access memory that isn't aligned properly. Once you've identified that the Crash report
+
+238
+00:31:18.880 --> 00:31:26.800
+is for a memory access issue, so you've recognized the exception bad access, then you have to
+
+239
+00:31:26.800 --> 00:31:33.040
+recognize the exception bad access exception type, you can use Xcode to continue your investigation.
+
+240
+00:31:34.160 --> 00:31:39.280
+Because Xcode contains a suite of Debugging tools you can use to identify memory access
+
+241
+00:31:39.280 --> 00:31:50.480
+issues as your app runs. So for this let's go into Xcode and I'll use the scheme editor.
+
+242
+00:31:50.480 --> 00:31:55.680
+Make sure run action is selected and then open the diagnostics panel.
+
+243
+00:31:57.920 --> 00:32:03.760
+There are a few tools here which are really effective in Testing this. So we have the address
+
+244
+00:32:03.760 --> 00:32:08.800
+sanitizer, the threat sanitizer or the undefined behavior sanitizer.
+
+245
+00:32:11.120 --> 00:32:18.160
+I recommend you activate only one sanitizer at a time as they each consume a lot of memory
+
+246
+00:32:18.160 --> 00:32:23.680
+and CPU to produce their results. And then just run the app with these tools enabled and go
+
+247
+00:32:23.680 --> 00:32:30.480
+through the scenarios you want to check and try to inspect and fix all the issues they report back to
+
+248
+00:32:30.480 --> 00:32:40.640
+you. Another option is if you have a lot of objective cc or c++ code there's a static analyzer
+
+249
+00:32:40.640 --> 00:32:52.080
+which you can run in the product menu analyze action. And again see what issues it discovers
+
+250
+00:32:52.080 --> 00:32:58.720
+and try to resolve them all, because the static analyzer analyzes your code at build time and
+
+251
+00:32:58.720 --> 00:33:04.080
+will identify common programming mistakes including some type of memory management issues.
+
+252
+00:33:04.080 --> 00:33:11.280
+So it's a good verification to be done periodically.
+
+253
+00:33:17.040 --> 00:33:20.240
+A common type of memory access Crash is a zombie Crash.
+
+254
+00:33:21.840 --> 00:33:27.680
+Once an Objective-C or Swift object no longer has any strong references to it the object is
+
+255
+00:33:27.680 --> 00:33:35.040
+deallocated. Attempting to send messages to the object after that as if it were still a valid
+
+256
+00:33:35.040 --> 00:33:43.520
+object leads to a Crash. The object receiving the Message is called a zombie object. The most likely
+
+257
+00:33:43.520 --> 00:33:51.520
+cause for a zombie is the use of unsafe references, but any use of unsafe memory could lead to a zombie.
+
+258
+00:33:51.520 --> 00:33:57.040
+Both Swift and Objective-C support this type of references, so in both languages zombies are
+
+259
+00:33:57.040 --> 00:34:09.280
+possible. In Swift they are unowned and unowned unsafe. So unowned and unowned unsafe. And in
+
+260
+00:34:09.280 --> 00:34:21.600
+Objective-C there are properties with the assign specifier or the unsafe unretained specifier.
+
+261
+00:34:21.600 --> 00:34:28.320
+Let's take an example. Imagine we have a ViewController class and it has a weak Delegate.
+
+262
+00:34:29.120 --> 00:34:33.440
+Because it's weak the View control is not holding a strong reference to it,
+
+263
+00:34:33.440 --> 00:34:39.920
+so the Delegate will be deallocated if no other class holds a reference to it. That's why it
+
+264
+00:34:39.920 --> 00:34:45.680
+needs to be optional, because if the Delegate is deallocated the property will automatically be
+
+265
+00:34:45.680 --> 00:34:51.680
+set to nil. This is the safest option because the compiler forces us to handle the case where
+
+266
+00:34:51.680 --> 00:34:57.600
+the Delegate was deallocated, so we need to safely unwrap the optional to make sure it contains a
+
+267
+00:34:57.600 --> 00:35:06.720
+reference to the Delegate. So far so good. Now let's see another case. A slight variation,
+
+268
+00:35:06.720 --> 00:35:13.280
+where instead of weak we use unowned. Like weak, unowned won't hold a strong reference,
+
+269
+00:35:13.280 --> 00:35:21.680
+but it's not optional, so this code is less safe. If no one else holds a reference to the Delegate
+
+270
+00:35:21.680 --> 00:35:28.000
+it will be deallocated, but in this case if we try to access the deallocated instance it will Crash
+
+271
+00:35:28.000 --> 00:35:40.480
+immediately. And finally the most unsafe case is using unowned unsafe. This was very common in
+
+272
+00:35:40.480 --> 00:35:47.920
+Objective-C before automatic reference Count, so you may use old system Objective-C classes that
+
+273
+00:35:47.920 --> 00:35:55.680
+declare unowned unsafe properties. unowned unsafe is similar to unowned, it doesn't hold a strong
+
+274
+00:35:55.680 --> 00:36:06.000
+reference, but there's a big difference. Let's explain this. Let's say we allocated my Delegate
+
+275
+00:36:06.000 --> 00:36:14.480
+at memory address 1, 2, 3, 4, 5, but after a while no one holds a reference to it anymore,
+
+276
+00:36:14.480 --> 00:36:21.360
+so in this case the instance will be deallocated and this memory address and 1, 2, 3, 4, 5
+
+277
+00:36:21.360 --> 00:36:25.840
+will be free to be used to allocate other instances because memory is recycled.
+
+278
+00:36:27.520 --> 00:36:34.720
+But we still have an unowned unsafe property that still references the 1, 2, 3, 4, 5
+
+279
+00:36:34.720 --> 00:36:41.440
+address and because it's unowned unsafe this will not be automatically cleaned up and set to nil.
+
+280
+00:36:41.440 --> 00:36:47.440
+Later the system might allocate another object at the same address, let's say an NSString,
+
+281
+00:36:48.480 --> 00:36:55.200
+and we try to send a Message through that unowned reference to the Delegate, so let's say the my
+
+282
+00:36:55.200 --> 00:37:02.400
+Delegate method exists in my Delegate, but in reality since my Delegate no longer exists at
+
+283
+00:37:02.400 --> 00:37:08.400
+1, 2, 3, 4, 5 address, but instead there's an NSString there, the NSString will receive this
+
+284
+00:37:08.400 --> 00:37:17.200
+my Delegate method Message and that's a big problem because most likely NSString cannot
+
+285
+00:37:17.200 --> 00:37:25.200
+respond to these messages we send to the Delegate, so it won't behave as we expect and we'll get a
+
+286
+00:37:25.200 --> 00:37:33.760
+Crash with reason saying NSString cannot respond to my Delegate method selector and you may think
+
+287
+00:37:33.760 --> 00:37:39.920
+but I never sent this Message to an NSString, how can this be? Well you didn't send it directly,
+
+288
+00:37:39.920 --> 00:37:49.200
+but because memory is recycled this can happen with unsafe access to memory, so that's kind of
+
+289
+00:37:49.200 --> 00:38:00.160
+how a zombie Crash happens and if a zombie Crash happens you'll see an exception like this, so you
+
+290
+00:38:00.160 --> 00:38:09.360
+see a terminating aptitude to onCaughtException and unrecognized selector like I've shown before
+
+291
+00:38:09.360 --> 00:38:18.960
+and you see the reason like the class and the received Message, but any use of unsafe memory
+
+292
+00:38:18.960 --> 00:38:26.000
+could lead to a zombie and this is another example of a Crash report from a zombie Crash,
+
+293
+00:38:26.000 --> 00:38:35.200
+again EXC_BAD_ACCESS with the SIGSEGV signal will also see a segmentation fault as the termination reason
+
+294
+00:38:37.200 --> 00:38:45.680
+and if you inspect the backtrace of the Crash Thread you'll see that the last line in the
+
+295
+00:38:45.680 --> 00:38:54.240
+EssentialApp is my class in it and then there's an objcMessageSend, this is a clear indicator
+
+296
+00:38:54.240 --> 00:39:02.720
+that the Crash is due to a zombie, so if you ever see objcMessageSend or objcRetain
+
+297
+00:39:02.720 --> 00:39:07.760
+or objcRelease here at the top of the backtrace you're dealing with a zombie object
+
+298
+00:39:10.080 --> 00:39:19.040
+and to deal with zombie objects in the scheme editor next to the sanitizer I showed there's a
+
+299
+00:39:19.040 --> 00:39:27.120
+zombie object diagnostic tool, this will help you a lot deal with and find zombies in your app
+
+300
+00:39:28.880 --> 00:39:35.760
+because what this does is just it will run your app in a different environment where no objects
+
+301
+00:39:35.760 --> 00:39:42.240
+are deallocated, so instead of being deallocated they just become zombies and they keep living,
+
+302
+00:39:42.240 --> 00:39:48.320
+so if you send a Message to a zombie which is an object that should be deallocated the app will
+
+303
+00:39:48.320 --> 00:39:54.480
+Crash and show you exactly where the problem is, because when you're dealing with zombies the
+
+304
+00:39:54.480 --> 00:40:01.360
+problem is you don't know who allocated the original object, so how does that object no
+
+305
+00:40:01.360 --> 00:40:09.600
+longer exist, so when you're using this zombies objects option it will be very clear because the
+
+306
+00:40:09.600 --> 00:40:15.120
+instrument will stop the execution and you can inspect all the references to that object and
+
+307
+00:40:15.120 --> 00:40:24.960
+see where the memory issue lies and also to diagnose memory access Crashes you can use the
+
+308
+00:40:24.960 --> 00:40:34.000
+guard malloc option that's also like a sanitizer and this will inspect all the memory allocations
+
+309
+00:40:34.000 --> 00:40:51.760
+Another type of Crash which I want to cover is a Crash from a missing library, this uses the
+
+310
+00:40:51.760 --> 00:40:58.320
+exe Crash Message type and the sigaboard signal and if an app Crashes because it's missing a
+
+311
+00:40:58.320 --> 00:41:05.760
+required framework or library the Crash report contains this exception code, let's see an example
+
+312
+00:41:07.600 --> 00:41:09.520
+so exe Crash sigaboard
+
+313
+00:41:12.880 --> 00:41:19.440
+and you'll find a termination description in the Crash report identifying the specific framework
+
+314
+00:41:19.440 --> 00:41:28.640
+that the dynamic linker couldn't locate, so in our case library not loaded, Cocoa Lumberjack
+
+315
+00:41:30.000 --> 00:41:32.640
+and in the application specific information as well
+
+316
+00:41:34.240 --> 00:41:39.360
+so we see that this framework Cocoa Lumberjack could not be found by the system
+
+317
+00:41:42.720 --> 00:41:49.040
+and to fix this there are a few things you need to do, so first you need to make sure that library
+
+318
+00:41:49.040 --> 00:41:54.640
+exists and then you need to make sure it's included in the framework search paths and
+
+319
+00:41:54.640 --> 00:42:00.160
+library search paths and that it contains all the architectures that your app is using
+
+320
+00:42:00.160 --> 00:42:03.440
+so it can be either one of these problems
+
+321
+00:42:08.320 --> 00:42:14.320
+yeah I see a question in the chat so vital is asking is as I can understand it concerns
+
+322
+00:42:14.320 --> 00:42:25.200
+only dynamic libraries, yes so this indeed is a problem related to dynamic loading only because
+
+323
+00:42:25.760 --> 00:42:32.080
+when you're using static libraries or static frameworks those are linked at compile time so
+
+324
+00:42:32.720 --> 00:42:37.200
+they won't be loaded at runtime separately from a different module
+
+325
+00:42:37.200 --> 00:42:42.960
+so yeah if you if you have dynamic libraries then or dynamic frameworks you might see this problem
+
+326
+00:42:46.320 --> 00:42:55.520
+next another particular type of Crash is the jetsum and jetsum is just related to memory pressure
+
+327
+00:42:55.520 --> 00:43:04.080
+events iOS iPad OS watchOS and tvOS have a virtual memory system that relies on all apps
+
+328
+00:43:04.080 --> 00:43:08.160
+releasing memory when the operating system encounters memory pressure
+
+329
+00:43:09.200 --> 00:43:14.560
+where available memory is low and the system cannot meet the demands of all the running apps
+
+330
+00:43:15.760 --> 00:43:20.800
+so under memory pressure apps free memory and receive a low memory notification
+
+331
+00:43:22.080 --> 00:43:27.120
+before running apps release enough total memory to alleviate the pressure your app will continue to
+
+332
+00:43:27.120 --> 00:43:33.680
+alleviate the pressure your app will continue to run but if memory pressure continues because apps
+
+333
+00:43:33.680 --> 00:43:38.720
+haven't relinquished enough memory the system frees memory by terminating applications
+
+334
+00:43:38.720 --> 00:43:45.920
+and reclaims their memory this is what a jetsum event is and the system creates a jetsum event
+
+335
+00:43:45.920 --> 00:43:52.880
+report with information about why it chose to jettison an app and we can see an example
+
+336
+00:43:52.880 --> 00:43:58.720
+first you'll notice that jetsum event report different from Crash reports because they contain
+
+337
+00:43:58.720 --> 00:44:04.800
+the overall memory of all the apps and system processes on the device and they're in JSON format
+
+338
+00:44:05.760 --> 00:44:13.520
+they don't have any backtrace information but only List all the processes and their memory
+
+339
+00:44:13.520 --> 00:44:23.200
+footprints and other types of info which we'll see in a second if the system jettisons your app due
+
+340
+00:44:23.200 --> 00:44:28.240
+to memory pressure while the app is visible it will look like your app crashed to the user
+
+341
+00:44:29.040 --> 00:44:35.280
+and use jetsum event reports to identify your app's Role in jetsum events even if your app
+
+342
+00:44:35.280 --> 00:44:39.040
+didn't get jettisoned so it might be another app which did
+
+343
+00:44:39.040 --> 00:44:46.240
+what's important to keep in mind here is that jetsum events as watchdog Crashes are not collected by
+
+344
+00:44:46.240 --> 00:44:54.240
+the Apple service or third party services so again you need to make sure you get these directly from
+
+345
+00:44:54.800 --> 00:44:58.560
+your users so the most reliable ones are your internal users
+
+346
+00:45:00.160 --> 00:45:05.520
+your testers and your other teams so you need to make sure that you get these directly from your
+
+347
+00:45:05.520 --> 00:45:13.440
+users your testers and your other teammates back to the structure of this Crash report
+
+348
+00:45:14.240 --> 00:45:21.360
+you see it has a few information at the beginning like a Crash report a queue like similar Crashes
+
+349
+00:45:22.240 --> 00:45:31.120
+and some information about the memory pages how many pages how many free pages wired and so on
+
+350
+00:45:31.120 --> 00:45:37.440
+you also see the largest process which in my case is the webkit web content
+
+351
+00:45:38.400 --> 00:45:41.840
+if it's your app you need to reduce the memory consumption of your app
+
+352
+00:45:45.360 --> 00:45:53.040
+a jetsum event also contains an Array of processes as you see here with each item in the Array
+
+353
+00:45:53.040 --> 00:46:01.760
+describing a single process in the system like this you can search for the reason key to identify
+
+354
+00:46:01.760 --> 00:46:08.000
+the jettisoned process and why the system terminated it because only the jettisoned process
+
+355
+00:46:08.000 --> 00:46:15.280
+has the reason key and if it's your app the value of the reason key explains the condition that led
+
+356
+00:46:15.280 --> 00:46:22.880
+to the jettison event and you can determine the amount of memory each app was using by multiplying
+
+357
+00:46:22.880 --> 00:46:37.840
+the number of r pages by the size of each page which is visible here base size so over here we're
+
+358
+00:46:37.840 --> 00:46:49.600
+dealing with pages of 16 kilobytes and for instance this process is using 299 pages so you can do the
+
+359
+00:46:49.600 --> 00:46:56.960
+math and see how much memory it consumes also i want to mention that each item in this processes
+
+360
+00:46:56.960 --> 00:47:03.840
+Array has a few keys which will give you some additional information so the UUID which is the
+
+361
+00:47:03.840 --> 00:47:16.080
+build identifier of the binary the states an Array of the current memory use states such as memory
+
+362
+00:47:16.080 --> 00:47:24.480
+from the frontmost app suspended or not actively using memory a lifetime max which is the highest
+
+363
+00:47:24.480 --> 00:47:31.760
+number of memory pages allocated during the lifetime of the process a coalition of memory
+
+364
+00:47:31.760 --> 00:47:39.120
+usage a coalition this is useful if your app's process is part of a coalition that evolves other
+
+365
+00:47:39.120 --> 00:47:47.680
+system processes doing work on behalf of your app like an extension in the name which is the process
+
+366
+00:47:47.680 --> 00:47:54.240
+name and this one matches a binary from your app or belongs to another app or system process
+
+367
+00:47:55.920 --> 00:48:01.360
+since jetsem events are events of high memory usage it's always a good idea to constantly
+
+368
+00:48:01.360 --> 00:48:07.200
+and make sure your app uses memory like a good citizen or avoiding spikes of large memory
+
+369
+00:48:07.200 --> 00:48:12.720
+allocations and freeing the memory once it's no longer needed for this you can use the memory
+
+370
+00:48:12.720 --> 00:48:18.240
+inspector in Xcode or some of the Instruments like activity monitor which will give you a
+
+371
+00:48:18.240 --> 00:48:23.280
+high level idea of your app's total memory consumption and then you can use the allocations
+
+372
+00:48:23.280 --> 00:48:32.560
+tool to deep dive and see exactly how that memory is allocated and why which features or parts are
+
+373
+00:48:32.560 --> 00:48:41.680
+taking up most memory and more information in addition to lowering your app's memory use ensure
+
+374
+00:48:41.680 --> 00:48:46.800
+that you're receiving low memory warnings sent by the system and you're acting on these warnings
+
+375
+00:48:46.800 --> 00:48:53.520
+because that's the only way you can protect yourself from being jettisoned if the system
+
+376
+00:48:53.520 --> 00:48:59.120
+sends you a Message that there's low memory condition on the device and asking you to free
+
+377
+00:48:59.120 --> 00:49:05.280
+up memory if you don't free up memory you're most likely be terminated so try to respond to these
+
+378
+00:49:05.280 --> 00:49:11.440
+events by clearing memory that you can reload from the Cache or any other improvements to the memory
+
+379
+00:49:11.440 --> 00:49:17.120
+footprint you can do and by the way there's a there's an option in the simulator to simulate
+
+380
+00:49:17.120 --> 00:49:22.480
+the memory warning so you can see how your app responds to these warnings in the simulator but
+
+381
+00:49:22.480 --> 00:49:36.240
+just triggering that explicitly and two more types first invalid arithmetic operation which is using
+
+382
+00:49:36.240 --> 00:49:43.600
+the XC arithmetic exception type and this is just a Crash that happens because an invalid
+
+383
+00:49:43.600 --> 00:49:51.200
+arithmetic operation such as division by zero or floating point Error so those are very explicit
+
+384
+00:49:51.200 --> 00:49:58.320
+like in this case divide by zero and XC arithmetic exception type you just use the
+
+385
+00:49:58.320 --> 00:50:01.600
+Thread backtrace and see where the Error is coming from
+
+386
+00:50:01.600 --> 00:50:09.040
+and finally Crashes that contain only system functions let's call it the impossible Crash type
+
+387
+00:50:09.040 --> 00:50:15.360
+this is one of the hardest types of Crashes that you can understand and try to fix because
+
+388
+00:50:15.360 --> 00:50:20.960
+those are Crashes that contain only system functions in their backtrace there's no AppCode
+
+389
+00:50:20.960 --> 00:50:28.000
+in the backtrace you cannot reproduce it you have no clear information so what do you do
+
+390
+00:50:28.000 --> 00:50:33.440
+in these situations first of all you need to read the Crash report really carefully and by this i
+
+391
+00:50:33.440 --> 00:50:39.440
+mean all the stack traces exception codes to narrow down as much as possible maybe a part of the app
+
+392
+00:50:39.440 --> 00:50:46.480
+where the Crash is happening or something related to framework or anything that you can find there
+
+393
+00:50:47.360 --> 00:50:54.400
+sometimes that's not enough that's when third party services like Crash reports are not enough
+
+394
+00:50:54.400 --> 00:51:02.560
+that's when third party services like Firebase Crashlytics that have an option to register logs
+
+395
+00:51:02.560 --> 00:51:10.560
+can come in handy so you can add logs and these third party services will deliver the logs along
+
+396
+00:51:10.560 --> 00:51:16.320
+with the Crash report and this can be really helpful because the Crash report is just like
+
+397
+00:51:16.320 --> 00:51:23.360
+a Snapshot of what was happening on the device at the time the app crashed what you need is most of
+
+398
+00:51:23.360 --> 00:51:31.760
+the time some steps to reproduce like a story so if you have these logs you can have more details
+
+399
+00:51:31.760 --> 00:51:39.040
+like okay the user opened the app and went to search and then did this and that like maybe
+
+400
+00:51:39.040 --> 00:51:44.960
+maybe that can give you a clue about how to reproduce this Crash because like i said if you
+
+401
+00:51:44.960 --> 00:51:50.480
+get just a Crash report it's just a Snapshot so it crashed in this function but you have no idea
+
+402
+00:51:50.480 --> 00:51:59.200
+what other things happened before and i'm not aware of any ways to to get logs with Apple's
+
+403
+00:51:59.200 --> 00:52:06.320
+report service so if you need this you might be looking into a third party service or not it's
+
+404
+00:52:06.320 --> 00:52:13.360
+your decision i can't influence it but i cannot underline enough how valuable it is to be able
+
+405
+00:52:13.360 --> 00:52:18.640
+to reproduce a Crash because when you can reproduce it constantly then you can inspect it with the
+
+406
+00:52:18.640 --> 00:52:25.200
+different tools i've shown or then you can do the TDD flow and write a test that triggers the Crash
+
+407
+00:52:25.200 --> 00:52:31.520
+and then fix it and this way you make sure you have no regressions on that Crash in the Future
+
+408
+00:52:32.720 --> 00:52:41.040
+so i hope i give you some useful tips about these Crash types let me know if you have questions
+
+409
+00:52:41.040 --> 00:52:50.000
+yeah i already see a question do you know which type of Crash can cause swizzling methods i mean
+
+410
+00:52:50.000 --> 00:52:57.360
+will it be zombie unrecognized selector or something else i guess it depends because if
+
+411
+00:52:57.360 --> 00:53:03.760
+you're swizzling with a method that doesn't exist on that object yeah you can get an unrecognized
+
+412
+00:53:03.760 --> 00:53:12.080
+selector yeah i guess if you if you use the wrong method that swizzling in my experience can lead
+
+413
+00:53:12.080 --> 00:53:21.040
+to other problems as well so i try to stay away from it as much as possible sure any any other
+
+414
+00:53:21.040 --> 00:53:27.680
+questions going once going twice
+
+415
+00:53:27.680 --> 00:53:39.520
+yes no that's it thank you for staying up and see you soon bye
+

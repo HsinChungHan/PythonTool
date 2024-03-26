@@ -1,0 +1,3347 @@
+1
+00:00:00.366 --> 00:00:03.333
+Hello Mike, hey Caio in the previous
+
+2
+00:00:03.333 --> 00:00:05.033
+lecture we finished composing the
+
+3
+00:00:05.033 --> 00:00:05.900
+application
+
+4
+00:00:05.900 --> 00:00:08.133
+and we proved that it works by running
+
+5
+00:00:08.133 --> 00:00:09.833
+the app
+
+6
+00:00:09.833 --> 00:00:12.233
+but we have no automated tests to prove
+
+7
+00:00:12.233 --> 00:00:13.500
+that this composition
+
+8
+00:00:13.500 --> 00:00:16.066
+works right so although we can run the
+
+9
+00:00:16.066 --> 00:00:16.800
+app
+
+10
+00:00:16.800 --> 00:00:19.333
+and see it working we want to automate
+
+11
+00:00:19.333 --> 00:00:20.700
+some checks
+
+12
+00:00:20.700 --> 00:00:22.633
+and there are many ways we can do that
+
+13
+00:00:22.633 --> 00:00:24.633
+we can do it with unit tests with
+
+14
+00:00:24.633 --> 00:00:26.400
+integration tests
+
+15
+00:00:26.400 --> 00:00:29.033
+and even higher level tests that go
+
+16
+00:00:29.033 --> 00:00:31.033
+through the UI
+
+17
+00:00:31.033 --> 00:00:34.466
+and we can follow our BDD specs
+
+18
+00:00:34.466 --> 00:00:37.666
+right as acceptance criteria
+
+19
+00:00:37.666 --> 00:00:40.700
+exactly just very high-level tests
+
+20
+00:00:40.700 --> 00:00:42.633
+proving that we fulfill all the
+
+21
+00:00:42.633 --> 00:00:44.066
+acceptance criteria
+
+22
+00:00:44.066 --> 00:00:46.533
+so we have the online customer and the
+
+23
+00:00:46.533 --> 00:00:48.533
+offline customer
+
+24
+00:00:48.533 --> 00:00:51.333
+and we can use UI tests going through
+
+25
+00:00:51.333 --> 00:00:52.933
+the user interface
+
+26
+00:00:52.933 --> 00:00:55.500
+to test the app composition okay so
+
+27
+00:00:55.500 --> 00:00:56.366
+we're going to be testing the
+
+28
+00:00:56.366 --> 00:00:58.366
+application from a higher level
+
+29
+00:00:58.366 --> 00:01:01.500
+like a black-box exactly
+
+30
+00:01:01.500 --> 00:01:03.666
+and as always let's start with a test
+
+31
+00:01:03.666 --> 00:01:05.666
+first so I'm going to discard the
+
+32
+00:01:05.666 --> 00:01:06.700
+changes in the Scene
+
+33
+00:01:06.700 --> 00:01:08.466
+Delegate because we're going to test
+
+34
+00:01:08.466 --> 00:01:11.433
+drive this composition now
+
+35
+00:01:11.433 --> 00:01:14.533
+so we need to create a new test target
+
+36
+00:01:14.533 --> 00:01:18.133
+it's an iOS target and we can use the UI
+
+37
+00:01:18.133 --> 00:01:21.266
+Testing Bundle template
+
+38
+00:01:21.266 --> 00:01:24.400
+let's call it EssentialAppUI
+
+39
+00:01:24.400 --> 00:01:28.300
+AcceptanceTests okay
+
+40
+00:01:28.300 --> 00:01:30.400
+make sure the target application is
+
+41
+00:01:30.400 --> 00:01:33.033
+correct we are testing the EssentialApp
+
+42
+00:01:33.033 --> 00:01:35.733
+application and also let's configure our
+
+43
+00:01:35.733 --> 00:01:36.633
+schemes
+
+44
+00:01:36.633 --> 00:01:38.933
+first of all the UI tests that we
+
+45
+00:01:38.933 --> 00:01:41.333
+created to test the EssentialApp
+
+46
+00:01:41.333 --> 00:01:45.600
+was added to the EssentialApp scheme
+
+47
+00:01:45.600 --> 00:01:47.266
+which means every time we run the
+
+48
+00:01:47.266 --> 00:01:49.333
+EssentialApp tests it's going to run
+
+49
+00:01:49.333 --> 00:01:52.633
+the unit tests and the UI tests but we
+
+50
+00:01:52.633 --> 00:01:53.200
+don't want that
+
+51
+00:01:53.200 --> 00:01:54.933
+we want to be able to run the unit tests
+
+52
+00:01:54.933 --> 00:01:56.233
+in isolation
+
+53
+00:01:56.233 --> 00:01:57.833
+because they're much more reliable and
+
+54
+00:01:57.833 --> 00:01:59.733
+fast and we'll be running it
+
+55
+00:01:59.733 --> 00:02:03.900
+very often but UI tests are usually slow
+
+56
+00:02:03.900 --> 00:02:06.366
+so we're going to run them less often
+
+57
+00:02:06.366 --> 00:02:07.266
+exactly
+
+58
+00:02:07.266 --> 00:02:09.500
+when we hit Command+U we just want some
+
+59
+00:02:09.500 --> 00:02:11.666
+blazing fast tests to run
+
+60
+00:02:11.666 --> 00:02:15.100
+exactly just the unit tests so let's
+
+61
+00:02:15.100 --> 00:02:15.833
+remove
+
+62
+00:02:15.833 --> 00:02:18.533
+the UI tests from the EssentialApp
+
+63
+00:02:18.533 --> 00:02:20.866
+scheme
+
+64
+00:02:20.866 --> 00:02:23.733
+let's go to manage schemes and let's add
+
+65
+00:02:23.733 --> 00:02:25.333
+a new one
+
+66
+00:02:25.333 --> 00:02:28.133
+for the UI tests so we can run the UI
+
+67
+00:02:28.133 --> 00:02:28.700
+tests
+
+68
+00:02:28.700 --> 00:02:32.066
+in isolation yeah I like that it's much
+
+69
+00:02:32.066 --> 00:02:33.200
+cleaner
+
+70
+00:02:33.200 --> 00:02:36.400
+let's move it to the workspace container
+
+71
+00:02:36.400 --> 00:02:40.933
+alright now let's configure the CI_iOS
+
+72
+00:02:40.933 --> 00:02:44.300
+let's add the UI tests so it also runs
+
+73
+00:02:44.300 --> 00:02:47.333
+in the CI server let's randomize to make
+
+74
+00:02:47.333 --> 00:02:48.000
+sure
+
+75
+00:02:48.000 --> 00:02:50.133
+there is no order dependency between the
+
+76
+00:02:50.133 --> 00:02:51.266
+tests
+
+77
+00:02:51.266 --> 00:02:53.666
+every test should be independent and
+
+78
+00:02:53.666 --> 00:02:54.700
+that's it
+
+79
+00:02:54.700 --> 00:02:58.866
+okay we're good to go let's commit
+
+80
+00:02:58.866 --> 00:03:02.466
+so add UI test target for running
+
+81
+00:03:02.466 --> 00:03:06.533
+high-level acceptance tests that's it
+
+82
+00:03:06.533 --> 00:03:09.666
+and let's add our first test so first
+
+83
+00:03:09.666 --> 00:03:11.433
+test
+
+84
+00:03:11.433 --> 00:03:14.133
+from the acceptance criteria on launch
+
+85
+00:03:14.133 --> 00:03:15.033
+it should display
+
+86
+00:03:15.033 --> 00:03:17.266
+the remote feed when the customer has
+
+87
+00:03:17.266 --> 00:03:19.333
+connectivity
+
+88
+00:03:19.333 --> 00:03:20.700
+so we're going to be running the app
+
+89
+00:03:20.700 --> 00:03:22.466
+we're going to launch the app we want to
+
+90
+00:03:22.466 --> 00:03:24.300
+make sure that we loaded the feed
+
+91
+00:03:24.300 --> 00:03:27.733
+how can we do that well we get a JSON
+
+92
+00:03:27.733 --> 00:03:28.233
+back
+
+93
+00:03:28.233 --> 00:03:30.466
+in the current remote feed with a couple
+
+94
+00:03:30.466 --> 00:03:31.666
+of items
+
+95
+00:03:31.666 --> 00:03:34.400
+and if I count the number of items we
+
+96
+00:03:34.400 --> 00:03:35.266
+have
+
+97
+00:03:35.266 --> 00:03:38.633
+22 images so we could just check that we
+
+98
+00:03:38.633 --> 00:03:39.200
+have
+
+99
+00:03:39.200 --> 00:03:42.533
+22 cells okay so we can
+
+100
+00:03:42.533 --> 00:03:46.133
+check against the cells count yes if we
+
+101
+00:03:46.133 --> 00:03:48.133
+have 22 cells it means that
+
+102
+00:03:48.133 --> 00:03:51.733
+we loaded the 22 images from remote
+
+103
+00:03:53.566 --> 00:03:56.866
+so app cells count should be
+
+104
+00:03:56.866 --> 00:04:00.633
+22 when
+
+105
+00:04:00.633 --> 00:04:05.200
+we launch the app
+
+106
+00:04:05.200 --> 00:04:07.500
+that's it so with this test we can
+
+107
+00:04:07.500 --> 00:04:08.700
+guarantee that
+
+108
+00:04:08.700 --> 00:04:11.900
+we loaded the feed with 22 cells but we
+
+109
+00:04:11.900 --> 00:04:13.266
+don't prove that we loaded
+
+110
+00:04:13.266 --> 00:04:16.366
+the images for each feed item
+
+111
+00:04:16.366 --> 00:04:20.533
+yes we just prove the cell count
+
+112
+00:04:20.533 --> 00:04:23.900
+so we could also check
+
+113
+00:04:23.900 --> 00:04:27.033
+for the images count okay but the
+
+114
+00:04:27.033 --> 00:04:29.333
+problem is that the images are inside
+
+115
+00:04:29.333 --> 00:04:33.100
+the cells and with UI tests we can query
+
+116
+00:04:33.100 --> 00:04:35.266
+how many cells we have on the screen
+
+117
+00:04:35.266 --> 00:04:36.933
+even though the cells
+
+118
+00:04:36.933 --> 00:04:39.166
+are off screen the problem is that the
+
+119
+00:04:39.166 --> 00:04:40.533
+images are inside cells
+
+120
+00:04:40.533 --> 00:04:43.500
+and you cannot count items like images
+
+121
+00:04:43.500 --> 00:04:44.466
+inside a cell
+
+122
+00:04:44.466 --> 00:04:47.833
+that are not on screen so if we check
+
+123
+00:04:47.833 --> 00:04:48.800
+the image count
+
+124
+00:04:48.800 --> 00:04:50.700
+we can only count the ones that are on
+
+125
+00:04:50.700 --> 00:04:52.800
+screen which in this case will be only
+
+126
+00:04:52.800 --> 00:04:53.666
+2
+
+127
+00:04:53.666 --> 00:04:56.466
+right and on a smaller screen size
+
+128
+00:04:56.466 --> 00:04:57.166
+device
+
+129
+00:04:57.166 --> 00:05:00.533
+it could be even 1 yes so maybe let's
+
+130
+00:05:00.533 --> 00:05:02.066
+just make sure that we loaded at least
+
+131
+00:05:02.066 --> 00:05:04.233
+1 image
+
+132
+00:05:04.233 --> 00:05:06.466
+so we can get the first cell and make
+
+133
+00:05:06.466 --> 00:05:07.733
+sure
+
+134
+00:05:07.733 --> 00:05:10.466
+it has 1 image okay this way we can
+
+135
+00:05:10.466 --> 00:05:11.433
+test that
+
+136
+00:05:11.433 --> 00:05:13.733
+we are loading the feed with 22 images
+
+137
+00:05:13.733 --> 00:05:15.100
+and we load at least
+
+138
+00:05:15.100 --> 00:05:18.400
+the first image for the first feed item
+
+139
+00:05:18.400 --> 00:05:19.833
+so let's run this test and it should
+
+140
+00:05:19.833 --> 00:05:22.466
+fail let's select the right scheme
+
+141
+00:05:22.466 --> 00:05:25.433
+EssentialAppUIAcceptanceTests and
+
+142
+00:05:25.433 --> 00:05:27.100
+let's run it
+
+143
+00:05:27.100 --> 00:05:29.166
+so this UI test is gonna actually run
+
+144
+00:05:29.166 --> 00:05:30.300
+our application
+
+145
+00:05:30.300 --> 00:05:33.666
+and investigate things on the screen
+
+146
+00:05:33.666 --> 00:05:35.500
+as you can see we loaded an empty
+
+147
+00:05:35.500 --> 00:05:36.700
+application
+
+148
+00:05:36.700 --> 00:05:38.933
+and of course it couldn't find the cells
+
+149
+00:05:38.933 --> 00:05:40.700
+or the first image
+
+150
+00:05:40.700 --> 00:05:43.600
+okay let's implement the SceneDelegate so
+
+151
+00:05:43.600 --> 00:05:44.866
+let's import
+
+152
+00:05:44.866 --> 00:05:48.066
+the EssentialFeed and the Essential
+
+153
+00:05:48.066 --> 00:05:51.500
+FeediOS
+
+154
+00:05:51.500 --> 00:05:53.266
+let's just add the code to make this
+
+155
+00:05:53.266 --> 00:05:54.800
+test pass
+
+156
+00:05:54.800 --> 00:05:56.800
+we need the RemoteFeedLoader for loading
+
+157
+00:05:56.800 --> 00:05:58.466
+the feed from remote
+
+158
+00:05:58.466 --> 00:06:00.233
+and an image loader for loading the
+
+159
+00:06:00.233 --> 00:06:01.733
+image exactly
+
+160
+00:06:01.733 --> 00:06:03.833
+the current test doesn't mention any
+
+161
+00:06:03.833 --> 00:06:06.233
+local or cached feed
+
+162
+00:06:06.233 --> 00:06:08.133
+so let's run it it's going to run the
+
+163
+00:06:08.133 --> 00:06:10.133
+app again
+
+164
+00:06:10.133 --> 00:06:12.400
+but this time it loads the cells and
+
+165
+00:06:12.400 --> 00:06:15.433
+loads the image
+
+166
+00:06:15.433 --> 00:06:19.833
+passing ok let's commit
+
+167
+00:06:19.833 --> 00:06:22.466
+displays remote feed on launch when
+
+168
+00:06:22.466 --> 00:06:24.466
+customer has connectivity
+
+169
+00:06:24.466 --> 00:06:27.333
+that's it okay so this is working but
+
+170
+00:06:27.333 --> 00:06:29.100
+it's a bit fragile because
+
+171
+00:06:29.100 --> 00:06:31.100
+we may add more cells to this
+
+172
+00:06:31.100 --> 00:06:33.100
+application there are not actually
+
+173
+00:06:33.100 --> 00:06:36.233
+feed image cells right so just counting
+
+174
+00:06:36.233 --> 00:06:39.166
+any cell is not a good way of asserting
+
+175
+00:06:39.166 --> 00:06:40.233
+those values
+
+176
+00:06:40.233 --> 00:06:42.233
+so we could use an identifier to
+
+177
+00:06:42.233 --> 00:06:43.900
+identify the correct cells
+
+178
+00:06:43.900 --> 00:06:47.166
+we really want to count so we can find
+
+179
+00:06:47.166 --> 00:06:49.333
+cells with a specific identifier
+
+180
+00:06:49.333 --> 00:06:52.233
+feed image cells and then we count only
+
+181
+00:06:52.233 --> 00:06:54.133
+the cells that match this identifier and
+
+182
+00:06:54.133 --> 00:06:54.866
+should be
+
+183
+00:06:54.866 --> 00:06:57.833
+22 and then we can do the same for the
+
+184
+00:06:57.833 --> 00:06:58.300
+image
+
+185
+00:06:58.300 --> 00:07:00.933
+we get the first image with identifier
+
+186
+00:07:00.933 --> 00:07:01.333
+feed
+
+187
+00:07:01.333 --> 00:07:04.233
+image view and then we just need to make
+
+188
+00:07:04.233 --> 00:07:04.933
+sure that
+
+189
+00:07:04.933 --> 00:07:08.300
+it exists let's run again and it should
+
+190
+00:07:08.300 --> 00:07:10.000
+fail now because we don't have
+
+191
+00:07:10.000 --> 00:07:15.833
+such identifiers in our views
+
+192
+00:07:15.833 --> 00:07:19.266
+failed okay so let's set
+
+193
+00:07:19.266 --> 00:07:21.433
+the identifiers and we can do it in the
+
+194
+00:07:21.433 --> 00:07:22.300
+storyboard
+
+195
+00:07:22.300 --> 00:07:24.300
+or if you're using code you can do it in
+
+196
+00:07:24.300 --> 00:07:26.000
+code as well
+
+197
+00:07:26.000 --> 00:07:28.133
+so let's select the cell let's add the
+
+198
+00:07:28.133 --> 00:07:29.033
+identifier
+
+199
+00:07:29.033 --> 00:07:32.933
+feed-image-cell let's select
+
+200
+00:07:32.933 --> 00:07:36.400
+the image and let's set feed-image-
+
+201
+00:07:36.400 --> 00:07:41.033
+view identifier go back to the tests
+
+202
+00:07:41.033 --> 00:07:50.866
+run the test again
+
+203
+00:07:50.866 --> 00:07:53.266
+passing so now we are proving that we
+
+204
+00:07:53.266 --> 00:07:54.633
+are loading 22
+
+205
+00:07:54.633 --> 00:07:57.166
+feed image cells and then we load at
+
+206
+00:07:57.166 --> 00:07:58.000
+least
+
+207
+00:07:58.000 --> 00:08:00.300
+one feed image which means we are
+
+208
+00:08:00.300 --> 00:08:01.100
+testing the
+
+209
+00:08:01.100 --> 00:08:04.233
+remote feed loader and the remote
+
+210
+00:08:04.233 --> 00:08:07.266
+feed image data loader okay
+
+211
+00:08:07.266 --> 00:08:10.933
+quite an improvement so let's commit
+
+212
+00:08:10.933 --> 00:08:13.833
+so improve coverage by using identifiers
+
+213
+00:08:13.833 --> 00:08:15.333
+for finding the feed image
+
+214
+00:08:15.333 --> 00:08:18.533
+cells so that's it
+
+215
+00:08:18.533 --> 00:08:20.933
+for the online scenario when the
+
+216
+00:08:20.933 --> 00:08:23.433
+customer has connectivity
+
+217
+00:08:23.433 --> 00:08:25.033
+now what happens when you don't have
+
+218
+00:08:25.033 --> 00:08:26.533
+connectivity
+
+219
+00:08:26.533 --> 00:08:28.700
+we have two branches if you have
+
+220
+00:08:28.700 --> 00:08:30.066
+something in the cache
+
+221
+00:08:30.066 --> 00:08:33.500
+it should show the cached feed otherwise
+
+222
+00:08:33.500 --> 00:08:37.733
+show an empty feed so the first one
+
+223
+00:08:37.733 --> 00:08:41.200
+on launch should display the cached feed
+
+224
+00:08:41.200 --> 00:08:44.000
+when the customer has no connectivity so
+
+225
+00:08:44.000 --> 00:08:45.333
+this is the scenario where you have a
+
+226
+00:08:45.333 --> 00:08:46.233
+cached feed
+
+227
+00:08:46.233 --> 00:08:48.700
+but no connectivity how can we simulate
+
+228
+00:08:48.700 --> 00:08:50.300
+this scenario
+
+229
+00:08:50.300 --> 00:08:52.766
+well first we need to load something
+
+230
+00:08:52.766 --> 00:08:54.300
+into the cache
+
+231
+00:08:54.300 --> 00:08:55.833
+and to load something we need
+
+232
+00:08:55.833 --> 00:08:58.466
+connectivity so we can launch the app
+
+233
+00:08:58.466 --> 00:09:00.933
+with connectivity which should load and
+
+234
+00:09:00.933 --> 00:09:03.266
+cache the items
+
+235
+00:09:03.266 --> 00:09:05.900
+then we can launch the app again but in
+
+236
+00:09:05.900 --> 00:09:07.500
+this case we need to control
+
+237
+00:09:07.500 --> 00:09:10.300
+if we have connectivity or not we need
+
+238
+00:09:10.300 --> 00:09:11.600
+an offline
+
+239
+00:09:11.600 --> 00:09:13.733
+application and there's no easy way of
+
+240
+00:09:13.733 --> 00:09:17.266
+doing this with blackbox UI testing
+
+241
+00:09:17.266 --> 00:09:20.133
+but we can pass launch arguments to the
+
+242
+00:09:20.133 --> 00:09:21.266
+application
+
+243
+00:09:21.266 --> 00:09:23.600
+so in this case we are going to pass a
+
+244
+00:09:23.600 --> 00:09:25.666
+connectivity argument with the value
+
+245
+00:09:25.666 --> 00:09:29.666
+offline and then we can check that we
+
+246
+00:09:29.666 --> 00:09:30.533
+should have
+
+247
+00:09:30.533 --> 00:09:34.466
+22 cached feed cells on screen
+
+248
+00:09:34.466 --> 00:09:37.266
+and that it loads the image as well so
+
+249
+00:09:37.266 --> 00:09:38.133
+we are testing
+
+250
+00:09:38.133 --> 00:09:39.833
+that we are composing the remote feed
+
+251
+00:09:39.833 --> 00:09:42.066
+loader with the local feed loader
+
+252
+00:09:42.066 --> 00:09:45.033
+and the remote feed image data loader
+
+253
+00:09:45.033 --> 00:09:47.600
+with the local feed image data loader
+
+254
+00:09:47.600 --> 00:09:50.066
+but for this to work we need to control
+
+255
+00:09:50.066 --> 00:09:51.266
+the connectivity
+
+256
+00:09:51.266 --> 00:09:53.833
+state of the app okay based on the
+
+257
+00:09:53.833 --> 00:09:55.033
+launch arguments
+
+258
+00:09:55.033 --> 00:09:57.733
+yes in our SceneDelegate can create a
+
+259
+00:09:57.733 --> 00:09:58.300
+function
+
+260
+00:09:58.300 --> 00:10:02.066
+makeRemoteClient so if we get
+
+261
+00:10:02.066 --> 00:10:05.333
+a connectivity value and it's offline
+
+262
+00:10:05.333 --> 00:10:07.900
+we can use an always failing HTTPClient
+
+263
+00:10:07.900 --> 00:10:08.533
+for example
+
+264
+00:10:08.533 --> 00:10:11.100
+that fakes the offline state of the
+
+265
+00:10:11.100 --> 00:10:12.066
+application
+
+266
+00:10:12.066 --> 00:10:15.500
+okay otherwise it just uses the real one
+
+267
+00:10:15.500 --> 00:10:17.600
+and we can use this very handy
+
+268
+00:10:17.600 --> 00:10:19.666
+functionality of UserDefaults
+
+269
+00:10:19.666 --> 00:10:22.066
+they can read the launch arguments for
+
+270
+00:10:22.066 --> 00:10:23.666
+us and convert
+
+271
+00:10:23.666 --> 00:10:26.133
+to strings booleans integers and etc so
+
+272
+00:10:26.133 --> 00:10:27.733
+in this case we want to string
+
+273
+00:10:27.733 --> 00:10:30.533
+connectivity and if it's offline we
+
+274
+00:10:30.533 --> 00:10:33.200
+return this AlwaysFailingHTTPClient
+
+275
+00:10:33.200 --> 00:10:35.733
+which is a very simple implementation
+
+276
+00:10:35.733 --> 00:10:37.333
+it's an HTTPClient
+
+277
+00:10:37.333 --> 00:10:40.533
+that always fails instantly that's it so
+
+278
+00:10:40.533 --> 00:10:41.433
+if we pass the
+
+279
+00:10:41.433 --> 00:10:44.300
+offline connectivity flag we can fake an
+
+280
+00:10:44.300 --> 00:10:45.100
+offline
+
+281
+00:10:45.100 --> 00:10:48.133
+application let's run the tests and it
+
+282
+00:10:48.133 --> 00:10:49.100
+should fail
+
+283
+00:10:49.100 --> 00:11:01.833
+because we're not handling the cache yet
+
+284
+00:11:01.833 --> 00:11:04.133
+there it is there was nothing in the
+
+285
+00:11:04.133 --> 00:11:05.100
+cache
+
+286
+00:11:05.100 --> 00:11:07.100
+so there were 0 cells when we
+
+287
+00:11:07.100 --> 00:11:08.533
+expected 22
+
+288
+00:11:08.533 --> 00:11:10.866
+now to make this pass we need to compose
+
+289
+00:11:10.866 --> 00:11:12.533
+the remote with the local
+
+290
+00:11:12.533 --> 00:11:18.000
+loaders let's import Core Data
+
+291
+00:11:18.000 --> 00:11:21.500
+let's instantiate the local loaders
+
+292
+00:11:21.500 --> 00:11:25.033
+and now can compose them as before
+
+293
+00:11:25.033 --> 00:11:35.033
+let's run the test again
+
+294
+00:11:35.033 --> 00:11:37.833
+okay it's passing so we are controlling
+
+295
+00:11:37.833 --> 00:11:39.100
+the connectivity
+
+296
+00:11:39.100 --> 00:11:42.466
+state of the application yeah this is
+
+297
+00:11:42.466 --> 00:11:44.366
+important to understand
+
+298
+00:11:44.366 --> 00:11:48.133
+by launching an offline application
+
+299
+00:11:48.133 --> 00:11:51.500
+it means that we already have cached
+
+300
+00:11:51.500 --> 00:11:54.866
+the feed from the online version
+
+301
+00:11:54.866 --> 00:11:58.133
+of the application that's it
+
+302
+00:11:58.133 --> 00:12:00.633
+there are two steps for this test we
+
+303
+00:12:00.633 --> 00:12:02.300
+launch it with connectivity and we
+
+304
+00:12:02.300 --> 00:12:04.633
+launch again with no connectivity
+
+305
+00:12:04.633 --> 00:12:07.666
+we expect to have cached the results we
+
+306
+00:12:07.666 --> 00:12:10.000
+got from the online application and
+
+307
+00:12:10.000 --> 00:12:10.700
+display it
+
+308
+00:12:10.700 --> 00:12:12.133
+from the cache in the offline
+
+309
+00:12:12.133 --> 00:12:14.066
+application awesome
+
+310
+00:12:14.066 --> 00:12:16.800
+and those are very high-level tests only
+
+311
+00:12:16.800 --> 00:12:17.500
+testing
+
+312
+00:12:17.500 --> 00:12:20.066
+the least amount of details possible the
+
+313
+00:12:20.066 --> 00:12:22.133
+more details you are testing high-level
+
+314
+00:12:22.133 --> 00:12:22.866
+tests
+
+315
+00:12:22.866 --> 00:12:25.900
+the more fragile and slow it is
+
+316
+00:12:25.900 --> 00:12:28.366
+so you want to limit that and since we
+
+317
+00:12:28.366 --> 00:12:30.800
+already tested details in isolation
+
+318
+00:12:30.800 --> 00:12:33.200
+in unit tests let's focus only in the
+
+319
+00:12:33.200 --> 00:12:34.000
+high-level
+
+320
+00:12:34.000 --> 00:12:38.066
+details awesome let's commit
+
+321
+00:12:38.066 --> 00:12:41.100
+so displays cached feed on launch when
+
+322
+00:12:41.100 --> 00:12:43.100
+customer has no connectivity
+
+323
+00:12:43.100 --> 00:12:45.900
+that's it so what happens if the
+
+324
+00:12:45.900 --> 00:12:47.500
+customer has no connectivity
+
+325
+00:12:47.500 --> 00:12:50.366
+and no cache okay so in this case we
+
+326
+00:12:50.366 --> 00:12:51.033
+should display
+
+327
+00:12:51.033 --> 00:12:54.633
+an empty feed so on launch displays
+
+328
+00:12:54.633 --> 00:12:56.466
+empty feed when customer has no
+
+329
+00:12:56.466 --> 00:12:59.266
+connectivity and no cache
+
+330
+00:12:59.266 --> 00:13:02.233
+so if we load the application with
+
+331
+00:13:02.233 --> 00:13:03.733
+offline connectivity
+
+332
+00:13:03.733 --> 00:13:06.933
+we should have 0 cells because we
+
+333
+00:13:06.933 --> 00:13:08.800
+didn't launch the app before as we did
+
+334
+00:13:08.800 --> 00:13:09.333
+here
+
+335
+00:13:09.333 --> 00:13:12.300
+with connectivity thus it should have
+
+336
+00:13:12.300 --> 00:13:12.800
+nothing
+
+337
+00:13:12.800 --> 00:13:18.700
+in the cache let's run the test
+
+338
+00:13:18.700 --> 00:13:23.033
+and it fails so we expected to have
+
+339
+00:13:23.033 --> 00:13:27.033
+0 cells but we have 22
+
+340
+00:13:27.033 --> 00:13:30.233
+and that's because we loaded previously
+
+341
+00:13:30.233 --> 00:13:33.266
+in other tests right
+
+342
+00:13:33.266 --> 00:13:36.066
+so one of those tests added something to
+
+343
+00:13:36.066 --> 00:13:37.200
+the cache
+
+344
+00:13:37.200 --> 00:13:39.600
+and this is persisted in the application
+
+345
+00:13:39.600 --> 00:13:40.300
+across
+
+346
+00:13:40.300 --> 00:13:42.800
+launches so those tests are not
+
+347
+00:13:42.800 --> 00:13:43.833
+independent
+
+348
+00:13:43.833 --> 00:13:46.933
+a previous test changes the result
+
+349
+00:13:46.933 --> 00:13:50.000
+of another test and this is dangerous we
+
+350
+00:13:50.000 --> 00:13:51.733
+want our tests to be independent
+
+351
+00:13:51.733 --> 00:13:53.900
+so they can run on their own or in any
+
+352
+00:13:53.900 --> 00:13:55.900
+order otherwise they are flaky
+
+353
+00:13:55.900 --> 00:13:58.800
+they are fragile every test should be
+
+354
+00:13:58.800 --> 00:14:00.233
+independent
+
+355
+00:14:00.233 --> 00:14:02.000
+yes that's the very definition of side
+
+356
+00:14:02.000 --> 00:14:04.133
+effects here one test
+
+357
+00:14:04.133 --> 00:14:06.933
+affects the execution and the result of
+
+358
+00:14:06.933 --> 00:14:08.133
+another test
+
+359
+00:14:08.133 --> 00:14:11.266
+exactly so we need to reset the state
+
+360
+00:14:11.266 --> 00:14:13.666
+for this test we can do it by passing
+
+361
+00:14:13.666 --> 00:14:15.733
+another flag
+
+362
+00:14:15.733 --> 00:14:17.900
+and that's one of the downsides of UI
+
+363
+00:14:17.900 --> 00:14:20.300
+tests it is very stateful it has
+
+364
+00:14:20.300 --> 00:14:22.933
+loads of side-effects the persist across
+
+365
+00:14:22.933 --> 00:14:24.000
+application
+
+366
+00:14:24.000 --> 00:14:26.933
+runs every time you launch the app you
+
+367
+00:14:26.933 --> 00:14:27.833
+might have
+
+368
+00:14:27.833 --> 00:14:30.466
+state from a previous test and we need
+
+369
+00:14:30.466 --> 00:14:31.600
+to give some directive
+
+370
+00:14:31.600 --> 00:14:34.000
+so the application can clean its state
+
+371
+00:14:34.000 --> 00:14:34.800
+for us
+
+372
+00:14:34.800 --> 00:14:36.800
+because from the point of view of the UI
+
+373
+00:14:36.800 --> 00:14:39.100
+tests we don't have access to any
+
+374
+00:14:39.100 --> 00:14:41.433
+internal details of the application
+
+375
+00:14:41.433 --> 00:14:44.133
+that's why it's called black-box testing
+
+376
+00:14:44.133 --> 00:14:45.166
+exactly
+
+377
+00:14:45.166 --> 00:14:47.733
+you only access it from the outside as
+
+378
+00:14:47.733 --> 00:14:49.166
+the customer would
+
+379
+00:14:49.166 --> 00:14:53.166
+so if we pass a reset launch argument
+
+380
+00:14:53.166 --> 00:14:55.333
+we can investigate that in our Scene
+
+381
+00:14:55.333 --> 00:14:57.166
+Delegate
+
+382
+00:14:57.166 --> 00:15:01.100
+so if CommandLine arguments
+
+383
+00:15:01.100 --> 00:15:04.700
+contains -reset
+
+384
+00:15:04.700 --> 00:15:07.666
+we are going to delete the local store
+
+385
+00:15:07.666 --> 00:15:08.366
+so it's going to
+
+386
+00:15:08.366 --> 00:15:11.166
+clean out the cache and the CommandLine
+
+387
+00:15:11.166 --> 00:15:13.266
+arguments is a different way of getting
+
+388
+00:15:13.266 --> 00:15:16.533
+launch arguments in this case since
+
+389
+00:15:16.533 --> 00:15:18.366
+reset has no value we can just
+
+390
+00:15:18.366 --> 00:15:19.433
+investigate that
+
+391
+00:15:19.433 --> 00:15:21.733
+this argument was passed but if you care
+
+392
+00:15:21.733 --> 00:15:22.866
+about the value
+
+393
+00:15:22.866 --> 00:15:26.066
+you can use the user default helper
+
+394
+00:15:26.066 --> 00:15:28.233
+that can convert the values to strings
+
+395
+00:15:28.233 --> 00:15:30.933
+booleans, integers, etc
+
+396
+00:15:30.933 --> 00:15:33.600
+okay let's run this now and it should
+
+397
+00:15:33.600 --> 00:15:34.000
+pass
+
+398
+00:15:34.000 --> 00:15:36.000
+because now we are resetting the state
+
+399
+00:15:36.000 --> 00:15:38.133
+and it should have no cache
+
+400
+00:15:38.133 --> 00:15:40.233
+and if it has no connectivity and no
+
+401
+00:15:40.233 --> 00:15:43.733
+cache it should show an empty feed
+
+402
+00:15:43.733 --> 00:15:47.266
+and it's passing now awesome
+
+403
+00:15:47.266 --> 00:15:51.033
+let's commit displays empty feed
+
+404
+00:15:51.033 --> 00:15:53.833
+when customer has no connectivity and no
+
+405
+00:15:53.833 --> 00:15:54.866
+cache
+
+406
+00:15:54.866 --> 00:15:58.800
+that's it okay
+
+407
+00:15:58.800 --> 00:16:01.266
+so this test is independent from every
+
+408
+00:16:01.266 --> 00:16:03.900
+other test because it resets the state
+
+409
+00:16:03.900 --> 00:16:05.433
+but the other tests are not resetting
+
+410
+00:16:05.433 --> 00:16:06.933
+the state which means they may be
+
+411
+00:16:06.933 --> 00:16:08.466
+affected by a previous
+
+412
+00:16:08.466 --> 00:16:11.333
+test run and we don't want that so let's
+
+413
+00:16:11.333 --> 00:16:12.800
+make sure to also reset
+
+414
+00:16:12.800 --> 00:16:16.066
+the state in every test so in this case
+
+415
+00:16:16.066 --> 00:16:19.100
+when we run the online app we want to
+
+416
+00:16:19.100 --> 00:16:21.100
+reset the state
+
+417
+00:16:21.100 --> 00:16:23.100
+but we don't want to reset the state in
+
+418
+00:16:23.100 --> 00:16:25.266
+the offline app launch
+
+419
+00:16:25.266 --> 00:16:27.333
+otherwise we're going to erase the cache
+
+420
+00:16:27.333 --> 00:16:29.666
+created in the online app
+
+421
+00:16:29.666 --> 00:16:32.233
+exactly so this test is still independent
+
+422
+00:16:32.233 --> 00:16:33.333
+because the first launch
+
+423
+00:16:33.333 --> 00:16:35.500
+resets everything and starts from a
+
+424
+00:16:35.500 --> 00:16:37.433
+clean state
+
+425
+00:16:37.433 --> 00:16:39.733
+and finally the first one as well let's
+
+426
+00:16:39.733 --> 00:16:40.466
+reset
+
+427
+00:16:40.466 --> 00:16:42.066
+to make sure that there is no shared
+
+428
+00:16:42.066 --> 00:16:44.366
+state across tests
+
+429
+00:16:44.366 --> 00:16:48.000
+let's run all the tests
+
+430
+00:16:48.000 --> 00:16:50.533
+and you probably noticed how slow those
+
+431
+00:16:50.533 --> 00:16:51.266
+tests are
+
+432
+00:16:51.266 --> 00:16:54.000
+they need to launch the application over
+
+433
+00:16:54.000 --> 00:16:54.800
+and over
+
+434
+00:16:54.800 --> 00:17:01.433
+and over
+
+435
+00:17:01.433 --> 00:17:05.833
+but it's passing let's commit
+
+436
+00:17:05.833 --> 00:17:08.466
+reset cache in every test run to make
+
+437
+00:17:08.466 --> 00:17:10.700
+sure tests run in a clean state
+
+438
+00:17:10.700 --> 00:17:12.700
+and don't influence the result of other
+
+439
+00:17:12.700 --> 00:17:13.900
+tests
+
+440
+00:17:13.900 --> 00:17:16.933
+so the tests are independent you can run
+
+441
+00:17:16.933 --> 00:17:18.633
+them in any order
+
+442
+00:17:18.633 --> 00:17:20.633
+you can run all the tests or you can run
+
+443
+00:17:20.633 --> 00:17:21.833
+a single test
+
+444
+00:17:21.833 --> 00:17:25.666
+and it should pass regardless alright
+
+445
+00:17:25.666 --> 00:17:28.233
+so this is working but we added test
+
+446
+00:17:28.233 --> 00:17:29.100
+code
+
+447
+00:17:29.100 --> 00:17:32.633
+in production yes
+
+448
+00:17:32.633 --> 00:17:34.700
+the SceneDelegate now which is
+
+449
+00:17:34.700 --> 00:17:36.300
+production code
+
+450
+00:17:36.300 --> 00:17:39.566
+it has some test logic and we don't want
+
+451
+00:17:39.566 --> 00:17:39.833
+to
+
+452
+00:17:39.833 --> 00:17:42.766
+deploy test code because you can even
+
+453
+00:17:42.766 --> 00:17:43.833
+have security
+
+454
+00:17:43.833 --> 00:17:46.400
+implications for example a malicious
+
+455
+00:17:46.400 --> 00:17:48.533
+user can launch your application with
+
+456
+00:17:48.533 --> 00:17:51.500
+arguments and take control of the state
+
+457
+00:17:51.500 --> 00:17:52.633
+of the application
+
+458
+00:17:52.633 --> 00:17:54.933
+this can be problematic so we don't want
+
+459
+00:17:54.933 --> 00:17:55.666
+this code
+
+460
+00:17:55.666 --> 00:17:58.833
+in production only when we are running
+
+461
+00:17:58.833 --> 00:18:02.066
+tests but since we are using UI tests
+
+462
+00:18:02.066 --> 00:18:05.433
+the black-box tests we cannot control
+
+463
+00:18:05.433 --> 00:18:07.833
+things like connectivity or cache state
+
+464
+00:18:07.833 --> 00:18:09.433
+from the test point of view we need to
+
+465
+00:18:09.433 --> 00:18:10.466
+inject this code
+
+466
+00:18:10.466 --> 00:18:12.766
+in production so the minimum we should
+
+467
+00:18:12.766 --> 00:18:14.066
+do here is to add
+
+468
+00:18:14.066 --> 00:18:16.300
+some compilation directives to prevent
+
+469
+00:18:16.300 --> 00:18:18.133
+this code from being deployed
+
+470
+00:18:18.133 --> 00:18:20.933
+in production so we can surround it with
+
+471
+00:18:20.933 --> 00:18:22.533
+the compilation directive
+
+472
+00:18:22.533 --> 00:18:25.500
+if debug so this code is only going to
+
+473
+00:18:25.500 --> 00:18:27.600
+be added to debug versions of your app
+
+474
+00:18:27.600 --> 00:18:29.200
+for example when you're testing
+
+475
+00:18:29.200 --> 00:18:32.300
+or running it with a debug configuration
+
+476
+00:18:32.300 --> 00:18:34.766
+now if you want to run UI tests with the
+
+477
+00:18:34.766 --> 00:18:35.600
+production
+
+478
+00:18:35.600 --> 00:18:36.633
+app you need to create your own
+
+479
+00:18:36.633 --> 00:18:38.866
+directives for example you could create
+
+480
+00:18:38.866 --> 00:18:40.066
+an if testing
+
+481
+00:18:40.066 --> 00:18:41.833
+that you can set in your production
+
+482
+00:18:41.833 --> 00:18:43.266
+build configuration
+
+483
+00:18:43.266 --> 00:18:46.066
+so every test code should be in between
+
+484
+00:18:46.066 --> 00:18:47.333
+compilation directives
+
+485
+00:18:47.333 --> 00:18:49.333
+to prevent it from being deployed in
+
+486
+00:18:49.333 --> 00:18:51.100
+production
+
+487
+00:18:51.100 --> 00:18:53.200
+so in this case we can replace the
+
+488
+00:18:53.200 --> 00:18:54.233
+switch statement with
+
+489
+00:18:54.233 --> 00:18:57.666
+an if statement and our
+
+490
+00:18:57.666 --> 00:19:01.266
+fake HTTPClient as well so now at least
+
+491
+00:19:01.266 --> 00:19:02.933
+this code is not going to be deployed in
+
+492
+00:19:02.933 --> 00:19:04.233
+production
+
+493
+00:19:04.233 --> 00:19:12.300
+so let's run the tests
+
+494
+00:19:12.300 --> 00:19:15.433
+alright it's passing okay
+
+495
+00:19:15.433 --> 00:19:19.100
+let's commit add
+
+496
+00:19:19.100 --> 00:19:22.133
+if debug compilation directive to
+
+497
+00:19:22.133 --> 00:19:22.866
+prevent
+
+498
+00:19:22.866 --> 00:19:25.833
+test specific code from being deployed
+
+499
+00:19:25.833 --> 00:19:26.933
+in production
+
+500
+00:19:26.933 --> 00:19:30.133
+that's it but we still have
+
+501
+00:19:30.133 --> 00:19:32.533
+all these compiler flags and the test
+
+502
+00:19:32.533 --> 00:19:33.900
+code
+
+503
+00:19:33.900 --> 00:19:35.600
+yes and this is still a small
+
+504
+00:19:35.600 --> 00:19:37.900
+application as we add more features
+
+505
+00:19:37.900 --> 00:19:39.500
+imagine how this is going to grow and
+
+506
+00:19:39.500 --> 00:19:41.333
+become a super unmaintainable
+
+507
+00:19:41.333 --> 00:19:45.200
+mess full of compiler directives
+
+508
+00:19:45.200 --> 00:19:47.833
+test code production code yeah and
+
+509
+00:19:47.833 --> 00:19:49.200
+that's the problem with
+
+510
+00:19:49.200 --> 00:19:52.233
+black-box testing basically yes
+
+511
+00:19:52.233 --> 00:19:54.133
+if you need to have any kind of control
+
+512
+00:19:54.133 --> 00:19:56.000
+to test some edge cases
+
+513
+00:19:56.000 --> 00:19:59.100
+you need to inject code in production
+
+514
+00:19:59.100 --> 00:20:00.533
+and since we don't want to deploy this
+
+515
+00:20:00.533 --> 00:20:02.866
+code to your customers you need to add
+
+516
+00:20:02.866 --> 00:20:04.533
+all those flags
+
+517
+00:20:04.533 --> 00:20:06.700
+but there are other ways we can do that
+
+518
+00:20:06.700 --> 00:20:07.833
+to eliminate
+
+519
+00:20:07.833 --> 00:20:11.033
+this noise from the production code so
+
+520
+00:20:11.033 --> 00:20:13.433
+all those if debug flags
+
+521
+00:20:13.433 --> 00:20:16.766
+could be moved into another class
+
+522
+00:20:16.766 --> 00:20:21.266
+so we can create a debugging
+
+523
+00:20:21.266 --> 00:20:25.600
+SceneDelegate okay
+
+524
+00:20:25.600 --> 00:20:28.766
+and this class is a subclass
+
+525
+00:20:28.766 --> 00:20:31.100
+of a SceneDelegate and then we can add
+
+526
+00:20:31.100 --> 00:20:32.766
+all the debugging logic
+
+527
+00:20:32.766 --> 00:20:36.400
+to the subtype so we are extending the
+
+528
+00:20:36.400 --> 00:20:38.066
+SceneDelegate
+
+529
+00:20:38.066 --> 00:20:41.200
+and moving the debug logic to the new
+
+530
+00:20:41.200 --> 00:20:43.200
+DebuggingSceneDelegate
+
+531
+00:20:43.200 --> 00:20:46.866
+exactly so we can copy this code
+
+532
+00:20:46.866 --> 00:20:51.266
+into our DebuggingSceneDelegate
+
+533
+00:20:51.266 --> 00:20:54.466
+to override the functionality of the
+
+534
+00:20:54.466 --> 00:20:55.333
+super class
+
+535
+00:20:55.333 --> 00:20:57.666
+the SceneDelegate and we can remove all
+
+536
+00:20:57.666 --> 00:20:59.600
+the parts we don't need
+
+537
+00:20:59.600 --> 00:21:02.700
+and keep only the debug code so in this
+
+538
+00:21:02.700 --> 00:21:04.400
+case we only keep
+
+539
+00:21:04.400 --> 00:21:07.500
+the reset logic and we forward
+
+540
+00:21:07.500 --> 00:21:10.633
+the message to the super class yeah
+
+541
+00:21:10.633 --> 00:21:12.533
+I like that and then we can also
+
+542
+00:21:12.533 --> 00:21:16.866
+override the remote client
+
+543
+00:21:16.866 --> 00:21:20.133
+and if we get the connectivity argument
+
+544
+00:21:20.133 --> 00:21:22.133
+we replace it with the always failing
+
+545
+00:21:22.133 --> 00:21:24.300
+client otherwise we use the super
+
+546
+00:21:24.300 --> 00:21:27.333
+implementation
+
+547
+00:21:27.333 --> 00:21:30.866
+so we need to expose the local store URL
+
+548
+00:21:30.866 --> 00:21:34.233
+in the super class and the make remote
+
+549
+00:21:34.233 --> 00:21:34.866
+client
+
+550
+00:21:34.866 --> 00:21:38.000
+as well
+
+551
+00:21:38.000 --> 00:21:39.833
+so the make remote client now needs to
+
+552
+00:21:39.833 --> 00:21:41.500
+be internal
+
+553
+00:21:41.500 --> 00:21:45.033
+and we can remove the debug code
+
+554
+00:21:45.033 --> 00:21:47.833
+we can also remove this debug code from
+
+555
+00:21:47.833 --> 00:21:49.200
+here
+
+556
+00:21:49.200 --> 00:21:51.433
+we just need to expose the local store
+
+557
+00:21:51.433 --> 00:21:54.700
+URL
+
+558
+00:21:54.700 --> 00:21:56.866
+finally we move the always failing
+
+559
+00:21:56.866 --> 00:22:02.466
+client as well
+
+560
+00:22:02.466 --> 00:22:05.733
+let's import EssentialFeed
+
+561
+00:22:05.733 --> 00:22:07.666
+and that's it we move all the debug
+
+562
+00:22:07.666 --> 00:22:09.433
+logic to a new class
+
+563
+00:22:09.433 --> 00:22:12.466
+only used while debugging exactly and
+
+564
+00:22:12.466 --> 00:22:15.266
+now we can even wrap the whole class in
+
+565
+00:22:15.266 --> 00:22:15.500
+an
+
+566
+00:22:15.500 --> 00:22:18.533
+if debug compilation directive
+
+567
+00:22:18.533 --> 00:22:20.866
+that's it so this is still code that
+
+568
+00:22:20.866 --> 00:22:21.833
+only exists
+
+569
+00:22:21.833 --> 00:22:24.400
+in debug builds but it's contained in
+
+570
+00:22:24.400 --> 00:22:26.700
+its own file in its own class
+
+571
+00:22:26.700 --> 00:22:29.833
+so the SceneDelegate is clean has only
+
+572
+00:22:29.833 --> 00:22:31.833
+production code
+
+573
+00:22:31.833 --> 00:22:34.300
+however now we need to tell our
+
+574
+00:22:34.300 --> 00:22:35.100
+application
+
+575
+00:22:35.100 --> 00:22:37.900
+to use the DebuggingSceneDelegate in
+
+576
+00:22:37.900 --> 00:22:39.200
+debug mode
+
+577
+00:22:39.200 --> 00:22:42.400
+and we can do it in the AppDelegate
+
+578
+00:22:42.400 --> 00:22:44.700
+exactly the application delegate will be
+
+579
+00:22:44.700 --> 00:22:45.500
+the decider
+
+580
+00:22:45.500 --> 00:22:47.733
+on which SceneDelegate it should go
+
+581
+00:22:47.733 --> 00:22:48.533
+with
+
+582
+00:22:48.533 --> 00:22:51.100
+exactly if we implement the
+
+583
+00:22:51.100 --> 00:22:53.200
+configuration for connecting
+
+584
+00:22:53.200 --> 00:22:56.066
+the scene session we have a chance of
+
+585
+00:22:56.066 --> 00:22:56.533
+creating
+
+586
+00:22:56.533 --> 00:22:59.033
+our own configuration and replace the
+
+587
+00:22:59.033 --> 00:23:00.133
+delegate class
+
+588
+00:23:00.133 --> 00:23:03.033
+for the scene configuration so if we
+
+589
+00:23:03.033 --> 00:23:04.400
+have a debug build
+
+590
+00:23:04.400 --> 00:23:06.933
+we are going to use the DebugScene
+
+591
+00:23:06.933 --> 00:23:08.133
+Delegate
+
+592
+00:23:08.133 --> 00:23:10.133
+otherwise it just uses the default one
+
+593
+00:23:10.133 --> 00:23:12.233
+that is set in your Info.plist
+
+594
+00:23:12.233 --> 00:23:16.066
+which in our case is the SceneDelegate
+
+595
+00:23:16.066 --> 00:23:17.733
+so this is a much cleaner way of
+
+596
+00:23:17.733 --> 00:23:19.266
+containing this
+
+597
+00:23:19.266 --> 00:23:22.233
+debugging or testing logic from your
+
+598
+00:23:22.233 --> 00:23:24.000
+production code
+
+599
+00:23:24.000 --> 00:23:37.433
+exactly so let's run the tests
+
+600
+00:23:37.433 --> 00:23:40.466
+still passing fantastic
+
+601
+00:23:40.466 --> 00:23:43.666
+let's commit move debug
+
+602
+00:23:43.666 --> 00:23:46.700
+code paths from the main SceneDelegate
+
+603
+00:23:46.700 --> 00:23:49.100
+to a new DebuggingSceneDelegate
+
+604
+00:23:49.100 --> 00:23:50.300
+subclass
+
+605
+00:23:50.300 --> 00:23:52.933
+to separate and debug and test specific
+
+606
+00:23:52.933 --> 00:23:53.733
+code
+
+607
+00:23:53.733 --> 00:23:57.100
+from production code that's it
+
+608
+00:23:57.100 --> 00:23:59.600
+I really like this separation the Scene
+
+609
+00:23:59.600 --> 00:24:01.500
+Delegate remains clean
+
+610
+00:24:01.500 --> 00:24:04.233
+with no debugging code and we have
+
+611
+00:24:04.233 --> 00:24:05.333
+extracted
+
+612
+00:24:05.333 --> 00:24:09.333
+any test related code to its own place
+
+613
+00:24:09.333 --> 00:24:11.200
+exactly so we have a lot of trade-offs
+
+614
+00:24:11.200 --> 00:24:13.333
+when using black-box testing because we
+
+615
+00:24:13.333 --> 00:24:14.000
+need to have
+
+616
+00:24:14.000 --> 00:24:17.033
+test code in the production target but
+
+617
+00:24:17.033 --> 00:24:18.933
+at least we can strip that code from
+
+618
+00:24:18.933 --> 00:24:20.300
+the production binary
+
+619
+00:24:20.300 --> 00:24:22.466
+and also separate it with our own
+
+620
+00:24:22.466 --> 00:24:23.666
+subclasses
+
+621
+00:24:23.666 --> 00:24:26.066
+so at least you contain the downsides in
+
+622
+00:24:26.066 --> 00:24:29.033
+a centralized place
+
+623
+00:24:29.033 --> 00:24:30.400
+there's one more thing we can do to
+
+624
+00:24:30.400 --> 00:24:32.866
+improve the UI tests
+
+625
+00:24:32.866 --> 00:24:34.700
+so so far we are checking that we are
+
+626
+00:24:34.700 --> 00:24:36.133
+loading the 22
+
+627
+00:24:36.133 --> 00:24:38.400
+feed cells and that we are loading at
+
+628
+00:24:38.400 --> 00:24:39.600
+least the first
+
+629
+00:24:39.600 --> 00:24:41.900
+image but the problem is we are loading
+
+630
+00:24:41.900 --> 00:24:42.633
+this
+
+631
+00:24:42.633 --> 00:24:45.433
+from remote from a server a server that
+
+632
+00:24:45.433 --> 00:24:46.233
+we have
+
+633
+00:24:46.233 --> 00:24:48.933
+no control over what if tomorrow the
+
+634
+00:24:48.933 --> 00:24:50.233
+server starts returning
+
+635
+00:24:50.233 --> 00:24:53.266
+23 or 50 or 100 or
+
+636
+00:24:53.266 --> 00:24:56.466
+0 right what if the server is down
+
+637
+00:24:56.466 --> 00:24:57.500
+what if you don't have internet
+
+638
+00:24:57.500 --> 00:24:59.733
+connection when you run the tests
+
+639
+00:24:59.733 --> 00:25:01.500
+so all those questions could lead your
+
+640
+00:25:01.500 --> 00:25:03.266
+tests to fail
+
+641
+00:25:03.266 --> 00:25:05.666
+so this test is flaky it cannot pass on
+
+642
+00:25:05.666 --> 00:25:07.433
+its own it depends on some external
+
+643
+00:25:07.433 --> 00:25:08.233
+systems
+
+644
+00:25:08.233 --> 00:25:11.033
+being in a specific state you expect so
+
+645
+00:25:11.033 --> 00:25:12.400
+this is fragile
+
+646
+00:25:12.400 --> 00:25:13.900
+ideally we should be able to run this
+
+647
+00:25:13.900 --> 00:25:16.133
+test over and over and over and always
+
+648
+00:25:16.133 --> 00:25:16.466
+get
+
+649
+00:25:16.466 --> 00:25:19.333
+the same result we want to reduce and
+
+650
+00:25:19.333 --> 00:25:20.233
+eliminate
+
+651
+00:25:20.233 --> 00:25:23.733
+flakiness so we need to decouple our UI
+
+652
+00:25:23.733 --> 00:25:24.300
+tests
+
+653
+00:25:24.300 --> 00:25:27.333
+from the specific backend and we already
+
+654
+00:25:27.333 --> 00:25:29.100
+have a mechanism for doing that
+
+655
+00:25:29.100 --> 00:25:31.333
+we can tell the app to be offline we
+
+656
+00:25:31.333 --> 00:25:32.633
+could also tell the app
+
+657
+00:25:32.633 --> 00:25:35.100
+to be online and have some canned
+
+658
+00:25:35.100 --> 00:25:36.133
+responses
+
+659
+00:25:36.133 --> 00:25:37.900
+thus we wouldn't need internet
+
+660
+00:25:37.900 --> 00:25:40.000
+connection or it wouldn't be dependent
+
+661
+00:25:40.000 --> 00:25:41.033
+on the server
+
+662
+00:25:41.033 --> 00:25:44.000
+state because we already tested the
+
+663
+00:25:44.000 --> 00:25:45.733
+end-to-end communication with the server
+
+664
+00:25:45.733 --> 00:25:48.233
+in the API integration tests we don't
+
+665
+00:25:48.233 --> 00:25:49.266
+need to test this again
+
+666
+00:25:49.266 --> 00:25:52.466
+in the UI tests, UI tests should not test
+
+667
+00:25:52.466 --> 00:25:54.866
+low-level details you should test high
+
+668
+00:25:54.866 --> 00:25:55.500
+level
+
+669
+00:25:55.500 --> 00:25:58.066
+acceptance criteria so we need to
+
+670
+00:25:58.066 --> 00:25:58.766
+control
+
+671
+00:25:58.766 --> 00:26:01.433
+the connectivity state for the online
+
+672
+00:26:01.433 --> 00:26:02.466
+state
+
+673
+00:26:02.466 --> 00:26:05.033
+and we could do so by passing
+
+674
+00:26:05.033 --> 00:26:06.300
+connectivity
+
+675
+00:26:06.300 --> 00:26:09.100
+online for example and have some
+
+676
+00:26:09.100 --> 00:26:10.300
+pre-defined
+
+677
+00:26:10.300 --> 00:26:12.700
+responses for that so when we're only
+
+678
+00:26:12.700 --> 00:26:14.533
+tests we get a reliable
+
+679
+00:26:14.533 --> 00:26:17.500
+result and now we have a place to do it
+
+680
+00:26:17.500 --> 00:26:19.500
+the DebuggingSceneDelegate
+
+681
+00:26:19.500 --> 00:26:23.600
+so if connectivity is set
+
+682
+00:26:23.600 --> 00:26:26.466
+we create our HTTPClient with
+
+683
+00:26:26.466 --> 00:26:28.300
+connectivity
+
+684
+00:26:28.300 --> 00:26:29.900
+so we should probably rename this
+
+685
+00:26:29.900 --> 00:26:31.833
+because it's not always failing anymore
+
+686
+00:26:31.833 --> 00:26:34.300
+it depends on the connectivity argument
+
+687
+00:26:34.300 --> 00:26:35.666
+so Debugging
+
+688
+00:26:35.666 --> 00:26:39.333
+HTTPClient
+
+689
+00:26:39.333 --> 00:26:41.600
+and now depending on the connectivity
+
+690
+00:26:41.600 --> 00:26:42.866
+state we can
+
+691
+00:26:42.866 --> 00:26:46.133
+return some predefined responses
+
+692
+00:26:46.133 --> 00:26:49.033
+so in the online connectivity state we
+
+693
+00:26:49.033 --> 00:26:49.833
+complete
+
+694
+00:26:49.833 --> 00:26:52.066
+with a successful response for the given
+
+695
+00:26:52.066 --> 00:26:53.500
+URL
+
+696
+00:26:53.500 --> 00:26:57.433
+else we complete with an offline error
+
+697
+00:26:57.433 --> 00:27:01.733
+okay so make successful response for URL
+
+698
+00:27:01.733 --> 00:27:04.533
+it creates an HTTP URL response status
+
+699
+00:27:04.533 --> 00:27:05.200
+200
+
+700
+00:27:05.200 --> 00:27:08.633
+success and we create data for URL
+
+701
+00:27:08.633 --> 00:27:11.500
+and if it's an image request we create
+
+702
+00:27:11.500 --> 00:27:12.300
+some fake
+
+703
+00:27:12.300 --> 00:27:16.466
+image data which is just a red image
+
+704
+00:27:16.466 --> 00:27:18.366
+otherwise we return the feed data
+
+705
+00:27:18.366 --> 00:27:20.866
+response which is just a JSON with 2
+
+706
+00:27:20.866 --> 00:27:22.866
+items
+
+707
+00:27:22.866 --> 00:27:24.700
+so we just need to change our tests to
+
+708
+00:27:24.700 --> 00:27:26.366
+expect 2
+
+709
+00:27:26.366 --> 00:27:29.600
+items instead of 22 but we could use
+
+710
+00:27:29.600 --> 00:27:30.000
+3
+
+711
+00:27:30.000 --> 00:27:33.200
+4, 5 or as many as we want
+
+712
+00:27:33.200 --> 00:27:35.333
+let's run the tests now and it should
+
+713
+00:27:35.333 --> 00:27:37.033
+run and pass without making
+
+714
+00:27:37.033 --> 00:27:39.100
+any network requests everything is
+
+715
+00:27:39.100 --> 00:27:40.533
+self-contained
+
+716
+00:27:40.533 --> 00:27:43.600
+look at that it loaded the red images
+
+717
+00:27:43.600 --> 00:27:49.833
+we created in the DebuggingHTTPClient
+
+718
+00:27:49.833 --> 00:27:52.933
+passing so those tests don't depend
+
+719
+00:27:52.933 --> 00:27:55.733
+on the server state or the network
+
+720
+00:27:55.733 --> 00:27:56.633
+connectivity
+
+721
+00:27:56.633 --> 00:27:58.933
+state anymore they are much more
+
+722
+00:27:58.933 --> 00:28:00.366
+reliable
+
+723
+00:28:00.366 --> 00:28:02.533
+they won't fail because of external
+
+724
+00:28:02.533 --> 00:28:03.500
+systems
+
+725
+00:28:03.500 --> 00:28:06.533
+we can run this test over and over and
+
+726
+00:28:06.533 --> 00:28:06.933
+over
+
+727
+00:28:06.933 --> 00:28:09.733
+and always get the same result yeah
+
+728
+00:28:09.733 --> 00:28:11.500
+that's fantastic
+
+729
+00:28:11.500 --> 00:28:15.200
+let's commit intercept
+
+730
+00:28:15.200 --> 00:28:18.133
+HTTP requests with canned responses
+
+731
+00:28:18.133 --> 00:28:19.600
+during UI tests
+
+732
+00:28:19.600 --> 00:28:22.633
+to eliminate network flakiness
+
+733
+00:28:22.633 --> 00:28:25.433
+we can now run UI tests without internet
+
+734
+00:28:25.433 --> 00:28:26.700
+connection
+
+735
+00:28:26.700 --> 00:28:30.000
+awesome alright
+
+736
+00:28:30.000 --> 00:28:32.066
+so we're running these UI tests that
+
+737
+00:28:32.066 --> 00:28:33.900
+traditionally are very flaky but we
+
+738
+00:28:33.900 --> 00:28:35.100
+created a very
+
+739
+00:28:35.100 --> 00:28:38.633
+reliable solution because we control
+
+740
+00:28:38.633 --> 00:28:42.133
+the infrastructure state the network
+
+741
+00:28:42.133 --> 00:28:44.766
+and we are only testing high-level
+
+742
+00:28:44.766 --> 00:28:45.433
+details
+
+743
+00:28:45.433 --> 00:28:48.133
+we're not checking the values in the
+
+744
+00:28:48.133 --> 00:28:48.933
+cell
+
+745
+00:28:48.933 --> 00:28:51.100
+the text and things like that all those
+
+746
+00:28:51.100 --> 00:28:52.366
+things have been tested
+
+747
+00:28:52.366 --> 00:28:55.433
+either in isolation with unit tests
+
+748
+00:28:55.433 --> 00:28:58.700
+or in integration, UI tests
+
+749
+00:28:58.700 --> 00:29:00.633
+they actually run the app they should
+
+750
+00:29:00.633 --> 00:29:02.866
+only test high-level acceptance
+
+751
+00:29:02.866 --> 00:29:06.000
+criteria now to make sure
+
+752
+00:29:06.000 --> 00:29:08.466
+you are not mocking too much in your UI
+
+753
+00:29:08.466 --> 00:29:09.033
+tests
+
+754
+00:29:09.033 --> 00:29:11.666
+you should only replace infrastructure
+
+755
+00:29:11.666 --> 00:29:12.633
+details
+
+756
+00:29:12.633 --> 00:29:15.900
+for example the HTTPClient
+
+757
+00:29:15.900 --> 00:29:17.600
+we are not changing the application
+
+758
+00:29:17.600 --> 00:29:19.900
+behavior we always keep
+
+759
+00:29:19.900 --> 00:29:22.766
+the current behavior we add
+
+760
+00:29:22.766 --> 00:29:23.900
+functionality
+
+761
+00:29:23.900 --> 00:29:27.200
+when debugging for example we reset
+
+762
+00:29:27.200 --> 00:29:29.733
+the cache state that doesn't affect the
+
+763
+00:29:29.733 --> 00:29:30.533
+application
+
+764
+00:29:30.533 --> 00:29:32.866
+functionality and also replacing the
+
+765
+00:29:32.866 --> 00:29:34.633
+HTTPClient doesn't affect the
+
+766
+00:29:34.633 --> 00:29:36.633
+application functionality
+
+767
+00:29:36.633 --> 00:29:39.733
+exactly we still use the SceneDelegate
+
+768
+00:29:39.733 --> 00:29:42.700
+because we are subclassing it and using
+
+769
+00:29:42.700 --> 00:29:44.133
+the Debugging subclass
+
+770
+00:29:44.133 --> 00:29:46.766
+during tests the whole composition is
+
+771
+00:29:46.766 --> 00:29:47.666
+the same
+
+772
+00:29:47.666 --> 00:29:50.133
+the only thing we are replacing is the
+
+773
+00:29:50.133 --> 00:29:50.866
+infra
+
+774
+00:29:50.866 --> 00:29:53.733
+structure the HTTPClient and this is
+
+775
+00:29:53.733 --> 00:29:54.533
+key
+
+776
+00:29:54.533 --> 00:29:59.266
+you don't want to mock or replace business logic
+
+777
+00:29:59.266 --> 00:30:02.366
+only replace infrastructure details
+
+778
+00:30:02.366 --> 00:30:05.500
+like network clients that's how you
+
+779
+00:30:05.500 --> 00:30:07.100
+maintain the confidence that
+
+780
+00:30:07.100 --> 00:30:10.233
+you are testing your real application
+
+781
+00:30:10.233 --> 00:30:11.900
+and we have the confidence because we
+
+782
+00:30:11.900 --> 00:30:14.066
+have API end-to-end tests
+
+783
+00:30:14.066 --> 00:30:16.233
+talking directly with the back end so we
+
+784
+00:30:16.233 --> 00:30:17.500
+don't need to test this again
+
+785
+00:30:17.500 --> 00:30:20.700
+with UI tests, UI tests we just test the
+
+786
+00:30:20.700 --> 00:30:22.300
+high-level acceptance criteria
+
+787
+00:30:22.300 --> 00:30:24.633
+through the black-box and that's how you
+
+788
+00:30:24.633 --> 00:30:25.900
+make your UI tests
+
+789
+00:30:25.900 --> 00:30:29.266
+reliable however there's another problem
+
+790
+00:30:29.266 --> 00:30:30.366
+with UI tests
+
+791
+00:30:30.366 --> 00:30:34.000
+they are super super super slow
+
+792
+00:30:34.000 --> 00:30:37.033
+how slow let's see
+
+793
+00:30:37.033 --> 00:30:40.700
+it took 29.8 seconds to run
+
+794
+00:30:40.700 --> 00:30:43.900
+3 tests right
+
+795
+00:30:43.900 --> 00:30:47.433
+30 seconds for 3 tests, 10 seconds
+
+796
+00:30:47.433 --> 00:30:49.666
+per test which means you won't be
+
+797
+00:30:49.666 --> 00:30:51.500
+running those tests very often
+
+798
+00:30:51.500 --> 00:30:53.333
+you're probably only gonna run them on
+
+799
+00:30:53.333 --> 00:30:54.533
+CI
+
+800
+00:30:54.533 --> 00:30:56.866
+yeah otherwise you're not gonna be very
+
+801
+00:30:56.866 --> 00:30:59.266
+productive if you run them often
+
+802
+00:30:59.266 --> 00:31:01.833
+yes and the more features we add the
+
+803
+00:31:01.833 --> 00:31:02.366
+more
+
+804
+00:31:02.366 --> 00:31:05.500
+this is gonna grow so it's very common
+
+805
+00:31:05.500 --> 00:31:08.466
+for UI tests to take 5 minutes, 10
+
+806
+00:31:08.466 --> 00:31:09.200
+minutes
+
+807
+00:31:09.200 --> 00:31:12.466
+30 minutes, hours to run that's why we
+
+808
+00:31:12.466 --> 00:31:12.933
+want to
+
+809
+00:31:12.933 --> 00:31:16.066
+minimize the number of UI tests just a
+
+810
+00:31:16.066 --> 00:31:16.766
+few
+
+811
+00:31:16.766 --> 00:31:19.333
+super high-level testing only the
+
+812
+00:31:19.333 --> 00:31:20.866
+acceptance criteria
+
+813
+00:31:20.866 --> 00:31:22.700
+all the details should be tested in
+
+814
+00:31:22.700 --> 00:31:24.633
+isolation exactly
+
+815
+00:31:24.633 --> 00:31:27.600
+and they're not part of your Command+U
+
+816
+00:31:27.600 --> 00:31:28.366
+process
+
+817
+00:31:28.366 --> 00:31:30.233
+no they are in a separate target for
+
+818
+00:31:30.233 --> 00:31:31.500
+slow tests
+
+819
+00:31:31.500 --> 00:31:34.533
+that's it and do you always need UI
+
+820
+00:31:34.533 --> 00:31:35.600
+tests
+
+821
+00:31:35.600 --> 00:31:38.466
+no but if you do you need to make them
+
+822
+00:31:38.466 --> 00:31:39.833
+as reliable as possible
+
+823
+00:31:39.833 --> 00:31:43.266
+and as fast as possible so again
+
+824
+00:31:43.266 --> 00:31:44.833
+low-level details your tests in
+
+825
+00:31:44.833 --> 00:31:47.333
+isolation and only test
+
+826
+00:31:47.333 --> 00:31:49.900
+very high-level acceptance criteria
+
+827
+00:31:49.900 --> 00:31:51.200
+through the UI tests
+
+828
+00:31:51.200 --> 00:31:53.600
+if needed and if you need to take
+
+829
+00:31:53.600 --> 00:31:54.366
+control of
+
+830
+00:31:54.366 --> 00:31:57.033
+any aspect of the application create a
+
+831
+00:31:57.033 --> 00:31:58.066
+clean separation
+
+832
+00:31:58.066 --> 00:32:00.233
+between the debugging code or the
+
+833
+00:32:00.233 --> 00:32:01.100
+testing code
+
+834
+00:32:01.100 --> 00:32:05.600
+from the production code, awesome
+
+835
+00:32:05.600 --> 00:32:07.600
+this is gonna do it for this lecture
+
+836
+00:32:07.600 --> 00:32:08.700
+we'll see you again
+
+837
+00:32:08.700 --> 00:32:22.466
+next time bye y'all, see ya

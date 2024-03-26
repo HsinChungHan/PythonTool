@@ -1,0 +1,12 @@
+1. The lecture discusses Model-View-ViewModel (MVVM) use in creating a reusable platform-agnostic presentation layer, and reducing direct dependencies of UIKit ViewControllers on core components in iOS development.
+2. The presenters note that the overuse of state management in some controllers inflates their responsibilities, leading to problems such as difficulty due to duplication of logic when deploying the code on other platforms.
+3. It further explores the MVVM, an MVC variant developed by Microsoft engineers to remove the boilerplate of syncing view events and model updates found in an MVC implementation.
+4. MVVM implementation involves separating the view and the ViewModel, oftentimes using a Binder to bridge the two, unlike in MVC where the controller holds a reference to the view. 
+5. They discuss how various frameworks like Combine, or RxSwift are used to facilitate View and ViewModel binding in iOS.
+6. They highlight how to build a ViewModel, the importance of the ViewModel being platform agnostic, and how it acts as value converter, maintaining core model agnosticism of specific presentation formatting.
+7. The lecture explains the process of moving responsibilities out of controllers to the ViewModel, explaining the concept of stateful and stateless ViewModel development.
+8. The presenters explore the process of moving away from a Controller holding a direct reference to a FeedLoader to a system where a ViewModel is responsible for managing feed-loading state. 
+9. They discuss FeedImageViewModel implementation, addressing the issue of how a dependency on UIKit creates a limitation on reusability across different platforms.
+10. The lecturers explain how to use generics and dependency injection to resolve this limit, enabling ViewModel reusability across different platforms.
+11. Further, the lecture stresses the importance of decoupling ViewModels from specific UI frameworks and that there's no requirement to have a ViewModel just because there's a View. Also, MVC and MVVM can be mixed to organize the UI layer.
+12. The lecturers conclude noting that MVVM improves architectural separation between UI and core components making presentation logic more reusable across various platforms and that developers should use the best architectural design option for the problem at hand.

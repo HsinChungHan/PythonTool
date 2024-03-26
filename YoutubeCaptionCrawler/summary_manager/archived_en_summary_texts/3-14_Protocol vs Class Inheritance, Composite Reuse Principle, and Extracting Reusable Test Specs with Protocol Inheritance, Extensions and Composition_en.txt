@@ -1,0 +1,15 @@
+1. The lecture discusses the extraction of reusable Feed Store specifications to aid the implementation of databases such as Core Data, Realm, etc.
+2. The process started by creating the FeedStore Specs as a protocol from which all reusable tests are extracted.
+3. An Xcode trick was shared that helps visualize the interface of the selected class.
+4. The concept of Feed Store specification was explained as a set of rules any Feed Store implementation should follow.
+5. The segmenting process includes creating specialized protocols for different functionalities like failable retrieve specs, failable insert specs and failable delete specs.
+6. The discrepancy between the number of methods within protocols was explained using an overall look at the implementation.
+7. Methods with more than one assertion were broken down to have one assertion per test, leading to the creation of more explicit and reusable tests.
+8. By breaking down behavioral tests into smaller units, they can be easily understood and implemented by others.
+9. To ensure a FeedStore implementation complies with the set specifications (FeedStoreSpecs), protocol inheritance was introduced.
+10. Protocol composition was used to combine multiple protocols into a complete FailableFeedStore specification. 
+11. Steps were taken to make methods in the CodableFeedStore test reusable, making them available to any other implementation.
+12. Helper methods were extracted to share scope and increase reusability.
+13. Some concepts were explained, including the Liskov Substitution Principle, which allows for generalization of assertion methods and helpers, making them reusable.
+14. Protocol inheritance and extensions were used to make the specs composable - minimum requirements could be dictated without forcing clients to implement methods they don't need.
+15. Lastly, the Interface Segregation Principle was discussed, which supports the breaking down of specs into different protocols, allowing for more flexible, modular implementation.

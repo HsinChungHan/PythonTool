@@ -1,0 +1,16 @@
+1. The lecturer provides an overview of another implementation of the FeedStore, later revealed as the CoreDataFeedStore. 
+2. The CoreDataFeedStore, like the Codable FeedStore, conforms to FeedStore and uses Core Data to store and retrieve LocalFeedImages. 
+3. They stress that the infrastructure implementations can exist in separate modules, emphasizing the separation between the infrastructure implementation and the rest of the business logic. 
+4. It's clarified that as long as the store respects the specifications, it can be interchangeably used.
+5. They also note on the usage of reusable Feed Store specifications, which parallels the process they followed when implementing the CoreDataFeedStore.
+6. The development was faster and tests were cleaner due to the possibility of reusing all assertions. They also had to implement the makeSUT helper to create a CoreData FeedStore instance.
+7. When testing Core Data implementation, there are some peculiarities. They had to locate the data model in the bundle, which is separate from the test bundle. 
+8. During testing, they inject the bundle, while in production, they use the main bundle.
+9. They mention the usage of /dev/null as a store URL to direct CoreData output to a null device. This method avoids creating SQLite artifacts in disk and facilitates faster testing due to less I/O.
+10. The CoreDataFeedStore implementation is explained in detail: the retrieval, insertion, and deletion processes all happen in the background context. Errors are handled accordingly.
+11. They comment on the simplicity of their code, emphasizing how separating the business logic from the framework logic reduces complexity and possible mistakes.
+12. The data model of the CoreDataFeedStore is then overviewed. It has two entities, the ManagedCache and the ManagedFeedImage, with various non-optional and optional attributes.
+13. The ManagedFeedImage mirrors the characteristics of the LocalFeedImage but there is a divergence due to a relationship with the ManagedCache.
+14. It is emphasized that it is important to separate core models from framework models to avoid unnecessary complexity.
+15. Encouragement is given for viewers to create their own Core Data solutions as part of the FeedStore challenge and a detailed revision through git diff is encouraged.
+16. The persistence module being almost over is pointed out. The conversation ends with a polite farewell, leaving any further discussions for the next meeting.

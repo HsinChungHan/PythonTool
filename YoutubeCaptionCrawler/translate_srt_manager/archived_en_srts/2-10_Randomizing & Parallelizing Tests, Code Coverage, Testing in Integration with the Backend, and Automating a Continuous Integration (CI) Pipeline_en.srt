@@ -1,0 +1,2363 @@
+1
+00:00:01.166 --> 00:00:03.100
+Hello Mike, hey Caio
+
+2
+00:00:03.100 --> 00:00:04.700
+so we finished the implementation of the
+
+3
+00:00:04.700 --> 00:00:06.766
+Feed API module
+
+4
+00:00:06.766 --> 00:00:08.400
+we paid a lot of attention with the
+
+5
+00:00:08.400 --> 00:00:10.466
+production code and test code
+
+6
+00:00:10.466 --> 00:00:12.300
+but there are more steps we can take to
+
+7
+00:00:12.300 --> 00:00:14.766
+improve the integrity of the codebase
+
+8
+00:00:14.766 --> 00:00:16.633
+including automating a continuous
+
+9
+00:00:16.633 --> 00:00:18.466
+integration pipeline
+
+10
+00:00:18.466 --> 00:00:20.866
+and we can even add end-to-end tests at
+
+11
+00:00:20.866 --> 00:00:21.733
+this stage
+
+12
+00:00:21.733 --> 00:00:23.833
+to test the integration of the Feed API
+
+13
+00:00:23.833 --> 00:00:25.733
+module with a backend
+
+14
+00:00:25.733 --> 00:00:28.300
+absolutely but first there is a test
+
+15
+00:00:28.300 --> 00:00:29.166
+configuration
+
+16
+00:00:29.166 --> 00:00:31.166
+where we can randomize the order of the
+
+17
+00:00:31.166 --> 00:00:32.700
+tests which will increase
+
+18
+00:00:32.700 --> 00:00:35.200
+their value yeah so we can go to the
+
+19
+00:00:35.200 --> 00:00:36.000
+scheme
+
+20
+00:00:36.000 --> 00:00:39.333
+edit scheme, test
+
+21
+00:00:39.333 --> 00:00:41.666
+and the options for the target we can
+
+22
+00:00:41.666 --> 00:00:42.866
+select randomize
+
+23
+00:00:42.866 --> 00:00:46.233
+execution order and why would we do that
+
+24
+00:00:46.233 --> 00:00:48.533
+right by randomizing our tests we
+
+25
+00:00:48.533 --> 00:00:50.133
+eliminate any possible
+
+26
+00:00:50.133 --> 00:00:52.466
+order dependency that might exist in our
+
+27
+00:00:52.466 --> 00:00:54.000
+test suite that could affect the test
+
+28
+00:00:54.000 --> 00:00:54.933
+results
+
+29
+00:00:54.933 --> 00:00:57.733
+exactly so let's see if we have any
+
+30
+00:00:57.733 --> 00:00:59.733
+order issue
+
+31
+00:00:59.733 --> 00:01:03.500
+running the tests and they still pass
+
+32
+00:01:03.500 --> 00:01:05.733
+beautiful which means that there is no
+
+33
+00:01:05.733 --> 00:01:07.100
+order dependency
+
+34
+00:01:07.100 --> 00:01:09.500
+for example we don't expect the first
+
+35
+00:01:09.500 --> 00:01:10.533
+test to run
+
+36
+00:01:10.533 --> 00:01:12.533
+before the second one because we don't
+
+37
+00:01:12.533 --> 00:01:14.400
+want a test method to depend
+
+38
+00:01:14.400 --> 00:01:16.533
+on another one to run first absolutely
+
+39
+00:01:16.533 --> 00:01:17.733
+you want all the tests
+
+40
+00:01:17.733 --> 00:01:20.133
+to run perfectly in isolation and as a
+
+41
+00:01:20.133 --> 00:01:21.500
+group as well
+
+42
+00:01:21.500 --> 00:01:23.666
+so if one test fails all the reasons for
+
+43
+00:01:23.666 --> 00:01:24.766
+its failure is
+
+44
+00:01:24.766 --> 00:01:27.833
+within its own method definition yeah
+
+45
+00:01:27.833 --> 00:01:29.600
+we've seen many codebases where
+
+46
+00:01:29.600 --> 00:01:32.533
+you need to run each test in isolation
+
+47
+00:01:32.533 --> 00:01:34.066
+and you see it pass
+
+48
+00:01:34.066 --> 00:01:36.866
+but when you run all the test suite you
+
+49
+00:01:36.866 --> 00:01:38.133
+get a bunch of errors
+
+50
+00:01:38.133 --> 00:01:41.433
+and this is a flaky test suite
+
+51
+00:01:41.433 --> 00:01:44.066
+and the opposite as well they pass in
+
+52
+00:01:44.066 --> 00:01:45.600
+integration but they don't pass
+
+53
+00:01:45.600 --> 00:01:48.066
+in isolation yeah you don't want that
+
+54
+00:01:48.066 --> 00:01:49.733
+alright so let's commit
+
+55
+00:01:49.733 --> 00:01:53.666
+so enable random test execution
+
+56
+00:01:53.666 --> 00:01:57.033
+order to guarantee there is
+
+57
+00:01:57.033 --> 00:02:00.700
+no order dependency between
+
+58
+00:02:00.700 --> 00:02:04.466
+test methods another option
+
+59
+00:02:04.466 --> 00:02:06.700
+we have here is to run the tests in
+
+60
+00:02:06.700 --> 00:02:07.666
+parallel
+
+61
+00:02:07.666 --> 00:02:10.633
+right what do we gain by doing so in
+
+62
+00:02:10.633 --> 00:02:12.633
+theory by running in parallel you can
+
+63
+00:02:12.633 --> 00:02:13.266
+speed up
+
+64
+00:02:13.266 --> 00:02:15.833
+the execution of the tests but we do
+
+65
+00:02:15.833 --> 00:02:16.866
+have a few tests
+
+66
+00:02:16.866 --> 00:02:19.433
+so I don't think there is any benefit in
+
+67
+00:02:19.433 --> 00:02:20.133
+enabling it
+
+68
+00:02:20.133 --> 00:02:22.066
+now since we don't have a performance
+
+69
+00:02:22.066 --> 00:02:23.433
+problem there's nothing
+
+70
+00:02:23.433 --> 00:02:26.066
+to improve at this time exactly another
+
+71
+00:02:26.066 --> 00:02:27.500
+option we can enable here
+
+72
+00:02:27.500 --> 00:02:30.533
+is the gather coverage right
+
+73
+00:02:30.533 --> 00:02:33.266
+the legendary code coverage exactly and
+
+74
+00:02:33.266 --> 00:02:35.266
+we can select to run it for all targets
+
+75
+00:02:35.266 --> 00:02:37.100
+or only the ones we care about
+
+76
+00:02:37.100 --> 00:02:38.533
+so let's select the targets we care
+
+77
+00:02:38.533 --> 00:02:40.533
+about in this case it's the Essential
+
+78
+00:02:40.533 --> 00:02:42.866
+Feed
+
+79
+00:02:42.866 --> 00:02:45.200
+so now when we run the test Xcode will
+
+80
+00:02:45.200 --> 00:02:47.266
+gather coverage analysis
+
+81
+00:02:47.266 --> 00:02:50.800
+well I hope it's a 100%
+
+82
+00:02:50.800 --> 00:02:53.566
+boom okay the Feed API module is 100%
+
+83
+00:02:53.566 --> 00:02:54.133
+tested
+
+84
+00:02:54.133 --> 00:02:57.033
+nice but when we're looking at the code
+
+85
+00:02:57.033 --> 00:02:57.566
+coverage
+
+86
+00:02:57.566 --> 00:02:59.900
+there's a caveat there I think it's 100%
+
+87
+00:02:59.900 --> 00:03:02.000
+tested with an asterisk
+
+88
+00:03:02.000 --> 00:03:04.533
+what code coverage actually measures is
+
+89
+00:03:04.533 --> 00:03:06.866
+which lines of code were executed
+
+90
+00:03:06.866 --> 00:03:09.566
+during tests and 100% of the lines were
+
+91
+00:03:09.566 --> 00:03:11.200
+executed that's what it means it doesn't
+
+92
+00:03:11.200 --> 00:03:13.566
+mean 100% of the behavior was tested
+
+93
+00:03:13.566 --> 00:03:15.500
+that's why we often don't even look at
+
+94
+00:03:15.500 --> 00:03:17.833
+this metric code coverage is not our
+
+95
+00:03:17.833 --> 00:03:18.300
+goal
+
+96
+00:03:18.300 --> 00:03:21.100
+it's a side-effect of our TDD process we
+
+97
+00:03:21.100 --> 00:03:22.300
+write the test first
+
+98
+00:03:22.300 --> 00:03:24.466
+assert the behavior we expect and then
+
+99
+00:03:24.466 --> 00:03:25.833
+we write the production code
+
+100
+00:03:25.833 --> 00:03:28.533
+so we often end up with 100% coverage but
+
+101
+00:03:28.533 --> 00:03:29.333
+that's not the goal
+
+102
+00:03:29.333 --> 00:03:31.500
+exactly the goal is to have confidence
+
+103
+00:03:31.500 --> 00:03:33.266
+that we've tested the behavior and that
+
+104
+00:03:33.266 --> 00:03:33.900
+we are free
+
+105
+00:03:33.900 --> 00:03:37.033
+to change our code we are agile and fast
+
+106
+00:03:37.033 --> 00:03:40.300
+adapting to changes and preventing bugs
+
+107
+00:03:40.300 --> 00:03:42.633
+yeah it sounds great we can even commit
+
+108
+00:03:42.633 --> 00:03:43.333
+and keep it on
+
+109
+00:03:43.333 --> 00:03:46.133
+all the time the overhead seems minimal
+
+110
+00:03:46.133 --> 00:03:46.633
+here
+
+111
+00:03:46.633 --> 00:03:49.666
+so I'm happy to leave it on so enable
+
+112
+00:03:49.666 --> 00:03:52.700
+code coverage gathering but if this
+
+113
+00:03:52.700 --> 00:03:54.133
+becomes a problem in the future
+
+114
+00:03:54.133 --> 00:03:56.000
+if it slows down our process we are
+
+115
+00:03:56.000 --> 00:03:58.400
+going to disable it sounds good
+
+116
+00:03:58.400 --> 00:04:00.400
+okay I believe those were the settings I
+
+117
+00:04:00.400 --> 00:04:02.466
+would like to enable to improve our test
+
+118
+00:04:02.466 --> 00:04:05.100
+integrity but as you mentioned we could
+
+119
+00:04:05.100 --> 00:04:06.866
+add some end-to-end tests now
+
+120
+00:04:06.866 --> 00:04:10.133
+exactly we need to test the Feed API
+
+121
+00:04:10.133 --> 00:04:10.866
+module
+
+122
+00:04:10.866 --> 00:04:13.500
+with our little cloud in integration so
+
+123
+00:04:13.500 --> 00:04:15.433
+we can integrate all those components
+
+124
+00:04:15.433 --> 00:04:17.333
+plus the back end and see if they work
+
+125
+00:04:17.333 --> 00:04:19.666
+correctly if both sides are conforming
+
+126
+00:04:19.666 --> 00:04:21.333
+to the agreed contract
+
+127
+00:04:21.333 --> 00:04:22.933
+and that's very interesting to me
+
+128
+00:04:22.933 --> 00:04:24.633
+because our backend
+
+129
+00:04:24.633 --> 00:04:27.166
+is not ready yet I spoken with the
+
+130
+00:04:27.166 --> 00:04:27.833
+backend
+
+131
+00:04:27.833 --> 00:04:31.033
+overlords to create a test endpoint
+
+132
+00:04:31.033 --> 00:04:33.733
+to test the integration so they sent us
+
+133
+00:04:33.733 --> 00:04:34.866
+a URL we can
+
+134
+00:04:34.866 --> 00:04:37.433
+get a nice representation of what to
+
+135
+00:04:37.433 --> 00:04:38.133
+expect
+
+136
+00:04:38.133 --> 00:04:40.633
+when the API is ready so we're gonna
+
+137
+00:04:40.633 --> 00:04:42.233
+actually make the request to the back
+
+138
+00:04:42.233 --> 00:04:43.333
+end and we can investigate
+
+139
+00:04:43.333 --> 00:04:45.333
+those values to make sure we mapped
+
+140
+00:04:45.333 --> 00:04:46.700
+everything correctly
+
+141
+00:04:46.700 --> 00:04:48.800
+and I understand that often you cannot
+
+142
+00:04:48.800 --> 00:04:50.533
+get a test server like this
+
+143
+00:04:50.533 --> 00:04:52.466
+but if that's the case they don't have
+
+144
+00:04:52.466 --> 00:04:54.300
+time to do it I would go there
+
+145
+00:04:54.300 --> 00:04:56.866
+and build it myself it would take maybe
+
+146
+00:04:56.866 --> 00:04:57.833
+a couple of minutes
+
+147
+00:04:57.833 --> 00:04:59.833
+it shouldn't take long yes some
+
+148
+00:04:59.833 --> 00:05:01.900
+hard-coded values that we can assert in
+
+149
+00:05:01.900 --> 00:05:02.866
+our tests
+
+150
+00:05:02.866 --> 00:05:04.933
+exactly and sometimes if you cannot have
+
+151
+00:05:04.933 --> 00:05:06.800
+a test API you can create
+
+152
+00:05:06.800 --> 00:05:09.166
+a test account with predefined values
+
+153
+00:05:09.166 --> 00:05:10.633
+that we can assert against
+
+154
+00:05:10.633 --> 00:05:13.900
+in our end-to-end tests but if you do so
+
+155
+00:05:13.900 --> 00:05:15.500
+we should make sure to have a single
+
+156
+00:05:15.500 --> 00:05:17.166
+test account per application
+
+157
+00:05:17.166 --> 00:05:20.533
+that means one for each iOS app one
+
+158
+00:05:20.533 --> 00:05:23.166
+for each Android app etc because we
+
+159
+00:05:23.166 --> 00:05:24.000
+don't want
+
+160
+00:05:24.000 --> 00:05:26.533
+other applications interfering with our
+
+161
+00:05:26.533 --> 00:05:27.900
+test expectations
+
+162
+00:05:27.900 --> 00:05:30.233
+exactly it's better to isolate the test
+
+163
+00:05:30.233 --> 00:05:32.133
+and even within an application you may
+
+164
+00:05:32.133 --> 00:05:33.733
+have multiple test accounts
+
+165
+00:05:33.733 --> 00:05:35.833
+to run separate tests and we would
+
+166
+00:05:35.833 --> 00:05:38.000
+advise to use some kind of a vault
+
+167
+00:05:38.000 --> 00:05:38.533
+system
+
+168
+00:05:38.533 --> 00:05:41.100
+for the test account passwords yes you
+
+169
+00:05:41.100 --> 00:05:41.733
+know keep
+
+170
+00:05:41.733 --> 00:05:43.733
+everything organized and use strong
+
+171
+00:05:43.733 --> 00:05:45.266
+passwords yes
+
+172
+00:05:45.266 --> 00:05:47.666
+of course probably "alligator123"
+
+173
+00:05:47.666 --> 00:05:49.666
+is not gonna cut it here
+
+174
+00:05:49.666 --> 00:05:53.500
+yes okay but I would like to run those
+
+175
+00:05:53.500 --> 00:05:54.233
+tests
+
+176
+00:05:54.233 --> 00:05:56.533
+separately from my main target because I
+
+177
+00:05:56.533 --> 00:05:57.433
+really appreciate
+
+178
+00:05:57.433 --> 00:06:00.533
+how fast my unit tests are that sounds
+
+179
+00:06:00.533 --> 00:06:01.166
+good
+
+180
+00:06:01.166 --> 00:06:06.300
+so let's add a new target to the project
+
+181
+00:06:06.300 --> 00:06:09.666
+it's a test bundle we call it
+
+182
+00:06:09.666 --> 00:06:13.033
+EssentialFeedAPIEndToEnd
+
+183
+00:06:13.033 --> 00:06:17.266
+tests okay as you can see we got a new
+
+184
+00:06:17.266 --> 00:06:20.133
+folder where we can edit those tests and
+
+185
+00:06:20.133 --> 00:06:21.100
+we also got
+
+186
+00:06:21.100 --> 00:06:24.000
+a new scheme to run our end-to-end tests
+
+187
+00:06:24.000 --> 00:06:24.933
+in isolation
+
+188
+00:06:24.933 --> 00:06:27.600
+yes so when we're developing the
+
+189
+00:06:27.600 --> 00:06:29.266
+EssentialFeed module we can switch
+
+190
+00:06:29.266 --> 00:06:29.833
+there
+
+191
+00:06:29.833 --> 00:06:32.000
+when we are developing our end-to-end
+
+192
+00:06:32.000 --> 00:06:33.333
+tests we can switch
+
+193
+00:06:33.333 --> 00:06:36.400
+to that scheme exactly okay so let's add
+
+194
+00:06:36.400 --> 00:06:37.900
+our first end-to-end test
+
+195
+00:06:37.900 --> 00:06:40.400
+and it looks very similar to a unit test
+
+196
+00:06:40.400 --> 00:06:41.900
+we don't need anything special
+
+197
+00:06:41.900 --> 00:06:44.933
+so far so let's call it end
+
+198
+00:06:44.933 --> 00:06:48.133
+to end test server GET
+
+199
+00:06:48.133 --> 00:06:51.500
+feed result right it matches the
+
+200
+00:06:51.500 --> 00:06:54.866
+test account data so the fixed test
+
+201
+00:06:54.866 --> 00:06:57.666
+account data let's leave some context
+
+202
+00:06:57.666 --> 00:06:59.166
+here because this should be fixed test
+
+203
+00:06:59.166 --> 00:07:00.066
+data account
+
+204
+00:07:00.066 --> 00:07:02.866
+absolutely I like that so we need a
+
+205
+00:07:02.866 --> 00:07:04.000
+loader
+
+206
+00:07:04.000 --> 00:07:07.166
+and it's our RemoteFeedLoader
+
+207
+00:07:07.166 --> 00:07:09.666
+so we must import the EssentialFeed
+
+208
+00:07:09.666 --> 00:07:10.800
+framework
+
+209
+00:07:10.800 --> 00:07:12.700
+and the loader needs a URL so that's the
+
+210
+00:07:12.700 --> 00:07:14.400
+test server URL
+
+211
+00:07:14.400 --> 00:07:17.166
+and we need a client so the client is
+
+212
+00:07:17.166 --> 00:07:18.466
+the URLSession
+
+213
+00:07:18.466 --> 00:07:22.066
+HTTPClient perfect and the test
+
+214
+00:07:22.066 --> 00:07:25.833
+server URL is the URL the backend folks
+
+215
+00:07:25.833 --> 00:07:28.133
+gave us
+
+216
+00:07:28.133 --> 00:07:30.700
+now we need to load our feed and get the
+
+217
+00:07:30.700 --> 00:07:31.266
+result
+
+218
+00:07:31.266 --> 00:07:33.033
+and since this is asynchronous we need
+
+219
+00:07:33.033 --> 00:07:34.700
+to do the same dance
+
+220
+00:07:34.700 --> 00:07:37.433
+let's create an expectation wait for
+
+221
+00:07:37.433 --> 00:07:39.266
+load completion
+
+222
+00:07:39.266 --> 00:07:42.466
+and let's capture the received result
+
+223
+00:07:42.466 --> 00:07:46.133
+this is a LoadFeedResult so we capture
+
+224
+00:07:46.133 --> 00:07:48.133
+the result and we fulfill the
+
+225
+00:07:48.133 --> 00:07:49.733
+expectation
+
+226
+00:07:49.733 --> 00:07:51.433
+of course we need to wait for the
+
+227
+00:07:51.433 --> 00:07:53.666
+expectation to be fulfilled but now we
+
+228
+00:07:53.666 --> 00:07:55.433
+need a timeout here and I would like to
+
+229
+00:07:55.433 --> 00:07:56.933
+start with a small number
+
+230
+00:07:56.933 --> 00:07:59.900
+not more than 5 to begin with ideally
+
+231
+00:07:59.900 --> 00:08:01.733
+this should be between 3-5
+
+232
+00:08:01.733 --> 00:08:02.533
+seconds
+
+233
+00:08:02.533 --> 00:08:04.700
+but sometimes depending on the network
+
+234
+00:08:04.700 --> 00:08:06.400
+performance you have on your machine or
+
+235
+00:08:06.400 --> 00:08:07.833
+on your CI server
+
+236
+00:08:07.833 --> 00:08:09.666
+you might have to bump this yeah but
+
+237
+00:08:09.666 --> 00:08:12.000
+let's start with a small timeout and
+
+238
+00:08:12.000 --> 00:08:13.500
+let's keep an eye on it
+
+239
+00:08:13.500 --> 00:08:15.733
+I'm happy to go with 5 for now
+
+240
+00:08:15.733 --> 00:08:17.266
+finally we can switch
+
+241
+00:08:17.266 --> 00:08:19.833
+over the received result and we care
+
+242
+00:08:19.833 --> 00:08:20.300
+about
+
+243
+00:08:20.300 --> 00:08:22.866
+the success case that's what we want I'm
+
+244
+00:08:22.866 --> 00:08:24.633
+gonna get a bunch of items to assert
+
+245
+00:08:24.633 --> 00:08:28.466
+on so in the test account there are
+
+246
+00:08:28.466 --> 00:08:31.900
+8 items so let me add some more context
+
+247
+00:08:31.900 --> 00:08:35.100
+to this expectation expected 8 items
+
+248
+00:08:35.100 --> 00:08:38.633
+in the test account feed so if it fails
+
+249
+00:08:38.633 --> 00:08:41.433
+we'll know where the problem is
+
+250
+00:08:41.433 --> 00:08:44.066
+let's also add a nice assertion if it
+
+251
+00:08:44.066 --> 00:08:46.633
+ever fails
+
+252
+00:08:46.633 --> 00:08:50.066
+expected successful feed
+
+253
+00:08:50.066 --> 00:08:54.133
+result got error instead
+
+254
+00:08:54.133 --> 00:08:56.933
+and since the feed result is optional we
+
+255
+00:08:56.933 --> 00:08:57.600
+need to
+
+256
+00:08:57.600 --> 00:09:00.866
+unwrap it right which means we need to
+
+257
+00:09:00.866 --> 00:09:02.633
+care about the case where it's
+
+258
+00:09:02.633 --> 00:09:06.933
+nil so default case
+
+259
+00:09:06.933 --> 00:09:10.933
+expected successful feed result
+
+260
+00:09:10.933 --> 00:09:14.533
+got no result instead
+
+261
+00:09:14.533 --> 00:09:24.300
+okay let's run this test
+
+262
+00:09:24.300 --> 00:09:26.366
+okay they passed but you probably
+
+263
+00:09:26.366 --> 00:09:28.366
+realized how much slower
+
+264
+00:09:28.366 --> 00:09:31.733
+those tests are yeah it took
+
+265
+00:09:31.733 --> 00:09:35.266
+2.7 seconds wow that's a lot
+
+266
+00:09:35.266 --> 00:09:37.666
+the unit tests are running in 0.1
+
+267
+00:09:37.666 --> 00:09:38.466
+seconds yep
+
+268
+00:09:38.466 --> 00:09:41.266
+I think it's a good thing this test case
+
+269
+00:09:41.266 --> 00:09:42.533
+is isolated
+
+270
+00:09:42.533 --> 00:09:45.033
+because we don't want to have to run it
+
+271
+00:09:45.033 --> 00:09:46.000
+all the time
+
+272
+00:09:46.000 --> 00:09:48.700
+with our unit tests exactly and also the
+
+273
+00:09:48.700 --> 00:09:49.200
+5
+
+274
+00:09:49.200 --> 00:09:51.833
+seconds timeout looks like a good bet
+
+275
+00:09:51.833 --> 00:09:53.266
+because if we choose 3
+
+276
+00:09:53.266 --> 00:09:55.033
+it might fail so let's keep it 5
+
+277
+00:09:55.033 --> 00:09:57.433
+right now I'm happy with it
+
+278
+00:09:57.433 --> 00:09:58.866
+so we can guarantee here that we are
+
+279
+00:09:58.866 --> 00:10:01.100
+receiving 8 elements as we expected
+
+280
+00:10:01.100 --> 00:10:02.300
+in the test account
+
+281
+00:10:02.300 --> 00:10:04.066
+but there are still the values we think
+
+282
+00:10:04.066 --> 00:10:06.233
+those elements we care about
+
+283
+00:10:06.233 --> 00:10:09.266
+so we have a bunch of UUIDs description
+
+284
+00:10:09.266 --> 00:10:11.900
+location URLs and some cases don't have
+
+285
+00:10:11.900 --> 00:10:13.266
+description some cases don't have
+
+286
+00:10:13.266 --> 00:10:14.700
+locations some cases don't have
+
+287
+00:10:14.700 --> 00:10:15.500
+description
+
+288
+00:10:15.500 --> 00:10:18.466
+and don't have location exactly so we
+
+289
+00:10:18.466 --> 00:10:19.600
+want to assert
+
+290
+00:10:19.600 --> 00:10:21.733
+the fetching and the mapping of the
+
+291
+00:10:21.733 --> 00:10:24.700
+items in integration here
+
+292
+00:10:24.700 --> 00:10:28.300
+so we can iterate over the items
+
+293
+00:10:28.300 --> 00:10:31.600
+let's use a for each
+
+294
+00:10:31.600 --> 00:10:34.800
+then assert the equality of the item with
+
+295
+00:10:34.800 --> 00:10:35.900
+an expected
+
+296
+00:10:35.900 --> 00:10:39.666
+item pass the index of the item
+
+297
+00:10:39.666 --> 00:10:42.700
+by enumerating the array
+
+298
+00:10:42.700 --> 00:10:47.666
+and creating a helper function
+
+299
+00:10:47.666 --> 00:10:51.666
+so expected item at index
+
+300
+00:10:51.666 --> 00:10:55.733
+we return a FeedItem
+
+301
+00:10:55.733 --> 00:10:58.833
+then we need an id we can say id at
+
+302
+00:10:58.833 --> 00:11:01.033
+index description
+
+303
+00:11:01.033 --> 00:11:05.100
+at index location at index
+
+304
+00:11:05.100 --> 00:11:09.333
+and imageURL at index
+
+305
+00:11:09.333 --> 00:11:13.333
+okay I'm not going to make you watch me
+
+306
+00:11:13.333 --> 00:11:14.300
+type
+
+307
+00:11:14.300 --> 00:11:17.500
+all of that code so I got this helper
+
+308
+00:11:17.500 --> 00:11:19.433
+method to get id at index with the
+
+309
+00:11:19.433 --> 00:11:21.600
+expected ids
+
+310
+00:11:21.600 --> 00:11:23.266
+the same for description as you can see
+
+311
+00:11:23.266 --> 00:11:24.633
+some descriptions are
+
+312
+00:11:24.633 --> 00:11:26.866
+nil when they are not in the JSON the
+
+313
+00:11:26.866 --> 00:11:28.633
+same for location
+
+314
+00:11:28.633 --> 00:11:32.633
+and imageURL right okay that's all we
+
+315
+00:11:32.633 --> 00:11:34.866
+need
+
+316
+00:11:34.866 --> 00:11:40.233
+oops expected item
+
+317
+00:11:40.233 --> 00:11:42.000
+alright they are all matching our
+
+318
+00:11:42.000 --> 00:11:44.300
+expectations but what if they
+
+319
+00:11:44.300 --> 00:11:46.633
+didn't for example get a wrong
+
+320
+00:11:46.633 --> 00:11:47.600
+description here
+
+321
+00:11:47.600 --> 00:11:51.833
+for the element at position 0
+
+322
+00:11:51.833 --> 00:11:53.733
+okay the test failed but it's hard to
+
+323
+00:11:53.733 --> 00:11:55.433
+find which one was it
+
+324
+00:11:55.433 --> 00:12:00.700
+especially when more than one failed
+
+325
+00:12:00.700 --> 00:12:02.233
+as you can see they both show in the
+
+326
+00:12:02.233 --> 00:12:04.133
+same line which might be a problem it
+
+327
+00:12:04.133 --> 00:12:04.633
+might be
+
+328
+00:12:04.633 --> 00:12:07.600
+hard to debug so we can either add a
+
+329
+00:12:07.600 --> 00:12:08.833
+message
+
+330
+00:12:08.833 --> 00:12:11.900
+unexpected item values at
+
+331
+00:12:11.900 --> 00:12:15.266
+index so now
+
+332
+00:12:15.266 --> 00:12:19.666
+when they fail we get some extra context
+
+333
+00:12:19.666 --> 00:12:20.133
+about
+
+334
+00:12:20.133 --> 00:12:23.500
+which item had the wrong values but when
+
+335
+00:12:23.500 --> 00:12:24.700
+I have a finite
+
+336
+00:12:24.700 --> 00:12:26.700
+number of items I know there are 8
+
+337
+00:12:26.700 --> 00:12:28.233
+items I prefer
+
+338
+00:12:28.233 --> 00:12:30.700
+not to use for loops and I'll show you
+
+339
+00:12:30.700 --> 00:12:31.600
+why
+
+340
+00:12:31.600 --> 00:12:34.233
+what if we had an assertion for item at
+
+341
+00:12:34.233 --> 00:12:34.933
+a position
+
+342
+00:12:34.933 --> 00:12:38.066
+for example 0 and we can do the same
+
+343
+00:12:38.066 --> 00:12:40.700
+for all the other items so 0 to 7
+
+344
+00:12:40.700 --> 00:12:41.733
+8 items
+
+345
+00:12:41.733 --> 00:12:45.033
+let me run the tests look at that
+
+346
+00:12:45.033 --> 00:12:47.433
+we know precisely which one failed and
+
+347
+00:12:47.433 --> 00:12:48.300
+with which
+
+348
+00:12:48.300 --> 00:12:50.800
+values I find this much easier to deal
+
+349
+00:12:50.800 --> 00:12:52.533
+with when they fail
+
+350
+00:12:52.533 --> 00:12:54.466
+but it's a choice the problem is that
+
+351
+00:12:54.466 --> 00:12:55.833
+maybe you are dealing with data that is
+
+352
+00:12:55.833 --> 00:12:56.866
+not fixed
+
+353
+00:12:56.866 --> 00:12:58.466
+so you don't know how many items you
+
+354
+00:12:58.466 --> 00:13:00.300
+have in this case I know
+
+355
+00:13:00.300 --> 00:13:02.533
+and it's not a lot of items I'm happy to
+
+356
+00:13:02.533 --> 00:13:04.066
+leave 8 items inline
+
+357
+00:13:04.066 --> 00:13:07.333
+so let's fix the problems here
+
+358
+00:13:07.333 --> 00:13:11.333
+we're on the test again
+
+359
+00:13:11.333 --> 00:13:14.066
+and it's passing and as we mentioned in
+
+360
+00:13:14.066 --> 00:13:15.200
+the last lecture
+
+361
+00:13:15.200 --> 00:13:17.900
+getting the right feedback makes tests
+
+362
+00:13:17.900 --> 00:13:19.200
+extremely valuable
+
+363
+00:13:19.200 --> 00:13:21.666
+you don't have to lose time to find
+
+364
+00:13:21.666 --> 00:13:22.633
+what's wrong
+
+365
+00:13:22.633 --> 00:13:25.733
+you want your tests to indicate exactly
+
+366
+00:13:25.733 --> 00:13:29.100
+why they failed and where and where yeah
+
+367
+00:13:29.100 --> 00:13:31.266
+exactly and in this case where we have a
+
+368
+00:13:31.266 --> 00:13:32.233
+finite
+
+369
+00:13:32.233 --> 00:13:34.633
+number of items yeah I think it's a
+
+370
+00:13:34.633 --> 00:13:35.333
+no-brainer
+
+371
+00:13:35.333 --> 00:13:38.000
+so I'm happy to go with the solution all
+
+372
+00:13:38.000 --> 00:13:39.666
+right let's commit
+
+373
+00:13:39.666 --> 00:13:43.666
+add end-to-end API tests
+
+374
+00:13:43.666 --> 00:13:47.033
+in a separate test target
+
+375
+00:13:47.033 --> 00:13:50.233
+yeah that's it okay
+
+376
+00:13:50.233 --> 00:13:52.133
+and I think this can be moved into a
+
+377
+00:13:52.133 --> 00:13:53.900
+helper function because there's a lot of
+
+378
+00:13:53.900 --> 00:13:54.633
+setup
+
+379
+00:13:54.633 --> 00:13:57.833
+in this method so we could create a
+
+380
+00:13:57.833 --> 00:13:58.466
+function
+
+381
+00:13:58.466 --> 00:14:01.500
+that is related to the test name so
+
+382
+00:14:01.500 --> 00:14:03.900
+we add more context to the code within
+
+383
+00:14:03.900 --> 00:14:05.166
+the test method yes
+
+384
+00:14:05.166 --> 00:14:07.266
+so end-to-end test server GET feed
+
+385
+00:14:07.266 --> 00:14:08.366
+result so
+
+386
+00:14:08.366 --> 00:14:10.633
+GET feed result is the action let's
+
+387
+00:14:10.633 --> 00:14:12.000
+create a method called get
+
+388
+00:14:12.000 --> 00:14:15.666
+feed result then
+
+389
+00:14:15.666 --> 00:14:19.166
+getFeedResult will return a
+
+390
+00:14:19.166 --> 00:14:21.900
+LoadFeedResult and it's optional
+
+391
+00:14:21.900 --> 00:14:22.366
+because
+
+392
+00:14:22.366 --> 00:14:25.100
+it might fail or timeout you can just
+
+393
+00:14:25.100 --> 00:14:26.700
+return the received
+
+394
+00:14:26.700 --> 00:14:30.933
+result let's run it alright
+
+395
+00:14:30.933 --> 00:14:34.866
+it's passing let's commit extract
+
+396
+00:14:34.866 --> 00:14:39.833
+test setup to a helper method
+
+397
+00:14:39.833 --> 00:14:41.833
+okay I'm happy with this look at it
+
+398
+00:14:41.833 --> 00:14:43.266
+looks clean yeah
+
+399
+00:14:43.266 --> 00:14:46.533
+very precise assertions nice messages
+
+400
+00:14:46.533 --> 00:14:48.300
+although I just found a typo here
+
+401
+00:14:48.300 --> 00:14:50.066
+unexpected
+
+402
+00:14:50.066 --> 00:14:56.233
+it happens fix typo
+
+403
+00:14:56.233 --> 00:14:58.366
+and since we're here why don't we add
+
+404
+00:14:58.366 --> 00:15:00.133
+memory leak tracking as well
+
+405
+00:15:00.133 --> 00:15:01.266
+since we are testing everything in
+
+406
+00:15:01.266 --> 00:15:03.100
+integration that would be a great
+
+407
+00:15:03.100 --> 00:15:03.733
+addition
+
+408
+00:15:03.733 --> 00:15:05.266
+so we want to guarantee that the client
+
+409
+00:15:05.266 --> 00:15:07.166
+and the loader working together
+
+410
+00:15:07.166 --> 00:15:10.533
+don't generate any memory leak so track
+
+411
+00:15:10.533 --> 00:15:14.466
+for memory leaks client
+
+412
+00:15:14.466 --> 00:15:17.600
+and loader but we don't have access to
+
+413
+00:15:17.600 --> 00:15:19.166
+the function because it's in a separate
+
+414
+00:15:19.166 --> 00:15:20.066
+target
+
+415
+00:15:20.066 --> 00:15:22.633
+right they belong in our unit test
+
+416
+00:15:22.633 --> 00:15:23.733
+target
+
+417
+00:15:23.733 --> 00:15:25.900
+but we can add it to the other target as well
+
+418
+00:15:25.900 --> 00:15:27.733
+by just ticking this box
+
+419
+00:15:27.733 --> 00:15:31.666
+yep so since they are API
+
+420
+00:15:31.666 --> 00:15:34.000
+related types I'm fine by adding it to
+
+421
+00:15:34.000 --> 00:15:35.666
+both targets because they always gonna
+
+422
+00:15:35.666 --> 00:15:36.133
+move
+
+423
+00:15:36.133 --> 00:15:40.066
+together agreed we also can get the file
+
+424
+00:15:40.066 --> 00:15:40.633
+and line
+
+425
+00:15:40.633 --> 00:15:48.133
+to improve our assertions
+
+426
+00:15:48.133 --> 00:15:53.266
+let's run it alright no memory leaks
+
+427
+00:15:53.266 --> 00:15:56.466
+so we automate this check as well add
+
+428
+00:15:56.466 --> 00:15:57.500
+memory leak
+
+429
+00:15:57.500 --> 00:16:00.533
+tracking for components in
+
+430
+00:16:00.533 --> 00:16:04.000
+integration okay so this target
+
+431
+00:16:04.000 --> 00:16:06.300
+end-to-end tests how often should we run
+
+432
+00:16:06.300 --> 00:16:07.333
+them
+
+433
+00:16:07.333 --> 00:16:10.466
+well as often as we want exactly
+
+434
+00:16:10.466 --> 00:16:12.066
+but you don't want to run them all the
+
+435
+00:16:12.066 --> 00:16:13.433
+time because they don't have fast
+
+436
+00:16:13.433 --> 00:16:15.600
+feedback as the unit test
+
+437
+00:16:15.600 --> 00:16:18.066
+so you might run them less often yeah
+
+438
+00:16:18.066 --> 00:16:20.066
+I'd say we don't want to run them
+
+439
+00:16:20.066 --> 00:16:22.233
+while we're developing because the
+
+440
+00:16:22.233 --> 00:16:23.500
+feedback loop is
+
+441
+00:16:23.500 --> 00:16:26.533
+much slower but we do run them often
+
+442
+00:16:26.533 --> 00:16:28.633
+and we would be even better if we could
+
+443
+00:16:28.633 --> 00:16:30.866
+run them before merging to master for
+
+444
+00:16:30.866 --> 00:16:31.733
+example
+
+445
+00:16:31.733 --> 00:16:33.900
+before merging our branch back to the
+
+446
+00:16:33.900 --> 00:16:35.500
+trunk yes
+
+447
+00:16:35.500 --> 00:16:37.033
+through a continuous integration
+
+448
+00:16:37.033 --> 00:16:39.833
+pipeline perhaps exactly we can automate
+
+449
+00:16:39.833 --> 00:16:42.300
+and create a smoother process within the
+
+450
+00:16:42.300 --> 00:16:43.666
+team very nice
+
+451
+00:16:43.666 --> 00:16:45.733
+we don't disturb developer happiness but
+
+452
+00:16:45.733 --> 00:16:46.800
+at the same time
+
+453
+00:16:46.800 --> 00:16:48.533
+we reinforce the integrity of our code
+
+454
+00:16:48.533 --> 00:16:50.233
+base by running
+
+455
+00:16:50.233 --> 00:16:53.833
+automated tests in our CI exactly
+
+456
+00:16:53.833 --> 00:16:56.533
+and we want to run both unit test and
+
+457
+00:16:56.533 --> 00:16:57.600
+end-to-end tests
+
+458
+00:16:57.600 --> 00:17:00.233
+so we can create a new scheme and we can
+
+459
+00:17:00.233 --> 00:17:02.833
+even call it
+
+460
+00:17:02.833 --> 00:17:05.333
+CI now if we
+
+461
+00:17:05.333 --> 00:17:09.033
+edit the CI scheme in the test option
+
+462
+00:17:09.033 --> 00:17:10.933
+we can add all the targets we want to
+
+463
+00:17:10.933 --> 00:17:13.500
+run so the unit tests
+
+464
+00:17:13.500 --> 00:17:15.833
+and the end-to-end tests and we can also
+
+465
+00:17:15.833 --> 00:17:16.866
+enable
+
+466
+00:17:16.866 --> 00:17:21.266
+the randomized execution
+
+467
+00:17:21.266 --> 00:17:25.033
+and the gather coverage for the targets
+
+468
+00:17:25.033 --> 00:17:28.066
+we care about okay
+
+469
+00:17:28.066 --> 00:17:32.466
+let's run the tests on the CI scheme
+
+470
+00:17:32.466 --> 00:17:35.200
+alright they do pass so let's commit
+
+471
+00:17:35.200 --> 00:17:35.900
+add
+
+472
+00:17:35.900 --> 00:17:40.000
+CI scheme and now we need to set up
+
+473
+00:17:40.000 --> 00:17:42.466
+a continuous integration server yeah and
+
+474
+00:17:42.466 --> 00:17:44.466
+since this is an open source project
+
+475
+00:17:44.466 --> 00:17:47.500
+we can use TravisCI yes we're not
+
+476
+00:17:47.500 --> 00:17:49.266
+vouching for it right you probably need
+
+477
+00:17:49.266 --> 00:17:51.200
+to find a perfect CI server for your
+
+478
+00:17:51.200 --> 00:17:51.566
+team
+
+479
+00:17:51.566 --> 00:17:53.033
+yeah exactly but for open source
+
+480
+00:17:53.033 --> 00:17:55.266
+projects it's free and easy to set up on
+
+481
+00:17:55.266 --> 00:17:56.000
+GitHub
+
+482
+00:17:56.000 --> 00:17:58.233
+so we're going to use it let's create
+
+483
+00:17:58.233 --> 00:18:00.133
+the travis
+
+484
+00:18:00.133 --> 00:18:04.066
+YAML file to set up the configuration
+
+485
+00:18:04.066 --> 00:18:07.266
+okay it's an osx image
+
+486
+00:18:07.266 --> 00:18:10.866
+with xcode 10.1 the latest one so far
+
+487
+00:18:10.866 --> 00:18:12.633
+and the language is Swift and we need to
+
+488
+00:18:12.633 --> 00:18:14.933
+run the script to build and test
+
+489
+00:18:14.933 --> 00:18:17.733
+the target so let's use the xcodebuild
+
+490
+00:18:17.733 --> 00:18:19.266
+command line tool
+
+491
+00:18:19.266 --> 00:18:21.266
+so first we clean the project to make
+
+492
+00:18:21.266 --> 00:18:22.533
+sure we don't have
+
+493
+00:18:22.533 --> 00:18:24.766
+any cruft in the CI server then we can
+
+494
+00:18:24.766 --> 00:18:25.733
+build and
+
+495
+00:18:25.733 --> 00:18:29.033
+then we test the project
+
+496
+00:18:29.033 --> 00:18:33.500
+is the EssentialFeed project
+
+497
+00:18:33.500 --> 00:18:37.100
+and the scheme is CI and since this is
+
+498
+00:18:37.100 --> 00:18:38.133
+just the CI
+
+499
+00:18:38.133 --> 00:18:40.233
+integration pipeline making sure we can
+
+500
+00:18:40.233 --> 00:18:42.000
+build the project and all the test
+
+501
+00:18:42.000 --> 00:18:44.400
+passes we don't need to code sign it so
+
+502
+00:18:44.400 --> 00:18:45.033
+we can skip
+
+503
+00:18:45.033 --> 00:18:47.200
+code signing by setting up an empty
+
+504
+00:18:47.200 --> 00:18:48.133
+identity
+
+505
+00:18:48.133 --> 00:18:52.133
+and disable code signing
+
+506
+00:18:52.133 --> 00:18:54.400
+that's it can we just run the command
+
+507
+00:18:54.400 --> 00:18:56.400
+first in the terminal to make sure
+
+508
+00:18:56.400 --> 00:19:01.666
+everything is fine yes
+
+509
+00:19:01.666 --> 00:19:04.133
+okay it's building we are in the matrix
+
+510
+00:19:04.133 --> 00:19:06.866
+currently
+
+511
+00:19:06.866 --> 00:19:09.333
+and test succeeded perfect that's what
+
+512
+00:19:09.333 --> 00:19:11.433
+we want
+
+513
+00:19:11.433 --> 00:19:14.700
+so let's add the change and commit
+
+514
+00:19:14.700 --> 00:19:18.633
+add travis CI config
+
+515
+00:19:18.633 --> 00:19:20.466
+if we push this to master it should
+
+516
+00:19:20.466 --> 00:19:25.666
+trigger a CI build
+
+517
+00:19:25.666 --> 00:19:29.033
+alright there it is, it is running
+
+518
+00:19:29.033 --> 00:19:32.933
+okay now we just need to wait
+
+519
+00:19:32.933 --> 00:19:36.066
+alright it's passing fantastic
+
+520
+00:19:36.066 --> 00:19:38.533
+indeed we have an automated continuous
+
+521
+00:19:38.533 --> 00:19:40.000
+integration pipeline
+
+522
+00:19:40.000 --> 00:19:42.633
+now every time we push code to GitHub we
+
+523
+00:19:42.633 --> 00:19:45.433
+get feedback about our code
+
+524
+00:19:45.433 --> 00:19:48.466
+so I would like to add the Markdown
+
+525
+00:19:48.466 --> 00:19:50.533
+for the build passing badge because I
+
+526
+00:19:50.533 --> 00:19:52.766
+think we deserve it we earned it for
+
+527
+00:19:52.766 --> 00:19:54.533
+sure
+
+528
+00:19:54.533 --> 00:19:56.300
+alright let's open the README and
+
+529
+00:19:56.300 --> 00:19:58.233
+let's add it right at the top
+
+530
+00:19:58.233 --> 00:20:01.666
+proud of it very proud of it
+
+531
+00:20:01.666 --> 00:20:04.700
+okay let's add the README
+
+532
+00:20:04.700 --> 00:20:08.266
+and let's commit add CI viewed
+
+533
+00:20:08.266 --> 00:20:12.933
+status badge nice that's it
+
+534
+00:20:12.933 --> 00:20:15.733
+so the Feed API module is ready we also
+
+535
+00:20:15.733 --> 00:20:16.466
+set up
+
+536
+00:20:16.466 --> 00:20:18.933
+a continuous integration pipeline so we
+
+537
+00:20:18.933 --> 00:20:20.766
+can start a new process
+
+538
+00:20:20.766 --> 00:20:22.233
+from now on instead of pushing
+
+539
+00:20:22.233 --> 00:20:23.833
+everything directly to master we can
+
+540
+00:20:23.833 --> 00:20:25.600
+start branching out of master
+
+541
+00:20:25.600 --> 00:20:28.300
+writing our components yeah modules or
+
+542
+00:20:28.300 --> 00:20:29.433
+features
+
+543
+00:20:29.433 --> 00:20:32.233
+and keep merging back to master often
+
+544
+00:20:32.233 --> 00:20:32.766
+with
+
+545
+00:20:32.766 --> 00:20:35.100
+the CI pipeline guaranteeing that we can
+
+546
+00:20:35.100 --> 00:20:36.400
+build the project
+
+547
+00:20:36.400 --> 00:20:38.766
+all the unit tests and the end-to-end
+
+548
+00:20:38.766 --> 00:20:40.066
+tests are also
+
+549
+00:20:40.066 --> 00:20:42.233
+passing so the CI pipeline can give us
+
+550
+00:20:42.233 --> 00:20:43.833
+confidence that we won't break any
+
+551
+00:20:43.833 --> 00:20:44.400
+module
+
+552
+00:20:44.400 --> 00:20:46.400
+in our end-to-end tests we'll guaranteed
+
+553
+00:20:46.400 --> 00:20:47.433
+that the client
+
+554
+00:20:47.433 --> 00:20:50.000
+us and the back end are both respecting
+
+555
+00:20:50.000 --> 00:20:51.266
+the agreed contract
+
+556
+00:20:51.266 --> 00:20:54.000
+and to be fair we could have set the CI
+
+557
+00:20:54.000 --> 00:20:55.666
+pipeline from the beginning
+
+558
+00:20:55.666 --> 00:20:59.033
+it's highly advised to start with a nice
+
+559
+00:20:59.033 --> 00:21:01.100
+infrastructure for a CI pipeline from
+
+560
+00:21:01.100 --> 00:21:02.066
+day one
+
+561
+00:21:02.066 --> 00:21:04.466
+every PR should trigger a build with a
+
+562
+00:21:04.466 --> 00:21:06.700
+full unit test and end-to-end test run
+
+563
+00:21:06.700 --> 00:21:09.433
+if everything is okay we allow it to be
+
+564
+00:21:09.433 --> 00:21:10.066
+merged
+
+565
+00:21:10.066 --> 00:21:12.233
+to master and we want to merge to master
+
+566
+00:21:12.233 --> 00:21:14.300
+often we don't want long-lived branches
+
+567
+00:21:14.300 --> 00:21:16.766
+we keep merging several times a day as
+
+568
+00:21:16.766 --> 00:21:18.466
+long as the tests are passing we keep
+
+569
+00:21:18.466 --> 00:21:21.033
+merging to master and why do we do it we
+
+570
+00:21:21.033 --> 00:21:22.133
+want master
+
+571
+00:21:22.133 --> 00:21:25.100
+to always be stable right and if
+
+572
+00:21:25.100 --> 00:21:26.133
+anything fails
+
+573
+00:21:26.133 --> 00:21:28.466
+we can block the pull request until the
+
+574
+00:21:28.466 --> 00:21:30.133
+problem is resolved
+
+575
+00:21:30.133 --> 00:21:32.766
+we want our feedback loop to be fast so
+
+576
+00:21:32.766 --> 00:21:34.300
+we don't stop the progress
+
+577
+00:21:34.300 --> 00:21:36.400
+and going further we would like merges
+
+578
+00:21:36.400 --> 00:21:38.066
+to master to trigger
+
+579
+00:21:38.066 --> 00:21:41.033
+an automated release of the application
+
+580
+00:21:41.033 --> 00:21:43.500
+it could go to a beta or TestFlight
+
+581
+00:21:43.500 --> 00:21:46.133
+group or to the actual App Store that's
+
+582
+00:21:46.133 --> 00:21:47.100
+a dream isn't it
+
+583
+00:21:47.100 --> 00:21:49.666
+it's possible and it's not that hard and
+
+584
+00:21:49.666 --> 00:21:51.200
+as soon as we have a running application
+
+585
+00:21:51.200 --> 00:21:53.100
+we can start thinking about doing it
+
+586
+00:21:53.100 --> 00:21:55.200
+absolutely alright so I think it's time
+
+587
+00:21:55.200 --> 00:21:56.233
+for a recap
+
+588
+00:21:56.233 --> 00:21:58.400
+about what we've done so far and we can
+
+589
+00:21:58.400 --> 00:22:00.933
+move on to the persistence or database
+
+590
+00:22:00.933 --> 00:22:01.833
+module
+
+591
+00:22:01.833 --> 00:22:15.500
+awesome see you all next time see ya

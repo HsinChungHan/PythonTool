@@ -1,0 +1,39 @@
+561
+00:19:20,766 --> 00:19:22,066
+your productivity
+你的生產力
+
+562
+00:19:22,066 --> 00:19:24,766
+also continuously measure build and test
+也要持續度量建造和測試
+
+563
+00:19:24,766 --> 00:19:26,400
+times to avoid bottlenecks
+時間以避免瓶頸
+
+564
+00:19:26,400 --> 00:19:28,533
+in the development process and we are
+在開發流程中，我們已經完成
+
+565
+00:19:28,533 --> 00:19:30,066
+done with the Persistence
+Persistence模塊，很棒
+
+566
+00:19:30,066 --> 00:19:32,700
+module awesome we'll see you all in the
+我們將在下一堂講座見到大家
+
+567
+00:19:32,700 --> 00:19:33,666
+next lecture
+下次講座見
+
+568
+00:19:33,666 --> 00:19:45,833
+bye y'all, see ya
+再見，我們下次見

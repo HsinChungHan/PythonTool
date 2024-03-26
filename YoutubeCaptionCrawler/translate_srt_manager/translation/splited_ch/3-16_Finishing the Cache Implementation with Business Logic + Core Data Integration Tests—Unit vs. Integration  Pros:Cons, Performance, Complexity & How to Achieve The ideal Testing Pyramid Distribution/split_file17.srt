@@ -1,0 +1,34 @@
+257
+00:08:56,533 --> 00:08:57,600
+each test run
+每次測試運行
+
+258
+00:08:57,600 --> 00:08:59,266
+and we can do that with the setUp and
+我們可以透過setUp和
+
+259
+00:08:59,266 --> 00:09:00,633
+tearDown methods
+tearDown方法來完成
+
+260
+00:09:00,633 --> 00:09:02,700
+as we've done before in the setUp we set
+如同我們在setUp中先前做過的，我們設定
+
+261
+00:09:02,700 --> 00:09:03,733
+up an empty store
+一個空的儲存區域
+
+262
+00:09:03,733 --> 00:09:06,133
+in the tearDown we undo the store side
+在tearDown，我們撤銷儲存區域側邊
+
+263
+00:09:06,133 --> 00:09:07,266
+effects
+的影響

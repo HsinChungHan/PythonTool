@@ -1,0 +1,29 @@
+528
+00:18:18,066 --> 00:18:20,400
+yeah the more integration tests we add
+對，我們增加的整合測試越多
+
+529
+00:18:20,400 --> 00:18:22,866
+the slower your development process will
+你的開發過程會越慢
+
+530
+00:18:22,866 --> 00:18:23,733
+be
+變得越慢
+
+531
+00:18:23,733 --> 00:18:26,766
+exactly when you see these numbers you
+確實，當你看到這些數字時
+
+532
+00:18:26,766 --> 00:18:28,766
+need to think about the future
+你需要對未來有所思考
+
+533
+00:18:28,766 --> 00:18:31,900
+clearly 0.5 seconds or 0.3 seconds
+顯然，0.5秒或者0.3秒

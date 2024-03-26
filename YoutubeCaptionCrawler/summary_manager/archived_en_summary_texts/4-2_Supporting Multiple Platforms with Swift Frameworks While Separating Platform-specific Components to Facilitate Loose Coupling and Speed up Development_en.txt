@@ -1,0 +1,19 @@
+1. The lecture focuses on adding support for iOS platform for all EssentialFeed targets in preparation for iOS components.
+2. The EssentialFeed targets had only been supported for macOS. However, the code within these targets has no dependency on the macOS platform, making it compatible with other supported platforms.
+3. They add iphoneos and iphonesimulator as supported platforms in the build settings, which enables the project build for simulator or iPhone device.
+4. They address the inability to run tests, by adding iphoneos and iphonesimulator for the test target, enabling the tests to run on the iPhone simulator.
+5. They suggest that support can also be added for other platforms such as iPadOS, watchOS, tvOS as needed.
+6. The EssentialFeed and EssentialFeedTests targets made to support both macOS and iOS, ensuring platform independency.
+7. They add iOS as a supported platform for the API end-to-end tests target to guarantee similar behavior across all platforms.
+8. They acknowledge that bugs can occur when running on specific platforms, making it essential to run all tests on all platforms.
+9. They create a new scheme for API end-to-end tests target to be able to run the tests in isolation.
+10. They commit to make EssentialFeedAPI EndToEndTests target also support macOS and iOS.
+11. They create a new iOS specific target within the same project for building the iOS user interface and adding iOS-specific components without affecting the platform independent components.
+12. While creating components, they decide on making an iOS application or just a framework for iOS components.
+13. The iOS UI elements are created as components, to be composed when necessary, in a unit known as the Composition Root of the components.
+14. To ensure they include unit tests in the iOS target, they create a production and test target for iOS specific components.
+15. They configure the EssentialFeed iOS scheme with testing settings, deleting all unused template files.
+16. They update their continuous integration (CI) configuration to run tests on both platforms.
+17. They create separate schemes for macOS and iOS on the CI configuration to include iOS specific tests when running the tests for the iOS platform on the CI server.
+18. They acknowledge an increase in server costs due to adding platform support, and recommend breaking down the project into separate projects and modules to reduce costs, and lead to faster builds and integration times.
+19. The lecture concludes with a reminder on balancing the cost of adding platform support with the speed of build and integration times.

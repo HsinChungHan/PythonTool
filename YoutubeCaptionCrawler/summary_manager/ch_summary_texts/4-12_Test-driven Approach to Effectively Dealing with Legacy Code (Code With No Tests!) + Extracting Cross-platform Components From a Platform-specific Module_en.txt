@@ -1,0 +1,17 @@
+1. 此演講討論如何在 Test Driven Development (TDD) 過程中提取一個類別來優化舊有的程式庫。
+2. 主講人強調了他們如何對UI (User Interface) 和 Presentation 模組進行綜合測試。
+3. 他們解釋說，FeedPresenter 並非特指 iOS，還可以在 macOS、watchOS 和 iPadOS 中重複使用，因為它並不依賴於 iOS 或像 UIKit 這樣的框架。
+4. 為了重用 FeedPresenter, 應該將它從 EssentialFeediOS 模組中移出，並將其移到更跨平臺的模組中。
+5. 然而，在將 FeedPresenter 移到另一個模組之前，必須將它公開，以便 iOS 模組能夠訪問它。它的操作需要單獨測試，以便準確地跟蹤問題。
+6. 整合中的演示器問題的調試相當困難；如果出現錯誤，則需要深入調查並修正。
+7. 主講者解釋了為 FeedPresenter 類別寫單元測試的過程，並指出可以事後添加測試。
+8. 他們強調了在與舊有的程式庫一同工作時，測試已經實現的類別所遇到的挑戰。
+9. 講座建議使用 TDD 方法為現有代碼添加測試覆蓋率，並強調了逐步提取類別，一邊添加測試的可能性。
+10. 講座詳細說明瞭創建 FeedPresenter 的過程，一個接一個測試其行為，並以目前的 FeedPresenter 為指導。
+11. 他們強調開始測試時，首先斷言空視圖信息的重要性，意指視圖沒有收到任何信息。
+12. FeedPresenter的添加過程，通過測試失敗，然後通過，這其中有護城河保護不被添加任何不想要的行爲。
+13. 對話進一步討論了創建 FeedErrorViewModel, FeedLoadingViewModel 以及 ViewSpy 中的其他視圖模型案例。
+14. 主講者在結尾宣佈，當飼料加載錯誤發生時，FeedPresenter 顯示標準化錯誤信息並停止加載。
+15. 他們提醒，進行現有類別的測試驅動需要堅持看見一個失敗的測試，然後黏貼代碼以使其通過的模式。
+16. 此演講以成功將 FeedPresenter 從 EssentialFeediOS模組移至跨平臺 EssentialFeed模組的任務結束，並將其歸功於測試的力量和精確性。
+17. 最後，他們鼓勵聽眾將 FeedImagePresenter 及 ViewModel 繼續實施到 EssentialFeed 模塊，並不一定要複製原來的實施方法，但要保持同樣的行為和介面。

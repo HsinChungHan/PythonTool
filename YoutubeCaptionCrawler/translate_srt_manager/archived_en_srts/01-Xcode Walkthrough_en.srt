@@ -1,0 +1,2789 @@
+
+1
+00:00:01.200 --> 00:00:02.040
+Hi everyone.
+
+2
+00:00:05.200 --> 00:00:06.800
+And welcome.
+
+3
+00:00:06.800 --> 00:00:08.480
+So my name is Bogdan
+
+4
+00:00:08.480 --> 00:00:12.320
+and I'm one of the instructors with the Academy
+
+5
+00:00:12.320 --> 00:00:15.340
+and I'm very excited to be here today with you
+
+6
+00:00:15.340 --> 00:00:16.600
+at this live event.
+
+7
+00:00:17.640 --> 00:00:20.800
+I'll be running a lecture on Xcode tooling
+
+8
+00:00:22.080 --> 00:00:25.760
+covering both well known and more obscure parts of Xcode
+
+9
+00:00:25.760 --> 00:00:30.760
+because as developers, we spend so much time in Xcode
+
+10
+00:00:32.480 --> 00:00:35.800
+so we better know how to use it to our advantage.
+
+11
+00:00:35.800 --> 00:00:39.260
+I even write in my journal using Xcode.
+
+12
+00:00:43.480 --> 00:00:46.960
+So please stay tuned to the lecture
+
+13
+00:00:46.960 --> 00:00:50.720
+and I would kindly ask you to turn on your cameras
+
+14
+00:00:50.720 --> 00:00:55.720
+so I can see you and get feedback from your reactions.
+
+15
+00:00:56.000 --> 00:00:57.080
+I appreciate it.
+
+16
+00:00:58.280 --> 00:00:59.240
+Let's do it.
+
+17
+00:01:01.080 --> 00:01:03.820
+So before jumping in,
+
+18
+00:01:03.820 --> 00:01:08.180
+we recommend that you check Apple's documentation on Xcode.
+
+19
+00:01:09.800 --> 00:01:12.600
+There are many pieces of documentation.
+
+20
+00:01:13.500 --> 00:01:16.320
+There are WWDC sessions.
+
+21
+00:01:16.320 --> 00:01:20.320
+So make sure you check those.
+
+22
+00:01:20.320 --> 00:01:22.600
+We're not trying to repeat the information
+
+23
+00:01:22.600 --> 00:01:26.260
+in these documents.
+
+24
+00:01:30.760 --> 00:01:34.880
+Here's the agenda for today.
+
+25
+00:01:34.880 --> 00:01:38.900
+We're gonna look at some useful assistance
+
+26
+00:01:38.900 --> 00:01:40.660
+and editor options.
+
+27
+00:01:42.600 --> 00:01:46.080
+We'll dive into the project overview
+
+28
+00:01:46.080 --> 00:01:48.580
+and talk about project info, build settings,
+
+29
+00:01:48.580 --> 00:01:53.580
+target general signing capabilities, info,
+
+30
+00:01:53.760 --> 00:01:57.720
+build settings again, build phases and more.
+
+31
+00:01:57.720 --> 00:02:02.020
+We'll try to understand the PBX File format.
+
+32
+00:02:05.040 --> 00:02:08.900
+We'll explain the Xcode new project interface option,
+
+33
+00:02:10.000 --> 00:02:11.980
+Storyboard versus SwiftUI.
+
+34
+00:02:13.480 --> 00:02:16.420
+We'll take a look at the default project structure
+
+35
+00:02:16.420 --> 00:02:18.800
+of an Xcode project.
+
+36
+00:02:18.800 --> 00:02:22.680
+We'll see what's inside the Xcode app Package
+
+37
+00:02:22.680 --> 00:02:25.140
+and the embedded tool chain it contains.
+
+38
+00:02:26.520 --> 00:02:29.520
+And we'll talk about maintaining multiple versions
+
+39
+00:02:29.520 --> 00:02:31.140
+of Xcode on the same machine.
+
+40
+00:02:32.320 --> 00:02:35.560
+And we will wrap it up with a Q&A at the end.
+
+41
+00:02:35.560 --> 00:02:38.040
+But if there are any questions,
+
+42
+00:02:39.080 --> 00:02:41.160
+feel free to write them in the chat
+
+43
+00:02:41.160 --> 00:02:46.160
+and I'll respond to them if they are in immediate connection
+
+44
+00:02:47.360 --> 00:02:49.520
+to the grant slide.
+
+45
+00:02:51.280 --> 00:02:53.800
+Okay, assistance.
+
+46
+00:02:53.800 --> 00:02:56.800
+Xcode offers a multitude of assistance
+
+47
+00:02:56.800 --> 00:03:00.080
+which aren't very popular with developers
+
+48
+00:03:00.080 --> 00:03:03.800
+but can be really useful to speed up the development.
+
+49
+00:03:03.800 --> 00:03:08.800
+Here are a few interesting ones.
+
+50
+00:03:21.420 --> 00:03:25.720
+First of all, the counterparts assistant
+
+51
+00:03:25.720 --> 00:03:26.960
+which I just selected
+
+52
+00:03:29.280 --> 00:03:33.240
+automatically changes the selection of the second tab
+
+53
+00:03:33.240 --> 00:03:36.480
+based on the selection in your first step.
+
+54
+00:03:36.480 --> 00:03:40.120
+So if you're editing a production File,
+
+55
+00:03:40.120 --> 00:03:44.380
+the counterpart will usually be its corresponding test File
+
+56
+00:03:44.380 --> 00:03:45.400
+and vice versa.
+
+57
+00:03:46.420 --> 00:03:49.100
+Also, if you're editing a ViewController
+
+58
+00:03:49.100 --> 00:03:53.340
+and it has a corresponding Storyboard or C File,
+
+59
+00:03:53.340 --> 00:03:56.920
+the counterpart will automatically be set to that.
+
+60
+00:03:57.760 --> 00:03:59.980
+So in my case for the FeedItemsMapper,
+
+61
+00:03:59.980 --> 00:04:04.980
+I can immediately get to the FeedItemsMapperTests.
+
+62
+00:04:06.460 --> 00:04:07.900
+This can be really useful,
+
+63
+00:04:07.900 --> 00:04:10.440
+especially with our TDD workflow.
+
+64
+00:04:18.280 --> 00:04:21.420
+The next assistant I wanna mention
+
+65
+00:04:21.420 --> 00:04:24.380
+is the super classes assistant.
+
+66
+00:04:26.640 --> 00:04:29.900
+This assistant shows the List of all the super classes
+
+67
+00:04:29.900 --> 00:04:32.040
+of my current class.
+
+68
+00:04:32.040 --> 00:04:35.700
+So since I selected the ListViewController,
+
+69
+00:04:36.900 --> 00:04:41.900
+my super classes in a hierarchy are NSObject,
+
+70
+00:04:41.900 --> 00:04:46.280
+UIResponder, UIViewController and UITableViewController.
+
+71
+00:04:46.280 --> 00:04:50.440
+So I can just look at these quickly.
+
+72
+00:04:50.440 --> 00:04:55.440
+The next assistant is extensions.
+
+73
+00:05:00.640 --> 00:05:03.960
+And I can immediately see that there are four extensions
+
+74
+00:05:03.960 --> 00:05:05.680
+on my ListViewController.
+
+75
+00:05:05.680 --> 00:05:09.600
+And I can use this assistant to go to each one of them
+
+76
+00:05:10.480 --> 00:05:11.320
+really easily.
+
+77
+00:05:11.320 --> 00:05:16.320
+The user interface is assistant.
+
+78
+00:05:21.040 --> 00:05:24.040
+I will only mention because in our demo
+
+79
+00:05:24.040 --> 00:05:26.000
+EssentialFeed case project,
+
+80
+00:05:26.000 --> 00:05:27.620
+we don't have any storyboards,
+
+81
+00:05:27.620 --> 00:05:29.920
+but if we have one,
+
+82
+00:05:29.920 --> 00:05:39.920
+these will be loaded in the assistant.
+
+83
+00:05:43.540 --> 00:05:48.540
+I'm gonna look at the callers assistant next.
+
+84
+00:05:52.740 --> 00:05:57.540
+And I've selected the only refresh property
+
+85
+00:05:57.540 --> 00:05:59.300
+on the ListViewController.
+
+86
+00:05:59.300 --> 00:06:03.140
+And I can see that there are three components
+
+87
+00:06:03.140 --> 00:06:06.060
+calling this property.
+
+88
+00:06:08.900 --> 00:06:11.260
+One being inside the ListViewController
+
+89
+00:06:11.260 --> 00:06:14.900
+and the other two are the Composers
+
+90
+00:06:14.900 --> 00:06:16.260
+from the composition route.
+
+91
+00:06:18.540 --> 00:06:19.380
+Also useful.
+
+92
+00:06:24.300 --> 00:06:27.940
+There's also a test classes assistant,
+
+93
+00:06:27.940 --> 00:06:32.940
+which kind of does the same thing as the counterparts one
+
+94
+00:06:33.340 --> 00:06:36.060
+where it selects the corresponding test File.
+
+95
+00:06:40.980 --> 00:06:45.300
+An interesting assistant is the preprocessor assistant,
+
+96
+00:06:45.300 --> 00:06:49.220
+which works best if used with Objective-C.
+
+97
+00:06:49.220 --> 00:06:53.460
+So I'm gonna switch to an open source project,
+
+98
+00:06:53.460 --> 00:06:58.460
+Cocoa Lumberjack, and why this processor is useful
+
+99
+00:06:58.540 --> 00:07:03.540
+is because it really helps us understand how macros work.
+
+100
+00:07:04.180 --> 00:07:08.460
+So it does exactly what the preprocessor would do,
+
+101
+00:07:08.460 --> 00:07:09.980
+expand all the macros.
+
+102
+00:07:09.980 --> 00:07:11.540
+And what does this do?
+
+103
+00:07:11.540 --> 00:07:15.700
+Well, expanding the macro means replacing the macro
+
+104
+00:07:15.700 --> 00:07:17.780
+with its definition.
+
+105
+00:07:17.780 --> 00:07:21.640
+So this applies to defines, imports, includes,
+
+106
+00:07:21.640 --> 00:07:24.740
+all the macros from the C language style.
+
+107
+00:07:27.500 --> 00:07:30.780
+So this will really help us understand
+
+108
+00:07:30.780 --> 00:07:34.700
+why Objective-C imports have such a huge impact
+
+109
+00:07:34.700 --> 00:07:36.540
+on the compilation time,
+
+110
+00:07:36.540 --> 00:07:39.380
+because a File with just a few lines of code
+
+111
+00:07:39.380 --> 00:07:44.380
+and maybe one or two imports, like in this case,
+
+112
+00:07:44.440 --> 00:07:48.740
+is translated into a much larger File
+
+113
+00:07:48.740 --> 00:07:51.060
+and passed through the compiler.
+
+114
+00:07:51.060 --> 00:07:56.060
+So that's really powerful.
+
+115
+00:08:03.900 --> 00:08:08.460
+I'm gonna switch back to our EssentialFeed case project
+
+116
+00:08:08.460 --> 00:08:10.860
+and look at another assistant,
+
+117
+00:08:10.860 --> 00:08:14.140
+which is the Generated Interface assistant,
+
+118
+00:08:16.120 --> 00:08:20.900
+which shows us just the public interface
+
+119
+00:08:20.900 --> 00:08:22.140
+of our component.
+
+120
+00:08:22.140 --> 00:08:27.140
+So I'll use the LoadResourcePresenter
+
+121
+00:08:29.260 --> 00:08:31.780
+that has multiple entities,
+
+122
+00:08:31.780 --> 00:08:34.020
+and we'll look at the Generated Interface.
+
+123
+00:08:34.020 --> 00:08:37.580
+So for the first Protocol is basically the same.
+
+124
+00:08:37.580 --> 00:08:42.100
+Then for my class, I can see only the public elements
+
+125
+00:08:43.740 --> 00:08:45.440
+and their signature.
+
+126
+00:08:45.440 --> 00:08:50.440
+This can be really useful when reviewing your interface.
+
+127
+00:08:54.420 --> 00:08:58.460
+Next, I wanna look at some editor options.
+
+128
+00:09:03.580 --> 00:09:06.520
+There are a few right into Xcode.
+
+129
+00:09:08.280 --> 00:09:09.920
+One is the minimap,
+
+130
+00:09:09.920 --> 00:09:12.780
+which is this nice graphical representation
+
+131
+00:09:12.780 --> 00:09:17.580
+of your selected File, which even allows me
+
+132
+00:09:17.580 --> 00:09:18.880
+to do navigation.
+
+133
+00:09:18.880 --> 00:09:21.980
+So if I tap on an item here,
+
+134
+00:09:21.980 --> 00:09:26.740
+I immediately go to that place in the File.
+
+135
+00:09:29.820 --> 00:09:32.860
+The next option is authors,
+
+136
+00:09:33.760 --> 00:09:37.960
+and authors shows the author and commit info
+
+137
+00:09:37.960 --> 00:09:40.000
+on each line or group of lines.
+
+138
+00:09:40.000 --> 00:09:45.000
+I can tap on it, I can go to the commit in git,
+
+139
+00:09:48.100 --> 00:09:49.940
+or I can even email Caio.
+
+140
+00:09:54.400 --> 00:09:57.080
+The last one, but I think the most powerful one
+
+141
+00:09:57.080 --> 00:09:58.480
+is the code coverage.
+
+142
+00:10:00.300 --> 00:10:03.420
+Code coverage shows the code coverage
+
+143
+00:10:03.420 --> 00:10:06.580
+of the last test run using different colors.
+
+144
+00:10:06.580 --> 00:10:11.580
+In red are the lines that were not executed by any test.
+
+145
+00:10:12.540 --> 00:10:14.960
+So in this case, this public initializer
+
+146
+00:10:14.960 --> 00:10:17.420
+is not called by any of our Tests.
+
+147
+00:10:19.440 --> 00:10:24.440
+With gray are the lines that are executed by the test
+
+148
+00:10:24.920 --> 00:10:27.400
+and they have a counter next to them
+
+149
+00:10:27.400 --> 00:10:31.720
+showing how many Tests actually called that line
+
+150
+00:10:31.720 --> 00:10:34.180
+or how many times it was called.
+
+151
+00:10:34.180 --> 00:10:37.220
+This is really useful when you're reviewing
+
+152
+00:10:37.220 --> 00:10:41.780
+your test coverage and identifying paths
+
+153
+00:10:41.780 --> 00:10:44.180
+that are just not covered with Tests.
+
+154
+00:10:48.780 --> 00:10:51.260
+That's about it on this section.
+
+155
+00:10:55.380 --> 00:10:59.100
+Next, we're gonna look at the Xcode project.
+
+156
+00:11:00.880 --> 00:11:04.160
+So selecting the Xcode project in the File navigator
+
+157
+00:11:04.160 --> 00:11:07.240
+offers views on the project and target settings.
+
+158
+00:11:08.140 --> 00:11:11.260
+When you make changes through these interfaces,
+
+159
+00:11:11.260 --> 00:11:14.660
+Xcode will translate them into real text changes
+
+160
+00:11:14.660 --> 00:11:19.540
+to the project File, which is the project.xcodeproj
+
+161
+00:11:19.540 --> 00:11:22.340
+dash project PBXproj.
+
+162
+00:11:27.280 --> 00:11:30.000
+You probably know this, but one project
+
+163
+00:11:30.000 --> 00:11:32.220
+can contain multiple targets
+
+164
+00:11:32.220 --> 00:11:34.780
+and as well, multiple configurations.
+
+165
+00:11:38.900 --> 00:11:43.520
+As you can see, each configuration exists for each target.
+
+166
+00:11:44.700 --> 00:11:46.340
+This is important to understand.
+
+167
+00:11:52.140 --> 00:11:55.220
+The build configuration is a set of build settings
+
+168
+00:11:55.220 --> 00:11:59.120
+used to build a target product in a particular way.
+
+169
+00:11:59.120 --> 00:12:01.720
+By default, when you create the project,
+
+170
+00:12:01.720 --> 00:12:05.100
+you get two configurations, debug and release.
+
+171
+00:12:08.580 --> 00:12:10.620
+You can add more configurations
+
+172
+00:12:10.620 --> 00:12:14.300
+or you can even rename or delete these default ones,
+
+173
+00:12:14.300 --> 00:12:15.860
+which I don't recommend you do
+
+174
+00:12:15.860 --> 00:12:19.840
+because in our industry, it kind of became a standard
+
+175
+00:12:19.840 --> 00:12:22.460
+to have these two debug and release configurations.
+
+176
+00:12:22.460 --> 00:12:25.580
+So I recommend you leave them as they are.
+
+177
+00:12:25.580 --> 00:12:30.580
+The reason to have two different configurations or more
+
+178
+00:12:32.180 --> 00:12:34.660
+is we usually need a different behavior
+
+179
+00:12:34.660 --> 00:12:39.500
+on the builds we run or debug locally on our dev machines
+
+180
+00:12:39.500 --> 00:12:44.260
+as opposed to the builds that we pass to our in house users
+
+181
+00:12:44.260 --> 00:12:46.340
+or even our AppStore users.
+
+182
+00:12:51.540 --> 00:12:54.180
+For instance, the release configurations
+
+183
+00:12:54.180 --> 00:12:57.300
+uses all kinds of optimizations for runtime speed,
+
+184
+00:12:57.300 --> 00:12:59.940
+binary speed, binary size, sorry,
+
+185
+00:12:59.940 --> 00:13:02.340
+but it usually requires more time to build.
+
+186
+00:13:03.160 --> 00:13:05.060
+On the other hand, the debug configuration
+
+187
+00:13:05.060 --> 00:13:07.420
+does not optimize the binary
+
+188
+00:13:07.420 --> 00:13:12.140
+and does like incremental builds and is faster.
+
+189
+00:13:14.660 --> 00:13:19.220
+You sometimes see projects use like an extra configuration,
+
+190
+00:13:19.220 --> 00:13:22.100
+a middle ground between debug and release.
+
+191
+00:13:22.100 --> 00:13:26.020
+Some call it ad hoc or in house or staging.
+
+192
+00:13:26.020 --> 00:13:27.940
+In this case, this fourth configuration
+
+193
+00:13:27.940 --> 00:13:31.580
+will use the ad hoc or enterprise code signings,
+
+194
+00:13:31.580 --> 00:13:34.620
+but otherwise the same settings as the release configuration.
+
+195
+00:13:34.620 --> 00:13:38.340
+So basically creating an equivalent of the release build
+
+196
+00:13:38.340 --> 00:13:40.460
+that is distributed in house.
+
+197
+00:13:43.540 --> 00:13:46.820
+Just to set our docs in a row,
+
+198
+00:13:46.820 --> 00:13:50.220
+we usually refer to a build as a debug build
+
+199
+00:13:50.220 --> 00:13:53.100
+when it's built with the debug configuration
+
+200
+00:13:53.100 --> 00:13:54.940
+and to a release build,
+
+201
+00:13:55.980 --> 00:13:58.620
+a build that's built with the release configuration.
+
+202
+00:14:02.340 --> 00:14:04.820
+Let's see where these configurations are used.
+
+203
+00:14:04.820 --> 00:14:08.260
+So first of all, they are used
+
+204
+00:14:08.260 --> 00:14:10.660
+whenever we perform any of the actions
+
+205
+00:14:10.660 --> 00:14:12.580
+on any target in Xcode.
+
+206
+00:14:12.580 --> 00:14:16.160
+So build, archive, analyze, and so on.
+
+207
+00:14:16.160 --> 00:14:20.440
+Each have a preconfigured configuration they use.
+
+208
+00:14:21.920 --> 00:14:24.960
+You can see this in the scheme editor.
+
+209
+00:14:26.700 --> 00:14:31.700
+For instance, the run action uses the debug configuration
+
+210
+00:14:31.700 --> 00:14:34.540
+and the archive action uses the release configuration.
+
+211
+00:14:35.480 --> 00:14:38.500
+They can be easily edited and changed.
+
+212
+00:14:41.060 --> 00:14:43.820
+The other use cases when using the CommandLine,
+
+213
+00:14:43.820 --> 00:14:47.940
+for instance, to build, you can pass the configuration
+
+214
+00:14:48.900 --> 00:14:51.800
+to the build CommandLine
+
+215
+00:14:51.800 --> 00:14:55.320
+or rely on your scheme configuration.
+
+216
+00:14:57.600 --> 00:15:00.860
+Now let's look at the project overview
+
+217
+00:15:00.860 --> 00:15:02.880
+and its available tabs.
+
+218
+00:15:07.240 --> 00:15:09.960
+So I selected the project
+
+219
+00:15:09.960 --> 00:15:12.540
+and then I made sure that on this left pane,
+
+220
+00:15:12.540 --> 00:15:16.160
+I select the project and not the targets.
+
+221
+00:15:17.220 --> 00:15:19.760
+And I have a few tabs available.
+
+222
+00:15:20.700 --> 00:15:22.840
+Let's go through each one of them.
+
+223
+00:15:26.420 --> 00:15:31.420
+The info tab shows the most important project settings.
+
+224
+00:15:33.220 --> 00:15:35.100
+The deployment target represents
+
+225
+00:15:35.100 --> 00:15:38.340
+the minimum supported OS version for each platform
+
+226
+00:15:38.340 --> 00:15:41.080
+if the project uses multiple platforms that we do.
+
+227
+00:15:41.080 --> 00:15:46.080
+These are the same values that are set under build settings
+
+228
+00:15:46.640 --> 00:15:49.680
+in the deployment section as iOS
+
+229
+00:15:49.680 --> 00:15:52.160
+or macOS deployment target.
+
+230
+00:15:52.160 --> 00:15:55.580
+So changing one will implicitly change the other.
+
+231
+00:15:57.240 --> 00:15:59.000
+Next we have configurations
+
+232
+00:15:59.000 --> 00:16:02.080
+and we see the ones we already mentioned,
+
+233
+00:16:02.080 --> 00:16:03.320
+debug and release,
+
+234
+00:16:04.900 --> 00:16:07.280
+or any other configuration we might have.
+
+235
+00:16:07.280 --> 00:16:12.280
+Next, we also see based on configuration File,
+
+236
+00:16:13.960 --> 00:16:17.480
+basically contains all the supported localizations
+
+237
+00:16:17.480 --> 00:16:18.640
+on this project.
+
+238
+00:16:21.720 --> 00:16:23.440
+Next is the build settings tab.
+
+239
+00:16:25.100 --> 00:16:27.640
+And I won't go into the details now
+
+240
+00:16:27.640 --> 00:16:30.720
+because we're also gonna talk about build settings
+
+241
+00:16:30.720 --> 00:16:39.480
+for targets and they kind of relate to each other.
+
+242
+00:16:39.480 --> 00:16:43.400
+Package dependencies is where we setUp
+
+243
+00:16:43.400 --> 00:16:44.680
+Swift Package Manager.
+
+244
+00:16:46.520 --> 00:16:51.520
+As an example, we can quickly add Swift algorithms
+
+245
+00:16:53.400 --> 00:16:57.400
+to our project, but I won't do that.
+
+246
+00:16:57.400 --> 00:17:02.400
+So I selected the EssentialFeed iOS target
+
+247
+00:17:04.160 --> 00:17:09.160
+and we're gonna look at the target settings
+
+248
+00:17:10.480 --> 00:17:14.680
+and all of the tabs in this part of Xcode.
+
+249
+00:17:17.080 --> 00:17:19.680
+So first of all, there's the general tab
+
+250
+00:17:21.200 --> 00:17:25.120
+and this is very similar to the project's info tab
+
+251
+00:17:25.120 --> 00:17:28.360
+showing general settings for each of the targets.
+
+252
+00:17:36.200 --> 00:17:38.640
+First, there's the identity group
+
+253
+00:17:38.640 --> 00:17:41.280
+where we have the Bundle display name,
+
+254
+00:17:42.680 --> 00:17:45.280
+which is the user visible name for the Bundle.
+
+255
+00:17:46.280 --> 00:17:50.760
+App targets is the name of the app displayed to the user.
+
+256
+00:17:50.760 --> 00:17:53.040
+For example, on iOS, the app name,
+
+257
+00:17:53.040 --> 00:17:56.080
+the app name you'll see displayed on the device home screen.
+
+258
+00:17:58.080 --> 00:18:01.560
+The BundleIdentifier used to identify each Bundle
+
+259
+00:18:03.080 --> 00:18:07.040
+is usually a reverse DNS address.
+
+260
+00:18:07.040 --> 00:18:11.600
+So in our case, it's com.essentialdeveloper.EssentialFeediOS.
+
+261
+00:18:13.880 --> 00:18:16.640
+Next are version and build,
+
+262
+00:18:16.640 --> 00:18:21.640
+and these two are resolved from the Info.plist.cfbundle version
+
+263
+00:18:21.640 --> 00:18:26.640
+and cfbundle short version String values.
+
+264
+00:18:29.720 --> 00:18:32.040
+Next, the deployment info tab.
+
+265
+00:18:35.200 --> 00:18:39.160
+As before, this represents the minimum supported OS version
+
+266
+00:18:39.160 --> 00:18:42.600
+for each platform if the target is multi platform.
+
+267
+00:18:44.360 --> 00:18:46.320
+Again, those are the same values
+
+268
+00:18:46.320 --> 00:18:49.560
+from the build settings deployment section
+
+269
+00:18:49.560 --> 00:18:53.120
+and changing one will change the other.
+
+270
+00:18:55.540 --> 00:18:58.100
+Note that these values take precedence
+
+271
+00:18:58.100 --> 00:19:00.620
+over the project level deployment targets,
+
+272
+00:19:01.620 --> 00:19:06.060
+as we'll explain shortly when we go to build settings.
+
+273
+00:19:09.580 --> 00:19:12.260
+Next, we have frameworks and libraries,
+
+274
+00:19:12.260 --> 00:19:14.820
+where are listed all the modules
+
+275
+00:19:14.820 --> 00:19:17.940
+that the target explicitly links to,
+
+276
+00:19:17.940 --> 00:19:22.300
+even if Xcode might implicitly resolve dependencies,
+
+277
+00:19:22.300 --> 00:19:24.440
+but it's best to keep them explicit here.
+
+278
+00:19:25.540 --> 00:19:29.460
+In this example, our EssentialFeediOS framework
+
+279
+00:19:29.460 --> 00:19:33.100
+links to the EssentialFeed framework.
+
+280
+00:19:40.540 --> 00:19:45.080
+The link type can be of type required or optional.
+
+281
+00:19:45.080 --> 00:19:48.620
+We use optional when the modules might not exist
+
+282
+00:19:48.620 --> 00:19:51.100
+on some platform or OS version.
+
+283
+00:19:52.780 --> 00:19:55.520
+Also, we have an Embed option.
+
+284
+00:19:57.380 --> 00:20:02.020
+Embed basically means copy the module
+
+285
+00:20:02.020 --> 00:20:04.540
+inside our target's Bundle.
+
+286
+00:20:04.540 --> 00:20:08.180
+This is useful when linking against dynamic frameworks
+
+287
+00:20:08.180 --> 00:20:10.500
+or dynamic libraries.
+
+288
+00:20:10.500 --> 00:20:12.260
+I know this is a broader topic
+
+289
+00:20:12.260 --> 00:20:14.080
+and I don't want to go into it,
+
+290
+00:20:14.080 --> 00:20:16.300
+but you probably don't need to Embed frameworks
+
+291
+00:20:16.300 --> 00:20:18.740
+or libraries that are statically linked
+
+292
+00:20:18.740 --> 00:20:22.700
+because the linker will already copy all the symbols
+
+293
+00:20:22.700 --> 00:20:24.400
+that your binary uses,
+
+294
+00:20:24.400 --> 00:20:26.260
+so we don't need to Embed it anymore.
+
+295
+00:20:31.060 --> 00:20:34.980
+Lastly, development assets are assets used
+
+296
+00:20:34.980 --> 00:20:39.980
+during development, for example, within SwiftUI previews.
+
+297
+00:20:39.980 --> 00:20:44.980
+These do not get copied into your app Bundle.
+
+298
+00:20:45.500 --> 00:20:46.540
+Questions?
+
+299
+00:20:51.340 --> 00:20:54.020
+So the question is, if we increase the build number
+
+300
+00:20:54.020 --> 00:20:55.540
+on the Main target,
+
+301
+00:20:55.540 --> 00:20:58.460
+should we also increase the build number
+
+302
+00:20:58.460 --> 00:20:59.480
+on the other targets?
+
+303
+00:20:59.480 --> 00:21:00.320
+I think not.
+
+304
+00:21:00.320 --> 00:21:01.700
+I think they are independent
+
+305
+00:21:01.700 --> 00:21:03.860
+and each target can have its own version.
+
+306
+00:21:05.620 --> 00:21:09.240
+So next, we're gonna look at the signing and capabilities.
+
+307
+00:21:09.240 --> 00:21:12.380
+And for this one, I think the EssentialApp
+
+308
+00:21:12.380 --> 00:21:14.220
+is a bit better.
+
+309
+00:21:18.940 --> 00:21:22.220
+So code signing settings exist for each configuration
+
+310
+00:21:24.180 --> 00:21:26.880
+and this screen shows Errors
+
+311
+00:21:26.880 --> 00:21:29.780
+when the settings are incorrect, like in my case.
+
+312
+00:21:31.660 --> 00:21:34.220
+This happens because I don't have the certificates
+
+313
+00:21:34.220 --> 00:21:35.940
+or the provisioning profiles installed,
+
+314
+00:21:35.940 --> 00:21:40.140
+so this is how Xcode would flag this.
+
+315
+00:21:43.980 --> 00:21:47.540
+The first option is automatically manage signing,
+
+316
+00:21:47.540 --> 00:21:51.120
+which basically allows Xcode to automatically create,
+
+317
+00:21:51.120 --> 00:21:53.560
+update certificates and provisionings
+
+318
+00:21:53.560 --> 00:21:56.660
+and make sure you're really using the latest ones.
+
+319
+00:21:56.660 --> 00:22:00.500
+I prefer to manage my own projects manually,
+
+320
+00:22:00.500 --> 00:22:01.960
+so I have control over them,
+
+321
+00:22:01.960 --> 00:22:06.960
+but that's a personal preference.
+
+322
+00:22:07.860 --> 00:22:10.820
+The team identifier is a unique identifier,
+
+323
+00:22:10.820 --> 00:22:13.380
+which is assigned in the Apple developer program
+
+324
+00:22:13.380 --> 00:22:15.720
+to each team and is shared between apps.
+
+325
+00:22:19.280 --> 00:22:24.280
+The BundleIdentifier is unique to each app,
+
+326
+00:22:25.300 --> 00:22:29.860
+needs to match the application identifier,
+
+327
+00:22:29.860 --> 00:22:33.180
+which is this abstract entity that describes an app
+
+328
+00:22:33.180 --> 00:22:35.180
+and its capabilities,
+
+329
+00:22:35.180 --> 00:22:39.180
+and it's managed through the Apple developer account.
+
+330
+00:22:40.940 --> 00:22:43.500
+Next, we have signing certificate,
+
+331
+00:22:44.540 --> 00:22:47.820
+which is a certificate that needs to be valid
+
+332
+00:22:47.820 --> 00:22:50.520
+and it's used to sign the binaries.
+
+333
+00:22:52.300 --> 00:22:57.300
+And the provisioning profile is this abstract entity
+
+334
+00:22:57.300 --> 00:22:59.840
+that basically connects an app ID,
+
+335
+00:22:59.840 --> 00:23:03.040
+one or more signing certificates and a List of devices.
+
+336
+00:23:09.720 --> 00:23:13.560
+You can also see this in the small diagram
+
+337
+00:23:15.800 --> 00:23:20.800
+where the provisioning profile is the central place
+
+338
+00:23:20.960 --> 00:23:23.800
+of this relationship between devices,
+
+339
+00:23:23.800 --> 00:23:27.300
+certificates, and an app identifier.
+
+340
+00:23:32.740 --> 00:23:36.920
+This screen also allows managing capabilities.
+
+341
+00:23:36.920 --> 00:23:40.720
+Capabilities are anything from app transport security
+
+342
+00:23:40.720 --> 00:23:45.080
+exception, associated domains, background modes,
+
+343
+00:23:46.520 --> 00:23:51.520
+key chain sharing, push notifications,
+
+344
+00:23:51.520 --> 00:23:56.080
+iCloud, in app purchases,
+
+345
+00:23:56.080 --> 00:23:58.860
+sign in with Apple, and much more.
+
+346
+00:24:04.120 --> 00:24:06.800
+The next tab is the Resource tags.
+
+347
+00:24:07.920 --> 00:24:12.360
+These are on demand resources downloaded only when needed,
+
+348
+00:24:12.360 --> 00:24:14.560
+thus not embedded into the app Bundle.
+
+349
+00:24:15.640 --> 00:24:17.960
+They are particularly useful
+
+350
+00:24:17.960 --> 00:24:20.680
+when you need big resources in your app,
+
+351
+00:24:20.680 --> 00:24:22.940
+but you don't want to increase your app size
+
+352
+00:24:22.940 --> 00:24:24.440
+on the AppStore.
+
+353
+00:24:24.440 --> 00:24:26.000
+App size is important.
+
+354
+00:24:26.920 --> 00:24:29.280
+The smaller the app, the easier it is for users
+
+355
+00:24:29.280 --> 00:24:30.960
+to download it and try it.
+
+356
+00:24:30.960 --> 00:24:33.800
+For example, Apple has a 50 megabyte limit
+
+357
+00:24:33.800 --> 00:24:38.280
+or it used to be 50, where apps that are above that limit
+
+358
+00:24:38.280 --> 00:24:40.440
+can only be downloaded through WiFi.
+
+359
+00:24:44.400 --> 00:24:46.160
+Next is the info tab.
+
+360
+00:24:46.160 --> 00:24:50.000
+This is populated with the settings from the Info.plist,
+
+361
+00:24:50.880 --> 00:24:54.000
+allowing us a different way to edit this File.
+
+362
+00:24:54.000 --> 00:24:57.080
+As you can see here, some of the values
+
+363
+00:24:57.080 --> 00:25:00.200
+can use variables that are resolved at build time.
+
+364
+00:25:00.200 --> 00:25:03.480
+For example, the Bundle name is resolved
+
+365
+00:25:03.480 --> 00:25:05.560
+to dollar product underscore name,
+
+366
+00:25:05.560 --> 00:25:17.120
+dollar product underscore name, which is a build setting, actually.
+
+367
+00:25:17.120 --> 00:25:18.440
+Now it gets interesting.
+
+368
+00:25:20.040 --> 00:25:21.720
+We're looking at build settings.
+
+369
+00:25:22.760 --> 00:25:27.640
+There are a few options to View these settings.
+
+370
+00:25:28.880 --> 00:25:32.600
+The default Xcode one is basic and Combined.
+
+371
+00:25:32.600 --> 00:25:36.200
+It only shows the basic settings in a Combined way,
+
+372
+00:25:36.200 --> 00:25:43.320
+which basically means showing only like configurations
+
+373
+00:25:43.320 --> 00:25:46.680
+when they are particularly set.
+
+374
+00:25:47.640 --> 00:25:51.480
+I don't really use this View,
+
+375
+00:25:51.480 --> 00:25:54.200
+so I'd like to see all my settings
+
+376
+00:25:54.200 --> 00:25:57.560
+and I like the levels viewer
+
+377
+00:25:57.560 --> 00:26:02.360
+because it makes settings more clear.
+
+378
+00:26:07.560 --> 00:26:09.000
+So what is a build setting?
+
+379
+00:26:09.000 --> 00:26:12.920
+A build setting is a property that you can apply to your Xcode target
+
+380
+00:26:12.920 --> 00:26:15.480
+to configure aspects of how they are built.
+
+381
+00:26:19.960 --> 00:26:23.720
+Build settings can be customized per configuration,
+
+382
+00:26:23.720 --> 00:26:27.640
+per configuration, SDK platform, and so on.
+
+383
+00:26:30.520 --> 00:26:34.440
+Managing build settings is done through two mechanisms.
+
+384
+00:26:34.440 --> 00:26:36.680
+One is through the Xcode build settings editor,
+
+385
+00:26:36.680 --> 00:26:37.800
+which I just shown,
+
+386
+00:26:37.800 --> 00:26:40.600
+and the other one is through configuration files,
+
+387
+00:26:40.600 --> 00:26:43.560
+which I also mentioned, those XC config files.
+
+388
+00:26:43.560 --> 00:26:47.400
+It's interesting to understand how Xcode resolves build settings.
+
+389
+00:26:48.840 --> 00:26:56.680
+Build settings are used on before each build or other action,
+
+390
+00:26:56.680 --> 00:26:59.080
+the system must resolve all the build settings
+
+391
+00:26:59.080 --> 00:27:00.600
+for each target that is built.
+
+392
+00:27:02.200 --> 00:27:04.600
+It uses a fallback based system
+
+393
+00:27:04.600 --> 00:27:07.400
+and it's not a standard system.
+
+394
+00:27:07.400 --> 00:27:09.000
+It's not a standard system,
+
+395
+00:27:09.000 --> 00:27:15.960
+it uses a fallback based system and in this graphical representation,
+
+396
+00:27:15.960 --> 00:27:18.760
+as well as in the Xcode build settings tab,
+
+397
+00:27:19.400 --> 00:27:24.200
+priority decreases from left to right or increases from right to left.
+
+398
+00:27:27.320 --> 00:27:31.160
+So first we have the resolved,
+
+399
+00:27:31.160 --> 00:27:38.680
+which is the value that in the end will be used by the build tool.
+
+400
+00:27:40.120 --> 00:27:41.800
+Next is target settings.
+
+401
+00:27:42.600 --> 00:27:47.560
+Those are explicit target settings that override any other setting.
+
+402
+00:27:49.160 --> 00:27:51.320
+If we set a target configuration File,
+
+403
+00:27:51.320 --> 00:27:56.360
+it overrides all the settings except for the target explicit ones on the left.
+
+404
+00:27:57.400 --> 00:28:02.360
+Then there are project settings, explicit ones.
+
+405
+00:28:04.680 --> 00:28:07.640
+They are used when the target settings are missing.
+
+406
+00:28:08.440 --> 00:28:11.640
+Otherwise, they are overwritten by target settings.
+
+407
+00:28:14.200 --> 00:28:17.720
+The same applies for the project configuration File.
+
+408
+00:28:17.720 --> 00:28:21.320
+If set, this only overrides the platform defaults.
+
+409
+00:28:21.320 --> 00:28:25.960
+Otherwise, it's overwritten by anything else on its left.
+
+410
+00:28:27.320 --> 00:28:29.880
+And at the end, there are platform defaults.
+
+411
+00:28:31.160 --> 00:28:37.080
+Every setting can have a platform default value or just an empty value.
+
+412
+00:28:38.120 --> 00:28:43.320
+And the resolver will use these if none of the other settings are provided.
+
+413
+00:28:43.320 --> 00:28:47.000
+To make this more clear, we should look at some examples.
+
+414
+00:28:48.440 --> 00:28:49.880
+So back to Xcode.
+
+415
+00:28:55.240 --> 00:29:00.600
+Use the EssentialFeed.
+
+416
+00:29:00.600 --> 00:29:07.960
+Use the EssentialFeed.
+
+417
+00:29:13.080 --> 00:29:17.240
+I've selected the buildActiveArchitectureOnly setting.
+
+418
+00:29:18.680 --> 00:29:21.000
+Let's look at it from right to left.
+
+419
+00:29:21.000 --> 00:29:26.920
+First of all, we can see that the macOS default is set to no.
+
+420
+00:29:26.920 --> 00:29:34.200
+Then on the EssentialFeed project, for the debug configuration, we have an explicit value set to yes.
+
+421
+00:29:35.240 --> 00:29:42.200
+We know this because there's a bold box around the value and the text is also bold.
+
+422
+00:29:44.200 --> 00:29:49.160
+Then on the project, on the target level, there's no extra setting.
+
+423
+00:29:49.160 --> 00:30:02.280
+So the final Result values are yes for the debug configuration and no on the release configuration because it just uses the default in this case.
+
+424
+00:30:08.200 --> 00:30:11.480
+Another one is code signing identity.
+
+425
+00:30:14.840 --> 00:30:17.640
+The platform default is signed to run locally.
+
+426
+00:30:17.640 --> 00:30:31.160
+We have a project level setting, which is set to Mac developer, but we also have a setting on the EssentialFeed target, which is an empty value.
+
+427
+00:30:31.880 --> 00:30:34.920
+We see this because there's this box around it.
+
+428
+00:30:34.920 --> 00:30:47.240
+So the Result value will be also an empty value because in this case, the target has an explicit setting.
+
+429
+00:30:54.120 --> 00:30:57.720
+Let's look at the iOS deployment target as well.
+
+430
+00:30:57.720 --> 00:31:02.280
+So the macOS default in this case is iOS 15.2.
+
+431
+00:31:02.280 --> 00:31:10.840
+There's a project setting for iOS 14.0 and the EssentialFeed target has no overrides.
+
+432
+00:31:10.840 --> 00:31:13.560
+So the Result value is iOS 14.0.
+
+433
+00:31:14.360 --> 00:31:17.320
+I think this makes it a little bit more clear.
+
+434
+00:31:19.560 --> 00:31:21.320
+Yeah, I see a comment from Dennis.
+
+435
+00:31:21.320 --> 00:31:33.400
+Indeed, if we use the helper, we can see a summary of each of these settings.
+
+436
+00:31:35.800 --> 00:31:37.160
+This is pretty useful.
+
+437
+00:31:41.480 --> 00:31:42.440
+So build phases.
+
+438
+00:31:42.440 --> 00:31:50.520
+This is a very important section, and it defines the steps and or off steps for the actual build process.
+
+439
+00:31:51.560 --> 00:31:53.720
+There are a few predefined phases.
+
+440
+00:31:57.320 --> 00:32:02.920
+First of all, I'm going to use the EssentialApp.
+
+441
+00:32:02.920 --> 00:32:12.040
+Dependencies. So explicitly set dependencies between modules.
+
+442
+00:32:13.080 --> 00:32:19.960
+Setting this dependency will assure Xcode builds that dependency if needed before building our own target.
+
+443
+00:32:23.480 --> 00:32:24.760
+In this case, we have none.
+
+444
+00:32:26.600 --> 00:32:28.440
+Next, compile sources.
+
+445
+00:32:28.440 --> 00:32:33.480
+This contains all the source files from the current target that are going to be compiled.
+
+446
+00:32:35.720 --> 00:32:38.600
+And it can also include compiler flags.
+
+447
+00:32:40.600 --> 00:32:42.520
+Link binary with libraries.
+
+448
+00:32:43.240 --> 00:32:47.320
+List all the modules that the target binary will link against.
+
+449
+00:32:47.320 --> 00:32:53.400
+In our case, the EssentialApp links to the EssentialFeed framework and the EssentialFeed iOS frame.
+
+450
+00:32:53.400 --> 00:33:08.600
+Next is copy Bundle resources, which lists all the resources that are copied inside the target Bundle.
+
+451
+00:33:08.600 --> 00:33:15.560
+This can include any kind of files, String files, storyboards, XIBs, asset files, Images, fonts, and so on.
+
+452
+00:33:15.560 --> 00:33:27.880
+And the last one is Embed frameworks, which lists all the frameworks that will be embedded into the target Bundle.
+
+453
+00:33:27.880 --> 00:33:29.880
+So copied inside the target Bundle.
+
+454
+00:33:29.880 --> 00:33:43.720
+We can also add more phases, custom phases, like a copy files phase or a run script phase, where we can do custom operations that we need.
+
+455
+00:33:45.720 --> 00:33:49.720
+To speed up the build process, we can optimize some of the build steps.
+
+456
+00:33:49.720 --> 00:34:00.600
+So, for instance, we can skip steps depending on the build type.
+
+457
+00:34:00.600 --> 00:34:15.640
+When building for preview, there's no point in running the linter, or when building for the simulator, we can skip generating and uploading debug symbols.
+
+458
+00:34:15.640 --> 00:34:21.720
+The last tab is the build rules.
+
+459
+00:34:23.720 --> 00:34:27.800
+Build rules specify how different File types should be compiled.
+
+460
+00:34:28.600 --> 00:34:34.520
+If we want to add custom processing for a certain File type, you can simply add a new build rule.
+
+461
+00:34:35.960 --> 00:34:42.120
+They are similar to build phases, just that they run once for each File of a certain type.
+
+462
+00:34:42.120 --> 00:34:50.120
+So, if you need to do custom processing on some files, in parallel, a build rule is a better fit than a build phase.
+
+463
+00:34:56.120 --> 00:35:00.120
+Next, the PBX proj format.
+
+464
+00:35:00.120 --> 00:35:18.120
+So, each of the options we can control via the Xcode project or target tabs has an equivalent entry in this PBX proj text File located in the Xcode proj folder.
+
+465
+00:35:18.120 --> 00:35:24.120
+Understanding the basic structure of this File will help you deal with conflicts in the Future.
+
+466
+00:35:24.120 --> 00:35:32.120
+For instance, when two or more developers edit the project File at the same time. I'm sure this has happened to you.
+
+467
+00:35:32.120 --> 00:35:38.120
+So, let's take a look at the EssentialApp project File.
+
+468
+00:35:38.120 --> 00:35:48.120
+First of all, we know this is a simple XML File containing all kinds of sections.
+
+469
+00:35:48.120 --> 00:36:00.120
+Let's look at them. The PBX build File section contains all the files, frameworks, and other resources that are included in the project.
+
+470
+00:36:04.120 --> 00:36:10.120
+This is a build phase, so the copy File build phase.
+
+471
+00:36:10.120 --> 00:36:18.120
+The PBX File reference contains references to all the files in the project.
+
+472
+00:36:20.120 --> 00:36:32.120
+In other build phases, the PBX group section contains all the Xcode groups you see in the Xcode project navigator and their structure.
+
+473
+00:36:32.120 --> 00:36:42.120
+So, for instance, the helpers has all these children and it can go like this.
+
+474
+00:36:44.120 --> 00:36:52.120
+Native target usually represents a target. So, in this case, it's the EssentialApp target.
+
+475
+00:36:52.120 --> 00:37:02.120
+As you can see, it has a few settings like product type, product reference, which mimic what we already have in Xcode.
+
+476
+00:37:02.120 --> 00:37:10.120
+Next is the EssentialApp test target and any other target if they were here.
+
+477
+00:37:10.120 --> 00:37:22.120
+PBX project contains the project settings, so stuff like the last Swift update check, organization name,
+
+478
+00:37:24.120 --> 00:37:32.120
+localizations, all that stuff that we could set through the project info tab.
+
+479
+00:37:32.120 --> 00:37:40.120
+Then a resources build phase that we mentioned that copies the Storyboard and XC assets.
+
+480
+00:37:42.120 --> 00:37:48.120
+The sources build phase contains all the files that are passed to the compiler.
+
+481
+00:37:50.120 --> 00:37:56.120
+And, of course, there are two because we have two targets.
+
+482
+00:37:56.120 --> 00:38:06.120
+And the one which I particularly want to look at is the XC build configuration section.
+
+483
+00:38:06.120 --> 00:38:10.120
+This contains all the Xcode build settings we just looked at.
+
+484
+00:38:12.120 --> 00:38:22.120
+The interesting thing here is settings are repeated as we usually get a set of settings for each combination of project or target and configuration.
+
+485
+00:38:22.120 --> 00:38:38.120
+So in our case, since we have one project, which is the EssentialApp and two targets, EssentialApp and EssentialAppTests, plus two configurations, debug and release,
+
+486
+00:38:38.120 --> 00:38:50.120
+we are going to have six sets of settings. So the first set is the project plus debug configuration settings, which you can see here.
+
+487
+00:38:52.120 --> 00:38:56.120
+Then the same project with the release configuration.
+
+488
+00:38:56.120 --> 00:39:08.120
+Then the first target with the debug configuration, first target with the release configuration, the first target being the EssentialFeed app.
+
+489
+00:39:08.120 --> 00:39:16.120
+And then the EssentialFeed app Tests, debug configuration and release configuration. It's pretty confusing, right?
+
+490
+00:39:16.120 --> 00:39:26.120
+Now, I want to do a quick exercise and see how many times a File is actually mentioned inside this structure.
+
+491
+00:39:26.120 --> 00:39:32.120
+So if I use the FeedUIComposer, I see four entries.
+
+492
+00:39:32.120 --> 00:39:46.120
+So one in the build File section, one in the File reference section, one in the group, which is the EssentialApp group, and one in the source build phase section.
+
+493
+00:39:46.120 --> 00:39:50.120
+Keep this in mind when editing conflicts.
+
+494
+00:39:50.120 --> 00:40:02.120
+Also, I can do a quick, interesting thing and just add a File to the EssentialApp.
+
+495
+00:40:02.120 --> 00:40:18.120
+And I'm going to call it my File.
+
+496
+00:40:18.120 --> 00:40:38.120
+And I'm going to use the source control, which actually is not that great.
+
+497
+00:40:38.120 --> 00:40:50.120
+So, yeah, you see, again, four entries, one, two, three, and four.
+
+498
+00:40:50.120 --> 00:40:52.120
+And back to sublime.
+
+499
+00:40:52.120 --> 00:41:02.120
+I'll use my sublime.
+
+500
+00:41:02.120 --> 00:41:26.120
+The same case. So once in the PBX build File section, once in the File reference section, once in the group, and once in the source build phase.
+
+501
+00:41:26.120 --> 00:41:44.120
+Lucky is saying I usually search for smaller, smaller, smaller, smaller sign in PBX conflict File and remove entries which are conflicting.
+
+502
+00:41:44.120 --> 00:41:47.120
+Yeah, that's usually how we do it.
+
+503
+00:41:47.120 --> 00:42:02.120
+There are some tools that automate that, but my point is understanding the format, because if you break the format, you will get a project that doesn't open.
+
+504
+00:42:02.120 --> 00:42:18.120
+And probably more bad things can happen as you can skip files from the project or stuff like that.
+
+505
+00:42:18.120 --> 00:42:22.120
+Milan is saying there will be an even number of entries for each File.
+
+506
+00:42:22.120 --> 00:42:33.120
+That's partially true because it depends on how many targets you add the File to. So if you add the File to more than one target, then you will probably get an uneven number.
+
+507
+00:42:33.120 --> 00:42:39.120
+So it's best to check.
+
+508
+00:42:39.120 --> 00:42:52.120
+Next, I want to quickly take a look at Xcode new project template.
+
+509
+00:42:52.120 --> 00:43:01.120
+And this interface option here that asks you to choose between SwiftUI and a Storyboard.
+
+510
+00:43:01.120 --> 00:43:07.120
+And this was mentioned in the Slack a few days ago.
+
+511
+00:43:07.120 --> 00:43:16.120
+We need to understand that this choice only applies to the UI entry point that is automatically pre filled by the Xcode template.
+
+512
+00:43:16.120 --> 00:43:38.120
+We can always make SwiftUI and UIKit, which is behind the storyboards, and XIBs and UI created from code without any issue. We can also change the entry point of the app at any point.
+
+513
+00:43:38.120 --> 00:43:51.120
+By selecting the SwiftUI interface option, we simply get a struct implementing the app Protocol that is marked by the Main entry point via at Main on the right of the screen.
+
+514
+00:43:51.120 --> 00:44:06.120
+On the other hand, if we choose the Storyboard option, this means two things. The app entry point at Main or at UIApplication Main is set on the AppDelegate class.
+
+515
+00:44:06.120 --> 00:44:14.120
+And in the info P List, the newly created Main Storyboard is set as the initial Storyboard.
+
+516
+00:44:14.120 --> 00:44:19.120
+We can easily remove the Storyboard and create all the UI from code.
+
+517
+00:44:19.120 --> 00:44:48.120
+We just need to go to the SceneDelegate and do three things. Create a UI window instance, set its root ViewController to the control we need to appear first, and then call make key invisible.
+
+518
+00:44:48.120 --> 00:44:59.120
+Quickly, we'll take a look at the default project structure.
+
+519
+00:44:59.120 --> 00:45:06.120
+So, most projects will have a few common elements which I want to underline.
+
+520
+00:45:06.120 --> 00:45:15.120
+First of all, AppDelegate and SceneDelegate.
+
+521
+00:45:15.120 --> 00:45:27.120
+So AppDelegate and SceneDelegate are the Main entry points of the app. This is usually where we hook our CompositionRoot components into.
+
+522
+00:45:27.120 --> 00:45:36.120
+Then we have the Main Storyboard File, which in our case was deleted, and the launch screen Storyboard.
+
+523
+00:45:36.120 --> 00:45:50.120
+There are usually empty storyboards created by default by Xcode. If you choose the storyboards UI option. The launch screen is usually a static screen that is displayed by the OS during the app start.
+
+524
+00:45:50.120 --> 00:45:54.120
+Main can contain the initial screens of the app.
+
+525
+00:45:54.120 --> 00:46:11.120
+My recommendation is to at least separate each screen in a separate Storyboard or see for easier management, including source control.
+
+526
+00:46:11.120 --> 00:46:17.120
+Assets is the catalog with assets used by the app.
+
+527
+00:46:17.120 --> 00:46:27.120
+Info.plist, which exists in almost all apps, contains important target or Bundle settings.
+
+528
+00:46:27.120 --> 00:46:45.120
+And then we have a List of all the products in the current project, and the product can be an app target, a framework target, a Bundle, and so on.
+
+529
+00:46:45.120 --> 00:46:55.120
+And there's a List of frameworks that the project target targets linked to.
+
+530
+00:46:55.120 --> 00:47:06.120
+That's about it for the default project structure. Now, I want to take a look at the Xcode app Package contents.
+
+531
+00:47:06.120 --> 00:47:11.120
+So I'm going to open finder.
+
+532
+00:47:11.120 --> 00:47:17.120
+I've gone to applications.
+
+533
+00:47:17.120 --> 00:47:23.120
+I'm opening the Xcode app Package and looking at the contents.
+
+534
+00:47:23.120 --> 00:47:35.120
+So first of all, in the applications folder, we see some of the embedded apps like File merge, which is a nice tool for diffing and merging text files.
+
+535
+00:47:35.120 --> 00:47:49.120
+We also see Instruments are here. And if I go to developer applications, I can find the simulator app or the Xcode server Builder app.
+
+536
+00:47:49.120 --> 00:48:09.120
+Under developer platforms, there are all the platforms which the Xcode supports and allows us to link to. So the Apple TV ones, the iPhone ones, the macOS, the watch, and the driver Kit.
+
+537
+00:48:09.120 --> 00:48:14.120
+Let's look at the iPhone OS platform.
+
+538
+00:48:14.120 --> 00:48:26.120
+First of all, we see a device support folder. This is important because it contains Images with symbols of different OS versions which go back pretty, pretty far.
+
+539
+00:48:26.120 --> 00:48:33.120
+So in this case, we have symbols from iOS 9 to iOS 15.2.
+
+540
+00:48:33.120 --> 00:48:46.120
+These allow us to actually hook our Xcode to a debug session on a device on any of these operating systems.
+
+541
+00:48:46.120 --> 00:48:59.120
+But it also brings the limitation where if you upgrade your OS on your phone, you might not be able to use the Xcode debugger until you upgrade Xcode.
+
+542
+00:48:59.120 --> 00:49:08.120
+There are some hacks for that, but in general, you should be careful and upgrade both at once.
+
+543
+00:49:08.120 --> 00:49:26.120
+Under developer SDKs, we can see what the embedded SDKs are. So in this case is the iOS 15.2 SDK.
+
+544
+00:49:26.120 --> 00:49:37.120
+And under toolchains, we have this Xcode default toolchain
+
+545
+00:49:37.120 --> 00:49:55.120
+where, for instance, we can see a few Swift versions. So in this case, the Swift 5.5 version and the Swift 5.0 version.
+
+546
+00:49:55.120 --> 00:50:04.120
+So this means that Xcode embeds at least one Swift version in its Bundle.
+
+547
+00:50:04.120 --> 00:50:13.120
+For example, Xcode 12.5 used to Embed Swift 5.4.
+
+548
+00:50:13.120 --> 00:50:32.120
+If you want to install a different Swift version without upgrading or downgrading Xcode, you can install one by adding a new toolchain.
+
+549
+00:50:32.120 --> 00:50:46.120
+There's a nice web page from Apple which tells us some interesting information about Xcodes, their minimum OS required version,
+
+550
+00:50:46.120 --> 00:50:55.120
+the included SDKs, architectures, deployment targets, simulators and, important for me, the Swift version.
+
+551
+00:50:55.120 --> 00:51:16.120
+So you can use this page to understand what version of Xcode you need for a particular version of Swift or for a particular simulator and stuff like that.
+
+552
+00:51:16.120 --> 00:51:29.120
+Multiple versions of Xcode can be successfully used on the same machine, but unless you really need them for reasons of just easiness to use and cleaner dev machine,
+
+553
+00:51:29.120 --> 00:51:33.120
+I recommend keeping just one version at a time.
+
+554
+00:51:33.120 --> 00:51:52.120
+But if you really need multiple versions, you can easily install Xcode apps under a different name in Dash applications or use a tool like Xcode install.
+
+555
+00:51:52.120 --> 00:52:04.120
+You can choose which version of Xcode is used when running CommandLine commands by using Xcode preferences locations menu.
+
+556
+00:52:04.120 --> 00:52:22.120
+This option here, CommandLine tools, and if I have multiple versions of Xcode, this is where I will select which one I want my Xcode build command to use.
+
+557
+00:52:22.120 --> 00:52:36.120
+Just keep in mind that all the versions of Xcode will use some of the common paths like library developer DI data or library Cache Xcode and so on, so some collisions might happen.
+
+558
+00:52:36.120 --> 00:52:47.120
+One common occurrence to me, at least in the past, was trying to build the same project with different versions of Xcode and usually ending up in an Error because of cached artifacts.
+
+559
+00:52:47.120 --> 00:52:53.120
+This is probably fixed now, but still keep in mind that this might happen.
+
+560
+00:52:53.120 --> 00:53:04.120
+So only install multiple versions if you really need them.
+
+561
+00:53:04.120 --> 00:53:10.120
+That's it. Thanks for your patience. And now we have time for Q&A.
+
+562
+00:53:10.120 --> 00:53:23.120
+Okay, some of the questions. So personally, I recommend download Xcode app from Apple developer instead of the AppStore. Yeah, that's fine. Get it from wherever you want.
+
+563
+00:53:23.120 --> 00:53:31.120
+Just want to add something here. Always download it from the official source. Don't get like Generic Xcodes on the internet.
+
+564
+00:53:31.120 --> 00:53:38.120
+Yeah, get it from the Apple website. Make sure you get the right checksum.
+
+565
+00:53:38.120 --> 00:53:49.120
+Caio, are you referring to that situation where there was a broken, hacked version of Xcode distributed among developers a few years ago?
+
+566
+00:53:49.120 --> 00:53:51.120
+Exactly. Yes.
+
+567
+00:53:51.120 --> 00:54:02.120
+Okay, so that happened and a lot of people got burned. Good point.
+
+568
+00:54:02.120 --> 00:54:09.120
+So Lucky says lots of time compilation you should get fixed removing derived data.
+
+569
+00:54:09.120 --> 00:54:13.120
+Yeah, that's true.
+
+570
+00:54:13.120 --> 00:54:35.120
+Basically derived data contains all the intermediary files, like AnyObject File that is created from your source files during compilation, intermediary linker files and the build process is pretty complex. It should need a separate lecture.
+
+571
+00:54:35.120 --> 00:54:51.120
+And yeah, one of the things you need to try when you don't understand what your issue is, is to try to clean the derived data or do a project clean and see if that fixes it.
+
+572
+00:54:51.120 --> 00:55:01.120
+That's usually the recommended solution on StackOverflow.
+
+573
+00:55:01.120 --> 00:55:08.120
+Can you go back to the slide where you showed the configurations, and you had staging configuration?
+
+574
+00:55:08.120 --> 00:55:11.120
+Yes.
+
+575
+00:55:11.120 --> 00:55:13.120
+Yes.
+
+576
+00:55:13.120 --> 00:55:25.120
+It's important that you cannot link like the EssentialFeed, the first row debug version with the EssentialFeedAPI release version, they usually the configurations needs to match the name.
+
+577
+00:55:25.120 --> 00:55:34.120
+So if you add a new configuration staging to EssentialFeed, and you want to link it to the EssentialApp module, they both need to have a configuration with the same name, unless you customize.
+
+578
+00:55:34.120 --> 00:55:43.120
+Because when you build your target it goes to a folder with the name of the configuration, and you will try to search all its dependencies inside that folder.
+
+579
+00:55:43.120 --> 00:55:54.120
+So if you build the app with debug version, you'll be added to a debug folder, and you will try to look for all the dependencies of other modules dynamic frameworks inside a debug folder.
+
+580
+00:55:54.120 --> 00:56:02.120
+But if one of those modules are built with a release configuration is not going to be found because it's in another folder.
+
+581
+00:56:02.120 --> 00:56:23.120
+So unless you explicitly change configurations in the build settings, you won't be able to do it. That's why if you create a custom configuration name inside Xcode, you would have to add this configuration to all your other dependencies to make sure they're all built correctly and you can link them at runtime.
+
+582
+00:56:23.120 --> 00:56:28.120
+Yeah, that's that's a another good point Caio.
+
+583
+00:56:28.120 --> 00:56:32.120
+Always go off the grid, when you really need to.
+
+584
+00:56:32.120 --> 00:56:54.120
+There are many solutions around build settings which allow you to, I don't know, use conditionals and avoid creating extra configurations or even going to, like, deleting the Main ones or stuff like that which leads to a lot of a lot of headache.
+
+585
+00:56:54.120 --> 00:57:04.120
+If you want to make it more customized is probably better to use XC config, and we're going to cover it in another lecture.
+
+586
+00:57:04.120 --> 00:57:10.120
+Another comment here regarding conflicts in the project File.
+
+587
+00:57:10.120 --> 00:57:34.120
+You said that consider third party solutions for managing the extra project like Tuist or XcodeGen. Yeah, those are interesting. But you get another dependency in your stack so make sure you weigh in if you want to do that because maybe tomorrow XcodeGen is not going to be maintained, you'll be the one maintaining it.
+
+588
+00:57:34.120 --> 00:57:38.120
+I know it happened to us a few times so.
+
+589
+00:57:38.120 --> 00:57:54.120
+Yeah, so the problem here is that if you have conflicts in the project, it's like many people work in the same project and always have conflicts because if two people add files to the project and both try to merge their changes, someone's going to have to deal with the conflict.
+
+590
+00:57:54.120 --> 00:57:56.120
+Yeah.
+
+591
+00:57:56.120 --> 00:58:12.120
+So the one of the solutions that people found is like don't have Xcode projects. There are tools out there that generated Xcode project from a config File, and you have much less conflict, but then you will have this extra dependency of this tool to generate the Xcode for you.
+
+592
+00:58:12.120 --> 00:58:23.120
+And maybe they're going to stop being supported in the Future. And then when Xcode 14 is out, it's not going to work with Xcode 14, and they start having issues.
+
+593
+00:58:23.120 --> 00:58:37.120
+So every time you bring an extra dependency built to open source by someone else, as Bogdan said, like, be mindful that if people stop supporting it, you're going to have to support it.
+
+594
+00:58:37.120 --> 00:58:41.120
+It may cost you a lot in the Future.
+
+595
+00:58:41.120 --> 00:58:49.120
+And if you understand how the project structure is in the PBX project.
+
+596
+00:58:49.120 --> 00:58:56.120
+It's fairly simple to deal with conflicts, right?
+
+597
+00:58:56.120 --> 00:59:14.120
+Another thing is always following good modular design. If you have people, too many people work in the same project, maybe break into separate projects so people can work independently in parts of the system without many conflicts and continuous integration, always merging our code
+
+598
+00:59:14.120 --> 00:59:29.120
+as much as possible several times a day, if you have a feature branches for weeks, when you need to merge that work weeks of work, you're going to have many conflicts, but if you're always merging, it's much easier to deal with small conflicts and big conflicts
+
+599
+00:59:29.120 --> 00:59:36.120
+so always merge your code continuously to a Main branch several times a day. That's continuous integration.
+
+600
+00:59:36.120 --> 00:59:41.120
+We highly recommend it.
+
+601
+00:59:41.120 --> 00:59:52.120
+The next question is, as if it would be safe to delete the iOS 9 and 12 folders from the Xcode app project.
+
+602
+00:59:52.120 --> 01:00:06.120
+So, would it be safe to delete those older folders from Xcode? I don't think so. I wouldn't recommend deleting anything in that Bundle, because you never know what breaks.
+
+603
+01:00:06.120 --> 01:00:16.120
+The next question in Italy was, what is the shortcut to show the pop up to find symbol files in Xcode project?
+
+604
+01:00:16.120 --> 01:00:24.120
+I think it's command shift O. Yes, can you open Xcode there quickly? Yep.
+
+605
+01:00:24.120 --> 01:00:29.120
+That's command shift O. Yeah.
+
+606
+01:00:29.120 --> 01:00:39.120
+Type in whatever. Autocomplete is pretty good.
+
+607
+01:00:39.120 --> 01:00:41.120
+Okay.
+
+608
+01:00:41.120 --> 01:00:50.120
+Milan says in the previous Xcode version, we had an option to check callee of a meta using jump bar control plus one.
+
+609
+01:00:50.120 --> 01:01:06.120
+Opening the callees, but in Xcode 13 it has been removed. Do you know any solution here? I don't think, at least the callees assistant is still there. So, not sure.
+
+610
+01:01:06.120 --> 01:01:13.120
+And maybe you missed the beginning of the lecture, but you showed right the callee assistant. Yeah.
+
+611
+01:01:13.120 --> 01:01:24.120
+Right click as well can also show usage of a specific method or property.
+
+612
+01:01:24.120 --> 01:01:35.120
+Find. Yeah, find. Call hierarchy. Yeah.
+
+613
+01:01:35.120 --> 01:01:42.120
+Maybe it doesn't work.
+
+614
+01:01:42.120 --> 01:01:48.120
+There is one.
+
+615
+01:01:48.120 --> 01:01:55.120
+Also from Milan. Is it better to create different target for dev, QA, UAT and prod?
+
+616
+01:01:55.120 --> 01:01:59.120
+What do you suggest for managing multiple environments?
+
+617
+01:01:59.120 --> 01:02:16.120
+Well, as I said, it really depends. There are more ways to do this separation. I maybe prefer to keep the targets to a minimal and work with different configurations.
+
+618
+01:02:16.120 --> 01:02:41.120
+But it really depends. So, if the only difference between, I don't know, UAT and prod is just the URL of web service, then that can be resolved through config files with conditionals or stuff like that, instead of keeping an extra set of settings.
+
+619
+01:02:41.120 --> 01:02:58.120
+So, I think that's the biggest problem when you have multiple configurations and targets, you have to manage the settings for each of these targets and configuration. So, the fewer you have, it's easier to manage them.
+
+620
+01:02:58.120 --> 01:03:13.120
+I know many people just jump into, yeah, let's add another configuration or, I don't know, we used to have five configurations so we easily add the sixth, but always think about what you're trying to achieve and see if there's any simplification to that.
+
+621
+01:03:13.120 --> 01:03:32.120
+XC config files, like Caio said, we'll try to cover that as well. They can be a nice way to deal with this trick, otherwise crazy maintainers of many settings.
+
+622
+01:03:32.120 --> 01:03:48.120
+Another question, is it a good use of preprocessor commands like dash if or elif in case of different configurations? Well, yeah, you can use these.
+
+623
+01:03:48.120 --> 01:04:09.120
+I think it's also covered in the program where we say, yeah, move these as close to the entry point as possible to the composition route and your conditionals there, but try to avoid spreading them across all your classes and into higher level modules and entities.
+
+624
+01:04:09.120 --> 01:04:14.120
+That's something to avoid, definitely.
+
+625
+01:04:14.120 --> 01:04:27.120
+The next one is a nice one. At least I've seen it a couple of times. So sometimes when Xcode is unexpected and closed, there is this pop up with two options, keep Xcode version or use version on disk.
+
+626
+01:04:27.120 --> 01:04:36.120
+How to choose the right one that we expected. Well, in my case this happens when you're merging a conflict or something like that.
+
+627
+01:04:36.120 --> 01:04:59.120
+Switching branches. Switching branches is another good one, yeah. I try to use the version on disk, but that basically tells Xcode to reload to whatever the disk has, as opposed to keeping whatever it might have stuck in its Cache.
+
+628
+01:04:59.120 --> 01:05:15.120
+But that might not be the answer every time. Yeah, rule of thumb, I use version on disk as well because usually I'm switching branches and Xcode has an old version of it InMemory, and I just wanted to update to whatever is on disk.
+
+629
+01:05:15.120 --> 01:05:25.120
+Or maybe some other application changed the File on disk and Xcode is asking, hey, do you want to keep the one that I have InMemory or the one that was changed on disk?
+
+630
+01:05:25.120 --> 01:05:35.120
+Usually you want on disk, but it depends. Maybe some other application changed the File and you don't want to keep that version.
+
+631
+01:05:35.120 --> 01:05:59.120
+Maybe you just did a set of changes to your Xcode project and some other app is trying to reset that so in that case you might not want to lose all your changes.
+
+632
+01:05:59.120 --> 01:06:06.120
+Any tricks?
+
+633
+01:06:06.120 --> 01:06:16.120
+Automate as much as you can. If you want to be more productive, automate stuff.
+
+634
+01:06:16.120 --> 01:06:31.120
+Hey, just a small, I'm not a question, just a query. I was thinking like multiple projects have different different targets, right, and each target have their different code signing capability, right?
+
+635
+01:06:31.120 --> 01:06:49.120
+So normally we use app with the code signing thing. Is it, I mean, what is the actual purpose to attach the code signing with the target, right? Because normally we don't use it. Is there any specific purpose for this?
+
+636
+01:06:49.120 --> 01:06:56.120
+So the question is if we should set it on each target, like the code signing setting?
+
+637
+01:06:56.120 --> 01:07:09.120
+Yeah, mostly sometimes shows Error, but doesn't matter because when you compile it doesn't read it or I mean that's the case. What's the actual use case for it, because we don't need don't set it or don't use it that way, right?
+
+638
+01:07:09.120 --> 01:07:15.120
+Well, if you don't use it, you can just set it to don't code sign and be done with it.
+
+639
+01:07:15.120 --> 01:07:21.120
+It's much easier than to see a bunch of Xcode Errors.
+
+640
+01:07:21.120 --> 01:07:30.120
+Yeah, this is the same case in the case I think in the third party framework you are using in the port spec as well you see there might be a code signing capability available, but you're not using it, right?
+
+641
+01:07:30.120 --> 01:07:41.120
+Yeah, usually like share open source projects should set to don't code sign or something like that so you they don't affect your, your signing.
+
+642
+01:07:41.120 --> 01:07:58.120
+I don't want to open a larger conversation, but I really recommend using static linkage whenever possible because it's so much faster on your app startup and your runtime performance.
+
+643
+01:07:58.120 --> 01:08:18.120
+So when you're using static linkage, you don't need to Embed and code sign all of these binaries, so only use it when you really need the dynamic module. I shared an article a few weeks back in the in the publications channel that talks about
+
+644
+01:08:18.120 --> 01:08:40.120
+static versus dynamic linkage and you can use that as a reference. But yeah, that's why I don't have this problem of resigning because I most of the time I never make my dependencies dynamic so they don't need to be signed and embedded.
+
+645
+01:08:40.120 --> 01:08:42.120
+Yeah, got it.
+
+646
+01:08:42.120 --> 01:08:56.120
+My recommendation is go static unless you can't. So, the default one should be static. In any case, that's how for instance with Package manager installs by default or CocoaPods, this is for a reason.
+
+647
+01:08:56.120 --> 01:09:15.120
+Right, so you need dynamic modules only in a few limited cases where you share the library between two or three other modules, or you have some other more spectacular requirements there.
+
+648
+01:09:15.120 --> 01:09:22.120
+That's when you need dynamic frameworks or libraries, other than that, you should be fine with static.
+
+649
+01:09:22.120 --> 01:09:27.120
+We should talk about this in maybe more detail in Slack if you want to.
+
+650
+01:09:27.120 --> 01:09:30.120
+Yeah, sure.
+
+651
+01:09:30.120 --> 01:09:39.120
+And I think that the last question is should we use the automatic signing feature in Xcode, if we have push notifications and in app purchases.
+
+652
+01:09:39.120 --> 01:10:00.120
+Right. So, any capabilities set on your app ID do not affect the code signing. And yeah, you can use it. It's a matter of preference, I think it's useful for like many people to just avoid dealing with understanding what's a provision profile
+
+653
+01:10:00.120 --> 01:10:18.120
+and what's an app ID and how they work together. Since I'm doing this for a longer time, I like to have control and manage my code signing identities manually so I can clean them up and know exactly what's in there.
+
+654
+01:10:18.120 --> 01:10:27.120
+But like I said, it's a preference. If you try the automatic one, if it works, should be fine.
+
+655
+01:10:27.120 --> 01:10:39.120
+I had issues with the automatic ones. I also use manual signing, especially when I'm automating with Xcode actions, for example.
+
+656
+01:10:39.120 --> 01:10:52.120
+I can define whatever settings I need, my provisioning profile, my certificates, I can be very precise which ones I'm using. I'm not depending on some magic black box inside Xcode that I don't know how it's working.
+
+657
+01:10:52.120 --> 01:11:05.120
+Because when automatic signing works in Xcode, it's fantastic. But when it breaks, I have no idea why. There's no good feedback. But when using manual signing, I feel much more in control as well.
+
+658
+01:11:05.120 --> 01:11:17.120
+But to start with, start simple. You know, if automatic is working for you, fantastic, go with it. More advanced use cases may require manual signing.
+
+659
+01:11:17.120 --> 01:11:24.120
+And you have to burn like an hour or more to understand. At least.
+
+660
+01:11:24.120 --> 01:11:27.120
+What? Much more.
+
+661
+01:11:27.120 --> 01:11:37.120
+But if you have a good source, maybe we can help with that. Sometimes in the Future.
+
+662
+01:11:37.120 --> 01:11:46.120
+In the program we use manual signing, by the way, in the Main module.
+
+663
+01:11:46.120 --> 01:11:56.120
+And that's really interesting, where you keep the signing entities in the project encrypted.
+
+664
+01:11:56.120 --> 01:12:19.120
+I've seen a lot of teams struggle with how do we get the certificates and profiles on the same machine, on the same CI machine, and they go through these super complex setups where the solution of just keeping them in the File is so at hand in the project.
+
+665
+01:12:19.120 --> 01:12:26.120
+It doesn't require any third party tools as well. Makes it simple.
+
+666
+01:12:26.120 --> 01:12:31.120
+But for advanced cases, you can also use Fastlane. There are some tools out there.
+
+667
+01:12:31.120 --> 01:12:43.120
+Fastlane is pretty awesome if you need a more advanced scenario and you have a bigger team, you need to manage shared certificates.
+
+668
+01:12:43.120 --> 01:12:52.120
+It's awesome as well when it breaks. Good luck.
+
+669
+01:12:52.120 --> 01:12:55.120
+Question on AppCode.
+
+670
+01:12:55.120 --> 01:13:02.120
+That's for Mike.
+
+671
+01:13:02.120 --> 01:13:05.120
+Do you recommend it, Mike?
+
+672
+01:13:05.120 --> 01:13:11.120
+I haven't used it in a long time. Actually, I haven't used it with Swift at all.
+
+673
+01:13:11.120 --> 01:13:17.120
+I remember you were a big fan in the beginning. Well, actually before Swift in Objective-C.
+
+674
+01:13:17.120 --> 01:13:22.120
+It worked pretty well with Objective-C.
+
+675
+01:13:22.120 --> 01:13:38.120
+Yeah, I don't use it and I like default tools because you just get more support, more documentation, you know, more help when something is not working. It's much easier to find support and already solutions for it.
+
+676
+01:13:38.120 --> 01:13:41.120
+So there's a cost of going with new tools.
+
+677
+01:13:41.120 --> 01:13:50.120
+Yeah. And again, like, especially if it's a big team, you know, probably not. Just go with the lowest cost and the lowest cost is the default.
+
+678
+01:13:50.120 --> 01:14:01.120
+Because imagine the cost of training everyone in the team, plus everyone that joined the team, you also need to train them to use this tool that most probably the people you hire won't know how to use them.
+
+679
+01:14:01.120 --> 01:14:03.120
+Yes.
+
+680
+01:14:03.120 --> 01:14:08.120
+So unless there's a huge benefit, I wouldn't.
+
+681
+01:14:08.120 --> 01:14:13.120
+But what it can do is like this. Anyone in the team can choose whatever tool they find more productive.
+
+682
+01:14:13.120 --> 01:14:20.120
+So people might be more used to AppCode, allow them to use AppCode. As long as it doesn't get in the way of others. Why not?
+
+683
+01:14:20.120 --> 01:14:23.120
+Yeah, that was the case with us, by the way.
+
+684
+01:14:23.120 --> 01:14:27.120
+Yeah, Mike was using AppCode, I was using Xcode.
+
+685
+01:14:27.120 --> 01:14:32.120
+Everyone was happy.
+
+686
+01:14:32.120 --> 01:14:40.120
+People who use vi as their Swift editor, whatever.
+
+687
+01:14:40.120 --> 01:14:42.120
+Okay.
+
+688
+01:14:42.120 --> 01:14:48.120
+Is there a trick? We're having an old Xcode and supporting the latest iOS.
+
+689
+01:14:48.120 --> 01:14:53.120
+There is a trick, but it doesn't always work.
+
+690
+01:14:53.120 --> 01:15:09.120
+The trick I know is to go into the Xcode platforms and create like in that device support folder and create a symbolic link from the
+
+691
+01:15:09.120 --> 01:15:23.120
+like with the name of the latest iOS version to the previous one that you have. Because in between some of the versions, the debug symbols are pretty similar. So you'd be able to start a debugger.
+
+692
+01:15:23.120 --> 01:15:29.120
+That doesn't always work and can lead to some undefined Errors.
+
+693
+01:15:29.120 --> 01:15:45.120
+So like I said, I really recommend you think about upgrading your devices as well as your dev machine setUp and think about this before actually doing it.
+
+694
+01:15:45.120 --> 01:15:54.120
+So you have a plan. Tricks work only partially.
+
+695
+01:15:54.120 --> 01:15:56.120
+All right.
+
+696
+01:15:56.120 --> 01:16:00.120
+Thanks, everyone, for staying up so late.
+
+697
+01:16:00.120 --> 01:16:27.120
+Awesome. Thank you.
+

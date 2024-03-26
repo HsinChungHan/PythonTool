@@ -1,0 +1,17 @@
+1. The lecture discusses how to extract a class following a Test Driven Development (TDD) process to refine legacy codebases.
+2. The presenter highlights how they've been testing the UI (User Interface) and the Presentation modules in integration. 
+3. They explain that FeedPresenter is not iOS-specific and can be reused for macOS, watchOS, and iPadOS, as it doesn't depend on iOS or frameworks like UIKit. 
+4. To reuse FeedPresenter, it should be moved away from the EssentialFeediOS module and into a more cross-platform module.
+5. However, before moving FeedPresenter to another module, it must be made public so that the iOS module can access it. Its operations need to be tested in isolation for accurate issue tracking.
+6. Debugging presenter issues in integration is difficult; if mistakes occur, they need to be dug into to rectify them.
+7. The presenters explain the process of writing unit tests for the FeedPresenter class, stating that tests can be added retrospectively.  
+8. They underscore the challenge of testing an already implemented class encountered when working with legacy codebases.
+9. The lecture proposes a TDD approach to add test coverage to the existing code, and highlights the possibility to extract the class step by step, adding tests along the way.
+10. The lecture details the process of creating a FeedPresenter, testing its behavior one by one, using the current FeedPresenter as a guide.
+11. They emphasize the importance of starting the testing with assert of empty view messages, which means the view didn't receive any messages. 
+12. The addition of FeedPresenter is shown with a test failing and then passing, which gives safeguards against any unwanted behavior being added.
+13. The conversation further discusses the creation of the FeedErrorViewModel, FeedLoadingViewModel and other view models as cases in the ViewSpy.
+14. The presenters declare at the end that FeedPresenter displays standardized error messages and stops loading whenever a feed loading error occurs.
+15. They remind that test-driving an existing class requires adherence to the pattern of witnessing a failing test before pasting the code meant to make it pass.
+16. The lecture concludes with the task of successfully moving the FeedPresenter from the EssentialFeediOS module to the cross-platform EssentialFeed module amidst necessary checks, attributes it to the power and precision of testing.
+17. Lastly, they encourage listeners to further implement the FeedImagePresenter and the ViewModel to the EssentialFeed module, not necessarily replicating the original implementation but maintaining the behavior and interface.

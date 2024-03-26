@@ -1,0 +1,3435 @@
+1
+00:00:01.100 --> 00:00:03.333
+Hello Mike, hey Caio
+
+2
+00:00:03.333 --> 00:00:04.633
+it's time to test-drive an
+
+3
+00:00:04.633 --> 00:00:07.200
+implementation of the HTTPClient
+
+4
+00:00:07.200 --> 00:00:09.566
+right so why don't we have an overview
+
+5
+00:00:09.566 --> 00:00:11.266
+of what we have so far
+
+6
+00:00:11.266 --> 00:00:14.400
+okay so I updated the diagram and so far
+
+7
+00:00:14.400 --> 00:00:15.900
+that's how our Feed API module
+
+8
+00:00:15.900 --> 00:00:17.666
+architecture looks like
+
+9
+00:00:17.666 --> 00:00:19.600
+we have implemented the RemoteFeedLoader
+
+10
+00:00:19.600 --> 00:00:21.600
+that uses the FeedItemsMapper
+
+11
+00:00:21.600 --> 00:00:23.900
+to map the response and it requests the
+
+12
+00:00:23.900 --> 00:00:26.133
+data from the HTTPClient
+
+13
+00:00:26.133 --> 00:00:28.466
+but we have no implementations yet right
+
+14
+00:00:28.466 --> 00:00:30.066
+so the implementation
+
+15
+00:00:30.066 --> 00:00:32.633
+of the HTTPClient protocol would be
+
+16
+00:00:32.633 --> 00:00:34.366
+responsible for communicating with the
+
+17
+00:00:34.366 --> 00:00:35.033
+network
+
+18
+00:00:35.033 --> 00:00:37.900
+with the backend exactly beautiful and
+
+19
+00:00:37.900 --> 00:00:39.333
+I think a natural choice here if you're
+
+20
+00:00:39.333 --> 00:00:40.866
+not going to use any kind of third-party
+
+21
+00:00:40.866 --> 00:00:41.433
+framework
+
+22
+00:00:41.433 --> 00:00:44.800
+is to use URLSessions exactly it is the
+
+23
+00:00:44.800 --> 00:00:47.733
+highest level API and we're not using
+
+24
+00:00:47.733 --> 00:00:49.100
+any third-party libraries
+
+25
+00:00:49.100 --> 00:00:51.100
+so I'm happy to go with the URLSession
+
+26
+00:00:51.100 --> 00:00:53.900
+for now okay so let's create a URL
+
+27
+00:00:53.900 --> 00:00:58.366
+SessionHTTPClient
+
+28
+00:00:58.366 --> 00:00:59.733
+okay and all we have to do is to
+
+29
+00:00:59.733 --> 00:01:01.433
+implement the method get
+
+30
+00:01:01.433 --> 00:01:04.133
+from URL with a completion block right
+
+31
+00:01:04.133 --> 00:01:05.166
+that might return
+
+32
+00:01:05.166 --> 00:01:08.300
+either a success with the Data and HTTP
+
+33
+00:01:08.300 --> 00:01:09.433
+URLResponse
+
+34
+00:01:09.433 --> 00:01:12.133
+or a failure with an Error exactly and
+
+35
+00:01:12.133 --> 00:01:13.600
+we have a bunch of ways of testing this
+
+36
+00:01:13.600 --> 00:01:13.900
+or
+
+37
+00:01:13.900 --> 00:01:16.866
+test-driving this one of them is to just
+
+38
+00:01:16.866 --> 00:01:17.200
+run
+
+39
+00:01:17.200 --> 00:01:19.833
+end-to-end tests right meaning we are
+
+40
+00:01:19.833 --> 00:01:21.733
+actually hitting the network
+
+41
+00:01:21.733 --> 00:01:24.533
+yes executing the HTTP request going to
+
+42
+00:01:24.533 --> 00:01:25.433
+the backend
+
+43
+00:01:25.433 --> 00:01:27.033
+getting the response back and then
+
+44
+00:01:27.033 --> 00:01:29.266
+asserting that we got the right response
+
+45
+00:01:29.266 --> 00:01:32.300
+I can see a couple problems there first
+
+46
+00:01:32.300 --> 00:01:32.766
+of all
+
+47
+00:01:32.766 --> 00:01:35.833
+we don't have a backend yes yet
+
+48
+00:01:35.833 --> 00:01:37.500
+and we don't want to be blocked yes
+
+49
+00:01:37.500 --> 00:01:39.500
+exactly we don't want to be blocked
+
+50
+00:01:39.500 --> 00:01:41.266
+because we don't have a backend the
+
+51
+00:01:41.266 --> 00:01:42.700
+other problem
+
+52
+00:01:42.700 --> 00:01:45.500
+is that they can be flaky they can be
+
+53
+00:01:45.500 --> 00:01:47.100
+flaky because they are
+
+54
+00:01:47.100 --> 00:01:50.766
+hitting the network and requests often
+
+55
+00:01:50.766 --> 00:01:52.866
+fail and what if you don't have
+
+56
+00:01:52.866 --> 00:01:54.633
+connection when you try to run your
+
+57
+00:01:54.633 --> 00:01:55.433
+tests
+
+58
+00:01:55.433 --> 00:01:57.600
+that's another good point well you can
+
+59
+00:01:57.600 --> 00:01:59.100
+make a point that who doesn't have
+
+60
+00:01:59.100 --> 00:02:00.533
+internet connection nowadays but
+
+61
+00:02:00.533 --> 00:02:02.700
+you don't want to be constrained right
+
+62
+00:02:02.700 --> 00:02:03.833
+and here we're talking about the
+
+63
+00:02:03.833 --> 00:02:04.933
+component level
+
+64
+00:02:04.933 --> 00:02:06.633
+which I don't think is the place for
+
+65
+00:02:06.633 --> 00:02:08.000
+end-to-end tests
+
+66
+00:02:08.000 --> 00:02:11.033
+right so we do need end-to-end tests but
+
+67
+00:02:11.033 --> 00:02:12.633
+not at the component level
+
+68
+00:02:12.633 --> 00:02:14.066
+exactly it would be more beneficial to
+
+69
+00:02:14.066 --> 00:02:16.133
+have end-to-end tests if it can test
+
+70
+00:02:16.133 --> 00:02:17.833
+more components in integration
+
+71
+00:02:17.833 --> 00:02:19.900
+exactly just to be clear end-to-end
+
+72
+00:02:19.900 --> 00:02:21.666
+tests is a valid solution
+
+73
+00:02:21.666 --> 00:02:23.333
+but since we have more reliable
+
+74
+00:02:23.333 --> 00:02:25.333
+solutions I think we should give those
+
+75
+00:02:25.333 --> 00:02:28.133
+better choices a go I agree okay so let
+
+76
+00:02:28.133 --> 00:02:29.900
+me create a test file here
+
+77
+00:02:29.900 --> 00:02:34.633
+URLSessionHTTPClientTests
+
+78
+00:02:34.633 --> 00:02:36.933
+okay so for the first test well we know
+
+79
+00:02:36.933 --> 00:02:38.866
+that we're going to request the URL
+
+80
+00:02:38.866 --> 00:02:41.200
+and we're going to use URLSessions yes
+
+81
+00:02:41.200 --> 00:02:42.933
+okay and what is the API
+
+82
+00:02:42.933 --> 00:02:46.233
+it's an instance method called dataTask
+
+83
+00:02:46.233 --> 00:02:48.133
+with URL so we pass the URL and a
+
+84
+00:02:48.133 --> 00:02:49.733
+completion handler and then we returns
+
+85
+00:02:49.733 --> 00:02:50.233
+back
+
+86
+00:02:50.233 --> 00:02:54.233
+a DataTask that we can resume or start
+
+87
+00:02:54.233 --> 00:02:56.466
+exactly and once the request is done the
+
+88
+00:02:56.466 --> 00:02:58.133
+completion handler will be called with
+
+89
+00:02:58.133 --> 00:02:58.633
+either
+
+90
+00:02:58.633 --> 00:03:01.666
+Data and URLResponse or Error yes
+
+91
+00:03:01.666 --> 00:03:04.000
+okay so to start with let's make sure
+
+92
+00:03:04.000 --> 00:03:06.066
+that we create a data task with the
+
+93
+00:03:06.066 --> 00:03:06.466
+right
+
+94
+00:03:06.466 --> 00:03:09.266
+URL yeah so we can have an assertion
+
+95
+00:03:09.266 --> 00:03:10.533
+like
+
+96
+00:03:10.533 --> 00:03:14.066
+session.receivedURLs
+
+97
+00:03:14.066 --> 00:03:17.333
+and it should be just one URL yes
+
+98
+00:03:17.333 --> 00:03:20.400
+exactly so we need a URL
+
+99
+00:03:20.400 --> 00:03:24.300
+it can be any URL so we need a session
+
+100
+00:03:24.300 --> 00:03:25.200
+yes
+
+101
+00:03:27.833 --> 00:03:29.266
+but the URLSession doesn't have
+
+102
+00:03:29.266 --> 00:03:31.333
+receivedURLs because that's a
+
+103
+00:03:31.333 --> 00:03:33.666
+test detail right we're spying so we
+
+104
+00:03:33.666 --> 00:03:34.633
+need to create
+
+105
+00:03:34.633 --> 00:03:39.100
+our own URLSessionSpy yes
+
+106
+00:03:39.100 --> 00:03:42.400
+so URLSessionSpy that is a subclass
+
+107
+00:03:42.400 --> 00:03:45.433
+of URLSession we can start here we're
+
+108
+00:03:45.433 --> 00:03:46.700
+going to have the received
+
+109
+00:03:46.700 --> 00:03:50.066
+URLs array that starts empty
+
+110
+00:03:50.066 --> 00:03:52.866
+and every time we invoke dataTask with
+
+111
+00:03:52.866 --> 00:03:53.500
+URL
+
+112
+00:03:53.500 --> 00:03:56.766
+and the completion block we will capture
+
+113
+00:03:56.766 --> 00:03:59.733
+the passed URL that's it we've done it so
+
+114
+00:03:59.733 --> 00:04:00.000
+many
+
+115
+00:04:00.000 --> 00:04:03.033
+times already we're capturing the URL
+
+116
+00:04:03.033 --> 00:04:06.933
+exactly but now we need to think about
+
+117
+00:04:06.933 --> 00:04:08.633
+what to return here because this method
+
+118
+00:04:08.633 --> 00:04:10.766
+returns a DataTask
+
+119
+00:04:10.766 --> 00:04:13.500
+yes and we don't want to ever execute a
+
+120
+00:04:13.500 --> 00:04:14.700
+network request
+
+121
+00:04:14.700 --> 00:04:17.600
+during the tests exactly we need some
+
+122
+00:04:17.600 --> 00:04:18.366
+sort of
+
+123
+00:04:18.366 --> 00:04:21.100
+a mock implementation of this DataTask
+
+124
+00:04:21.100 --> 00:04:22.233
+there
+
+125
+00:04:22.233 --> 00:04:25.033
+so we can create a FakeURLSessionData
+
+126
+00:04:25.033 --> 00:04:25.733
+Task
+
+127
+00:04:25.733 --> 00:04:29.500
+right we can just return it here
+
+128
+00:04:29.500 --> 00:04:31.266
+so this is the expectation this is the
+
+129
+00:04:31.266 --> 00:04:33.266
+setup but we need to
+
+130
+00:04:33.266 --> 00:04:36.466
+invoke the get method yes so if you say
+
+131
+00:04:36.466 --> 00:04:37.333
+get
+
+132
+00:04:37.333 --> 00:04:40.533
+from URL I expect this to happen
+
+133
+00:04:40.533 --> 00:04:43.333
+I expect the sut to create a data task
+
+134
+00:04:43.333 --> 00:04:44.066
+from the session
+
+135
+00:04:44.066 --> 00:04:46.800
+with the received URL that is correct so
+
+136
+00:04:46.800 --> 00:04:48.133
+what is the sut
+
+137
+00:04:48.133 --> 00:04:50.866
+it can be a new type URLSessionHTTP
+
+138
+00:04:50.866 --> 00:04:51.900
+Client
+
+139
+00:04:51.900 --> 00:04:54.533
+and we started with the session yeah
+
+140
+00:04:54.533 --> 00:04:55.100
+again
+
+141
+00:04:55.100 --> 00:04:56.700
+constructor injection as we've done
+
+142
+00:04:56.700 --> 00:04:58.233
+numerous times and this is
+
+143
+00:04:58.233 --> 00:05:00.133
+going to be production code so keep it
+
+144
+00:05:00.133 --> 00:05:01.900
+outside for now
+
+145
+00:05:01.900 --> 00:05:03.500
+and we can move it to production when
+
+146
+00:05:03.500 --> 00:05:05.833
+it's time
+
+147
+00:05:05.833 --> 00:05:09.266
+so constructor injection and a private
+
+148
+00:05:09.266 --> 00:05:13.266
+property
+
+149
+00:05:13.266 --> 00:05:15.833
+so get from URL so far we don't need the
+
+150
+00:05:15.833 --> 00:05:16.300
+block
+
+151
+00:05:16.300 --> 00:05:19.166
+so let's keep it simple okay looks like
+
+152
+00:05:19.166 --> 00:05:21.033
+the compiler is happy
+
+153
+00:05:21.033 --> 00:05:23.833
+let's see if we get a failing test and
+
+154
+00:05:23.833 --> 00:05:25.500
+we do
+
+155
+00:05:25.500 --> 00:05:28.866
+so now we can call the session data task
+
+156
+00:05:28.866 --> 00:05:32.466
+with URL and we can pass any completion
+
+157
+00:05:32.466 --> 00:05:34.933
+handler
+
+158
+00:05:34.933 --> 00:05:38.466
+we don't need it yet so let's see that
+
+159
+00:05:38.466 --> 00:05:39.266
+should do it
+
+160
+00:05:39.266 --> 00:05:42.066
+okay it's passing so let's name this
+
+161
+00:05:42.066 --> 00:05:42.866
+test
+
+162
+00:05:42.866 --> 00:05:46.300
+so get from URL creates
+
+163
+00:05:46.300 --> 00:05:49.433
+data task with URL I'm happy with that
+
+164
+00:05:49.433 --> 00:05:49.900
+name
+
+165
+00:05:49.900 --> 00:05:51.600
+so look at this approach we are
+
+166
+00:05:51.600 --> 00:05:53.033
+subclassing
+
+167
+00:05:53.033 --> 00:05:56.300
+URLSession and URLSessionDataTask
+
+168
+00:05:56.300 --> 00:05:58.533
+and this is often dangerous because we
+
+169
+00:05:58.533 --> 00:05:59.900
+don't own those classes
+
+170
+00:05:59.900 --> 00:06:02.133
+they are Foundation classes and we don't
+
+171
+00:06:02.133 --> 00:06:04.000
+even have access to their implementation
+
+172
+00:06:04.000 --> 00:06:07.166
+yes and if you start mocking classes we
+
+173
+00:06:07.166 --> 00:06:07.833
+don't own
+
+174
+00:06:07.833 --> 00:06:10.633
+we can start creating assumptions in our
+
+175
+00:06:10.633 --> 00:06:11.166
+mocked
+
+176
+00:06:11.166 --> 00:06:13.666
+behavior that could be wrong yes big
+
+177
+00:06:13.666 --> 00:06:14.233
+time
+
+178
+00:06:14.233 --> 00:06:17.266
+plus these types contain
+
+179
+00:06:17.266 --> 00:06:19.900
+a bunch of methods that we're not
+
+180
+00:06:19.900 --> 00:06:21.266
+overriding here
+
+181
+00:06:21.266 --> 00:06:24.933
+exactly look at this bunch of methods
+
+182
+00:06:24.933 --> 00:06:27.333
+we don't care about exactly and you
+
+183
+00:06:27.333 --> 00:06:29.033
+never know how
+
+184
+00:06:29.033 --> 00:06:32.466
+these methods might be interoperating
+
+185
+00:06:32.466 --> 00:06:35.033
+between them so I see it as a risk
+
+186
+00:06:35.033 --> 00:06:35.900
+personally
+
+187
+00:06:35.900 --> 00:06:38.400
+I think we are making big assumptions
+
+188
+00:06:38.400 --> 00:06:39.166
+here
+
+189
+00:06:39.166 --> 00:06:42.933
+but so far so good that is true so let's
+
+190
+00:06:42.933 --> 00:06:45.100
+just separate our helpers from our tests
+
+191
+00:06:45.100 --> 00:06:47.166
+and I think we should commit
+
+192
+00:06:47.166 --> 00:06:49.500
+yes it is a working solution we should
+
+193
+00:06:49.500 --> 00:06:50.633
+commit
+
+194
+00:06:50.633 --> 00:06:54.066
+so creates URL
+
+195
+00:06:54.066 --> 00:06:57.666
+Session data task with URL
+
+196
+00:06:57.666 --> 00:07:01.500
+on URLSessionHTTPClient
+
+197
+00:07:01.500 --> 00:07:06.066
+.get from URL
+
+198
+00:07:06.066 --> 00:07:08.133
+okay so this is the first step we are
+
+199
+00:07:08.133 --> 00:07:10.000
+checking that we are creating
+
+200
+00:07:10.000 --> 00:07:12.133
+the data task with the right URL but
+
+201
+00:07:12.133 --> 00:07:13.433
+next thing that needs to happen
+
+202
+00:07:13.433 --> 00:07:15.833
+for the data task to start is to call
+
+203
+00:07:15.833 --> 00:07:16.533
+resume
+
+204
+00:07:16.533 --> 00:07:19.033
+yes so let's set a test for that I guess
+
+205
+00:07:19.033 --> 00:07:19.900
+we can use the
+
+206
+00:07:19.900 --> 00:07:23.166
+same approach and spy on the data task
+
+207
+00:07:23.166 --> 00:07:23.733
+now
+
+208
+00:07:23.733 --> 00:07:26.933
+okay so get from URL resumes
+
+209
+00:07:26.933 --> 00:07:30.000
+data task with URL what we need
+
+210
+00:07:30.000 --> 00:07:32.800
+now is to somehow be able to assert that
+
+211
+00:07:32.800 --> 00:07:33.500
+the task
+
+212
+00:07:33.500 --> 00:07:36.800
+was resumed only once yes
+
+213
+00:07:36.800 --> 00:07:38.633
+otherwise there will be an error so we
+
+214
+00:07:38.633 --> 00:07:40.533
+need a task
+
+215
+00:07:40.533 --> 00:07:43.666
+and so far we have our Fake
+
+216
+00:07:43.666 --> 00:07:46.233
+URLSessionDataTask we could create
+
+217
+00:07:46.233 --> 00:07:47.100
+another one
+
+218
+00:07:47.100 --> 00:07:50.400
+there is a URLSessionDataTaskSpy
+
+219
+00:07:50.400 --> 00:07:54.133
+yes and we can have our variable
+
+220
+00:07:54.133 --> 00:07:57.500
+resumeCallCount that starts with zero
+
+221
+00:07:57.500 --> 00:08:00.633
+and every time we call resume
+
+222
+00:08:00.633 --> 00:08:04.633
+we increment by one that's it
+
+223
+00:08:04.633 --> 00:08:06.800
+but now we need to tell the session to
+
+224
+00:08:06.800 --> 00:08:08.300
+return our task
+
+225
+00:08:08.300 --> 00:08:10.633
+for a given URL so we can create some
+
+226
+00:08:10.633 --> 00:08:12.633
+kind of stubby mechanism
+
+227
+00:08:12.633 --> 00:08:16.000
+so stub URL with a task
+
+228
+00:08:16.000 --> 00:08:20.633
+yes and how can we do that stub URL
+
+229
+00:08:20.633 --> 00:08:23.500
+with task and the task is a SessionData
+
+230
+00:08:23.500 --> 00:08:25.033
+Task
+
+231
+00:08:25.033 --> 00:08:28.000
+somehow we need to have a collection of
+
+232
+00:08:28.000 --> 00:08:28.933
+stubbed
+
+233
+00:08:28.933 --> 00:08:31.166
+behaviors I guess this could be a
+
+234
+00:08:31.166 --> 00:08:32.066
+dictionary
+
+235
+00:08:32.066 --> 00:08:34.933
+yes it is a key value sort of collection
+
+236
+00:08:34.933 --> 00:08:35.433
+meaning
+
+237
+00:08:35.433 --> 00:08:38.066
+for a specific URL we're going to have a
+
+238
+00:08:38.066 --> 00:08:39.433
+specific task
+
+239
+00:08:39.433 --> 00:08:40.766
+so what we need to do is to get our
+
+240
+00:08:40.766 --> 00:08:43.033
+stubs URL
+
+241
+00:08:43.033 --> 00:08:46.466
+equals task I like that so when
+
+242
+00:08:46.466 --> 00:08:48.766
+the production code asks for a task we
+
+243
+00:08:48.766 --> 00:08:49.666
+can return
+
+244
+00:08:49.666 --> 00:08:51.900
+the stubbed task for URL if there is
+
+245
+00:08:51.900 --> 00:08:53.266
+none we return the fake one
+
+246
+00:08:53.266 --> 00:08:56.933
+exactly okay
+
+247
+00:08:56.933 --> 00:08:59.833
+failing test as expected beautiful now
+
+248
+00:08:59.833 --> 00:09:01.433
+we just need to call
+
+249
+00:09:01.433 --> 00:09:04.866
+resume and
+
+250
+00:09:04.866 --> 00:09:07.033
+okay we got a crash here that's good
+
+251
+00:09:07.033 --> 00:09:08.366
+because we returned
+
+252
+00:09:08.366 --> 00:09:11.033
+in the first test a fake URLSession
+
+253
+00:09:11.033 --> 00:09:11.900
+that does not
+
+254
+00:09:11.900 --> 00:09:15.600
+override resume so we can just override
+
+255
+00:09:15.600 --> 00:09:19.033
+and do nothing let's run again
+
+256
+00:09:19.033 --> 00:09:23.333
+and it passes now perfect
+
+257
+00:09:23.333 --> 00:09:25.266
+which means if we remove the resume I'm
+
+258
+00:09:25.266 --> 00:09:27.333
+going to get a failing test again
+
+259
+00:09:27.333 --> 00:09:29.500
+look at that there you go but the
+
+260
+00:09:29.500 --> 00:09:31.033
+problem with those tests
+
+261
+00:09:31.033 --> 00:09:32.933
+when we use mocking especially of
+
+262
+00:09:32.933 --> 00:09:34.466
+classes we don't own is that
+
+263
+00:09:34.466 --> 00:09:37.100
+look how our test is tied to the
+
+264
+00:09:37.100 --> 00:09:38.066
+implementation
+
+265
+00:09:38.066 --> 00:09:39.666
+this implementation here should be
+
+266
+00:09:39.666 --> 00:09:42.300
+private we should test just the behavior
+
+267
+00:09:42.300 --> 00:09:44.366
+but because of the the mocking strategy
+
+268
+00:09:44.366 --> 00:09:45.500
+we chose
+
+269
+00:09:45.500 --> 00:09:47.733
+we end up having to test every
+
+270
+00:09:47.733 --> 00:09:48.533
+interaction
+
+271
+00:09:48.533 --> 00:09:50.800
+exactly which API is being called with
+
+272
+00:09:50.800 --> 00:09:52.700
+exactly which parameters at which time
+
+273
+00:09:52.700 --> 00:09:54.633
+and that might be what we need but that
+
+274
+00:09:54.633 --> 00:09:56.466
+might couple the tests
+
+275
+00:09:56.466 --> 00:09:58.133
+with production code so every time you
+
+276
+00:09:58.133 --> 00:09:59.900
+want to refactor the code you break the
+
+277
+00:09:59.900 --> 00:10:00.700
+tests
+
+278
+00:10:00.700 --> 00:10:03.033
+and that might be a problem the tests
+
+279
+00:10:03.033 --> 00:10:04.533
+are checking
+
+280
+00:10:04.533 --> 00:10:08.633
+exactly the implementation of these APIs
+
+281
+00:10:08.633 --> 00:10:11.033
+and we don't want that as you said we
+
+282
+00:10:11.033 --> 00:10:12.000
+would much rather
+
+283
+00:10:12.000 --> 00:10:14.800
+have checking the behavior of loading
+
+284
+00:10:14.800 --> 00:10:15.833
+the URLs
+
+285
+00:10:15.833 --> 00:10:18.300
+and the completions if possible if
+
+286
+00:10:18.300 --> 00:10:18.933
+possible
+
+287
+00:10:18.933 --> 00:10:20.533
+yeah and it is possible and we're going
+
+288
+00:10:20.533 --> 00:10:22.533
+to show you yeah I absolutely agree
+
+289
+00:10:22.533 --> 00:10:24.300
+and just the fact that we had to
+
+290
+00:10:24.300 --> 00:10:27.033
+override the resume method
+
+291
+00:10:27.033 --> 00:10:30.233
+in the FakeURLSessionDataTask
+
+292
+00:10:30.233 --> 00:10:32.933
+this shows you how fragile these APIs
+
+293
+00:10:32.933 --> 00:10:33.600
+can be
+
+294
+00:10:33.600 --> 00:10:36.700
+when utilized for testing purposes and
+
+295
+00:10:36.700 --> 00:10:38.800
+solely for testing purposes in this case
+
+296
+00:10:38.800 --> 00:10:39.733
+right
+
+297
+00:10:39.733 --> 00:10:42.066
+exactly what about other methods we are
+
+298
+00:10:42.066 --> 00:10:43.200
+not
+
+299
+00:10:43.200 --> 00:10:45.833
+overriding that might generate problems
+
+300
+00:10:45.833 --> 00:10:47.433
+in the future
+
+301
+00:10:47.433 --> 00:10:49.333
+so we need to keep an eye on this for
+
+302
+00:10:49.333 --> 00:10:51.033
+sure but let's commit
+
+303
+00:10:51.033 --> 00:10:54.633
+so far it's working yes let's do that
+
+304
+00:10:54.633 --> 00:10:59.666
+so resumes data task on creation
+
+305
+00:10:59.666 --> 00:11:02.066
+and now that we're stubbing I believe
+
+306
+00:11:02.066 --> 00:11:03.333
+the first test
+
+307
+00:11:03.333 --> 00:11:06.533
+is redundant that's true since we return
+
+308
+00:11:06.533 --> 00:11:07.266
+a task
+
+309
+00:11:07.266 --> 00:11:09.900
+for a specific URL in the stub we are
+
+310
+00:11:09.900 --> 00:11:11.266
+already testing the we are
+
+311
+00:11:11.266 --> 00:11:13.433
+invoking the method with the right URL
+
+312
+00:11:13.433 --> 00:11:15.033
+so this is irrelevant now
+
+313
+00:11:15.033 --> 00:11:17.333
+it was a good start but we often end up
+
+314
+00:11:17.333 --> 00:11:18.366
+deleting tests
+
+315
+00:11:18.366 --> 00:11:21.500
+as we learn more about the APIs so we
+
+316
+00:11:21.500 --> 00:11:23.266
+don't need the receivedURLs anymore
+
+317
+00:11:23.266 --> 00:11:24.466
+yeah much lighter
+
+318
+00:11:24.466 --> 00:11:29.200
+let's see if it still passes fantastic
+
+319
+00:11:29.200 --> 00:11:32.466
+remove redundant tests
+
+320
+00:11:32.466 --> 00:11:35.666
+great finally we have the API sorted
+
+321
+00:11:35.666 --> 00:11:38.233
+now we can actually test the behavior we
+
+322
+00:11:38.233 --> 00:11:39.433
+care about
+
+323
+00:11:39.433 --> 00:11:43.433
+so get from URL fails
+
+324
+00:11:43.433 --> 00:11:47.033
+on request error let's handle the errors
+
+325
+00:11:47.033 --> 00:11:47.733
+first
+
+326
+00:11:47.733 --> 00:11:49.200
+I always like to start from the error
+
+327
+00:11:49.200 --> 00:11:51.433
+yeah same for me sad path
+
+328
+00:11:51.433 --> 00:11:53.333
+get them out of the way don't have to
+
+329
+00:11:53.333 --> 00:11:54.633
+think about them later
+
+330
+00:11:54.633 --> 00:11:57.666
+so I think the setup is very similar so
+
+331
+00:11:57.666 --> 00:11:58.933
+let me copy this
+
+332
+00:11:58.933 --> 00:12:01.200
+but instead of a task now I want to stop
+
+333
+00:12:01.200 --> 00:12:02.366
+it with an error
+
+334
+00:12:02.366 --> 00:12:04.800
+yes exactly we want to stop it with an
+
+335
+00:12:04.800 --> 00:12:05.600
+error and
+
+336
+00:12:05.600 --> 00:12:08.066
+make sure that we are completing with
+
+337
+00:12:08.066 --> 00:12:09.200
+the same error
+
+338
+00:12:09.200 --> 00:12:13.600
+we can just use any error
+
+339
+00:12:13.600 --> 00:12:16.066
+so I still want to have the task here
+
+340
+00:12:16.066 --> 00:12:17.266
+because of the first test
+
+341
+00:12:17.266 --> 00:12:19.600
+but I can give it a default value I can
+
+342
+00:12:19.600 --> 00:12:21.266
+also have an error
+
+343
+00:12:21.266 --> 00:12:23.900
+with a default value of nil right and we
+
+344
+00:12:23.900 --> 00:12:25.900
+need to combine somehow now
+
+345
+00:12:25.900 --> 00:12:28.133
+the task and the error right we could
+
+346
+00:12:28.133 --> 00:12:29.333
+use a tuple or
+
+347
+00:12:29.333 --> 00:12:32.233
+a simple struct can we make it private
+
+348
+00:12:32.233 --> 00:12:32.866
+yeah
+
+349
+00:12:32.866 --> 00:12:36.133
+we call it stub it has a task it's a URL
+
+350
+00:12:36.133 --> 00:12:36.800
+Session
+
+351
+00:12:36.800 --> 00:12:39.666
+DataTask it has an error there is an
+
+352
+00:12:39.666 --> 00:12:40.700
+optional
+
+353
+00:12:40.700 --> 00:12:43.733
+Error okay so now we hold
+
+354
+00:12:43.733 --> 00:12:46.800
+stubs let's wrap that
+
+355
+00:12:46.800 --> 00:12:50.366
+task error
+
+356
+00:12:50.366 --> 00:12:52.466
+well now we need to know if we have a
+
+357
+00:12:52.466 --> 00:12:53.600
+task in there so
+
+358
+00:12:53.600 --> 00:12:57.733
+we can use a if let stub or guard yeah
+
+359
+00:12:57.733 --> 00:13:00.700
+then we return the stub.task and we
+
+360
+00:13:00.700 --> 00:13:01.666
+complete
+
+361
+00:13:01.666 --> 00:13:04.933
+with well data is nil response is nil
+
+362
+00:13:04.933 --> 00:13:09.900
+and error is the stub error
+
+363
+00:13:09.900 --> 00:13:11.666
+now comes the question should we
+
+364
+00:13:11.666 --> 00:13:13.100
+complete
+
+365
+00:13:13.100 --> 00:13:15.500
+in the other scenario right no we never
+
+366
+00:13:15.500 --> 00:13:17.100
+want that to happen so we can use a
+
+367
+00:13:17.100 --> 00:13:18.533
+guard let instead
+
+368
+00:13:18.533 --> 00:13:21.200
+okay and we can leave a nice message or
+
+369
+00:13:21.200 --> 00:13:22.466
+a nice crash
+
+370
+00:13:22.466 --> 00:13:25.100
+yes because that's a developer error in
+
+371
+00:13:25.100 --> 00:13:26.366
+the tests
+
+372
+00:13:26.366 --> 00:13:28.633
+so if we don't have a stub I want to
+
+373
+00:13:28.633 --> 00:13:30.133
+leave a message
+
+374
+00:13:30.133 --> 00:13:35.833
+so couldn't find stub for the given URL
+
+375
+00:13:35.833 --> 00:13:38.933
+perfect I think that's it for
+
+376
+00:13:38.933 --> 00:13:41.666
+our spy so carry on with the tests what
+
+377
+00:13:41.666 --> 00:13:42.366
+do we expect
+
+378
+00:13:42.366 --> 00:13:44.466
+here well we need to get the result and
+
+379
+00:13:44.466 --> 00:13:46.300
+make sure that we got the error
+
+380
+00:13:46.300 --> 00:13:48.366
+right so first of all we need the
+
+381
+00:13:48.366 --> 00:13:49.900
+completion block
+
+382
+00:13:49.900 --> 00:13:53.033
+yes so the get
+
+383
+00:13:53.033 --> 00:13:55.500
+from URL now needs the completion block
+
+384
+00:13:55.500 --> 00:13:56.133
+and
+
+385
+00:13:56.133 --> 00:14:00.466
+we return an HTTPClientResult
+
+386
+00:14:00.466 --> 00:14:05.433
+right and we can import the module
+
+387
+00:14:05.433 --> 00:14:09.433
+let's see okay so of course this test
+
+388
+00:14:09.433 --> 00:14:10.633
+now needs to ignore
+
+389
+00:14:10.633 --> 00:14:13.833
+the value
+
+390
+00:14:13.833 --> 00:14:16.066
+now we can investigate if we got the
+
+391
+00:14:16.066 --> 00:14:18.000
+result we expected
+
+392
+00:14:18.000 --> 00:14:21.433
+so if we unwrap the result we expect to
+
+393
+00:14:21.433 --> 00:14:22.866
+get a failure
+
+394
+00:14:22.866 --> 00:14:26.000
+with an error we want it to be an
+
+395
+00:14:26.000 --> 00:14:26.466
+NSError
+
+396
+00:14:26.466 --> 00:14:29.666
+so we can compare it with the given
+
+397
+00:14:29.666 --> 00:14:31.833
+error
+
+398
+00:14:31.833 --> 00:14:34.233
+that was created right here right
+
+399
+00:14:34.233 --> 00:14:35.033
+otherwise
+
+400
+00:14:35.033 --> 00:14:38.800
+we want to fail yeah any other result is
+
+401
+00:14:38.800 --> 00:14:42.133
+wrong so expected failure
+
+402
+00:14:42.133 --> 00:14:45.833
+with error got
+
+403
+00:14:45.833 --> 00:14:49.600
+result instead alright
+
+404
+00:14:49.600 --> 00:14:51.833
+but this is an asynchronous block right
+
+405
+00:14:51.833 --> 00:14:52.866
+so we better
+
+406
+00:14:52.866 --> 00:14:54.933
+guarantee we go inside the block and as
+
+407
+00:14:54.933 --> 00:14:56.233
+we show in the previous episode we can
+
+408
+00:14:56.233 --> 00:14:56.933
+use
+
+409
+00:14:56.933 --> 00:15:01.666
+expectations wait for completion
+
+410
+00:15:01.666 --> 00:15:05.333
+okay so we can fulfill after we
+
+411
+00:15:05.333 --> 00:15:08.533
+assert the values we can wait for the
+
+412
+00:15:08.533 --> 00:15:10.233
+expectation with a timeout
+
+413
+00:15:10.233 --> 00:15:13.166
+one should be enough more than enough
+
+414
+00:15:13.166 --> 00:15:15.266
+should do it yeah
+
+415
+00:15:15.266 --> 00:15:17.333
+we should get a failing test hopefully
+
+416
+00:15:17.333 --> 00:15:20.233
+hopefully
+
+417
+00:15:20.233 --> 00:15:23.333
+we do we never got inside the block
+
+418
+00:15:23.333 --> 00:15:25.600
+perfect so now it's time to call
+
+419
+00:15:25.600 --> 00:15:27.100
+completion
+
+420
+00:15:27.100 --> 00:15:29.600
+with the error and the error is the last
+
+421
+00:15:29.600 --> 00:15:30.533
+parameter
+
+422
+00:15:30.533 --> 00:15:32.800
+right in the data task completion block
+
+423
+00:15:32.800 --> 00:15:34.133
+but it's optional
+
+424
+00:15:34.133 --> 00:15:37.266
+so we need to unwrap it yeah and we need
+
+425
+00:15:37.266 --> 00:15:39.100
+the completion to be escaping
+
+426
+00:15:39.100 --> 00:15:43.433
+as well okay
+
+427
+00:15:43.433 --> 00:15:45.100
+right and this needs to be wrapped in a
+
+428
+00:15:45.100 --> 00:15:48.533
+failure result
+
+429
+00:15:48.533 --> 00:15:52.233
+alright it is passing now fantastic
+
+430
+00:15:52.233 --> 00:15:56.466
+to the git okay so let's commit then
+
+431
+00:15:56.466 --> 00:16:00.000
+delivers failure with error
+
+432
+00:16:00.000 --> 00:16:03.100
+on request error
+
+433
+00:16:03.100 --> 00:16:05.666
+that's it so I think it's time to get
+
+434
+00:16:05.666 --> 00:16:07.266
+rid of those URLSession
+
+435
+00:16:07.266 --> 00:16:10.000
+mocks I'm really not feeling confident
+
+436
+00:16:10.000 --> 00:16:10.866
+about them
+
+437
+00:16:10.866 --> 00:16:13.500
+and I think the natural next step is to
+
+438
+00:16:13.500 --> 00:16:14.700
+actually use
+
+439
+00:16:14.700 --> 00:16:16.700
+protocols right there are some
+
+440
+00:16:16.700 --> 00:16:17.900
+trade-offs there but
+
+441
+00:16:17.900 --> 00:16:21.166
+one gain is that with protocols
+
+442
+00:16:21.166 --> 00:16:24.466
+we only care about the specific behavior
+
+443
+00:16:24.466 --> 00:16:26.233
+this data task with URL completion
+
+444
+00:16:26.233 --> 00:16:27.500
+handler and yes
+
+445
+00:16:27.500 --> 00:16:29.900
+don't care about any other methods there
+
+446
+00:16:29.900 --> 00:16:31.500
+so that's a common technique
+
+447
+00:16:31.500 --> 00:16:33.833
+that people have been using that it's
+
+448
+00:16:33.833 --> 00:16:35.333
+pretty much copying
+
+449
+00:16:35.333 --> 00:16:38.533
+the exact API and put in a protocol
+
+450
+00:16:38.533 --> 00:16:40.233
+right so in production we would have a
+
+451
+00:16:40.233 --> 00:16:42.000
+protocol for example
+
+452
+00:16:42.000 --> 00:16:45.100
+HTTPSession
+
+453
+00:16:45.100 --> 00:16:47.500
+and we only define one method so we
+
+454
+00:16:47.500 --> 00:16:48.800
+eliminated the problem
+
+455
+00:16:48.800 --> 00:16:50.533
+of having the class with a bunch of
+
+456
+00:16:50.533 --> 00:16:52.066
+methods we need to care about and
+
+457
+00:16:52.066 --> 00:16:52.866
+override
+
+458
+00:16:52.866 --> 00:16:54.533
+so we can guarantee that production code
+
+459
+00:16:54.533 --> 00:16:56.933
+only has visibility to this method
+
+460
+00:16:56.933 --> 00:16:58.866
+so we only need to mock this method and
+
+461
+00:16:58.866 --> 00:17:00.133
+we don't need to care about the other
+
+462
+00:17:00.133 --> 00:17:00.866
+ones
+
+463
+00:17:00.866 --> 00:17:04.700
+yes so if we replace the URLSession
+
+464
+00:17:04.700 --> 00:17:07.733
+with HTTPSession now
+
+465
+00:17:07.733 --> 00:17:10.933
+it should be an easy change
+
+466
+00:17:10.933 --> 00:17:13.833
+so this will be an HTTPSessionSpy
+
+467
+00:17:13.833 --> 00:17:15.900
+conforming to HTTPSession
+
+468
+00:17:15.900 --> 00:17:17.433
+so it doesn't need to override anymore
+
+469
+00:17:17.433 --> 00:17:20.933
+it just implements it from the protocol
+
+470
+00:17:20.933 --> 00:17:24.066
+okay but we still have a problem here
+
+471
+00:17:24.066 --> 00:17:26.400
+we're still using the URLSessionData
+
+472
+00:17:26.400 --> 00:17:27.166
+Task
+
+473
+00:17:27.166 --> 00:17:30.400
+right it has a bunch of methods so
+
+474
+00:17:30.400 --> 00:17:34.066
+we can do the same trick and create our
+
+475
+00:17:34.066 --> 00:17:37.200
+HTTPSessionTask with one method
+
+476
+00:17:37.200 --> 00:17:40.766
+resume and let's make the HTTPSession
+
+477
+00:17:40.766 --> 00:17:45.266
+return the task
+
+478
+00:17:45.266 --> 00:17:47.100
+so we can replace the data task with the
+
+479
+00:17:47.100 --> 00:17:52.633
+protocol everywhere
+
+480
+00:17:52.633 --> 00:17:55.733
+and it doesn't need to override anymore
+
+481
+00:17:55.733 --> 00:18:00.766
+it just implements it
+
+482
+00:18:00.766 --> 00:18:03.333
+so now we just need to use the spy in
+
+483
+00:18:03.333 --> 00:18:05.266
+the test
+
+484
+00:18:05.266 --> 00:18:08.300
+yeah I think that should do it boom
+
+485
+00:18:08.300 --> 00:18:11.433
+easy so we replaced the subclassing
+
+486
+00:18:11.433 --> 00:18:12.233
+strategy
+
+487
+00:18:12.233 --> 00:18:14.633
+with a protocol-based strategy for
+
+488
+00:18:14.633 --> 00:18:16.700
+mocking the URLSession
+
+489
+00:18:16.700 --> 00:18:18.700
+how do you feel about that I think it's
+
+490
+00:18:18.700 --> 00:18:20.633
+an improvement in the sense of
+
+491
+00:18:20.633 --> 00:18:22.633
+hiding all those details about URL
+
+492
+00:18:22.633 --> 00:18:24.000
+Session we don't care about
+
+493
+00:18:24.000 --> 00:18:26.700
+right now we can limit the APIs we have
+
+494
+00:18:26.700 --> 00:18:27.600
+access to
+
+495
+00:18:27.600 --> 00:18:30.233
+but we added some cruft to the
+
+496
+00:18:30.233 --> 00:18:31.100
+production code
+
+497
+00:18:31.100 --> 00:18:33.100
+we have this extra protocols that
+
+498
+00:18:33.100 --> 00:18:35.733
+matches exactly the same interface
+
+499
+00:18:35.733 --> 00:18:37.900
+exactly and that's a smell for me we
+
+500
+00:18:37.900 --> 00:18:40.000
+introduced these two new types
+
+501
+00:18:40.000 --> 00:18:42.533
+for the sole purpose of testing these
+
+502
+00:18:42.533 --> 00:18:44.533
+are not abstractions that are meant to
+
+503
+00:18:44.533 --> 00:18:46.000
+be used right now
+
+504
+00:18:46.000 --> 00:18:49.666
+by other clients they are abstractions
+
+505
+00:18:49.666 --> 00:18:52.866
+for the tests I don't like that
+
+506
+00:18:52.866 --> 00:18:55.333
+well it's a valid solution right I've used
+
+507
+00:18:55.333 --> 00:18:56.633
+it before
+
+508
+00:18:56.633 --> 00:18:59.266
+yeah it works and I'm inclined to even
+
+509
+00:18:59.266 --> 00:19:00.133
+commit this
+
+510
+00:19:00.133 --> 00:19:02.633
+I think it was a little improvement
+
+511
+00:19:02.633 --> 00:19:04.533
+improved our tests but I think it
+
+512
+00:19:04.533 --> 00:19:06.000
+made our production code more
+
+513
+00:19:06.000 --> 00:19:07.733
+complicated than it should be
+
+514
+00:19:07.733 --> 00:19:10.133
+so there's a trade-off here that I'm not
+
+515
+00:19:10.133 --> 00:19:10.933
+sure if I'm
+
+516
+00:19:10.933 --> 00:19:13.600
+willing to make but I'm happy to commit
+
+517
+00:19:13.600 --> 00:19:15.500
+and see where this goes
+
+518
+00:19:15.500 --> 00:19:18.766
+I agree so refactor
+
+519
+00:19:18.766 --> 00:19:22.000
+URLSession subclass
+
+520
+00:19:22.000 --> 00:19:25.100
+mocking with protocol based
+
+521
+00:19:25.100 --> 00:19:28.766
+mocking great okay so we talked about
+
+522
+00:19:28.766 --> 00:19:32.000
+end-to-end testing we showed subclass
+
+523
+00:19:32.000 --> 00:19:32.633
+mocking
+
+524
+00:19:32.633 --> 00:19:34.700
+protocol-based mocking and now we want
+
+525
+00:19:34.700 --> 00:19:36.133
+to show another option
+
+526
+00:19:36.133 --> 00:19:39.200
+that often I prefer when testing HTTP
+
+527
+00:19:39.200 --> 00:19:39.900
+clients
+
+528
+00:19:39.900 --> 00:19:42.133
+and this strategy will keep our
+
+529
+00:19:42.133 --> 00:19:43.333
+production code clean
+
+530
+00:19:43.333 --> 00:19:45.900
+and keep our tests more decoupled from
+
+531
+00:19:45.900 --> 00:19:47.033
+the production code
+
+532
+00:19:47.033 --> 00:19:49.333
+absolutely and instead of mocking we're
+
+533
+00:19:49.333 --> 00:19:50.633
+going to be stubbing
+
+534
+00:19:50.633 --> 00:19:52.933
+intercepting network requests and
+
+535
+00:19:52.933 --> 00:19:53.733
+returning
+
+536
+00:19:53.733 --> 00:19:56.000
+stubbed values and there's a type in the
+
+537
+00:19:56.000 --> 00:19:57.600
+Foundation framework that will help us
+
+538
+00:19:57.600 --> 00:19:58.133
+do that
+
+539
+00:19:58.133 --> 00:20:01.266
+the URLProtocol APIs yes
+
+540
+00:20:01.266 --> 00:20:05.600
+or NSURLProtocol as formerly known
+
+541
+00:20:05.600 --> 00:20:06.933
+so let's have a look how this thing
+
+542
+00:20:06.933 --> 00:20:09.200
+works so every time we perform a URL
+
+543
+00:20:09.200 --> 00:20:10.866
+request
+
+544
+00:20:10.866 --> 00:20:13.033
+what happens behind the scenes is that
+
+545
+00:20:13.033 --> 00:20:14.933
+there is a URL loading system
+
+546
+00:20:14.933 --> 00:20:17.600
+to handle the URL request and as part of
+
+547
+00:20:17.600 --> 00:20:18.300
+this URL
+
+548
+00:20:18.300 --> 00:20:20.633
+loading system there is a type called
+
+549
+00:20:20.633 --> 00:20:21.733
+URLProtocol
+
+550
+00:20:21.733 --> 00:20:23.733
+it's an abstract class that inherits
+
+551
+00:20:23.733 --> 00:20:25.033
+from NSObject
+
+552
+00:20:25.033 --> 00:20:28.233
+and if we create our own URLProtocol
+
+553
+00:20:28.233 --> 00:20:30.766
+subtype and register it we can start
+
+554
+00:20:30.766 --> 00:20:31.666
+intercepting
+
+555
+00:20:31.666 --> 00:20:34.633
+URL requests for example we have HTTP
+
+556
+00:20:34.633 --> 00:20:36.933
+protocols we have HTTPS protocols but we
+
+557
+00:20:36.933 --> 00:20:38.400
+can create our own protocol our own
+
+558
+00:20:38.400 --> 00:20:39.600
+custom protocol
+
+559
+00:20:39.600 --> 00:20:42.300
+how cool is that yeah that's an obscure
+
+560
+00:20:42.300 --> 00:20:42.766
+part
+
+561
+00:20:42.766 --> 00:20:45.033
+of the system to say the least it's not
+
+562
+00:20:45.033 --> 00:20:46.866
+very known and you can do some
+
+563
+00:20:46.866 --> 00:20:49.333
+pretty tricky stuff and why would you do
+
+564
+00:20:49.333 --> 00:20:51.200
+that well there are a couple of cases I
+
+565
+00:20:51.200 --> 00:20:52.000
+just said one
+
+566
+00:20:52.000 --> 00:20:54.133
+custom URL protocols maybe you are
+
+567
+00:20:54.133 --> 00:20:55.500
+trying to communicate with a server that
+
+568
+00:20:55.500 --> 00:20:57.333
+has a custom protocol
+
+569
+00:20:57.333 --> 00:21:00.400
+also we can use it to implement a local
+
+570
+00:21:00.400 --> 00:21:01.333
+caching system
+
+571
+00:21:01.333 --> 00:21:03.333
+we can use it to get some data for
+
+572
+00:21:03.333 --> 00:21:04.700
+analytics purposes
+
+573
+00:21:04.700 --> 00:21:06.466
+for example how many requests we are
+
+574
+00:21:06.466 --> 00:21:08.633
+performing or even profiling how long
+
+575
+00:21:08.633 --> 00:21:10.866
+the requests are taking and we intercept
+
+576
+00:21:10.866 --> 00:21:13.666
+any URL request within the process the
+
+577
+00:21:13.666 --> 00:21:14.466
+application
+
+578
+00:21:14.466 --> 00:21:16.533
+all we have to do is to implement some
+
+579
+00:21:16.533 --> 00:21:17.666
+abstract methods
+
+580
+00:21:17.666 --> 00:21:19.833
+of the URLProtocol class because even
+
+581
+00:21:19.833 --> 00:21:21.433
+though it's called URLProtocol
+
+582
+00:21:21.433 --> 00:21:24.233
+this is a class exactly so the point is
+
+583
+00:21:24.233 --> 00:21:25.100
+in our case
+
+584
+00:21:25.100 --> 00:21:27.833
+we can actually create a subclass of URL
+
+585
+00:21:27.833 --> 00:21:28.533
+Protocol
+
+586
+00:21:28.533 --> 00:21:31.333
+implementing our stubbed behavior so we can
+
+587
+00:21:31.333 --> 00:21:33.500
+intercept your requests during tests
+
+588
+00:21:33.500 --> 00:21:35.433
+and finish it with stub requests so we
+
+589
+00:21:35.433 --> 00:21:37.333
+never actually go to the cloud
+
+590
+00:21:37.333 --> 00:21:39.833
+exactly which will make it faster and
+
+591
+00:21:39.833 --> 00:21:40.533
+reliable
+
+592
+00:21:40.533 --> 00:21:42.300
+we eliminate the flakiness of network
+
+593
+00:21:42.300 --> 00:21:44.000
+connections and we can hide those
+
+594
+00:21:44.000 --> 00:21:44.700
+details
+
+595
+00:21:44.700 --> 00:21:47.733
+from our production code as well and
+
+596
+00:21:47.733 --> 00:21:49.433
+the test code will never know if we're
+
+597
+00:21:49.433 --> 00:21:50.766
+using a URLSession
+
+598
+00:21:50.766 --> 00:21:54.466
+or another mechanism for fetching URLs
+
+599
+00:21:54.466 --> 00:21:57.100
+exactly we can be using frameworks AF
+
+600
+00:21:57.100 --> 00:21:58.066
+Networking
+
+601
+00:21:58.066 --> 00:22:01.200
+or URLSessions or even the legacy
+
+602
+00:22:01.200 --> 00:22:03.900
+URLConnections or anything that may
+
+603
+00:22:03.900 --> 00:22:04.400
+come up
+
+604
+00:22:04.400 --> 00:22:07.500
+in the future let's do this
+
+605
+00:22:07.500 --> 00:22:09.666
+okay so let's refactor our tests to use
+
+606
+00:22:09.666 --> 00:22:11.266
+the URL stub
+
+607
+00:22:11.266 --> 00:22:13.733
+first of all let's get rid of the
+
+608
+00:22:13.733 --> 00:22:14.466
+protocols
+
+609
+00:22:14.466 --> 00:22:17.666
+and let the compiler guide us
+
+610
+00:22:17.666 --> 00:22:21.900
+I need to put back the URLSession
+
+611
+00:22:21.900 --> 00:22:23.100
+and since we're not going to be mocking
+
+612
+00:22:23.100 --> 00:22:25.733
+this we can even give it a default
+
+613
+00:22:25.733 --> 00:22:28.066
+value yeah that's the shared URLSession
+
+614
+00:22:28.066 --> 00:22:29.333
+so we don't need to mock
+
+615
+00:22:29.333 --> 00:22:32.233
+a session anymore I'm happy to do that
+
+616
+00:22:32.233 --> 00:22:33.433
+and we don't need a task
+
+617
+00:22:33.433 --> 00:22:35.200
+we don't need to stop a task and since
+
+618
+00:22:35.200 --> 00:22:36.466
+we are not testing the implementation
+
+619
+00:22:36.466 --> 00:22:37.033
+anymore
+
+620
+00:22:37.033 --> 00:22:39.833
+I think we don't even need this test
+
+621
+00:22:39.833 --> 00:22:41.266
+it's irrelevant we don't want to mock
+
+622
+00:22:41.266 --> 00:22:42.866
+anymore
+
+623
+00:22:42.866 --> 00:22:45.266
+okay so in this test now we don't need a
+
+624
+00:22:45.266 --> 00:22:46.300
+session anymore
+
+625
+00:22:46.300 --> 00:22:48.066
+but we still need to stop the URL with
+
+626
+00:22:48.066 --> 00:22:49.666
+an error but now it's going to be our
+
+627
+00:22:49.666 --> 00:22:50.300
+URL
+
+628
+00:22:50.300 --> 00:22:52.933
+ProtocolStub and we don't need to give
+
+629
+00:22:52.933 --> 00:22:55.600
+it a session
+
+630
+00:22:55.600 --> 00:22:59.500
+so now this spy will be our ProtocolStub
+
+631
+00:22:59.500 --> 00:23:02.466
+that inherits from URLProtocol just to
+
+632
+00:23:02.466 --> 00:23:04.000
+make it clear one more time
+
+633
+00:23:04.000 --> 00:23:06.400
+we're subclassing URLProtocol here this
+
+634
+00:23:06.400 --> 00:23:07.500
+is a class
+
+635
+00:23:07.500 --> 00:23:09.600
+as you can see URL protocol is a class
+
+636
+00:23:09.600 --> 00:23:11.333
+that inherits from NSObject
+
+637
+00:23:11.333 --> 00:23:14.866
+yep don't let the name fool you
+
+638
+00:23:14.866 --> 00:23:17.333
+and we don't need the task anymore we
+
+639
+00:23:17.333 --> 00:23:18.466
+don't need the task
+
+640
+00:23:18.466 --> 00:23:22.000
+here anymore we need the error
+
+641
+00:23:22.000 --> 00:23:23.833
+and we don't need the data task method
+
+642
+00:23:23.833 --> 00:23:25.266
+anymore
+
+643
+00:23:25.266 --> 00:23:27.900
+let's get rid of those mocks yes they're
+
+644
+00:23:27.900 --> 00:23:29.333
+irrelevant
+
+645
+00:23:29.333 --> 00:23:32.133
+beautiful okay so as we said there are a
+
+646
+00:23:32.133 --> 00:23:34.000
+couple of methods we need to implement
+
+647
+00:23:34.000 --> 00:23:36.466
+if you subclass the URLProtocol class
+
+648
+00:23:36.466 --> 00:23:37.900
+and first of all
+
+649
+00:23:37.900 --> 00:23:41.033
+is the class method canInit
+
+650
+00:23:41.033 --> 00:23:44.933
+with request and it returns a boolean
+
+651
+00:23:44.933 --> 00:23:47.833
+so if we return true in this method it
+
+652
+00:23:47.833 --> 00:23:49.266
+means we can handle this request
+
+653
+00:23:49.266 --> 00:23:50.933
+and now it's our responsibility to
+
+654
+00:23:50.933 --> 00:23:52.400
+complete the request with either
+
+655
+00:23:52.400 --> 00:23:54.466
+success or failure it means we
+
+656
+00:23:54.466 --> 00:23:55.733
+intercepted this request
+
+657
+00:23:55.733 --> 00:23:59.100
+and we have control over its fate right
+
+658
+00:23:59.100 --> 00:24:00.700
+and how can we know if we can handle
+
+659
+00:24:00.700 --> 00:24:02.766
+this request well we can get the URL
+
+660
+00:24:02.766 --> 00:24:05.100
+from the request
+
+661
+00:24:05.100 --> 00:24:08.300
+if there is one and if there is no
+
+662
+00:24:08.300 --> 00:24:10.700
+URL in the request we cannot handle it
+
+663
+00:24:10.700 --> 00:24:11.833
+so let's return false
+
+664
+00:24:11.833 --> 00:24:14.766
+otherwise we need to check if we have a
+
+665
+00:24:14.766 --> 00:24:15.333
+stub
+
+666
+00:24:15.333 --> 00:24:18.766
+for that URL so we can return true
+
+667
+00:24:18.766 --> 00:24:21.733
+if we have it else we turn false so if
+
+668
+00:24:21.733 --> 00:24:22.533
+this is nil
+
+669
+00:24:22.533 --> 00:24:24.533
+we're going to return false and if this
+
+670
+00:24:24.533 --> 00:24:26.233
+is not nil we're going to return true
+
+671
+00:24:26.233 --> 00:24:28.066
+which means we have a stub for it
+
+672
+00:24:28.066 --> 00:24:32.633
+of course this is a static var now
+
+673
+00:24:32.633 --> 00:24:34.866
+and this is also a static stop method
+
+674
+00:24:34.866 --> 00:24:35.733
+because as you can see
+
+675
+00:24:35.733 --> 00:24:38.866
+canInit is called as a class method
+
+676
+00:24:38.866 --> 00:24:41.033
+so we don't have an instance yet exactly
+
+677
+00:24:41.033 --> 00:24:42.866
+the URL loading system
+
+678
+00:24:42.866 --> 00:24:46.233
+will instantiate our URLProtocolStub
+
+679
+00:24:46.233 --> 00:24:49.200
+only if we can handle the request so up
+
+680
+00:24:49.200 --> 00:24:50.466
+to this point we don't have an instance
+
+681
+00:24:50.466 --> 00:24:52.000
+yet
+
+682
+00:24:52.000 --> 00:24:55.100
+next we need to override another class
+
+683
+00:24:55.100 --> 00:24:56.400
+method
+
+684
+00:24:56.400 --> 00:25:00.700
+canonicalRequest for request
+
+685
+00:25:00.700 --> 00:25:03.900
+and we need to return a URLRequest
+
+686
+00:25:03.900 --> 00:25:05.033
+and since we don't want to do anything
+
+687
+00:25:05.033 --> 00:25:07.900
+with this request we can just return it
+
+688
+00:25:07.900 --> 00:25:10.466
+and finally start loading now this is an
+
+689
+00:25:10.466 --> 00:25:11.600
+instance method
+
+690
+00:25:11.600 --> 00:25:13.733
+it means that the framework has accepted
+
+691
+00:25:13.733 --> 00:25:15.266
+that we are going to handle this request
+
+692
+00:25:15.266 --> 00:25:16.933
+and now it's going to invoke us to say
+
+693
+00:25:16.933 --> 00:25:18.700
+now it's time for you to start loading
+
+694
+00:25:18.700 --> 00:25:20.400
+the URL
+
+695
+00:25:20.400 --> 00:25:23.600
+so again we need to get the URL for the
+
+696
+00:25:23.600 --> 00:25:25.200
+request
+
+697
+00:25:25.200 --> 00:25:28.933
+and request is an instance variable
+
+698
+00:25:28.933 --> 00:25:32.000
+and then we need to get our stub
+
+699
+00:25:32.000 --> 00:25:34.933
+for the URL else there's nothing we can
+
+700
+00:25:34.933 --> 00:25:36.233
+do we just return
+
+701
+00:25:36.233 --> 00:25:38.933
+yep so before we were completing
+
+702
+00:25:38.933 --> 00:25:40.066
+with an error
+
+703
+00:25:40.066 --> 00:25:41.833
+because we are stubbing with an error
+
+704
+00:25:41.833 --> 00:25:43.733
+and we can do exactly the same here
+
+705
+00:25:43.733 --> 00:25:47.033
+so if we have an error we need to tell
+
+706
+00:25:47.033 --> 00:25:48.400
+the URL loading system
+
+707
+00:25:48.400 --> 00:25:50.866
+that an error occurred and the way we
+
+708
+00:25:50.866 --> 00:25:51.500
+do it
+
+709
+00:25:51.500 --> 00:25:54.066
+is by using another instance property of
+
+710
+00:25:54.066 --> 00:25:55.600
+the URLProtocol
+
+711
+00:25:55.600 --> 00:25:57.600
+and it's the client as you can see the
+
+712
+00:25:57.600 --> 00:25:59.500
+object the protocol uses to communicate
+
+713
+00:25:59.500 --> 00:26:01.200
+with the URL loading system
+
+714
+00:26:01.200 --> 00:26:03.433
+so this client has a bunch of methods
+
+715
+00:26:03.433 --> 00:26:04.466
+and one of them
+
+716
+00:26:04.466 --> 00:26:07.666
+is to tell the URL loading system
+
+717
+00:26:07.666 --> 00:26:10.700
+that we failed with an error
+
+718
+00:26:10.700 --> 00:26:12.866
+and after we are done we need to call
+
+719
+00:26:12.866 --> 00:26:14.300
+client
+
+720
+00:26:14.300 --> 00:26:18.133
+and tell it that we finish loading
+
+721
+00:26:18.133 --> 00:26:19.833
+the last method we need to implement is
+
+722
+00:26:19.833 --> 00:26:21.266
+stopLoading
+
+723
+00:26:21.266 --> 00:26:23.833
+so we have no logical implementation for
+
+724
+00:26:23.833 --> 00:26:25.333
+it so we just don't do anything
+
+725
+00:26:25.333 --> 00:26:27.500
+right if we don't implement it then
+
+726
+00:26:27.500 --> 00:26:28.466
+we're going to get a crash
+
+727
+00:26:28.466 --> 00:26:30.766
+at runtime and that's a prime example of
+
+728
+00:26:30.766 --> 00:26:31.900
+an abstract class
+
+729
+00:26:31.900 --> 00:26:34.533
+here yes so this is all the
+
+730
+00:26:34.533 --> 00:26:35.666
+implementation we need
+
+731
+00:26:35.666 --> 00:26:38.533
+in the ProtocolStub now in the tests we
+
+732
+00:26:38.533 --> 00:26:39.433
+need to
+
+733
+00:26:39.433 --> 00:26:42.133
+register the stub in the URL loading
+
+734
+00:26:42.133 --> 00:26:42.633
+system
+
+735
+00:26:42.633 --> 00:26:45.100
+and to do it as we showed before we use
+
+736
+00:26:45.100 --> 00:26:46.066
+the Protocol
+
+737
+00:26:46.066 --> 00:26:49.100
+registerClass URLStub
+
+738
+00:26:49.100 --> 00:26:51.600
+and after the test is finished we need
+
+739
+00:26:51.600 --> 00:26:52.933
+to
+
+740
+00:26:52.933 --> 00:26:55.200
+unregister it because we don't want to
+
+741
+00:26:55.200 --> 00:26:56.000
+be stubbing
+
+742
+00:26:56.000 --> 00:26:58.866
+other test requests and this seems like
+
+743
+00:26:58.866 --> 00:27:00.000
+a good candidate
+
+744
+00:27:00.000 --> 00:27:02.700
+to move to a setUp tearDown pair of
+
+745
+00:27:02.700 --> 00:27:03.600
+methods
+
+746
+00:27:03.600 --> 00:27:05.733
+but since we have only one test I'm
+
+747
+00:27:05.733 --> 00:27:06.700
+happy to leave it
+
+748
+00:27:06.700 --> 00:27:08.300
+in this test for now and move the
+
+749
+00:27:08.300 --> 00:27:10.066
+registration/unregistration
+
+750
+00:27:10.066 --> 00:27:12.466
+when we have to exactly but one
+
+751
+00:27:12.466 --> 00:27:14.133
+improvement we could do here is to move
+
+752
+00:27:14.133 --> 00:27:15.666
+this registration to the
+
+753
+00:27:15.666 --> 00:27:18.366
+ProtocolStub then, we can create a
+
+754
+00:27:18.366 --> 00:27:19.266
+static
+
+755
+00:27:19.266 --> 00:27:22.533
+function startIntercepting
+
+756
+00:27:22.533 --> 00:27:26.133
+Requests and we can also have the
+
+757
+00:27:26.133 --> 00:27:29.200
+stopIntercepting
+
+758
+00:27:29.200 --> 00:27:33.500
+Requests where we can unregister
+
+759
+00:27:33.500 --> 00:27:36.133
+the ProtocolStub and also remove the
+
+760
+00:27:36.133 --> 00:27:38.366
+stubs
+
+761
+00:27:38.366 --> 00:27:40.933
+so now we can replace the registration
+
+762
+00:27:40.933 --> 00:27:42.066
+with the
+
+763
+00:27:42.066 --> 00:27:48.000
+start and stop intercepting requests
+
+764
+00:27:48.000 --> 00:27:50.133
+let's run the test now and if it passes
+
+765
+00:27:50.133 --> 00:27:51.833
+it means that we are intercepting the
+
+766
+00:27:51.833 --> 00:27:52.633
+requests
+
+767
+00:27:52.633 --> 00:27:57.266
+accordingly and returning the error
+
+768
+00:27:57.266 --> 00:27:59.433
+alright fantastic it is passing which
+
+769
+00:27:59.433 --> 00:28:00.933
+means we got
+
+770
+00:28:00.933 --> 00:28:03.666
+an error with the stubbed error using
+
+771
+00:28:03.666 --> 00:28:05.333
+the URLProtocolStub
+
+772
+00:28:05.333 --> 00:28:07.733
+so now our test is now using subclasses
+
+773
+00:28:07.733 --> 00:28:09.666
+to mock any kind of URLSession
+
+774
+00:28:09.666 --> 00:28:12.000
+which make our production code free to
+
+775
+00:28:12.000 --> 00:28:13.733
+be refactored in the future to use
+
+776
+00:28:13.733 --> 00:28:16.633
+AFNetworking or to keep using new APIs
+
+777
+00:28:16.633 --> 00:28:18.066
+from URLSession
+
+778
+00:28:18.066 --> 00:28:20.466
+or even use any kind of mechanism for
+
+779
+00:28:20.466 --> 00:28:22.700
+loading URLs that goes through the URL
+
+780
+00:28:22.700 --> 00:28:23.733
+loading system
+
+781
+00:28:23.733 --> 00:28:26.533
+so I'm happy with that awesome let's
+
+782
+00:28:26.533 --> 00:28:28.366
+commit
+
+783
+00:28:28.366 --> 00:28:32.233
+refactor URLSession mocking
+
+784
+00:28:32.233 --> 00:28:36.000
+strategy with URLProtocol
+
+785
+00:28:36.000 --> 00:28:39.833
+stubs to remove test coupling
+
+786
+00:28:39.833 --> 00:28:43.033
+with the URLSession
+
+787
+00:28:43.033 --> 00:28:47.033
+types yep that's it
+
+788
+00:28:47.033 --> 00:28:49.900
+so this scenario where we have a failed
+
+789
+00:28:49.900 --> 00:28:50.866
+request
+
+790
+00:28:50.866 --> 00:28:53.333
+with an error is a valid path it means
+
+791
+00:28:53.333 --> 00:28:55.033
+we try to execute a request
+
+792
+00:28:55.033 --> 00:28:56.633
+but something went wrong but in a
+
+793
+00:28:56.633 --> 00:28:58.133
+previous episode we showed
+
+794
+00:28:58.133 --> 00:29:01.266
+a table with all of the cases that can
+
+795
+00:29:01.266 --> 00:29:01.733
+be
+
+796
+00:29:01.733 --> 00:29:05.733
+represented by the three optional types
+
+797
+00:29:05.733 --> 00:29:07.900
+which means we have a bunch of invalid
+
+798
+00:29:07.900 --> 00:29:09.500
+cases an error
+
+799
+00:29:09.500 --> 00:29:12.000
+is not an invalid case although is the
+
+800
+00:29:12.000 --> 00:29:13.100
+sad path
+
+801
+00:29:13.100 --> 00:29:16.133
+so to be more explicit this case here
+
+802
+00:29:16.133 --> 00:29:19.833
+is the data is nil, response
+
+803
+00:29:19.833 --> 00:29:22.866
+is nil and we have an error value it's a
+
+804
+00:29:22.866 --> 00:29:24.866
+valid case but it's the sad path
+
+805
+00:29:24.866 --> 00:29:26.466
+and I like to be more explicit in the
+
+806
+00:29:26.466 --> 00:29:28.466
+test just like we have in our table
+
+807
+00:29:28.466 --> 00:29:30.466
+right here
+
+808
+00:29:30.466 --> 00:29:34.300
+so to stop this now we need data
+
+809
+00:29:34.300 --> 00:29:38.000
+response it's a URLResponse
+
+810
+00:29:38.000 --> 00:29:40.000
+and Error and we don't need the default
+
+811
+00:29:40.000 --> 00:29:41.100
+value
+
+812
+00:29:41.100 --> 00:29:45.333
+yeah that should do it
+
+813
+00:29:45.333 --> 00:29:48.466
+so we pass the data and response
+
+814
+00:29:48.466 --> 00:29:50.766
+to the initializer and in the start
+
+815
+00:29:50.766 --> 00:29:51.666
+loading
+
+816
+00:29:51.666 --> 00:29:56.300
+we can check if we have data
+
+817
+00:29:56.300 --> 00:30:00.233
+we can tell the client that we've loaded
+
+818
+00:30:00.233 --> 00:30:04.933
+this data and if we have a response
+
+819
+00:30:04.933 --> 00:30:08.300
+we can tell the client that we've
+
+820
+00:30:08.300 --> 00:30:09.033
+received
+
+821
+00:30:09.033 --> 00:30:11.433
+a response and the cache policy for this
+
+822
+00:30:11.433 --> 00:30:12.766
+case let's say not allowed we don't want
+
+823
+00:30:12.766 --> 00:30:13.433
+to cache
+
+824
+00:30:13.433 --> 00:30:16.633
+right we don't care about that okay
+
+825
+00:30:16.633 --> 00:30:21.666
+let's run this and it still passes
+
+826
+00:30:21.666 --> 00:30:23.733
+perfect and it's more explicit I prefer
+
+827
+00:30:23.733 --> 00:30:25.100
+it like this
+
+828
+00:30:25.100 --> 00:30:28.933
+let's commit add new data
+
+829
+00:30:28.933 --> 00:30:32.466
+and new response to the request
+
+830
+00:30:32.466 --> 00:30:37.266
+error test case to make the setup
+
+831
+00:30:37.266 --> 00:30:40.933
+more explicit looks great
+
+832
+00:30:40.933 --> 00:30:42.633
+okay so we've done a lot in this episode
+
+833
+00:30:42.633 --> 00:30:44.766
+already I think we finally found
+
+834
+00:30:44.766 --> 00:30:47.500
+the solution we want for stubbing the
+
+835
+00:30:47.500 --> 00:30:48.366
+requests
+
+836
+00:30:48.366 --> 00:30:50.533
+we don't want to use end-to-end tests at
+
+837
+00:30:50.533 --> 00:30:51.500
+this point
+
+838
+00:30:51.500 --> 00:30:54.300
+we don't want to use subclassing or even
+
+839
+00:30:54.300 --> 00:30:56.000
+protocol-based mocking
+
+840
+00:30:56.000 --> 00:30:57.900
+we found a way to keep our tests
+
+841
+00:30:57.900 --> 00:31:00.066
+decoupled from the implementation
+
+842
+00:31:00.066 --> 00:31:01.500
+and also keep our production
+
+843
+00:31:01.500 --> 00:31:03.266
+implementation agnostic
+
+844
+00:31:03.266 --> 00:31:05.833
+of testing or protocols or any kind of
+
+845
+00:31:05.833 --> 00:31:06.300
+mocking
+
+846
+00:31:06.300 --> 00:31:09.200
+mechanism and look into some more
+
+847
+00:31:09.200 --> 00:31:10.066
+obscure
+
+848
+00:31:10.066 --> 00:31:12.300
+places of Foundation as well I think
+
+849
+00:31:12.300 --> 00:31:13.200
+that's important
+
+850
+00:31:13.200 --> 00:31:16.300
+the URL loading system is something that
+
+851
+00:31:16.300 --> 00:31:17.900
+all professional developers probably
+
+852
+00:31:17.900 --> 00:31:19.600
+should be aware of and
+
+853
+00:31:19.600 --> 00:31:22.066
+should know how to use and utilize
+
+854
+00:31:22.066 --> 00:31:23.433
+depending the case
+
+855
+00:31:23.433 --> 00:31:25.500
+agreed so in the next episode we're
+
+856
+00:31:25.500 --> 00:31:27.200
+going to finish this implementation
+
+857
+00:31:27.200 --> 00:31:29.200
+by checking all the invalid cases and
+
+858
+00:31:29.200 --> 00:31:30.533
+the success cases
+
+859
+00:31:30.533 --> 00:31:45.999
+yeah see you next time, bye y'all, see ya

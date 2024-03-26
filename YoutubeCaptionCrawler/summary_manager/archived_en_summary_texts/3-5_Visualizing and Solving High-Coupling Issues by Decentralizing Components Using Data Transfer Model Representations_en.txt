@@ -1,0 +1,12 @@
+1. The lecture began with identifying a design bottleneck in their software - too many dependencies on the 'FeedItem', thus, any small changes could affect multiple modules and components leading to high risk and costs.
+2. To mitigate this, the lecturer emphasizes the importance of having decentralized modules and components that can freely change.
+3. The major risk identified was the protocol having a source code dependency on the 'FeedItem'. A way to deal with it was proposed: to create separate representations for the 'FeedItem' depending on context, like creating 'LocalFeedItem' for Cache module to remove dependency.
+4. This idea of 'LocalFeedItem' allows different modifications for different reasons without affecting the original 'FeedItem', making the first step towards decentralization.
+5. The lecturer mentions that this method is known as 'Data Transfer Objects' which reduce strong coupling between modules.
+6. The talk then focused on making changes to their current design, to support this new way of data representation.
+7. This design change led to modifications to the FeedStore protocol, the LocalFeedLoader, and to the tests carried out as well.
+8. The concept of 'LocalFeedItem' was further explored and it was demonstrated that it could affect the coding structure.
+9. They also realized that the 'FeedItemsMapper' from the Feed API module depends on the 'FeedItem' model. To remove this dependency, an 'internal representation' of a 'RemoteFeedItem' was proposed.
+10. This change to 'RemoteFeedItem' transformed the FeedItemsMapper, to be separate from the 'FeedItem' model, without affecting the tests. This exemplifies the strength of Behavioural Testing.
+11. The process of renaming 'FeedItem' to 'FeedImage' and 'LocalFeedItem' to 'LocalFeedImage' was carried out to increase understanding amongst domain experts. These renaming processes eventually also led to modifying some tests.
+12. In conclusion, this lecture advocated for limiting dependencies within software design to reduce risk and costs. The concept of 'Data Transfer Objects' was explained and shown to be effective through its implementation in their code. Overall, the lecture emphasized on constructing flexible yet testable architectures to ensure easy refactoring and modification processes.

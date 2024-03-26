@@ -1,0 +1,1843 @@
+1
+00:00:01.333 --> 00:00:03.166
+Hello Mike, hey Caio
+
+2
+00:00:03.166 --> 00:00:05.733
+so today let's talk about decomposing
+
+3
+00:00:05.733 --> 00:00:06.233
+code
+
+4
+00:00:06.233 --> 00:00:09.333
+into modules okay more modular
+
+5
+00:00:09.333 --> 00:00:11.333
+design here so let's use the same
+
+6
+00:00:11.333 --> 00:00:13.100
+example as last time
+
+7
+00:00:13.100 --> 00:00:15.033
+where we created a FeedViewController
+
+8
+00:00:15.033 --> 00:00:16.700
+that has a reference to a FeedLoader
+
+9
+00:00:16.700 --> 00:00:17.733
+protocol
+
+10
+00:00:17.733 --> 00:00:19.166
+and then we have two types that
+
+11
+00:00:19.166 --> 00:00:21.733
+implement the protocol well three types
+
+12
+00:00:21.733 --> 00:00:24.400
+we have the RemoteFeedLoader the Local
+
+13
+00:00:24.400 --> 00:00:25.266
+FeedLoader
+
+14
+00:00:25.266 --> 00:00:26.866
+and then we have one that composes the
+
+15
+00:00:26.866 --> 00:00:28.633
+two and we said that
+
+16
+00:00:28.633 --> 00:00:31.266
+we are decomposing them into modules by
+
+17
+00:00:31.266 --> 00:00:33.333
+using these different colors which means
+
+18
+00:00:33.333 --> 00:00:35.833
+there are five modules here, four of
+
+19
+00:00:35.833 --> 00:00:36.633
+those
+
+20
+00:00:36.633 --> 00:00:38.800
+are in our control and one of those is
+
+21
+00:00:38.800 --> 00:00:39.900
+UIKit
+
+22
+00:00:39.900 --> 00:00:42.633
+I think we can zoom out and demonstrate
+
+23
+00:00:42.633 --> 00:00:44.366
+a little bit better this
+
+24
+00:00:44.366 --> 00:00:47.033
+modularity going on there, so let's start
+
+25
+00:00:47.033 --> 00:00:49.733
+from UIKit that's an easy one
+
+26
+00:00:49.733 --> 00:00:52.066
+so this is UIKit let's forget about the
+
+27
+00:00:52.066 --> 00:00:54.133
+types and let's think about modules
+
+28
+00:00:54.133 --> 00:00:57.266
+yes exactly up from UIKit we have a
+
+29
+00:00:57.266 --> 00:00:58.000
+ViewController
+
+30
+00:00:58.000 --> 00:00:59.500
+and what kind of module would you add a
+
+31
+00:00:59.500 --> 00:01:01.166
+ViewController to right I think that's
+
+32
+00:01:01.166 --> 00:01:02.466
+an easy one it's the UI
+
+33
+00:01:02.466 --> 00:01:05.666
+module, okay so if we call the views
+
+34
+00:01:05.666 --> 00:01:08.300
+a UI module does it make sense to have
+
+35
+00:01:08.300 --> 00:01:10.000
+the FeedLoader protocol
+
+36
+00:01:10.000 --> 00:01:13.333
+as a UI element I guess it depends what
+
+37
+00:01:13.333 --> 00:01:16.066
+the FeedLoader represents there it
+
+38
+00:01:16.066 --> 00:01:17.600
+represents a behavior
+
+39
+00:01:17.600 --> 00:01:21.200
+that the UI requires like a feature
+
+40
+00:01:21.200 --> 00:01:24.000
+so I think we can make the case of yeah
+
+41
+00:01:24.000 --> 00:01:24.866
+it could be
+
+42
+00:01:24.866 --> 00:01:27.266
+but then again maybe it can reside in
+
+43
+00:01:27.266 --> 00:01:28.400
+its own module
+
+44
+00:01:28.400 --> 00:01:30.700
+but for now they have the same color as
+
+45
+00:01:30.700 --> 00:01:32.000
+they had in the previous episode so
+
+46
+00:01:32.000 --> 00:01:33.100
+let's imagine that
+
+47
+00:01:33.100 --> 00:01:36.133
+this protocol or interface it's a
+
+48
+00:01:36.133 --> 00:01:38.133
+boundary right we are defining a
+
+49
+00:01:38.133 --> 00:01:39.266
+behavior that we want
+
+50
+00:01:39.266 --> 00:01:41.433
+but we don't have and we expect another
+
+51
+00:01:41.433 --> 00:01:42.766
+module to implement it
+
+52
+00:01:42.766 --> 00:01:45.500
+okay so this represents a boundary right
+
+53
+00:01:45.500 --> 00:01:46.533
+it's an entry
+
+54
+00:01:46.533 --> 00:01:48.700
+point or even an exit point where
+
+55
+00:01:48.700 --> 00:01:49.600
+messages go
+
+56
+00:01:49.600 --> 00:01:51.900
+out and in and this is the point that
+
+57
+00:01:51.900 --> 00:01:53.200
+separates the modules that's the
+
+58
+00:01:53.200 --> 00:01:54.700
+dependency inversion
+
+59
+00:01:54.700 --> 00:01:56.766
+by introducing this protocol in the
+
+60
+00:01:56.766 --> 00:01:58.766
+previous episode we showed how
+
+61
+00:01:58.766 --> 00:02:01.033
+the UI stop depending on concrete Feed
+
+62
+00:02:01.033 --> 00:02:03.100
+Loaders and the FeedLoaders don't know
+
+63
+00:02:03.100 --> 00:02:04.366
+about the UI
+
+64
+00:02:04.366 --> 00:02:07.433
+yes so this is an entry point for the
+
+65
+00:02:07.433 --> 00:02:08.133
+Feed
+
+66
+00:02:08.133 --> 00:02:10.700
+feature yes exactly so let's call this a
+
+67
+00:02:10.700 --> 00:02:11.833
+Feed
+
+68
+00:02:11.833 --> 00:02:14.233
+Feature interface right we can have a
+
+69
+00:02:14.233 --> 00:02:15.566
+bunch of methods here we can have a
+
+70
+00:02:15.566 --> 00:02:16.866
+bunch of interfaces
+
+71
+00:02:16.866 --> 00:02:18.533
+that will be implemented by external
+
+72
+00:02:18.533 --> 00:02:20.400
+modules so in this case we have the Feed
+
+73
+00:02:20.400 --> 00:02:22.866
+Loader but we can have a FeedItem
+
+74
+00:02:22.866 --> 00:02:26.233
+struct right as a model for passing data
+
+75
+00:02:26.233 --> 00:02:26.866
+around
+
+76
+00:02:26.866 --> 00:02:30.000
+yes, from module to module so the Feed Feature
+
+77
+00:02:30.000 --> 00:02:31.033
+interfaces
+
+78
+00:02:31.033 --> 00:02:34.233
+are a bunch of functions, protocols
+
+79
+00:02:34.233 --> 00:02:37.033
+and data it just happens that at this
+
+80
+00:02:37.033 --> 00:02:37.566
+point
+
+81
+00:02:37.566 --> 00:02:39.833
+it lives in the same module as the UI
+
+82
+00:02:39.833 --> 00:02:40.633
+I think that's
+
+83
+00:02:40.633 --> 00:02:43.333
+much better to visualize in our heads
+
+84
+00:02:43.333 --> 00:02:44.633
+probably because
+
+85
+00:02:44.633 --> 00:02:47.333
+now the RemoteFeedLoader depends on a
+
+86
+00:02:47.333 --> 00:02:48.133
+Feed Feature
+
+87
+00:02:48.133 --> 00:02:51.833
+rather than a UI interface there
+
+88
+00:02:51.833 --> 00:02:54.866
+yes so what is this RemoteFeedLoader
+
+89
+00:02:54.866 --> 00:02:57.333
+right so we know that it has some sort
+
+90
+00:02:57.333 --> 00:02:58.233
+of interaction
+
+91
+00:02:58.233 --> 00:03:02.466
+with a network so we can name it as a
+
+92
+00:03:02.466 --> 00:03:05.333
+component of the API module right so
+
+93
+00:03:05.333 --> 00:03:07.200
+it's like the Feed API module
+
+94
+00:03:07.200 --> 00:03:09.733
+for example yes and the LocalFeed
+
+95
+00:03:09.733 --> 00:03:10.700
+Loader
+
+96
+00:03:10.700 --> 00:03:12.800
+it has to do with persistence I'm happy
+
+97
+00:03:12.800 --> 00:03:14.866
+to name it Database or something like
+
+98
+00:03:14.866 --> 00:03:15.666
+that
+
+99
+00:03:15.666 --> 00:03:19.033
+right a repository or database
+
+100
+00:03:19.033 --> 00:03:20.800
+yeah and then we have the type that
+
+101
+00:03:20.800 --> 00:03:22.633
+composes the two
+
+102
+00:03:22.633 --> 00:03:25.500
+yes it's a composer right and we
+
+103
+00:03:25.500 --> 00:03:26.633
+normally compose
+
+104
+00:03:26.633 --> 00:03:29.100
+types in the Main module it's a good
+
+105
+00:03:29.100 --> 00:03:30.766
+idea since all the arrows
+
+106
+00:03:30.766 --> 00:03:33.666
+come from this module and none of the
+
+107
+00:03:33.666 --> 00:03:34.533
+arrows
+
+108
+00:03:34.533 --> 00:03:38.000
+go towards this module so Main
+
+109
+00:03:38.000 --> 00:03:41.033
+I think is a great example yes
+
+110
+00:03:41.033 --> 00:03:43.500
+we could create an Adapter module or we
+
+111
+00:03:43.500 --> 00:03:45.266
+could create a Composer
+
+112
+00:03:45.266 --> 00:03:47.566
+module or we can just leave it in Main
+
+113
+00:03:47.566 --> 00:03:48.466
+for now
+
+114
+00:03:48.466 --> 00:03:51.033
+right and we should make that clear that
+
+115
+00:03:51.033 --> 00:03:52.400
+these modules can contain
+
+116
+00:03:52.400 --> 00:03:54.700
+a bunch of components right it just
+
+117
+00:03:54.700 --> 00:03:57.200
+happened that we showcased
+
+118
+00:03:57.200 --> 00:04:00.466
+an example with one component, one class
+
+119
+00:04:00.466 --> 00:04:02.933
+in each module but in reality they can
+
+120
+00:04:02.933 --> 00:04:04.633
+have a bunch of them
+
+121
+00:04:04.633 --> 00:04:06.400
+yeah the Main module can have the App
+
+122
+00:04:06.400 --> 00:04:08.066
+Delegate for example
+
+123
+00:04:08.066 --> 00:04:09.900
+you can have a bunch of factories and
+
+124
+00:04:09.900 --> 00:04:12.133
+assemblers you can have composers
+
+125
+00:04:12.133 --> 00:04:14.933
+adapters, right exactly, the API module
+
+126
+00:04:14.933 --> 00:04:15.900
+can have
+
+127
+00:04:15.900 --> 00:04:18.933
+services, URLSessions, services
+
+128
+00:04:18.933 --> 00:04:20.633
+the Database can have Core Data
+
+129
+00:04:20.633 --> 00:04:22.466
+dependencies or
+
+130
+00:04:22.466 --> 00:04:25.666
+Realm and the Feed Feature component
+
+131
+00:04:25.666 --> 00:04:27.333
+can have a bunch of interfaces as we
+
+132
+00:04:27.333 --> 00:04:29.166
+mentioned and Feed models
+
+133
+00:04:29.166 --> 00:04:31.600
+right so this is a fairly common way of
+
+134
+00:04:31.600 --> 00:04:32.466
+composing
+
+135
+00:04:32.466 --> 00:04:34.233
+applications if you're breaking down
+
+136
+00:04:34.233 --> 00:04:36.133
+things in modules, yeah I agree
+
+137
+00:04:36.133 --> 00:04:38.800
+but at some point we might say well I
+
+138
+00:04:38.800 --> 00:04:40.400
+want to have an AppKit
+
+139
+00:04:40.400 --> 00:04:42.466
+application as well we're using those
+
+140
+00:04:42.466 --> 00:04:43.500
+other types
+
+141
+00:04:43.500 --> 00:04:45.333
+which at some point we might say well we
+
+142
+00:04:45.333 --> 00:04:46.933
+need to separate the Feed
+
+143
+00:04:46.933 --> 00:04:49.333
+Feature from the concrete UI because
+
+144
+00:04:49.333 --> 00:04:51.500
+this UI is a UIKit
+
+145
+00:04:51.500 --> 00:04:54.833
+user interface right so you might end up
+
+146
+00:04:54.833 --> 00:04:56.400
+with
+
+147
+00:04:56.400 --> 00:04:59.100
+a new module the Feed Feature module
+
+148
+00:04:59.100 --> 00:05:00.866
+where we have all the interfaces
+
+149
+00:05:00.866 --> 00:05:03.100
+and shared models but it's important to
+
+150
+00:05:03.100 --> 00:05:04.066
+say that this
+
+151
+00:05:04.066 --> 00:05:05.666
+Feed Feature module doesn't depend on any
+
+152
+00:05:05.666 --> 00:05:07.666
+other module where there are no arrows
+
+153
+00:05:07.666 --> 00:05:08.866
+coming out of this
+
+154
+00:05:08.866 --> 00:05:11.100
+only arrows coming in it's the boundary
+
+155
+00:05:11.100 --> 00:05:12.066
+module
+
+156
+00:05:12.066 --> 00:05:15.900
+exactly now we can have different UIs
+
+157
+00:05:15.900 --> 00:05:18.000
+and we are able to plug and play those
+
+158
+00:05:18.000 --> 00:05:19.733
+modules together as needed
+
+159
+00:05:19.733 --> 00:05:22.866
+and this seems great on paper but
+
+160
+00:05:22.866 --> 00:05:26.466
+it's not the everyday use case
+
+161
+00:05:26.466 --> 00:05:29.100
+however it doesn't have to be in order
+
+162
+00:05:29.100 --> 00:05:29.733
+to
+
+163
+00:05:29.733 --> 00:05:32.700
+create an architecture like this
+
+164
+00:05:32.700 --> 00:05:33.733
+because
+
+165
+00:05:33.733 --> 00:05:37.666
+such a design enables us to as you said
+
+166
+00:05:37.666 --> 00:05:41.900
+switch modules or components without
+
+167
+00:05:41.900 --> 00:05:44.400
+knowing the rest of the system without
+
+168
+00:05:44.400 --> 00:05:46.233
+depending on the rest of the system
+
+169
+00:05:46.233 --> 00:05:49.166
+and test and isolation as well exactly
+
+170
+00:05:49.166 --> 00:05:50.233
+exactly
+
+171
+00:05:50.233 --> 00:05:53.600
+enables us to test in isolation and also
+
+172
+00:05:53.600 --> 00:05:55.333
+we can reuse those in different
+
+173
+00:05:55.333 --> 00:05:56.866
+applications
+
+174
+00:05:56.866 --> 00:05:59.333
+but this is not normally the use case
+
+175
+00:05:59.333 --> 00:06:00.866
+normally you have one application
+
+176
+00:06:00.866 --> 00:06:04.133
+and it's iOS or only macOS
+
+177
+00:06:04.133 --> 00:06:06.933
+and you don't have the need to reuse
+
+178
+00:06:06.933 --> 00:06:08.233
+these in other applications you don't
+
+179
+00:06:08.233 --> 00:06:09.433
+have the needs to use these
+
+180
+00:06:09.433 --> 00:06:12.233
+into other platforms so there are other
+
+181
+00:06:12.233 --> 00:06:13.666
+ways we can compose this we don't have
+
+182
+00:06:13.666 --> 00:06:15.900
+to start with this level of separation
+
+183
+00:06:15.900 --> 00:06:18.300
+this is maybe an extreme case where
+
+184
+00:06:18.300 --> 00:06:19.666
+everything is decomposed
+
+185
+00:06:19.666 --> 00:06:21.833
+in separate modules but the point here
+
+186
+00:06:21.833 --> 00:06:23.900
+is that it is possible to do
+
+187
+00:06:23.900 --> 00:06:26.000
+and if there is the need it should be
+
+188
+00:06:26.000 --> 00:06:27.666
+able to easily adapt
+
+189
+00:06:27.666 --> 00:06:30.800
+but a much simpler app
+
+190
+00:06:30.800 --> 00:06:33.433
+for example the API, Database and the
+
+191
+00:06:33.433 --> 00:06:34.800
+Feature interfaces
+
+192
+00:06:34.800 --> 00:06:37.266
+and models in the same module and you
+
+193
+00:06:37.266 --> 00:06:39.500
+can decide to separate the UI
+
+194
+00:06:39.500 --> 00:06:41.833
+right so here we have the API the
+
+195
+00:06:41.833 --> 00:06:43.666
+Database and the Feed Feature
+
+196
+00:06:43.666 --> 00:06:46.700
+modules with red which denotes that they
+
+197
+00:06:46.700 --> 00:06:47.100
+are
+
+198
+00:06:47.100 --> 00:06:48.800
+in the same module in the same module
+
+199
+00:06:48.800 --> 00:06:50.400
+basically yes exactly
+
+200
+00:06:50.400 --> 00:06:52.700
+and then the UI has a dependency on this
+
+201
+00:06:52.700 --> 00:06:53.833
+Feed Feature
+
+202
+00:06:53.833 --> 00:06:56.133
+which may create some coupling
+
+203
+00:06:56.133 --> 00:06:57.500
+especially between the API and the
+
+204
+00:06:57.500 --> 00:06:58.400
+Database there
+
+205
+00:06:58.400 --> 00:07:00.700
+this diagram doesn't show that but it
+
+206
+00:07:00.700 --> 00:07:02.700
+could very well be
+
+207
+00:07:02.700 --> 00:07:06.233
+as long as you don't add a dependency
+
+208
+00:07:06.233 --> 00:07:07.033
+here
+
+209
+00:07:07.033 --> 00:07:10.300
+right or the other way around yeah
+
+210
+00:07:10.300 --> 00:07:11.666
+and as you said you can create some
+
+211
+00:07:11.666 --> 00:07:13.566
+coupling here unnecessarily
+
+212
+00:07:13.566 --> 00:07:15.566
+maybe your UI doesn't need a database
+
+213
+00:07:15.566 --> 00:07:17.033
+but as long as the arrows
+
+214
+00:07:17.033 --> 00:07:18.700
+are pointing in the same direction with
+
+215
+00:07:18.700 --> 00:07:20.533
+the same level of abstraction
+
+216
+00:07:20.533 --> 00:07:23.166
+you're still able to decompose as needed
+
+217
+00:07:23.166 --> 00:07:24.633
+if at some point you want to reuse the
+
+218
+00:07:24.633 --> 00:07:26.633
+API another application you just move it
+
+219
+00:07:26.633 --> 00:07:27.433
+to another
+
+220
+00:07:27.433 --> 00:07:29.033
+framework and then if there's the need
+
+221
+00:07:29.033 --> 00:07:30.933
+to share the database you do the same
+
+222
+00:07:30.933 --> 00:07:33.033
+and you go back to here so we should be
+
+223
+00:07:33.033 --> 00:07:33.833
+able to go
+
+224
+00:07:33.833 --> 00:07:38.633
+from everything in the same module
+
+225
+00:07:38.633 --> 00:07:40.533
+to set up your module right and you can
+
+226
+00:07:40.533 --> 00:07:41.733
+even decide to put
+
+227
+00:07:41.733 --> 00:07:43.433
+even a Composer in the same module for
+
+228
+00:07:43.433 --> 00:07:45.333
+example and then you don't have a Main
+
+229
+00:07:45.333 --> 00:07:46.133
+module
+
+230
+00:07:46.133 --> 00:07:48.466
+or maybe the UI is the Main module in
+
+231
+00:07:48.466 --> 00:07:49.900
+this case because it's going to compose
+
+232
+00:07:49.900 --> 00:07:52.000
+those types directly
+
+233
+00:07:52.000 --> 00:07:54.400
+or you could have everything in the same
+
+234
+00:07:54.400 --> 00:07:56.000
+module apart from UIKit's because we
+
+235
+00:07:56.000 --> 00:07:56.633
+don't own
+
+236
+00:07:56.633 --> 00:08:00.133
+UIKit right and this is the case
+
+237
+00:08:00.133 --> 00:08:03.266
+for a monolith application as they say
+
+238
+00:08:03.266 --> 00:08:04.000
+right
+
+239
+00:08:04.000 --> 00:08:06.633
+yeah it's a monolith but it's still well
+
+240
+00:08:06.633 --> 00:08:08.533
+separated which means we can break this
+
+241
+00:08:08.533 --> 00:08:10.000
+monolith as needed
+
+242
+00:08:10.000 --> 00:08:12.066
+and I would advise people to start
+
+243
+00:08:12.066 --> 00:08:13.500
+probably here keep everything in the
+
+244
+00:08:13.500 --> 00:08:14.633
+same module
+
+245
+00:08:14.633 --> 00:08:16.933
+but keep a logical separation of
+
+246
+00:08:16.933 --> 00:08:17.900
+concerns
+
+247
+00:08:17.900 --> 00:08:20.000
+so if you ever need to break it down
+
+248
+00:08:20.000 --> 00:08:21.333
+it's easy so there's nothing wrong with
+
+249
+00:08:21.333 --> 00:08:22.300
+monolith
+
+250
+00:08:22.300 --> 00:08:24.000
+as long as you keep your types modular
+
+251
+00:08:24.000 --> 00:08:25.900
+inside the monolith and as we saw in the
+
+252
+00:08:25.900 --> 00:08:27.266
+previous episode you have the same
+
+253
+00:08:27.266 --> 00:08:28.233
+amount of code
+
+254
+00:08:28.233 --> 00:08:30.466
+you're just breaking down into small
+
+255
+00:08:30.466 --> 00:08:32.700
+classes or structs or functions
+
+256
+00:08:32.700 --> 00:08:35.100
+with clean interfaces in between them
+
+257
+00:08:35.100 --> 00:08:36.533
+right exactly
+
+258
+00:08:36.533 --> 00:08:38.766
+one downside though in this monolith
+
+259
+00:08:38.766 --> 00:08:40.766
+approach and I guess this is a matter of
+
+260
+00:08:40.766 --> 00:08:41.566
+preference but
+
+261
+00:08:41.566 --> 00:08:43.500
+if you're creating an iOS project you're
+
+262
+00:08:43.500 --> 00:08:45.266
+going to have to see the simulator
+
+263
+00:08:45.266 --> 00:08:48.300
+and well it bugs me to be honest having
+
+264
+00:08:48.300 --> 00:08:49.100
+to test
+
+265
+00:08:49.100 --> 00:08:51.333
+API components or Database components
+
+266
+00:08:51.333 --> 00:08:52.633
+through the simulator
+
+267
+00:08:52.633 --> 00:08:55.433
+instead of having the mac as a test
+
+268
+00:08:55.433 --> 00:08:56.366
+target and having
+
+269
+00:08:56.366 --> 00:08:58.866
+blazing fast unit tests you say that if
+
+270
+00:08:58.866 --> 00:09:00.233
+we have a Database
+
+271
+00:09:00.233 --> 00:09:03.433
+module that is not in an iOS target
+
+272
+00:09:03.433 --> 00:09:06.066
+we can run it without the simulator, yes
+
+273
+00:09:06.066 --> 00:09:07.033
+exactly
+
+274
+00:09:07.033 --> 00:09:08.366
+and we can run the tests without the
+
+275
+00:09:08.366 --> 00:09:11.200
+simulator, yes, and the same for the APIs
+
+276
+00:09:11.200 --> 00:09:13.100
+and for any type that doesn't require
+
+277
+00:09:13.100 --> 00:09:16.700
+UI yes it would be much better to
+
+278
+00:09:16.700 --> 00:09:19.100
+test those types without the simulator
+
+279
+00:09:19.100 --> 00:09:20.933
+but if they live in an iOS target
+
+280
+00:09:20.933 --> 00:09:23.266
+to run your tests you need to boot a
+
+281
+00:09:23.266 --> 00:09:24.133
+simulator
+
+282
+00:09:24.133 --> 00:09:27.500
+which is let's say three to five times
+
+283
+00:09:27.500 --> 00:09:30.066
+slower or maybe more
+
+284
+00:09:30.066 --> 00:09:34.133
+it's costly and it can add up
+
+285
+00:09:34.133 --> 00:09:36.133
+so it's a trade-off you can definitely
+
+286
+00:09:36.133 --> 00:09:37.266
+start like this
+
+287
+00:09:37.266 --> 00:09:39.500
+if you see the need of having faster
+
+288
+00:09:39.500 --> 00:09:41.500
+tests which might be
+
+289
+00:09:41.500 --> 00:09:44.366
+immediately for some people then you can
+
+290
+00:09:44.366 --> 00:09:45.200
+just
+
+291
+00:09:45.200 --> 00:09:48.133
+extract your code with these boundaries
+
+292
+00:09:48.133 --> 00:09:49.100
+and
+
+293
+00:09:49.100 --> 00:09:51.433
+good source code dependencies but you
+
+294
+00:09:51.433 --> 00:09:53.666
+also add some overhead of maintaining
+
+295
+00:09:53.666 --> 00:09:55.500
+separate frameworks absolutely
+
+296
+00:09:55.500 --> 00:09:56.700
+absolutely that's
+
+297
+00:09:56.700 --> 00:09:59.266
+that's that's one of the trade-offs so
+
+298
+00:09:59.266 --> 00:10:00.366
+that's pretty much
+
+299
+00:10:00.366 --> 00:10:02.633
+one way of composing types in separate
+
+300
+00:10:02.633 --> 00:10:04.633
+modules you can have all the types in
+
+301
+00:10:04.633 --> 00:10:05.666
+one module
+
+302
+00:10:05.666 --> 00:10:07.500
+but as long as they are separated your
+
+303
+00:10:07.500 --> 00:10:09.033
+monolith is still
+
+304
+00:10:09.033 --> 00:10:11.666
+pretty testable and decomposed as needed
+
+305
+00:10:11.666 --> 00:10:12.300
+you can
+
+306
+00:10:12.300 --> 00:10:14.366
+move those types to separate modules for
+
+307
+00:10:14.366 --> 00:10:16.133
+usability for testability
+
+308
+00:10:16.133 --> 00:10:19.266
+for faster tests or for whatever reason
+
+309
+00:10:19.266 --> 00:10:20.533
+you need to move them
+
+310
+00:10:20.533 --> 00:10:23.666
+but why so rare to see applications they
+
+311
+00:10:23.666 --> 00:10:24.300
+are
+
+312
+00:10:24.300 --> 00:10:28.066
+composable or decomposable, in my opinion
+
+313
+00:10:28.066 --> 00:10:29.266
+I think it's because
+
+314
+00:10:29.266 --> 00:10:32.366
+it's harder to do so it requires a steep
+
+315
+00:10:32.366 --> 00:10:33.900
+learning curve there
+
+316
+00:10:33.900 --> 00:10:36.866
+and we often see developers wanting
+
+317
+00:10:36.866 --> 00:10:38.066
+control
+
+318
+00:10:38.066 --> 00:10:40.933
+of their components and referencing
+
+319
+00:10:40.933 --> 00:10:42.000
+components
+
+320
+00:10:42.000 --> 00:10:44.366
+inside other components without good
+
+321
+00:10:44.366 --> 00:10:45.433
+separation
+
+322
+00:10:45.433 --> 00:10:47.833
+like dependency injection, initializer
+
+323
+00:10:47.833 --> 00:10:49.333
+injection in this case you know
+
+324
+00:10:49.333 --> 00:10:52.000
+enforcing immutability so working with
+
+325
+00:10:52.000 --> 00:10:53.200
+concrete types
+
+326
+00:10:53.200 --> 00:10:56.133
+you feel more in control and having even
+
+327
+00:10:56.133 --> 00:10:57.433
+procedural code
+
+328
+00:10:57.433 --> 00:10:58.700
+feels like you're more in control
+
+329
+00:10:58.700 --> 00:11:00.133
+because you can see line by line what's
+
+330
+00:11:00.133 --> 00:11:00.700
+happening
+
+331
+00:11:00.700 --> 00:11:02.133
+but as soon as you start using dynamic
+
+332
+00:11:02.133 --> 00:11:05.033
+dispatch and start using interfaces
+
+333
+00:11:05.033 --> 00:11:07.200
+and closures people start getting afraid
+
+334
+00:11:07.200 --> 00:11:08.366
+yes absolutely
+
+335
+00:11:08.366 --> 00:11:10.866
+so for the untrained eye perhaps it's
+
+336
+00:11:10.866 --> 00:11:12.533
+harder to think abstractly
+
+337
+00:11:12.533 --> 00:11:15.833
+for example invoking a closure in a
+
+338
+00:11:15.833 --> 00:11:16.700
+function
+
+339
+00:11:16.700 --> 00:11:18.933
+instead of having an implicit dependency
+
+340
+00:11:18.933 --> 00:11:20.300
+of a singleton let's say
+
+341
+00:11:20.300 --> 00:11:22.800
+and invoking the singleton's function
+
+342
+00:11:22.800 --> 00:11:24.133
+directly
+
+343
+00:11:24.133 --> 00:11:26.466
+which would lead them probably to have
+
+344
+00:11:26.466 --> 00:11:28.700
+an architecture as we commonly see
+
+345
+00:11:28.700 --> 00:11:31.833
+in iOS applications where we have the UI
+
+346
+00:11:31.833 --> 00:11:33.833
+talking to a concrete model layer that
+
+347
+00:11:33.833 --> 00:11:35.900
+could be a ViewModel or a Presenter
+
+348
+00:11:35.900 --> 00:11:37.266
+that then talks directly to another
+
+349
+00:11:37.266 --> 00:11:39.600
+concrete API or a concrete Database that
+
+350
+00:11:39.600 --> 00:11:40.933
+could be singletons or it can be
+
+351
+00:11:40.933 --> 00:11:42.700
+injected but they are concrete
+
+352
+00:11:42.700 --> 00:11:44.533
+and they are not very easily composable
+
+353
+00:11:44.533 --> 00:11:45.733
+you might have a chance
+
+354
+00:11:45.733 --> 00:11:47.833
+of injecting different behaviors by
+
+355
+00:11:47.833 --> 00:11:49.200
+subclassing but
+
+356
+00:11:49.200 --> 00:11:52.000
+you would see UIKit elements in the
+
+357
+00:11:52.000 --> 00:11:52.800
+Model layer
+
+358
+00:11:52.800 --> 00:11:54.800
+you might even see UIKit elements like
+
+359
+00:11:54.800 --> 00:11:56.133
+UIImages
+
+360
+00:11:56.133 --> 00:11:58.633
+in the API or Database layer and there's
+
+361
+00:11:58.633 --> 00:12:00.000
+no clear separation
+
+362
+00:12:00.000 --> 00:12:02.533
+of concerns sometimes you see the UI
+
+363
+00:12:02.533 --> 00:12:04.133
+fetching things from the Database directly
+
+364
+00:12:04.133 --> 00:12:05.733
+or the API
+
+365
+00:12:05.733 --> 00:12:07.733
+it's often the case that we see UI
+
+366
+00:12:07.733 --> 00:12:09.100
+elements accessing
+
+367
+00:12:09.100 --> 00:12:12.066
+databases and APIs for convenience might
+
+368
+00:12:12.066 --> 00:12:14.300
+be easier at a time or faster
+
+369
+00:12:14.300 --> 00:12:16.933
+but you quickly lose control the so
+
+370
+00:12:16.933 --> 00:12:18.533
+desired control you wanted in the
+
+371
+00:12:18.533 --> 00:12:19.333
+beginning
+
+372
+00:12:19.333 --> 00:12:22.000
+yeah and I think in this example the
+
+373
+00:12:22.000 --> 00:12:23.433
+problem is the lack of proper
+
+374
+00:12:23.433 --> 00:12:24.466
+communication
+
+375
+00:12:24.466 --> 00:12:27.100
+between these modules where there are no
+
+376
+00:12:27.100 --> 00:12:29.200
+predefined communication channels maybe
+
+377
+00:12:29.200 --> 00:12:30.000
+they're going to be
+
+378
+00:12:30.000 --> 00:12:32.366
+bi-directional or single direction
+
+379
+00:12:32.366 --> 00:12:34.133
+communication between the Model and the
+
+380
+00:12:34.133 --> 00:12:36.300
+UI or the UI and the Model there
+
+381
+00:12:36.300 --> 00:12:38.933
+the API and the Model, the Database and
+
+382
+00:12:38.933 --> 00:12:39.666
+the Model
+
+383
+00:12:39.666 --> 00:12:42.000
+so we're going to see components being
+
+384
+00:12:42.000 --> 00:12:44.300
+referenced all over the place the UI
+
+385
+00:12:44.300 --> 00:12:46.633
+in the Database or the Database in the
+
+386
+00:12:46.633 --> 00:12:47.733
+UI
+
+387
+00:12:47.733 --> 00:12:51.200
+and this can create tight coupling and
+
+388
+00:12:51.200 --> 00:12:54.533
+confusion and rigidity as we go on
+
+389
+00:12:54.533 --> 00:12:57.433
+the so called spaghetti architecture yes and
+
+390
+00:12:57.433 --> 00:12:58.233
+to be fair
+
+391
+00:12:58.233 --> 00:12:59.833
+you can still have a concrete
+
+392
+00:12:59.833 --> 00:13:02.133
+architecture there is no spaghetti
+
+393
+00:13:02.133 --> 00:13:05.266
+if you keep the layers separated
+
+394
+00:13:05.266 --> 00:13:07.200
+like this it might work well for a
+
+395
+00:13:07.200 --> 00:13:08.866
+majority of applications
+
+396
+00:13:08.866 --> 00:13:10.800
+absolutely, depending on the application
+
+397
+00:13:10.800 --> 00:13:12.700
+I'm working on if it's very simple I
+
+398
+00:13:12.700 --> 00:13:14.466
+would probably start like this
+
+399
+00:13:14.466 --> 00:13:16.466
+but I know how to go from this
+
+400
+00:13:16.466 --> 00:13:18.066
+architecture
+
+401
+00:13:18.066 --> 00:13:21.033
+to something more modular and I would do
+
+402
+00:13:21.033 --> 00:13:22.633
+the transitions as needed
+
+403
+00:13:22.633 --> 00:13:24.633
+backed up by tests backed up by the
+
+404
+00:13:24.633 --> 00:13:26.000
+compiler
+
+405
+00:13:26.000 --> 00:13:27.833
+so there's nothing wrong with starting
+
+406
+00:13:27.833 --> 00:13:29.266
+like this or having an architecture
+
+407
+00:13:29.266 --> 00:13:31.033
+that is super monolithic and start
+
+408
+00:13:31.033 --> 00:13:32.533
+breaking it down as needed
+
+409
+00:13:32.533 --> 00:13:34.800
+you don't have to start with a very
+
+410
+00:13:34.800 --> 00:13:36.300
+modular application
+
+411
+00:13:36.300 --> 00:13:38.066
+and again a modular application doesn't
+
+412
+00:13:38.066 --> 00:13:40.300
+need to be complex
+
+413
+00:13:40.300 --> 00:13:43.100
+yes that's very important if we follow
+
+414
+00:13:43.100 --> 00:13:43.666
+good
+
+415
+00:13:43.666 --> 00:13:45.900
+principles we can end up with a pretty
+
+416
+00:13:45.900 --> 00:13:47.500
+good architecture there
+
+417
+00:13:47.500 --> 00:13:48.700
+I've seen codebases they were
+
+418
+00:13:48.700 --> 00:13:50.700
+monolithic and they were very concrete
+
+419
+00:13:50.700 --> 00:13:51.333
+but they were
+
+420
+00:13:51.333 --> 00:13:54.366
+easy to change they were easy to work on
+
+421
+00:13:54.366 --> 00:13:55.900
+they were tested you just need to
+
+422
+00:13:55.900 --> 00:13:57.100
+understand the trade-offs you need to
+
+423
+00:13:57.100 --> 00:13:58.533
+understand the problem you are trying to
+
+424
+00:13:58.533 --> 00:14:00.466
+solve and tailor the solution
+
+425
+00:14:00.466 --> 00:14:02.633
+yes that's that's the most important
+
+426
+00:14:02.633 --> 00:14:03.600
+thing to remember
+
+427
+00:14:03.600 --> 00:14:06.933
+that there is no holy grail right for
+
+428
+00:14:06.933 --> 00:14:09.166
+architecture or design you need to
+
+429
+00:14:09.166 --> 00:14:10.800
+tailor it to your own needs
+
+430
+00:14:10.800 --> 00:14:13.033
+as my friend likes to say you can fit
+
+431
+00:14:13.033 --> 00:14:13.833
+both
+
+432
+00:14:13.833 --> 00:14:16.133
+feet in one shoe right you need to
+
+433
+00:14:16.133 --> 00:14:17.266
+tailor it to
+
+434
+00:14:17.266 --> 00:14:20.800
+your own requirements and it's hard
+
+435
+00:14:20.800 --> 00:14:22.633
+it's definitely hard to do so, so my
+
+436
+00:14:22.633 --> 00:14:25.100
+advice is to learn different approaches
+
+437
+00:14:25.100 --> 00:14:26.700
+because the more you know the more
+
+438
+00:14:26.700 --> 00:14:28.866
+options you have to solve problems
+
+439
+00:14:28.866 --> 00:14:30.866
+we have problems and we find solutions
+
+440
+00:14:30.866 --> 00:14:32.133
+we don't settle with
+
+441
+00:14:32.133 --> 00:14:36.300
+lesser value, yes absolutely, for example
+
+442
+00:14:36.300 --> 00:14:39.500
+going back to our super modular approach
+
+443
+00:14:39.500 --> 00:14:41.266
+you can then have another module that is
+
+444
+00:14:41.266 --> 00:14:43.600
+an Assembler, a Builder or a Factory
+
+445
+00:14:43.600 --> 00:14:45.500
+that composes everything together, whoa
+
+446
+00:14:45.500 --> 00:14:47.500
+that's a lot of dashes and a lot of
+
+447
+00:14:47.500 --> 00:14:48.466
+arrows there
+
+448
+00:14:48.466 --> 00:14:51.033
+and it might look complex but when you
+
+449
+00:14:51.033 --> 00:14:52.366
+translate this to code is
+
+450
+00:14:52.366 --> 00:14:54.633
+four lines of code two lines of code or
+
+451
+00:14:54.633 --> 00:14:55.666
+one line of code
+
+452
+00:14:55.666 --> 00:14:58.000
+it's not that hard it's simple it can
+
+453
+00:14:58.000 --> 00:14:59.900
+achieve the same level separation
+
+454
+00:14:59.900 --> 00:15:02.533
+by following OO principles or functional
+
+455
+00:15:02.533 --> 00:15:03.433
+principles
+
+456
+00:15:03.433 --> 00:15:06.466
+yeah I agree 100% with you it might
+
+457
+00:15:06.466 --> 00:15:09.733
+seem complex but it's not it's simple
+
+458
+00:15:09.733 --> 00:15:12.533
+and it's worth testing it out by
+
+459
+00:15:12.533 --> 00:15:13.500
+yourselves
+
+460
+00:15:13.500 --> 00:15:15.166
+so I think that's it and we'll see you
+
+461
+00:15:15.166 --> 00:15:27.100
+again next time

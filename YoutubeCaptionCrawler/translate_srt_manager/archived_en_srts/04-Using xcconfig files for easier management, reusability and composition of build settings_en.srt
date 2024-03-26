@@ -1,0 +1,1901 @@
+
+1
+00:00:00.960 --> 00:00:06.880
+Hi everyone and welcome to another episode of the tooling series.
+
+2
+00:00:08.240 --> 00:00:15.760
+This time we'll take a look at the build configuration files or XC config as they're
+
+3
+00:00:15.760 --> 00:00:22.640
+known from their extension. XC config files can be a very elegant way to manage, reuse,
+
+4
+00:00:22.640 --> 00:00:28.000
+and compose build settings so it's worth dedicating the session to understanding them.
+
+5
+00:00:28.000 --> 00:00:36.320
+The plan for today is to explain the mechanics of XC config files to see what advantages and
+
+6
+00:00:36.320 --> 00:00:41.680
+disadvantages they have compared to the standard way of managing settings which is to the build
+
+7
+00:00:41.680 --> 00:00:50.320
+settings editor, understand when to prefer one approach over the other, explain when and how
+
+8
+00:00:50.320 --> 00:00:57.440
+to move all the build settings from the Xcode project to separate XC config files, and showcase
+
+9
+00:00:57.440 --> 00:01:05.120
+the utility of XC config files in some live examples. At the end we'll do a Q&A as always.
+
+10
+00:01:07.760 --> 00:01:15.680
+First we'll do a very quick recap of the build settings and their mechanics. So a build setting
+
+11
+00:01:16.240 --> 00:01:21.600
+is a property you can apply to your Xcode projects to configure aspects of how they are built.
+
+12
+00:01:21.600 --> 00:01:27.200
+There are many settings within Xcode and the comprehensive List as always can be found in
+
+13
+00:01:27.200 --> 00:01:33.920
+Apple Docs. There are two ways to manage build settings. One is through the build settings
+
+14
+00:01:33.920 --> 00:01:39.840
+editor which we already covered in the previous lecture and the other is through configuration
+
+15
+00:01:40.720 --> 00:01:44.960
+settings files or XC config and this is our topic for today.
+
+16
+00:01:44.960 --> 00:01:52.640
+Also recap how Xcode build settings are resolved. So before each build the system must resolve all
+
+17
+00:01:52.640 --> 00:01:58.560
+the build settings for each target that is built. Build settings are resolved using a fallback
+
+18
+00:01:58.560 --> 00:02:04.640
+based system where the resolver looks for a value from higher to lower priority levels until it
+
+19
+00:02:04.640 --> 00:02:12.080
+finds one or ends up with the platform default. In the graphical representation you see
+
+20
+00:02:12.080 --> 00:02:16.480
+as well as in Xcode build settings tab, priority increases from right to left.
+
+21
+00:02:18.480 --> 00:02:24.720
+So the first column would be platform defaults and if there's no other explicit setting at any
+
+22
+00:02:24.720 --> 00:02:32.960
+other level the resolver will use these defaults. Next is the project configuration File level
+
+23
+00:02:33.680 --> 00:02:39.760
+and this one can only override platform defaults and is overwritten by defaults.
+
+24
+00:02:39.760 --> 00:02:49.680
+Next the project level settings are used when target settings are missing. Project settings
+
+25
+00:02:49.680 --> 00:02:55.680
+override the settings from the project config File if any and the platform defaults. Next if
+
+26
+00:02:55.680 --> 00:03:01.680
+we have a target configuration File this will override all the project level and platform level
+
+27
+00:03:01.680 --> 00:03:10.240
+settings. And finally target explicit settings override any other setting as they have the highest
+
+28
+00:03:10.240 --> 00:03:17.680
+priority. Xcode build configuration files or XC config allow build settings for your app to be
+
+29
+00:03:17.680 --> 00:03:25.840
+declared and managed without Xcode. They are plain text files which means they are much friendlier
+
+30
+00:03:25.840 --> 00:03:33.600
+to source control systems and can be modified with any editor. Some of the advantages of using
+
+31
+00:03:33.600 --> 00:03:40.480
+XC config files are better source control management, sharing settings across targets,
+
+32
+00:03:40.480 --> 00:03:47.760
+configurations or even projects, composition of build settings and the ability to include additional
+
+33
+00:03:47.760 --> 00:03:55.760
+configuration setting files based on environment. The second one is that Xcode build configuration
+
+34
+00:03:55.760 --> 00:04:01.840
+let's see what the mechanics of XC config files are. So as we mentioned a build configuration
+
+35
+00:04:01.840 --> 00:04:08.000
+File is a text File that has an XC config File name extension that you add to your project.
+
+36
+00:04:08.960 --> 00:04:14.000
+You can create as many build configuration files as you want and you can configure different
+
+37
+00:04:14.000 --> 00:04:20.240
+settings in each one. For example you might use one build configuration File for debug settings
+
+38
+00:04:20.240 --> 00:04:28.880
+and another one for release. To specify a new value for setting the format which you need to use
+
+39
+00:04:28.880 --> 00:04:37.280
+is setting name equals setting value. At the bottom of the slide you see a short example
+
+40
+00:04:37.280 --> 00:04:46.960
+of an XC config File that sets three settings. We've mentioned this in our previous lecture
+
+41
+00:04:46.960 --> 00:04:52.160
+but just to recap each build setting allows a different type of value.
+
+42
+00:04:53.920 --> 00:05:02.640
+The potential types are boolean, String, String List, path or path List and enumeration.
+
+43
+00:05:04.080 --> 00:05:09.200
+In the definition of a setting value we can refer to other settings like in this case.
+
+44
+00:05:09.200 --> 00:05:18.160
+For this we use the dollar and parentheses to reference other values. A clear example is
+
+45
+00:05:18.160 --> 00:05:25.920
+the install path setting which uses the local library directory setting and its framework subfolder.
+
+46
+00:05:28.880 --> 00:05:35.360
+Besides this all settings support using the variable dollar inherited which is resolved
+
+47
+00:05:35.360 --> 00:05:41.520
+to any value set by a lower priority level including platform defaults. To append rather
+
+48
+00:05:41.520 --> 00:05:47.280
+than replace existing definitions use the dollar inherited variable like in these examples.
+
+49
+00:05:49.120 --> 00:05:55.760
+First we have setting name equals dollar inherited which means we'll be getting any value
+
+50
+00:05:55.760 --> 00:06:04.000
+set at the lower priority and the additional value which we want to append. Another example
+
+51
+00:06:04.000 --> 00:06:12.400
+would be we're setting dollar inherited on every level composes all the values together
+
+52
+00:06:13.440 --> 00:06:21.440
+and the practical example is where we explicitly set the framework search paths
+
+53
+00:06:21.920 --> 00:06:26.160
+by using the inherited value and appending our project directory.
+
+54
+00:06:26.160 --> 00:06:31.360
+When referencing values we can always set the default value in case that reference doesn't
+
+55
+00:06:31.360 --> 00:06:38.800
+exist. In this example we also use the last time we are passing an extra flag to the Swift compiler
+
+56
+00:06:38.800 --> 00:06:45.520
+that will issue a warning for expression that take too long to type check. In this case we have set
+
+57
+00:06:45.520 --> 00:06:52.480
+the default value of 200 milliseconds but we can override it in simple terms.
+
+58
+00:06:52.480 --> 00:06:58.240
+200 milliseconds but we can override it in CI for example where builds are slower
+
+59
+00:06:59.280 --> 00:07:07.680
+if we define the max expression checking time setting. This setting would only exist
+
+60
+00:07:07.680 --> 00:07:13.680
+on the CI and we can generate it with a script.
+
+61
+00:07:13.680 --> 00:07:21.600
+Also recapping the transformations we can apply to values. The available operators include strings,
+
+62
+00:07:22.160 --> 00:07:32.320
+operators, paths and replacement operators. In two examples we have here first we apply the C99X
+
+63
+00:07:32.320 --> 00:07:40.720
+identifier operator on the targetName and in the second example we apply the C99X identifier
+
+64
+00:07:40.720 --> 00:07:51.600
+and in the second example we compose multiple operators so for the product name build setting
+
+65
+00:07:51.600 --> 00:07:56.960
+we apply the Intel 1034 identifier and we lowercase.
+
+66
+00:08:02.000 --> 00:08:08.960
+You can conditionalize build settings according to their SDK architecture and or configuration.
+
+67
+00:08:08.960 --> 00:08:16.160
+According to the following syntax. In the example at the bottom of the slide
+
+68
+00:08:17.440 --> 00:08:25.440
+we have the same setting for the debug configuration and any SDK and any architecture.
+
+69
+00:08:26.640 --> 00:08:28.640
+So a combination.
+
+70
+00:08:28.640 --> 00:08:41.200
+To understand how composition works let's take a look at this example. First we define
+
+71
+00:08:42.560 --> 00:08:51.200
+a custom build setting is build setting enabled and we set it to no. Then we define two values
+
+72
+00:08:51.200 --> 00:08:58.720
+to other build settings. My build setting no which has a use this one value and my build setting yes
+
+73
+00:08:58.720 --> 00:09:10.400
+which uses use this instead. Then we can create a conditional composed value for my build setting
+
+74
+00:09:10.400 --> 00:09:20.480
+where we reference both the build settings. This is interesting because build settings are evaluated
+
+75
+00:09:20.480 --> 00:09:28.640
+inside out so how this expression is resolved. First the resolver will look at the dollar is
+
+76
+00:09:28.640 --> 00:09:37.760
+build setting enabled and will evaluate it to no. So the new expression will be transformed to dollar
+
+77
+00:09:37.760 --> 00:09:45.840
+will be transformed to dollar my build setting no. Again evaluating this expression will
+
+78
+00:09:45.840 --> 00:09:50.320
+transform to the value of use this one. It can be pretty powerful.
+
+79
+00:09:56.160 --> 00:10:01.200
+Another feature of configuration files is including other configuration files.
+
+80
+00:10:01.200 --> 00:10:07.360
+Because when you specify the build configuration File in Xcode for a target or project you must
+
+81
+00:10:07.360 --> 00:10:13.600
+select only one File. But that File can include settings from other configuration files using
+
+82
+00:10:13.600 --> 00:10:21.120
+the syntax. To import the settings from a different configuration File add a hash include
+
+83
+00:10:21.120 --> 00:10:29.520
+statement like the first one. So we just need the path to the configuration File. But remember
+
+84
+00:10:29.520 --> 00:10:36.640
+if Xcode can find the included build configuration File it will generate a build warning. So to
+
+85
+00:10:36.640 --> 00:10:44.160
+suppress these warnings we can add a question mark next to the include statement as shown in the
+
+86
+00:10:44.160 --> 00:10:53.680
+second example. This will be helpful in the example we just shown with the CI dedicated config File.
+
+87
+00:10:53.680 --> 00:11:01.600
+Another feature of config files are they allow comments to include notes or any other information
+
+88
+00:11:01.600 --> 00:11:07.920
+that's relevant to you. Specify your comments on a single line preceded by two forward slashes.
+
+89
+00:11:08.560 --> 00:11:16.400
+The build system ignores everything that's after that. So we can have lines with comments only or
+
+90
+00:11:16.400 --> 00:11:39.040
+we can inline some comments. Let's do a small comparison of the Xcode build settings editor
+
+91
+00:11:39.040 --> 00:11:48.160
+versus these XC config files. So by default Xcode stores all the build settings inside the
+
+92
+00:11:48.160 --> 00:11:56.320
+Xcode proj PBX proj File along with references to files frameworks build phases and other settings.
+
+93
+00:11:57.120 --> 00:12:05.600
+We've seen this in a previous episode. This setUp is automatically done by Xcode and it's easy to
+
+94
+00:12:05.600 --> 00:12:12.000
+use. It's not trivial to understand but most developers are familiar with the Xcode build
+
+95
+00:12:12.000 --> 00:12:19.040
+settings editor so that's not a problem. Xcode way of storing settings in the project File
+
+96
+00:12:19.040 --> 00:12:25.200
+results in the duplication of settings which we also shown by keeping a separate set of settings
+
+97
+00:12:25.200 --> 00:12:33.600
+for each combination of project and configuration and target and configuration. For many projects
+
+98
+00:12:33.600 --> 00:12:39.760
+especially small ones this is not a problem as the build settings editor inside Xcode is fine
+
+99
+00:12:39.760 --> 00:12:47.040
+for doing audio operations. If the theme is not large conflicts will happen occasionally
+
+100
+00:12:47.040 --> 00:12:55.760
+and they'll be relatively easy to fix. Reviewing diffs on the project File and especially spotting
+
+101
+00:12:55.760 --> 00:13:03.920
+these changes to build settings is a bit harder. It's not clear when looking at just the diff what
+
+102
+00:13:03.920 --> 00:13:09.680
+is the level of each setting that's being affected and that's because all the groups of settings in
+
+103
+00:13:09.680 --> 00:13:17.920
+the project File look the same. Also for developers that don't fully understand how build settings
+
+104
+00:13:17.920 --> 00:13:24.320
+work and how to manage them having default values preset by Xcode which are pretty optimal is
+
+105
+00:13:24.320 --> 00:13:29.200
+sufficient and allows them to focus on writing code and delivering products pretty fast.
+
+106
+00:13:31.680 --> 00:13:37.120
+As always we recommend you start small with the most easy and straightforward approach.
+
+107
+00:13:38.320 --> 00:13:44.400
+In this case this means keeping your settings within Xcode using the build settings editor
+
+108
+00:13:45.280 --> 00:13:47.520
+and that should be your default approach.
+
+109
+00:13:47.520 --> 00:13:52.800
+For large themes where each developer will likely edit the project File with every PR
+
+110
+00:13:53.520 --> 00:13:58.560
+maintaining all these changes and the implied conflicts to the project File can become a
+
+111
+00:13:58.560 --> 00:14:05.520
+liability and slow down the development cycle. Also reviewing this on a large project File and
+
+112
+00:14:05.520 --> 00:14:10.480
+noticing changes to build settings which are at the end of the File can be pretty hard.
+
+113
+00:14:10.480 --> 00:14:16.640
+This is where exe config files come useful as they are just plain text files they're easy to
+
+114
+00:14:16.640 --> 00:14:23.440
+write and maintain. You can organize them as you want in a decentralized way and share them between
+
+115
+00:14:23.440 --> 00:14:30.720
+configuration targets, projects or event repos. Also since they contain only build settings
+
+116
+00:14:30.720 --> 00:14:37.520
+reviewing changes is much easier. Tracking changes to a particular project File is a lot easier.
+
+117
+00:14:37.520 --> 00:14:41.840
+Tracking changes to a particular setting over time is also quite easy to do.
+
+118
+00:14:42.960 --> 00:14:50.240
+So it's not easy to understand a setUp based on exe config files and or setting stored in the
+
+119
+00:14:50.240 --> 00:14:59.280
+project File it can be done. Using exe config files does not guarantee you avoid the duplication
+
+120
+00:14:59.280 --> 00:15:05.680
+of settings as we'll show in a minute as this needs to be an intentional process where you
+
+121
+00:15:05.680 --> 00:15:13.360
+remove this duplication. Also if you need to access more advanced scenarios like conditional
+
+122
+00:15:13.360 --> 00:15:19.280
+values of build settings, the composition of values or just avoid this duplication and have
+
+123
+00:15:19.280 --> 00:15:26.000
+a clear separation of concerns in the infrastructure of the project config files are a solution to be
+
+124
+00:15:26.000 --> 00:15:40.240
+considered. This concludes the theoretical part and now I want to do a few quick demos
+
+125
+00:15:40.960 --> 00:15:43.360
+to show you how we can work with config files.
+
+126
+00:15:43.360 --> 00:15:53.920
+So let's work with our EssentialFeed demo project.
+
+127
+00:15:59.280 --> 00:16:06.320
+First I want to inspect the build settings. So I will select
+
+128
+00:16:06.320 --> 00:16:15.520
+all the targets in the EssentialFeed project and I want to look at the Swift language version
+
+129
+00:16:16.560 --> 00:16:25.120
+setting. And we can see that all the targets use the same value.
+
+130
+00:16:27.680 --> 00:16:30.880
+Also if we look at the development team
+
+131
+00:16:30.880 --> 00:16:45.120
+setting, we also see the same vrj2 value. So for this first demo I would like to remove
+
+132
+00:16:45.120 --> 00:16:57.280
+this duplication and move these settings into a centralized exe config File. Let's see how we can
+
+133
+00:16:57.280 --> 00:17:12.800
+do that. First inside the EssentialFeed project I'm going to add a new File and there's a
+
+134
+00:17:12.800 --> 00:17:21.120
+configuration settings File template which I'm going to use. I will name it shared because I
+
+135
+00:17:21.120 --> 00:17:34.880
+want to keep shared settings and I will put it at the root of my repository. An important note
+
+136
+00:17:34.880 --> 00:17:40.480
+here is I will not include it into any of the targets because that means embedding the File
+
+137
+00:17:40.480 --> 00:17:45.360
+and exe config files don't need to be embedded into the target. They just need to be visible
+
+138
+00:17:45.360 --> 00:17:56.800
+inside the project so Xcode can see them and access them. And I do a create.
+
+139
+00:18:03.600 --> 00:18:13.040
+I have already prepared the two values I will need for my settings. So now I want to set them.
+
+140
+00:18:13.040 --> 00:18:24.960
+I will go to the project, then also select the project level in the editor and use the info tab.
+
+141
+00:18:25.920 --> 00:18:36.880
+Here we have this section called configurations. If I open it, I see I can set a File for each
+
+142
+00:18:36.880 --> 00:18:46.000
+project and each target and there's one set for the debug configuration and one for the release.
+
+143
+00:18:46.000 --> 00:18:54.400
+And of course for any other configuration I might have. In this case I willSet the shared File I
+
+144
+00:18:54.400 --> 00:19:01.600
+just createdAt the project level because I want all the targets to use this. So I'll select the
+
+145
+00:19:01.600 --> 00:19:10.000
+shared File for both the debug configuration and the release. This will propagate the settings as
+
+146
+00:19:10.000 --> 00:19:18.640
+I said to all the targets. Now let's look at the build settings editor for my target. In this case
+
+147
+00:19:18.640 --> 00:19:29.920
+EssentialFeed. We immediately notice that there's a new tab which is the config File I just added.
+
+148
+00:19:29.920 --> 00:19:42.880
+Looking for my Swift language version, I can see the value of the config File is Swift 5 and
+
+149
+00:19:42.880 --> 00:19:50.560
+the overwritten explicit setting for my target is also Swift 5.
+
+150
+00:19:50.560 --> 00:20:03.520
+So I'll select all my targets and use the delete key to delete all the explicit settings from the
+
+151
+00:20:03.520 --> 00:20:13.520
+project level, from the target level. But I immediately see all the values are still
+
+152
+00:20:13.520 --> 00:20:21.360
+Swift 5.0. Just they are not bold anymore. So this means they're not explicitly set at the target
+
+153
+00:20:21.360 --> 00:20:28.560
+level. And inspecting one of the targets, I can see that this value is coming from the
+
+154
+00:20:28.560 --> 00:20:41.200
+configuration File I just set. Let's look at the development team setting.
+
+155
+00:20:41.200 --> 00:20:50.160
+And we'll notice a similar scenario where the value from the config File and the target is the
+
+156
+00:20:50.160 --> 00:20:59.760
+same. So I'll select all my targets, hit delete, and re-inspect to make sure. And I can see that
+
+157
+00:20:59.760 --> 00:21:06.960
+the Result value is still the VRJ one that's coming this time from the config File.
+
+158
+00:21:06.960 --> 00:21:15.120
+That's coming this time from the config File. And this is what I want. I can even
+
+159
+00:21:18.400 --> 00:21:26.000
+do a build just to make sure I didn't break anything. And let's commit.
+
+160
+00:21:26.000 --> 00:21:35.520
+If we look at the diff, we'll see the reference to the File we just added, the group,
+
+161
+00:21:38.880 --> 00:21:47.360
+the reference for each configuration that we set in Xcode. So the project debug now references this
+
+162
+00:21:47.360 --> 00:21:58.880
+value. And the same is true for the project release set. And now we see that the development team and
+
+163
+00:21:58.880 --> 00:22:06.560
+suite version settings have disappeared or been deleted for each of the target explicit settings.
+
+164
+00:22:06.560 --> 00:22:18.080
+And we have many of these because Xcode actually stores one set for each of the targets. Since we
+
+165
+00:22:18.080 --> 00:22:25.840
+have five targets and two configurations, that's ten dictionaries from where we actually deleted
+
+166
+00:22:25.840 --> 00:22:34.880
+those two keys. And we can see that the target is still the same. And we can see that the
+
+167
+00:22:34.880 --> 00:22:49.040
+target is the same. We can even reference the File we created from the EssentialApp target
+
+168
+00:22:49.040 --> 00:23:03.200
+by dragging the File. I will also uncheck the target so the File does not get bundled.
+
+169
+00:23:05.200 --> 00:23:10.640
+I will do the same exercise. So I'll go to the EssentialApp info this time,
+
+170
+00:23:10.640 --> 00:23:19.760
+use my shared File for both the project debug and release config files.
+
+171
+00:23:23.760 --> 00:23:29.760
+I'll use the build settings inspector to look at the Swift language.
+
+172
+00:23:29.760 --> 00:23:45.600
+Delete. Still 3.5. We're good. The same for the test target.
+
+173
+00:23:45.600 --> 00:24:01.600
+Delete. Development team. And the test target. And the values are still
+
+174
+00:24:03.280 --> 00:24:10.800
+as they should. I did a build. Everything looks good. So I will commit. And the diff
+
+175
+00:24:10.800 --> 00:24:22.320
+looks very similar to what we had in our previous commit where the File was added to the project.
+
+176
+00:24:23.520 --> 00:24:30.480
+We get the references. And all the explicit settings have been removed.
+
+177
+00:24:30.480 --> 00:24:37.840
+And please note that there's no new XC config File as we are using the same one.
+
+178
+00:24:39.040 --> 00:24:47.040
+Reference from two projects. This is the first example I wanted to go through. The second example
+
+179
+00:24:47.040 --> 00:24:56.720
+will continue. So we've done a theoretical example in one of the lectures which I will
+
+180
+00:24:56.720 --> 00:25:02.960
+make practical right now. And this is the case where we have different environments for our
+
+181
+00:25:02.960 --> 00:25:09.040
+endpoints. Let's say staging and production. And we want to use user defined build settings to
+
+182
+00:25:09.040 --> 00:25:16.960
+resolve these endpoints. So I will use my shared config File, which I already setUp.
+
+183
+00:25:16.960 --> 00:25:29.680
+And I'll prepopulate it with a build setting which I'm calling API Domain. That uses the
+
+184
+00:25:29.680 --> 00:25:38.240
+conditional syntax I used in the slides. And for the debug configuration, we set the value to
+
+185
+00:25:38.240 --> 00:25:47.280
+API.staging.example.com. And for the release, we set it to API.example.com.
+
+186
+00:25:49.520 --> 00:25:58.080
+Just to make sure we use the right syntax, go to one of the projects, build settings editor,
+
+187
+00:25:58.080 --> 00:26:08.720
+and check the UserDefinedSettings, which show my API Domain setting. And I can see it has
+
+188
+00:26:08.720 --> 00:26:17.360
+different values for the debug and the release configurations. So we're good. Reading these
+
+189
+00:26:17.360 --> 00:26:28.080
+values from the exe config files into code is not that easy, but there's one nice way to do it,
+
+190
+00:26:28.080 --> 00:26:36.320
+and that's through the Info.plist File. This is because the Info.plist File is actually compiled
+
+191
+00:26:37.200 --> 00:26:44.880
+after the build settings are resolved. So that's a nice way to do it. Now, let's look at the
+
+192
+00:26:44.880 --> 00:26:51.840
+build settings are resolved. So that's why we can have all these build settings like the dollar
+
+193
+00:26:51.840 --> 00:27:01.680
+product name set for the Bundle name and more. So I'm going to add a new setting here, which I'm
+
+194
+00:27:01.680 --> 00:27:17.200
+going to call it API base URL. And I'll set the value to HTTPS dollar API Domain. One of the
+
+195
+00:27:17.200 --> 00:27:27.520
+reasons I did this is because using the forward slashes required by the HTTPS scheme in the config
+
+196
+00:27:27.520 --> 00:27:35.200
+File would require some escaping, and I wanted to avoid that. Now, the last piece of the puzzle
+
+197
+00:27:35.200 --> 00:27:44.640
+is reading these values, this value from the Info.plist in code. So I'm going to go to my
+
+198
+00:27:44.640 --> 00:28:04.160
+SceneDelegate and just try to read the value and print it around the app. And I see the first line
+
+199
+00:28:04.160 --> 00:28:13.200
+in the console being URL is HTTP API staging. This is because my project uses the debug
+
+200
+00:28:13.200 --> 00:28:31.200
+configuration for the run action. I will stop. And to get the project into a clean state,
+
+201
+00:28:31.200 --> 00:28:42.080
+I'm going to revert everything we've done because in the next example, I want us to go through
+
+202
+00:28:43.280 --> 00:28:50.320
+an exercise of moving all the settings from Xcode project to config files, and I didn't want to
+
+203
+00:28:51.680 --> 00:29:00.880
+interfere. I see a question in the chat, so let's see. Seba says, I wonder if we want to
+
+204
+00:29:00.880 --> 00:29:07.040
+have other configurations like test, UAT, etc. Swift Package manager doesn't work when
+
+205
+00:29:07.600 --> 00:29:12.960
+there are project configs other than default debug and release. Yeah, that's a known issue
+
+206
+00:29:14.000 --> 00:29:21.840
+for Swift Package manager. It's also something we recommend so you don't create extra configurations
+
+207
+00:29:21.840 --> 00:29:28.800
+unless you really need to, as it would just complicate the whole setUp of your project. So,
+
+208
+00:29:28.800 --> 00:29:35.840
+if you need to have different set of build settings, I just showed you how you can do
+
+209
+00:29:35.840 --> 00:29:45.760
+this with configuration files, or you can look into other options like duplicating the targets,
+
+210
+00:29:45.760 --> 00:29:53.840
+which is also not the best solution, but it really depends on your use case. Yeah, that's
+
+211
+00:29:53.840 --> 00:30:00.960
+a good example, so it's an extra reason to avoid extra configurations.
+
+212
+00:30:08.320 --> 00:30:16.320
+So, back to our project. Everything is back to the original state.
+
+213
+00:30:16.320 --> 00:30:21.360
+So, let's see what this process of extracting the settings would look like.
+
+214
+00:30:23.280 --> 00:30:29.920
+I'm going to use an open source tool, which is called build setting extractor,
+
+215
+00:30:33.120 --> 00:30:40.160
+and what this open source project does is it allows you to drag an Xcode project
+
+216
+00:30:40.160 --> 00:30:49.360
+into it, and it will extract all the settings into separated XC config files.
+
+217
+00:30:51.600 --> 00:31:01.840
+So, I'll drag my EssentialFeed Xcode project, and I need to select a folder, so I select the
+
+218
+00:31:01.840 --> 00:31:11.600
+EssentialFeed folder, and I can see it immediately created an XC config folder and a bunch of files
+
+219
+00:31:11.600 --> 00:31:22.240
+inside, which we're going to take a look at in a minute. I will also do the same for the EssentialApp
+
+220
+00:31:22.240 --> 00:31:34.080
+project, and it also generated the XC config folder. Very useful tool. So, using Finder,
+
+221
+00:31:36.640 --> 00:31:43.600
+I want to explore the contents of this folder, which can be intimidating at first, but it's
+
+222
+00:31:43.600 --> 00:31:52.240
+using Finder. I want to explore the contents of this folder, which can be intimidating at first.
+
+223
+00:31:54.880 --> 00:32:02.400
+First, we notice we have some project files and then some files that have the name of each of
+
+224
+00:32:02.400 --> 00:32:06.880
+our targets. Since we have five targets, each target has a set of files.
+
+225
+00:32:06.880 --> 00:32:16.720
+The project files are one for debug, one for release, and a shared. The shared File contains
+
+226
+00:32:16.720 --> 00:32:23.520
+all the settings that apply to both debug and release. The debug and release files contain the
+
+227
+00:32:23.520 --> 00:32:30.720
+settings that are specific to that configuration only, and this applies to the project level for
+
+228
+00:32:30.720 --> 00:32:38.000
+the three project files, and then to each target. So, that's why we have three files for each of
+
+229
+00:32:38.000 --> 00:32:44.480
+our targets and one for the project. We'll look into those files in a minute. For now, let's
+
+230
+00:32:45.520 --> 00:32:52.320
+assume they contain the exact same settings we have in our Xcode project, and we'll check this.
+
+231
+00:32:52.320 --> 00:33:03.040
+Let's see how we can use these files. First, we need to add them into the project. I will
+
+232
+00:33:03.920 --> 00:33:13.360
+drag and drop the XC config folder from the EssentialFeed folder into my EssentialFeed project.
+
+233
+00:33:13.360 --> 00:33:20.560
+I will uncheck the target because, as before, I don't want any files being added to the project.
+
+234
+00:33:20.560 --> 00:33:29.360
+I don't want any files being bundled, and I'll hit Finish. The problem with this approach, and I'm
+
+235
+00:33:29.360 --> 00:33:38.160
+sure you've seen this, is I get a random order for all the files I just added, and I don't like this.
+
+236
+00:33:38.880 --> 00:33:46.000
+So, I'll select all the files, hit Delete to remove the references, and then go to my
+
+237
+00:33:46.000 --> 00:33:56.080
+Finder, and select all the files which are ordered, and drag them back. Same, I'll uncheck the target
+
+238
+00:33:56.080 --> 00:34:05.840
+and hit Finish. And now, I have all the files in the right order, if you care about this. Now,
+
+239
+00:34:05.840 --> 00:34:14.400
+let's actually start using them. So, I'll go to my EssentialFeed project, the project level info,
+
+240
+00:34:14.400 --> 00:34:24.560
+and I want to set these configurations. First, let's do it at the project level. So,
+
+241
+00:34:24.560 --> 00:34:35.280
+I'll select my project level File, and I'll use project debug for the debug configuration, and
+
+242
+00:34:35.280 --> 00:34:44.400
+project release for the release configuration. Now, let's inspect the build settings for the project
+
+243
+00:34:44.400 --> 00:34:51.440
+level because that's what we have just changed. Again, we see the extra column for the config File,
+
+244
+00:34:51.440 --> 00:34:59.120
+and I can use this customized filter, which will only show me the settings, which are explicit at
+
+245
+00:34:59.120 --> 00:35:05.120
+the current level. So, my current level being project, then I'll see all the project level
+
+246
+00:35:05.120 --> 00:35:12.080
+explicit settings. Let's compare my explicit settings for the EssentialFeed project with
+
+247
+00:35:12.080 --> 00:35:20.080
+the ones from my imported File. So, I'll select all the files, and I'll select all the files,
+
+248
+00:35:20.080 --> 00:35:27.040
+imported File. And if we take a quick look, we'll see they are the same.
+
+249
+00:35:30.720 --> 00:35:38.720
+This is where we would catch any potential issues with this generation of the files, but I see
+
+250
+00:35:40.320 --> 00:35:48.560
+no problem. So, what I'll do is I'll hit command A and select all the customized settings and hit
+
+251
+00:35:48.560 --> 00:35:58.080
+delete. This deletes all the customizations from the project level from my Xcode project.
+
+252
+00:36:02.720 --> 00:36:15.840
+Before we commit, we look at the diff again. So, first section, we have all the new added config
+
+253
+00:36:15.840 --> 00:36:29.840
+files, then there's the exe config group, and of course its files. And then at the bottom,
+
+254
+00:36:29.840 --> 00:36:37.680
+where we have all the settings, we see that instead of the List of settings we used to have
+
+255
+00:36:37.680 --> 00:36:45.200
+for the debug and release configurations of each project, they've been replaced with the
+
+256
+00:36:45.200 --> 00:36:54.240
+base configuration reference to the File I just selected. So, all these settings are now gone from
+
+257
+00:36:54.240 --> 00:37:14.960
+the project File. And I want to commit. Let's also set the configuration
+
+258
+00:37:14.960 --> 00:37:20.960
+files for each target because they have some explicit settings of their own. So,
+
+259
+00:37:23.360 --> 00:37:31.360
+you need to bear with me for this one. We will select for every target the target plus
+
+260
+00:37:31.360 --> 00:37:35.760
+configuration File that's corresponding. So, first I'm looking at the debug configuration. So,
+
+261
+00:37:35.760 --> 00:37:44.560
+I have EssentialFeed debug, an EssentialFeedTests debug, an EssentialFeedAPI end-to-end Tests
+
+262
+00:37:44.560 --> 00:37:52.640
+debug, EssentialFeedCacheIntegration test debug, EssentialFeed iOS debug, and EssentialFeed
+
+263
+00:37:52.640 --> 00:38:09.840
+iOS Tests debug. And I'll quickly do the same for the release. Notice that we don't include
+
+264
+00:38:09.840 --> 00:38:24.720
+the shared File explicitly because that's already imported in both the debug and release files.
+
+265
+00:38:24.720 --> 00:38:35.920
+Done. Now, let's inspect the build settings of my target, which is EssentialFeed at first. Again,
+
+266
+00:38:35.920 --> 00:38:42.240
+I'll use the customized plus levels. And if we look at all the tabs here, we see the project
+
+267
+00:38:42.240 --> 00:38:54.320
+level settings and the target level config File as well. If we quickly look at those two columns,
+
+268
+00:38:54.320 --> 00:39:04.080
+we see they have the same values. So, our import was successful. Again, I will select all the
+
+269
+00:39:04.080 --> 00:39:19.520
+settings and hit delete. And I'll do this for all the targets. Again, this is the point where you
+
+270
+00:39:19.520 --> 00:39:25.600
+need to be very careful and make sure that the values you get from the configuration files
+
+271
+00:39:25.600 --> 00:39:48.000
+are the exact same as the ones you had explicit through Xcode. Okay. I'll do a build.
+
+272
+00:39:48.000 --> 00:39:58.480
+Everything's okay. So, I will see what the diff looks like.
+
+273
+00:40:02.320 --> 00:40:05.920
+Since we already imported the File in our previous commit, there's no
+
+274
+00:40:07.280 --> 00:40:13.360
+changes to the beginning of this File. So, only explicit settings being replaced by the
+
+275
+00:40:13.360 --> 00:40:20.720
+configurations we just added. As you remember, the structure of this XC build configuration settings
+
+276
+00:40:20.720 --> 00:40:30.320
+is first the project, so project debug, project release, and then each target. So, we see that
+
+277
+00:40:30.320 --> 00:40:38.640
+each target has a setting for the base configuration reference to one of the XC configs. And then all
+
+278
+00:40:38.640 --> 00:40:48.880
+the settings on the right are gone. And we just deleted 200 lines from our project File.
+
+279
+00:40:48.880 --> 00:41:05.920
+I will also commit this. Let's quickly do the same exercise for the EssentialApp.
+
+280
+00:41:05.920 --> 00:41:17.840
+So, first, go to the finder, drag the xcconfig folder. But because the order is wrong,
+
+281
+00:41:17.840 --> 00:41:27.840
+I will remove the references and add them again. Again, making sure we don't Embed them.
+
+282
+00:41:27.840 --> 00:41:31.280
+That's not a problem. So, if they get embedded, they're extra
+
+283
+00:41:31.280 --> 00:41:36.320
+files in your app Bundle. No problem. But they shouldn't be there, especially since they're
+
+284
+00:41:36.320 --> 00:41:56.480
+plain text. This time, I will do just one operation. So, setting my config files for the project
+
+285
+00:41:56.480 --> 00:42:02.640
+debug. I will use project debug. For the project release, I will use project release. Then for
+
+286
+00:42:02.640 --> 00:42:10.720
+EssentialApp target, I'll use EssentialApp debug. EssentialApp test debug. EssentialApp
+
+287
+00:42:10.720 --> 00:42:18.720
+release. EssentialApp test release. Then that's the configuration. Now, we'll inspect the build
+
+288
+00:42:18.720 --> 00:42:26.640
+settings as before. So, customized. First, for the project level, we compare the two columns.
+
+289
+00:42:28.560 --> 00:42:42.400
+I see no difference. I'll do command A and delete. And then, at the project, at the target level,
+
+290
+00:42:42.400 --> 00:42:48.800
+I'll also check out those two columns. So, the target and the config File for the target.
+
+291
+00:42:49.600 --> 00:42:58.000
+Make sure they're the same. I think they are. So, again, command A, delete. And for the test target
+
+292
+00:43:01.840 --> 00:43:08.320
+as well. Do a build. And then, for the test target, I'll do a build.
+
+293
+00:43:08.320 --> 00:43:17.040
+As well. Do a build. Still successful. This doesn't guarantee because I haven't built all
+
+294
+00:43:17.040 --> 00:43:28.000
+the scenarios, but at least the first build looks fine. So, let's look at the diff.
+
+295
+00:43:28.000 --> 00:43:38.720
+Again, we have the section with the config files we added. The new exe config group and its files.
+
+296
+00:43:42.240 --> 00:43:51.120
+And all the settings have been deleted. The first two being the project settings. So, the project
+
+297
+00:43:51.120 --> 00:44:02.720
+debug and project release. And then, the set of settings for the EssentialApp. And the EssentialApp
+
+298
+00:44:02.720 --> 00:44:14.560
+test target. And I'll commit.
+
+299
+00:44:14.560 --> 00:44:25.120
+And I'll commit. We have successfully moved all the settings from the export project File to the
+
+300
+00:44:25.120 --> 00:44:34.880
+dedicated exe config files. But we haven't edited anything. We just copied over the values from one
+
+301
+00:44:34.880 --> 00:44:42.720
+side to the other. Now, I want to take a quick look at the files we just generated and see if
+
+302
+00:44:42.720 --> 00:44:50.800
+we can make further improvements. I'll use the files in the EssentialFeed project because they
+
+303
+00:44:50.800 --> 00:44:59.360
+are a lot more. So, the EssentialFeed debug, which is the File for the EssentialFeed target
+
+304
+00:44:59.360 --> 00:45:06.720
+debug configuration, has only one setting, which is the Swift optimization level set to none.
+
+305
+00:45:06.720 --> 00:45:13.680
+Also, we see the include of the EssentialFeed shared. And if we open that File, we see a bunch
+
+306
+00:45:13.680 --> 00:45:24.560
+of settings that were explicit for my target. If you look at the release File, we see the File is
+
+307
+00:45:24.560 --> 00:45:34.880
+empty. And this will be the case for a number of our files here. But since we want the ability to
+
+308
+00:45:34.880 --> 00:45:42.560
+easily add settings to targets in the Future, we won't delete these files.
+
+309
+00:45:49.440 --> 00:45:56.640
+If we look at the EssentialFeed shared and all the other shared files, we see
+
+310
+00:45:56.640 --> 00:46:03.840
+there are a previous example that they all use the Swift version 5.0.
+
+311
+00:46:08.240 --> 00:46:11.840
+So, this tells me that there is still duplication.
+
+312
+00:46:14.160 --> 00:46:17.840
+More than that, if we look at the targets from the EssentialApp,
+
+313
+00:46:17.840 --> 00:46:27.680
+we see that they also use Swift version 5.0. So, okay, let's get rid of this duplication.
+
+314
+00:46:29.040 --> 00:46:35.760
+This is where XC config files are useful because we can import a File, a configuration File,
+
+315
+00:46:35.760 --> 00:46:46.480
+from any path. So, since I want to share between those two projects, I will go to finder
+
+316
+00:46:46.480 --> 00:46:53.520
+go to finder, and I'll create an XC config folder at the root of my repo. So,
+
+317
+00:46:55.280 --> 00:47:01.760
+instead of creating it inside one of the folders for my projects, I'll create it outside.
+
+318
+00:47:01.760 --> 00:47:21.200
+I will drag it, and as you can see, it's at the same level as my other projects.
+
+319
+00:47:21.200 --> 00:47:33.120
+Inside it, I'll create a configuration File, which I'll name Shared.
+
+320
+00:47:37.120 --> 00:47:44.640
+And because this group doesn't belong to any project, it doesn't, the File doesn't get added
+
+321
+00:47:44.640 --> 00:47:54.880
+to any of the targets. Since I said I want to move my Swift version to this File,
+
+322
+00:47:54.880 --> 00:48:05.120
+I will paste the name of the setting and the value here. And now let's remove all the other definitions
+
+323
+00:48:05.120 --> 00:48:14.880
+of this Swift version. So, I did the command shift F to open the find in all files and pasted this
+
+324
+00:48:14.880 --> 00:48:27.360
+Swift version setting, and I'll go to each one of them and remove it. So, target, those are all
+
+325
+00:48:27.360 --> 00:48:38.240
+those are all target shared configs, and I will make sure I import
+
+326
+00:48:43.040 --> 00:48:45.360
+my new Swift version setting
+
+327
+00:48:48.400 --> 00:48:55.200
+in my project shared, which will propagate them to all the targets.
+
+328
+00:48:55.200 --> 00:49:03.760
+So, at the beginning of the project shared, I'll do an include, and the path needs two folders back,
+
+329
+00:49:04.320 --> 00:49:11.200
+xcconfig and the shared File I just created. And I'll do this for both the EssentialApp
+
+330
+00:49:11.200 --> 00:49:21.920
+and the EssentialFeed project shared files. I'll do a build, all good, and just to make sure we
+
+331
+00:49:21.920 --> 00:49:32.640
+haven't broken anything, now I need to use the all filter and say Swift language. And I see the Swift
+
+332
+00:49:32.640 --> 00:49:42.320
+language is still Swift 5, and it's coming from this project shared config File, which imports it
+
+333
+00:49:42.320 --> 00:50:02.960
+from the shared File. If we look at the diff, first we have a reference added to the Xcode workspace
+
+334
+00:50:02.960 --> 00:50:18.480
+to the new XC config group, then in different files for targets shared settings, we see the Swift
+
+335
+00:50:18.480 --> 00:50:25.600
+version has been removed, then in the project shared, we see this extra line for the import we
+
+336
+00:50:25.600 --> 00:50:33.200
+added, and the same goes for the EssentialFeed. So, I won't go to all of them, it's the same,
+
+337
+00:50:34.400 --> 00:50:42.480
+and the import. And we only have one File where Swift version is defined. Now, if I... let's commit
+
+338
+00:50:42.480 --> 00:50:55.840
+this and show you how easy it is to change the Swift version to all the files and to all the
+
+339
+00:50:55.840 --> 00:51:06.160
+projects at once. So, if I set this to Swift 4, we'll actually see it. Yeah. So, the config File
+
+340
+00:51:06.160 --> 00:51:19.040
+the config File sets it to Swift 4, which is not what we wanted, and I'll revert.
+
+341
+00:51:20.080 --> 00:51:26.720
+At the point, the whole point was to show like the one centralized place controls all the settings
+
+342
+00:51:26.720 --> 00:51:37.360
+in all the projects. Next, I see there's a project shared with many settings in both the projects.
+
+343
+00:51:39.120 --> 00:51:48.080
+So, I'm curious to see what are the differences between these files and if I can reuse anything.
+
+344
+00:51:48.080 --> 00:51:56.800
+So, I'll use one diff tool, in my case, Araxis Merge, and I'll drag the project shared from the
+
+345
+00:51:56.800 --> 00:52:05.600
+EssentialApp and the project shared from the EssentialFeed projects. And I can immediately
+
+346
+00:52:05.600 --> 00:52:13.840
+see they are almost identical with a few differences in code signing, current project,
+
+347
+00:52:13.840 --> 00:52:19.520
+and some versioning, and, of course, the SDK route. In one case is macOS and in the other is iPhone OS.
+
+348
+00:52:19.520 --> 00:52:29.120
+So, I'll use... I'll copy all the settings here, because they are... they exist in both files,
+
+349
+00:52:29.680 --> 00:52:39.360
+and I'll move them to my shared File to avoid this duplication. So, I've pasted it in,
+
+350
+00:52:39.360 --> 00:53:02.960
+pasted it in, and now give it here. Yeah. So, I only kept the settings which were different.
+
+351
+00:53:02.960 --> 00:53:12.000
+And I moved everything else into my shared File. One of the settings we moved was iPhone
+
+352
+00:53:12.000 --> 00:53:18.960
+deployment target 14.0. So, to make sure I didn't break anything, I'll take a look at
+
+353
+00:53:18.960 --> 00:53:32.720
+deployment target. And I see it's still 14.0. Let's check the EssentialFeed project, just to be sure.
+
+354
+00:53:35.360 --> 00:53:42.400
+Yep. 14.0. So, again, I didn't break anything. Let's look at the diff.
+
+355
+00:53:42.400 --> 00:53:50.480
+So, all the settings have been moved, or almost all the settings, all the common settings have
+
+356
+00:53:50.480 --> 00:53:59.680
+been moved from these files into my shared one. So, I'm going to move this to my shared one.
+
+357
+00:53:59.680 --> 00:54:11.120
+Next, I will use the same diff tool. This time, let's compare project debug from the EssentialFeed
+
+358
+00:54:11.120 --> 00:54:34.240
+project to the project debug from the EssentialApp project. And we see they're identical. So,
+
+359
+00:54:34.240 --> 00:54:51.280
+again, more duplication. I will add a new File, which I'm going to call it debug. And I'll move
+
+360
+00:54:51.280 --> 00:55:03.520
+all my settings here. And then make sure my other files just include this new File. So, again,
+
+361
+00:55:03.520 --> 00:55:20.400
+make sure my other files just include this new File. So, again, we have removed the application.
+
+362
+00:55:20.400 --> 00:55:37.200
+So, my new File and new files just contain the imports. Also, look at the
+
+363
+00:55:37.200 --> 00:55:48.720
+comparison between the release files of each project. And, again, only one difference,
+
+364
+00:55:49.520 --> 00:55:55.840
+where the EssentialApp has an extra validate product. So, I'll copy these,
+
+365
+00:55:59.520 --> 00:56:02.320
+create a new File here, config.
+
+366
+00:56:02.320 --> 00:56:14.400
+Config. Release. And paste the common settings.
+
+367
+00:56:14.400 --> 00:56:35.280
+And for the project release, for the EssentialApp, we'll keep the validate product setting,
+
+368
+00:56:35.280 --> 00:56:41.760
+which is not common. And in the release File, we will delete all the settings.
+
+369
+00:56:41.760 --> 00:56:46.640
+So, just to make sure we didn't break anything,
+
+370
+00:56:49.760 --> 00:56:57.040
+we need to see the debug information format set to DWARF with DSYM on the release configurations.
+
+371
+00:56:57.040 --> 00:57:14.400
+So, yes, we are good. We can omit. There's just a few more things which I want to point out
+
+372
+00:57:14.400 --> 00:57:22.720
+at this point, since we have this sharing of settings. First of all, there's this always Embed
+
+373
+00:57:22.720 --> 00:57:29.920
+Swift standard libraries setting, which is no longer required, as Swift is ABI stable now.
+
+374
+00:57:30.800 --> 00:57:39.360
+So, what we can do is use the default value and just delete these old values where they're set to
+
+375
+00:57:39.360 --> 00:57:56.560
+yes. And we'll see that the setting is set to yes in our shared File we just created,
+
+376
+00:57:56.560 --> 00:58:02.320
+which means all the targets automatically get it. So, we can go ahead and remove it,
+
+377
+00:58:02.320 --> 00:58:09.520
+since it's already set to yes from all the target explicit files.
+
+378
+00:58:16.640 --> 00:58:25.840
+Next, Swift optimization level. It's already set. So, our shared debug sets it to none,
+
+379
+00:58:25.840 --> 00:58:35.520
+and our release sets it to optimize for I think it's for speed. So, we can delete any explicit ones,
+
+380
+00:58:38.080 --> 00:58:45.920
+especially these debug ones that were set to none because none was already inherited.
+
+381
+00:58:45.920 --> 00:58:57.280
+Again, in the case of the diff, we just removed it.
+
+382
+00:59:02.480 --> 00:59:11.840
+Development team. We see that it's used in all the target shared files and it's the same value.
+
+383
+00:59:11.840 --> 00:59:18.000
+So, again, as in our first demo, I think this can be moved to the shared File.
+
+384
+00:59:19.760 --> 00:59:26.800
+So, I'll just paste it here and remove it
+
+385
+00:59:26.800 --> 00:59:50.640
+remove it from all the other files. And to be super careful,
+
+386
+00:59:50.640 --> 00:59:56.880
+we just check the development team setting, and we see it's still resolved to the same value.
+
+387
+00:59:57.600 --> 01:00:00.400
+So, again, we didn't break anything.
+
+388
+01:00:03.360 --> 01:00:10.400
+Commit. And just the new setting being added to the shared File.
+
+389
+01:00:10.400 --> 01:00:17.760
+Now, a more interesting example is code sign style. So, if we search for this setting, we see that
+
+390
+01:00:17.760 --> 01:00:26.880
+almost all the targets set it to automatic, except for the EssentialApp release config that uses the
+
+391
+01:00:26.880 --> 01:00:36.720
+manual. We can still avoid the duplication by moving the code sign automatically to the
+
+392
+01:00:36.720 --> 01:00:48.960
+shared File. But, instead of removing all the cases, we are just going to remove
+
+393
+01:00:50.480 --> 01:00:52.720
+the places where it was set to automatic.
+
+394
+01:00:52.720 --> 01:01:03.600
+So, we will keep the explicit setting for the EssentialApp release config, and we're going to
+
+395
+01:01:03.600 --> 01:01:12.160
+check this in a second, just to be moving the code sign automatically to the shared File.
+
+396
+01:01:12.160 --> 01:01:21.840
+And now, if we use the build settings editor,
+
+397
+01:01:22.640 --> 01:01:24.480
+we see that the
+
+398
+01:01:24.480 --> 01:01:40.480
+style is set to automatic for the debug configuration and to manual for the release, because we have an
+
+399
+01:01:40.480 --> 01:01:46.080
+explicit manual value in the config File for the target, which overrides the value from the
+
+400
+01:01:46.080 --> 01:01:52.000
+default settings. So, we can see that the style is set to automatic for the debug configuration,
+
+401
+01:01:52.000 --> 01:02:02.720
+which overrides the value from the project config File. So, let's commit this.
+
+402
+01:02:10.960 --> 01:02:21.520
+If we look at the product name setting, we see it almost uses the same value in all the targets
+
+403
+01:02:21.520 --> 01:02:32.960
+with the difference that in Tests, it's set to $targetName, while in like the EssentialFeed
+
+404
+01:02:32.960 --> 01:02:40.240
+or EssentialFeed iOS targets, which are framework targets or in the app target,
+
+405
+01:02:41.440 --> 01:02:47.120
+it's using the C99X identifier transformation.
+
+406
+01:02:47.120 --> 01:02:55.680
+Now, since this doesn't change the value of the targetName, we can extract all of them
+
+407
+01:02:57.840 --> 01:03:03.040
+using the C99X identifier and move that to the shared File.
+
+408
+01:03:03.040 --> 01:03:14.880
+And again, we can delete all the explicit ones because
+
+409
+01:03:14.880 --> 01:03:33.840
+the value will still be resolved to the same value before.
+
+410
+01:03:33.840 --> 01:03:45.360
+Now, it's just in one place. And again, to make sure, let's look at the EssentialFeed project this time
+
+411
+01:03:46.480 --> 01:03:49.600
+and say product name.
+
+412
+01:03:54.800 --> 01:03:58.080
+And the product name is still
+
+413
+01:03:58.080 --> 01:04:06.960
+correct. So, EssentialFeed, EssentialFeedTests, EssentialFeed iOS, and so on. So, again, we did
+
+414
+01:04:06.960 --> 01:04:15.360
+not break anything. Commit this one as well. So, again, just one place and then removing it from
+
+415
+01:04:15.360 --> 01:04:26.000
+all the other files. Let's look at the targeted device family, which as you remember, is the
+
+416
+01:04:26.000 --> 01:04:32.880
+setting that's basically describing which devices are allowed to run our app. In the EssentialFeed
+
+417
+01:04:32.880 --> 01:04:39.440
+project, there's not much sharing of this setting as it's only set for the EssentialFeed iOS target
+
+418
+01:04:39.440 --> 01:04:46.480
+and the Tests. But we see that for the EssentialApp, the setting is shared between
+
+419
+01:04:46.480 --> 01:04:55.840
+the EssentialApp and the EssentialAppTests. So, my proposal is to remove it
+
+420
+01:04:58.240 --> 01:05:04.080
+and put it at the project level. So, it's going to be in the project shared.
+
+421
+01:05:04.080 --> 01:05:19.120
+Again, checking. It's still resolved to iPhone and iPad. And same here.
+
+422
+01:05:19.120 --> 01:05:29.920
+And the last one I want to look at is the product BundleIdentifier.
+
+423
+01:05:34.240 --> 01:05:40.720
+So, we see that this is different for each target because it composes
+
+424
+01:05:40.720 --> 01:05:43.440
+com.essentialDeveloper and the name of the target.
+
+425
+01:05:43.440 --> 01:05:53.280
+But we already know the targetName is resolvable to our variable. So, we can take
+
+426
+01:05:54.160 --> 01:06:04.800
+use of that. The only case where the setting doesn't match the targetName is the EssentialApp,
+
+427
+01:06:04.800 --> 01:06:13.200
+where instead of using the EssentialApp targetName, we use a different String,
+
+428
+01:06:13.200 --> 01:06:20.960
+which is EssentialAppCaseStudy. So, we will move this into the shared File.
+
+429
+01:06:20.960 --> 01:06:31.840
+Replace with targetName. And we will delete all the settings, except for the one that doesn't
+
+430
+01:06:31.840 --> 01:06:42.240
+match, which is the EssentialApp. So, we will delete all the settings except for the one that
+
+431
+01:06:42.240 --> 01:06:51.840
+doesn't match, which is the EssentialApp. So, we are removing these.
+
+432
+01:06:57.840 --> 01:07:07.680
+We'll keep this one. And we can also delete this. So, now we only have two entries. One is shared,
+
+433
+01:07:07.680 --> 01:07:13.600
+where we use the variable targetName, and the other is an explicit different value just for the
+
+434
+01:07:13.600 --> 01:07:24.160
+EssentialApp target. To make sure everything works, we'll use product BundleIdentifier.
+
+435
+01:07:25.600 --> 01:07:34.240
+And we see the Result value on EssentialDeveloper EssentialAppTests.
+
+436
+01:07:34.240 --> 01:07:36.800
+On EssentialDeveloper EssentialAppTests.
+
+437
+01:07:40.080 --> 01:07:45.200
+For the EssentialApp, it's still EssentialAppCaseStudy. So, this is exactly what we wanted.
+
+438
+01:07:46.000 --> 01:07:55.760
+And for our EssentialFeed targets, we'll see that the values are correct.
+
+439
+01:07:55.760 --> 01:08:09.840
+For EssentialFeed, EssentialFeed Test, and so on. So, again, I will commit this.
+
+440
+01:08:12.480 --> 01:08:21.760
+And the diff is, again, very, very simple. Now, I hope these examples clarify a bit how you can
+
+441
+01:08:21.760 --> 01:08:28.320
+use xcconfig files, and especially how to detect the application and how to resolve it.
+
+442
+01:08:32.320 --> 01:08:35.920
+Thank you. And now, if anyone still has questions,
+
+443
+01:08:38.560 --> 01:08:42.240
+are there any drawbacks with this approach you've ever experienced?
+
+444
+01:08:42.240 --> 01:08:54.400
+Like I mentioned in the comparison section, it can be cumbersome for people that weren't exposed to
+
+445
+01:08:54.400 --> 01:09:02.400
+using xcconfig files to understand how they work, especially when they reference other files, like
+
+446
+01:09:02.400 --> 01:09:10.800
+I've shown, and stuff like that. But I think every use case is different. So, depending on the
+
+447
+01:09:10.800 --> 01:09:19.200
+needs of the projects you have, they might or might not come in handy. I've used them in projects
+
+448
+01:09:19.200 --> 01:09:27.120
+where, I don't know, we were many developers, like 50, 60 developers, and they were super helpful
+
+449
+01:09:27.120 --> 01:09:37.040
+because sometimes somebody would just, I don't know, change a build setting by mistake, and we
+
+450
+01:09:37.040 --> 01:09:45.600
+would only see it very late, especially if the project File is too big, then some diffs will not
+
+451
+01:09:46.400 --> 01:09:51.360
+work. So, even GitHub will show you that the File is too big and cannot show you the diffs.
+
+452
+01:09:52.400 --> 01:09:58.480
+So, we ended up with xcconfig files and some CI rules, where if you change the build setting,
+
+453
+01:09:58.480 --> 01:10:03.840
+you'd have to add some explanation about why you changed the setting.
+
+454
+01:10:03.840 --> 01:10:10.080
+So, yeah, like drawbacks, like I said, probably setting it up and understanding how it works.
+
+455
+01:10:11.040 --> 01:10:18.080
+But I didn't have any problems, or once you understand the syntax, which is pretty simple.
+
+456
+01:10:19.040 --> 01:10:25.760
+And again, this is not like a recommendation of everybody should start using xcconfig files.
+
+457
+01:10:25.760 --> 01:10:38.400
+It's just understand their power and when it suits you to use them. Another question. Sorry,
+
+458
+01:10:38.400 --> 01:10:45.920
+I can't read the name because it's acrylic. Do you know how to automatically sort files when we add
+
+459
+01:10:45.920 --> 01:10:56.480
+them to a project? Unfortunately, I don't, but if I'm not mistaken, yeah, there's a sort by name. So,
+
+460
+01:10:57.840 --> 01:11:08.320
+that probably, yeah, should work. So, you can just use this one. I probably got the habit of
+
+461
+01:11:08.320 --> 01:11:17.840
+re-adding them from back when this setting wasn't available. So, yeah, you can use because if I try
+
+462
+01:11:17.840 --> 01:11:23.680
+to, I don't know, put them out of order here and then sort, yeah, they're back in order. So.
+
+463
+01:11:27.040 --> 01:11:34.160
+Okay. I see another question in the chat. If I use different DB, like CoreData on test target
+
+464
+01:11:34.160 --> 01:11:41.920
+and debug, can I configure which File to use on debug and on Testing with xcconfig? It can be done,
+
+465
+01:11:41.920 --> 01:11:48.800
+but I really, I'm not sure why would you have like a different DB depending on configuration.
+
+466
+01:11:48.800 --> 01:11:54.720
+You can Embed them all and you can use the composition rule to compose differently.
+
+467
+01:11:54.720 --> 01:12:01.600
+Another question, is it possible to pass all these build settings via CommandLine build? Yes,
+
+468
+01:12:01.600 --> 01:12:08.880
+it's possible, but I still recommend you keep them somewhere. So, it's even the Xcode project
+
+469
+01:12:08.880 --> 01:12:16.800
+or xcconfig files, but they're stored in source control. So, if I check out your project, it should
+
+470
+01:12:16.800 --> 01:12:24.480
+be ready to, and I should be able to build it pretty quickly. So, having the Xcode project setUp
+
+471
+01:12:24.480 --> 01:12:31.280
+properly is very important and that's why passing them to the CommandLine doesn't really
+
+472
+01:12:31.280 --> 01:12:39.520
+help. I think what you want is to have all the settings configured in Xcode and from the CommandLine
+
+473
+01:12:39.520 --> 01:12:48.080
+you just invoke the action you want, like Xcode build or archive. Those were all the questions.
+
+474
+01:12:48.080 --> 01:12:56.160
+Thank you for tuning in and being available at the end for the Q&A section. Thank you and see you soon.
+
+475
+01:12:56.160 --> 01:13:10.720
+Bye.
+

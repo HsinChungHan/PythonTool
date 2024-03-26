@@ -1,0 +1,29 @@
+264
+00:09:07,266 --> 00:09:10,700
+so let's add the test helpers simply
+所以讓我們簡單地增加測試助手
+
+265
+00:09:10,700 --> 00:09:13,333
+removing the file from disk let's run
+從硬碟移除檔案後，讓我們執行
+
+266
+00:09:13,333 --> 00:09:14,933
+again
+再執行一次
+
+267
+00:09:14,933 --> 00:09:17,200
+it's passing let's run again just to
+它通過了，讓我們再執行一次以便
+
+268
+00:09:17,200 --> 00:09:18,800
+make sure it's still passing
+確認它還是通過
+
+269
+00:09:18,800 --> 00:09:22,633
+okay run a couple of times it is passing
+好的，執行幾次後，它通過了

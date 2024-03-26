@@ -1,0 +1,44 @@
+283
+00:09:47,600 --> 00:09:49,033
+create a mess in the codebase
+在代碼庫中製造混亂
+
+284
+00:09:49,033 --> 00:09:52,000
+yes so let's first commit the store side
+是的，所以我們先提交存儲端
+
+285
+00:09:52,000 --> 00:09:52,633
+effects
+的影響
+
+286
+00:09:52,633 --> 00:09:54,800
+cleanup and then we complete the test
+清理，然後我們完成測試
+
+287
+00:09:54,800 --> 00:09:55,833
+sounds good
+聽起來不錯
+
+288
+00:09:55,833 --> 00:09:58,633
+so clean up and undo all cache side
+所以清理並撤銷所有快取端
+
+289
+00:09:58,633 --> 00:09:59,333
+effects
+的影響
+
+290
+00:09:59,333 --> 00:10:01,900
+on setUp and tearDown to avoid sharing
+在設置和拆卸時避免共享
+
+291
+00:10:01,900 --> 00:10:02,700
+state
+狀態

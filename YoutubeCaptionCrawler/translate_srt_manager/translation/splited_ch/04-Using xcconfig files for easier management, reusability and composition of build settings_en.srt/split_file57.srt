@@ -1,0 +1,31 @@
+432
+01:06:57,840 --> 01:07:07,680
+我們會保留這一個。我們也可以刪掉這個。所以，現在我們只剩下兩個項目。一個是共用的，
+
+433
+01:07:07,680 --> 01:07:13,600
+我們在其中使用變量 targetName，另一個項目則是只專為
+
+434
+01:07:13,600 --> 01:07:24,160
+EssentialApp target設定的明確不同值。為了確保一切正常運行，我們將使用 product BundleIdentifier。
+
+435
+01:07:25,600 --> 01:07:34,240
+並且我們在EssentialDeveloper EssentialAppTests上看到了結果值。
+
+436
+01:07:34,240 --> 01:07:36,800
+在EssentialDeveloper EssentialAppTests上。
+
+437
+01:07:40,080 --> 01:07:45,200
+對於EssentialApp，它依然是EssentialAppCaseStudy。所以，這正是我們想要的。
+
+438
+01:07:46,000 --> 01:07:55,760
+致於我們的EssentialFeed目標，我們將看到該值是正確的。
+
+439
+01:07:55,760 --> 01:08:09,840
+對於EssentialFeed，EssentialFeed Test等等。所以，再一次，我將提交這個。

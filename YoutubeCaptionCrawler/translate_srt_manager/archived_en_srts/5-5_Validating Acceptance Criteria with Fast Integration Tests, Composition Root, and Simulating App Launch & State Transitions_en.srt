@@ -1,0 +1,2627 @@
+1
+00:00:00.533 --> 00:00:03.500
+Hello Mike, hey Caio
+
+2
+00:00:03.500 --> 00:00:05.666
+in the previous lecture we tested the
+
+3
+00:00:05.666 --> 00:00:06.866
+acceptance criteria
+
+4
+00:00:06.866 --> 00:00:09.833
+with UI tests and they work just fine
+
+5
+00:00:09.833 --> 00:00:10.466
+but there are
+
+6
+00:00:10.466 --> 00:00:13.500
+two problems with it first
+
+7
+00:00:13.500 --> 00:00:15.900
+we ended up with test code in our
+
+8
+00:00:15.900 --> 00:00:16.800
+production
+
+9
+00:00:16.800 --> 00:00:20.000
+target right
+
+10
+00:00:20.000 --> 00:00:22.400
+and second and most important those
+
+11
+00:00:22.400 --> 00:00:23.033
+tests
+
+12
+00:00:23.033 --> 00:00:26.633
+are extremely slow we have 3
+
+13
+00:00:26.633 --> 00:00:28.866
+simple tests and they already take
+
+14
+00:00:28.866 --> 00:00:30.400
+around 30 seconds
+
+15
+00:00:30.400 --> 00:00:33.500
+to run so 10 seconds per test
+
+16
+00:00:33.500 --> 00:00:36.866
+right so adding more features will make
+
+17
+00:00:36.866 --> 00:00:38.466
+this testing strategy
+
+18
+00:00:38.466 --> 00:00:41.333
+unsustainable because of the time the
+
+19
+00:00:41.333 --> 00:00:41.900
+tests
+
+20
+00:00:41.900 --> 00:00:44.933
+will require to run yes
+
+21
+00:00:44.933 --> 00:00:46.300
+if we keep adding features to this
+
+22
+00:00:46.300 --> 00:00:48.533
+application and testing them with UI
+
+23
+00:00:48.533 --> 00:00:49.500
+tests
+
+24
+00:00:49.500 --> 00:00:52.366
+very soon will take half an hour or even
+
+25
+00:00:52.366 --> 00:00:53.733
+an hour to run
+
+26
+00:00:53.733 --> 00:00:55.266
+and that's not sustainable as a
+
+27
+00:00:55.266 --> 00:00:57.333
+development process because we want our
+
+28
+00:00:57.333 --> 00:01:00.300
+iterations to be fast we want to merge
+
+29
+00:01:00.300 --> 00:01:01.100
+code
+
+30
+00:01:01.100 --> 00:01:04.233
+several times a day but if our
+
+31
+00:01:04.233 --> 00:01:06.000
+continuous integration pipeline takes
+
+32
+00:01:06.000 --> 00:01:07.100
+hours to run
+
+33
+00:01:07.100 --> 00:01:09.266
+this is going to become a bottleneck
+
+34
+00:01:09.266 --> 00:01:10.933
+that's exactly right
+
+35
+00:01:10.933 --> 00:01:14.066
+so we need a better strategy for testing
+
+36
+00:01:14.066 --> 00:01:16.466
+the acceptance criteria so in this
+
+37
+00:01:16.466 --> 00:01:18.133
+lecture I'm going to show you how to
+
+38
+00:01:18.133 --> 00:01:18.633
+test
+
+39
+00:01:18.633 --> 00:01:20.066
+the acceptance criteria of your
+
+40
+00:01:20.066 --> 00:01:22.933
+application the whole composition
+
+41
+00:01:22.933 --> 00:01:25.666
+with integration tests which are much
+
+42
+00:01:25.666 --> 00:01:26.466
+faster
+
+43
+00:01:26.466 --> 00:01:29.333
+and doesn't require you to add test or
+
+44
+00:01:29.333 --> 00:01:30.866
+debug specific code
+
+45
+00:01:30.866 --> 00:01:34.300
+to production exactly and the Scene
+
+46
+00:01:34.300 --> 00:01:35.100
+Delegate
+
+47
+00:01:35.100 --> 00:01:38.000
+and the AppDelegate are like any other
+
+48
+00:01:38.000 --> 00:01:39.033
+class
+
+49
+00:01:39.033 --> 00:01:41.500
+if there is code in there you can test
+
+50
+00:01:41.500 --> 00:01:42.300
+it
+
+51
+00:01:42.300 --> 00:01:45.500
+exactly we can create
+
+52
+00:01:45.500 --> 00:01:49.666
+a SceneDelegateTests
+
+53
+00:01:49.666 --> 00:01:51.666
+and test the SceneDelegate like any
+
+54
+00:01:51.666 --> 00:01:54.366
+other class in our system
+
+55
+00:01:54.366 --> 00:01:56.933
+so for example we need to test that when
+
+56
+00:01:56.933 --> 00:01:58.533
+a new scene is going to connect
+
+57
+00:01:58.533 --> 00:02:00.366
+to the scene session we need to
+
+58
+00:02:00.366 --> 00:02:02.233
+configure the window
+
+59
+00:02:02.233 --> 00:02:04.300
+root view controller of the application
+
+60
+00:02:04.300 --> 00:02:05.433
+with the feed
+
+61
+00:02:05.433 --> 00:02:08.800
+user interface right so we can write
+
+62
+00:02:08.800 --> 00:02:12.800
+a test like scene will connect to
+
+63
+00:02:12.800 --> 00:02:15.500
+session configures the root view
+
+64
+00:02:15.500 --> 00:02:17.733
+controller
+
+65
+00:02:17.733 --> 00:02:19.566
+so we need an assertion what do we want
+
+66
+00:02:19.566 --> 00:02:21.900
+to happen when this method is invoked
+
+67
+00:02:21.900 --> 00:02:22.233
+well
+
+68
+00:02:22.233 --> 00:02:24.700
+we want to set the root view controller
+
+69
+00:02:24.700 --> 00:02:25.733
+over our window
+
+70
+00:02:25.733 --> 00:02:28.300
+and in the UI specs the feed view should
+
+71
+00:02:28.300 --> 00:02:29.200
+be embedded
+
+72
+00:02:29.200 --> 00:02:31.833
+in a navigation controller so the
+
+73
+00:02:31.833 --> 00:02:32.933
+assertion we need
+
+74
+00:02:32.933 --> 00:02:35.833
+here is that our root view controller is a
+
+75
+00:02:35.833 --> 00:02:38.000
+UINavigationController
+
+76
+00:02:38.000 --> 00:02:41.433
+when we invoke the scene we connect to
+
+77
+00:02:41.433 --> 00:02:41.900
+session
+
+78
+00:02:41.900 --> 00:02:44.866
+method so let's import the EssentialApp
+
+79
+00:02:44.866 --> 00:02:46.300
+module so we have access
+
+80
+00:02:46.300 --> 00:02:49.200
+to the SceneDelegate okay but the Scene
+
+81
+00:02:49.200 --> 00:02:50.800
+Delegate is not public
+
+82
+00:02:50.800 --> 00:02:54.233
+so we can't access it directly yes
+
+83
+00:02:54.233 --> 00:02:57.100
+so we either make it public or we import
+
+84
+00:02:57.100 --> 00:02:58.866
+this module as testable
+
+85
+00:02:58.866 --> 00:03:02.133
+in the test case right the SceneDelegate
+
+86
+00:03:02.133 --> 00:03:04.300
+APIs don't have to be public
+
+87
+00:03:04.300 --> 00:03:07.500
+because nobody else references the Scene
+
+88
+00:03:07.500 --> 00:03:08.933
+Delegate
+
+89
+00:03:08.933 --> 00:03:11.033
+right so the SceneDelegate is part of
+
+90
+00:03:11.033 --> 00:03:12.633
+the Composition Root
+
+91
+00:03:12.633 --> 00:03:15.833
+which is the root module no other module
+
+92
+00:03:15.833 --> 00:03:16.700
+references
+
+93
+00:03:16.700 --> 00:03:19.833
+the Main module exactly thus instead of
+
+94
+00:03:19.833 --> 00:03:21.900
+making the SceneDelegate public
+
+95
+00:03:21.900 --> 00:03:24.633
+we can import the Main module as
+
+96
+00:03:24.633 --> 00:03:25.433
+testable
+
+97
+00:03:25.433 --> 00:03:27.200
+because we don't want any other module
+
+98
+00:03:27.200 --> 00:03:29.566
+having access to this module
+
+99
+00:03:29.566 --> 00:03:32.300
+so when testing a root module we don't
+
+100
+00:03:32.300 --> 00:03:33.500
+need to expose
+
+101
+00:03:33.500 --> 00:03:37.200
+any root types publicly that's it
+
+102
+00:03:37.200 --> 00:03:40.533
+now we get autocomplete so we need a
+
+103
+00:03:40.533 --> 00:03:41.433
+scene
+
+104
+00:03:41.433 --> 00:03:45.333
+a session and options
+
+105
+00:03:45.333 --> 00:03:49.666
+so a scene is a UIScene
+
+106
+00:03:49.666 --> 00:03:52.000
+and the scene needs a session and
+
+107
+00:03:52.000 --> 00:03:53.833
+options
+
+108
+00:03:53.833 --> 00:03:57.200
+so we need a session a session is a
+
+109
+00:03:57.200 --> 00:04:00.066
+UISceneSession that inits with coder and
+
+110
+00:04:00.066 --> 00:04:01.833
+it's failable initializer
+
+111
+00:04:01.833 --> 00:04:03.833
+because it can fail so this is getting
+
+112
+00:04:03.833 --> 00:04:04.933
+trickier now
+
+113
+00:04:04.933 --> 00:04:07.033
+what kind of coder should we pass here
+
+114
+00:04:07.033 --> 00:04:10.000
+let's try an empty coder
+
+115
+00:04:10.000 --> 00:04:12.866
+and then we need options which is a
+
+116
+00:04:12.866 --> 00:04:13.566
+UIScene
+
+117
+00:04:13.566 --> 00:04:16.233
+ConnectionOptions but this class
+
+118
+00:04:16.233 --> 00:04:17.100
+doesn't have
+
+119
+00:04:17.100 --> 00:04:20.133
+a public initializer right so if you
+
+120
+00:04:20.133 --> 00:04:21.166
+cannot instantiate
+
+121
+00:04:21.166 --> 00:04:23.900
+a parameter of a method we cannot invoke
+
+122
+00:04:23.900 --> 00:04:25.333
+that method
+
+123
+00:04:25.333 --> 00:04:28.533
+and that's common when using frameworks
+
+124
+00:04:28.533 --> 00:04:30.466
+so how do you test a method you can't
+
+125
+00:04:30.466 --> 00:04:32.000
+invoke
+
+126
+00:04:32.000 --> 00:04:33.666
+well ideally the framework should give
+
+127
+00:04:33.666 --> 00:04:35.033
+you the tools
+
+128
+00:04:35.033 --> 00:04:38.466
+to test your code right
+
+129
+00:04:38.466 --> 00:04:40.233
+but when they don't there is something
+
+130
+00:04:40.233 --> 00:04:41.666
+you can do
+
+131
+00:04:41.666 --> 00:04:43.900
+when you cannot invoke a method what you
+
+132
+00:04:43.900 --> 00:04:45.166
+can do is to move
+
+133
+00:04:45.166 --> 00:04:46.800
+all the logic within the method you
+
+134
+00:04:46.800 --> 00:04:48.866
+cannot invoke into a method you can
+
+135
+00:04:48.866 --> 00:04:50.133
+invoke
+
+136
+00:04:50.133 --> 00:04:52.700
+okay the method that you cannot invoke
+
+137
+00:04:52.700 --> 00:04:54.000
+should only do one thing
+
+138
+00:04:54.000 --> 00:04:57.033
+call the method you can invoke right
+
+139
+00:04:57.033 --> 00:05:00.466
+it's not perfect but it does the job
+
+140
+00:05:00.466 --> 00:05:04.066
+yes ideally you want to call this method
+
+141
+00:05:04.066 --> 00:05:05.666
+but when you can't you shouldn't give up
+
+142
+00:05:05.666 --> 00:05:07.833
+on testing you move the logic
+
+143
+00:05:07.833 --> 00:05:11.666
+into a method you can invoke
+
+144
+00:05:11.666 --> 00:05:15.100
+so now we call just configure window
+
+145
+00:05:15.100 --> 00:05:17.666
+and we don't need all this code here and
+
+146
+00:05:17.666 --> 00:05:19.333
+before we run the test we should also
+
+147
+00:05:19.333 --> 00:05:20.466
+set
+
+148
+00:05:20.466 --> 00:05:24.700
+a window otherwise the window will be
+
+149
+00:05:24.700 --> 00:05:30.400
+nil now let's run the tests
+
+150
+00:05:30.400 --> 00:05:33.433
+failing fantastic
+
+151
+00:05:33.433 --> 00:05:36.700
+to make it pass let's embed the feed UI
+
+152
+00:05:36.700 --> 00:05:40.000
+in a navigation controller run the test
+
+153
+00:05:40.000 --> 00:05:42.233
+again
+
+154
+00:05:42.233 --> 00:05:46.700
+passing fantastic we should also check
+
+155
+00:05:46.700 --> 00:05:48.400
+that the top view controller in the
+
+156
+00:05:48.400 --> 00:05:49.900
+navigation stack
+
+157
+00:05:49.900 --> 00:05:53.166
+is a FeedViewController exactly
+
+158
+00:05:53.166 --> 00:05:54.866
+just checking the navigation controller
+
+159
+00:05:54.866 --> 00:05:56.800
+is not enough
+
+160
+00:05:56.800 --> 00:05:58.000
+because we want to make sure we have the
+
+161
+00:05:58.000 --> 00:06:00.533
+right composition which is
+
+162
+00:06:00.533 --> 00:06:03.900
+a navigation controller as the root and
+
+163
+00:06:03.900 --> 00:06:05.833
+a FeedViewController as the top
+
+164
+00:06:05.833 --> 00:06:08.633
+controller of the navigation
+
+165
+00:06:08.633 --> 00:06:11.833
+so we need to import the EssentialFeed
+
+166
+00:06:11.833 --> 00:06:12.466
+iOS
+
+167
+00:06:12.466 --> 00:06:14.400
+module to have access to the FeedView
+
+168
+00:06:14.400 --> 00:06:16.233
+Controller type
+
+169
+00:06:16.233 --> 00:06:18.133
+run the test again and they should pass
+
+170
+00:06:18.133 --> 00:06:19.500
+because the composition
+
+171
+00:06:19.500 --> 00:06:22.800
+is correct fantastic
+
+172
+00:06:22.800 --> 00:06:26.533
+but if we break the composition
+
+173
+00:06:26.533 --> 00:06:29.600
+we should now have a failing test
+
+174
+00:06:29.600 --> 00:06:32.700
+there it is okay expected a feed
+
+175
+00:06:32.700 --> 00:06:34.400
+controller as top controller
+
+176
+00:06:34.400 --> 00:06:39.433
+but got a UIViewController instead
+
+177
+00:06:39.433 --> 00:06:43.333
+fantastic let's test again
+
+178
+00:06:43.333 --> 00:06:47.666
+passing let's commit
+
+179
+00:06:47.666 --> 00:06:50.000
+so configures feed navigation as
+
+180
+00:06:50.000 --> 00:06:53.166
+window root view controller
+
+181
+00:06:53.166 --> 00:06:55.266
+so that's it the SceneDelegate or the
+
+182
+00:06:55.266 --> 00:06:57.033
+AppDelegate they are just normal
+
+183
+00:06:57.033 --> 00:06:57.733
+classes
+
+184
+00:06:57.733 --> 00:07:00.300
+that you can test with unit or
+
+185
+00:07:00.300 --> 00:07:02.633
+integration tests right
+
+186
+00:07:02.633 --> 00:07:05.900
+so the idea now is to translate those UI
+
+187
+00:07:05.900 --> 00:07:07.333
+acceptance tests
+
+188
+00:07:07.333 --> 00:07:10.300
+into integration acceptance tests that
+
+189
+00:07:10.300 --> 00:07:10.866
+don't need to
+
+190
+00:07:10.866 --> 00:07:13.666
+run the app and investigate elements on
+
+191
+00:07:13.666 --> 00:07:14.533
+the screen
+
+192
+00:07:14.533 --> 00:07:18.133
+with the slow UI queries
+
+193
+00:07:18.133 --> 00:07:21.166
+we can investigate the UI state like we
+
+194
+00:07:21.166 --> 00:07:21.500
+did
+
+195
+00:07:21.500 --> 00:07:23.900
+in the EssentialFeediOS integration
+
+196
+00:07:23.900 --> 00:07:25.100
+tests
+
+197
+00:07:25.100 --> 00:07:28.066
+we can even reuse the same helpers for
+
+198
+00:07:28.066 --> 00:07:29.033
+simulating
+
+199
+00:07:29.033 --> 00:07:32.700
+UI events so simulating a feed image
+
+200
+00:07:32.700 --> 00:07:36.466
+visible or counting the number of feed
+
+201
+00:07:36.466 --> 00:07:39.566
+imageViews on screen and although
+
+202
+00:07:39.566 --> 00:07:42.633
+those helpers are in the EssentialFeed
+
+203
+00:07:42.633 --> 00:07:45.333
+iOS target they are testing the
+
+204
+00:07:45.333 --> 00:07:46.466
+composition
+
+205
+00:07:46.466 --> 00:07:49.433
+of the UI and integration and those are
+
+206
+00:07:49.433 --> 00:07:51.033
+composition details
+
+207
+00:07:51.033 --> 00:07:52.933
+and composition details should be in the
+
+208
+00:07:52.933 --> 00:07:54.133
+Composition
+
+209
+00:07:54.133 --> 00:07:57.566
+Root so let's move this composition
+
+210
+00:07:57.566 --> 00:07:58.866
+details
+
+211
+00:07:58.866 --> 00:08:01.033
+to the EssentialApp target in the
+
+212
+00:08:01.033 --> 00:08:04.233
+Composition Root
+
+213
+00:08:04.233 --> 00:08:06.800
+which will also give us the ability to
+
+214
+00:08:06.800 --> 00:08:07.500
+reuse
+
+215
+00:08:07.500 --> 00:08:12.933
+those helpers for our acceptance tests
+
+216
+00:08:12.933 --> 00:08:14.700
+now all integration and composition
+
+217
+00:08:14.700 --> 00:08:16.000
+details live
+
+218
+00:08:16.000 --> 00:08:19.166
+in the Composition Root okay but we have
+
+219
+00:08:19.166 --> 00:08:20.533
+a bunch of build errors
+
+220
+00:08:20.533 --> 00:08:24.633
+so we need to fix the import statements
+
+221
+00:08:24.633 --> 00:08:28.066
+and any access control required exactly
+
+222
+00:08:28.066 --> 00:08:29.033
+now that these
+
+223
+00:08:29.033 --> 00:08:30.800
+composition details are moved to another
+
+224
+00:08:30.800 --> 00:08:32.066
+module we need to import
+
+225
+00:08:32.066 --> 00:08:34.700
+the EssentialFeediOS target so those
+
+226
+00:08:34.700 --> 00:08:36.133
+components have access
+
+227
+00:08:36.133 --> 00:08:38.933
+to the feed UI types like the FeedView
+
+228
+00:08:38.933 --> 00:08:40.300
+Controller
+
+229
+00:08:40.300 --> 00:08:42.233
+so the FeedViewControllerDelegate needs
+
+230
+00:08:42.233 --> 00:08:44.366
+to be public now
+
+231
+00:08:44.366 --> 00:08:46.233
+because it is implemented by types
+
+232
+00:08:46.233 --> 00:08:48.766
+outside this module
+
+233
+00:08:48.766 --> 00:08:51.100
+so the delegate needs to be public as
+
+234
+00:08:51.100 --> 00:08:53.733
+well
+
+235
+00:08:53.733 --> 00:08:56.766
+next let's import the EssentialFeediOS
+
+236
+00:08:56.766 --> 00:08:59.900
+module everywhere that references
+
+237
+00:08:59.900 --> 00:09:03.433
+the feed UI elements so the
+
+238
+00:09:03.433 --> 00:09:05.266
+ImageCellDelegate also needs to be
+
+239
+00:09:05.266 --> 00:09:06.533
+public because it can be
+
+240
+00:09:06.533 --> 00:09:21.433
+implemented by types outside this module
+
+241
+00:09:21.433 --> 00:09:24.366
+and finally the table model setter needs
+
+242
+00:09:24.366 --> 00:09:27.033
+to be public
+
+243
+00:09:27.033 --> 00:09:28.533
+but instead of making the setter and
+
+244
+00:09:28.533 --> 00:09:30.933
+getter public we can make it private
+
+245
+00:09:30.933 --> 00:09:34.933
+and create a public method to set it
+
+246
+00:09:34.933 --> 00:09:38.933
+okay so now the adapter can just call
+
+247
+00:09:38.933 --> 00:09:42.300
+display instead of setting the property
+
+248
+00:09:42.300 --> 00:09:46.933
+directly now in the test target
+
+249
+00:09:46.933 --> 00:09:50.366
+we also need to import the EssentialApp
+
+250
+00:09:50.366 --> 00:09:55.833
+module where the composer lives now
+
+251
+00:09:55.833 --> 00:09:58.866
+okay all tests are passing okay
+
+252
+00:09:58.866 --> 00:10:02.366
+let's commit so move
+
+253
+00:10:02.366 --> 00:10:04.933
+Feed UI composition details to the
+
+254
+00:10:04.933 --> 00:10:05.833
+EssentialApp
+
+255
+00:10:05.833 --> 00:10:08.533
+module in the composition route that's
+
+256
+00:10:08.533 --> 00:10:09.900
+it
+
+257
+00:10:09.900 --> 00:10:12.300
+alright so all composition details are
+
+258
+00:10:12.300 --> 00:10:12.933
+now
+
+259
+00:10:12.933 --> 00:10:16.300
+in the Main module the EssentialApp
+
+260
+00:10:16.300 --> 00:10:19.500
+target okay so now we can create the
+
+261
+00:10:19.500 --> 00:10:22.066
+feed acceptance tests exactly but
+
+262
+00:10:22.066 --> 00:10:23.833
+instead of UI tests
+
+263
+00:10:23.833 --> 00:10:28.366
+it is just a simple XCTestCase
+
+264
+00:10:28.366 --> 00:10:30.366
+and we already have the acceptance UI
+
+265
+00:10:30.366 --> 00:10:32.300
+test so we can just
+
+266
+00:10:32.300 --> 00:10:35.900
+paste the tests here right we want to
+
+267
+00:10:35.900 --> 00:10:36.366
+test
+
+268
+00:10:36.366 --> 00:10:39.733
+exactly the same criteria but we don't
+
+269
+00:10:39.733 --> 00:10:40.800
+need to run the app
+
+270
+00:10:40.800 --> 00:10:44.300
+to do so yes so let's delete
+
+271
+00:10:44.300 --> 00:10:46.700
+this implementation and let's re-implement
+
+272
+00:10:46.700 --> 00:10:47.433
+this
+
+273
+00:10:47.433 --> 00:10:50.466
+yes one by one the first test
+
+274
+00:10:50.466 --> 00:10:53.433
+on launch it should display the remote
+
+275
+00:10:53.433 --> 00:10:54.000
+feed
+
+276
+00:10:54.000 --> 00:10:57.266
+when customer has connectivity exactly
+
+277
+00:10:57.266 --> 00:11:00.700
+by creating the SceneDelegate directly
+
+278
+00:11:00.700 --> 00:11:02.700
+we give it a window we configure the
+
+279
+00:11:02.700 --> 00:11:04.633
+window then we get the FeedView
+
+280
+00:11:04.633 --> 00:11:05.333
+Controller
+
+281
+00:11:05.333 --> 00:11:06.933
+which is the top view controller of the
+
+282
+00:11:06.933 --> 00:11:09.100
+root and we can use the helpers
+
+283
+00:11:09.100 --> 00:11:11.333
+from the integration tests to validate
+
+284
+00:11:11.333 --> 00:11:12.700
+that we have rendered
+
+285
+00:11:12.700 --> 00:11:16.000
+the two feed image views and that both
+
+286
+00:11:16.000 --> 00:11:19.500
+images were rendered on the screen
+
+287
+00:11:19.500 --> 00:11:23.200
+right but to do so like we did in the UI
+
+288
+00:11:23.200 --> 00:11:23.900
+tests
+
+289
+00:11:23.900 --> 00:11:26.233
+we need to control the infrastructure we
+
+290
+00:11:26.233 --> 00:11:28.133
+need to control the HTTP
+
+291
+00:11:28.133 --> 00:11:31.500
+requests so ideally we would inject here
+
+292
+00:11:31.500 --> 00:11:35.033
+an HTTPClient and
+
+293
+00:11:35.033 --> 00:11:37.433
+a store which during tests don't need to
+
+294
+00:11:37.433 --> 00:11:40.833
+be a real client in a real store
+
+295
+00:11:40.833 --> 00:11:44.466
+exactly they can be an InMemory
+
+296
+00:11:44.466 --> 00:11:48.633
+FeedStore and an HTTPClientStub
+
+297
+00:11:48.633 --> 00:11:51.333
+so we can control the unreliable
+
+298
+00:11:51.333 --> 00:11:52.533
+infrastructure
+
+299
+00:11:52.533 --> 00:11:55.266
+components we want those tests to be
+
+300
+00:11:55.266 --> 00:11:56.633
+fast and reliable
+
+301
+00:11:56.633 --> 00:11:58.533
+thus we don't want to make real HTTP
+
+302
+00:11:58.533 --> 00:12:00.800
+requests or fetch things from the
+
+303
+00:12:00.800 --> 00:12:02.233
+database
+
+304
+00:12:02.233 --> 00:12:04.933
+exactly we want deterministic results
+
+305
+00:12:04.933 --> 00:12:07.033
+and that's exactly what the in-memory
+
+306
+00:12:07.033 --> 00:12:09.900
+FeedStore and the HTTPClientStub
+
+307
+00:12:09.900 --> 00:12:11.333
+provide
+
+308
+00:12:11.333 --> 00:12:13.900
+so we need to import the EssentialFeed
+
+309
+00:12:13.900 --> 00:12:14.866
+module
+
+310
+00:12:14.866 --> 00:12:18.000
+so we can stub the HTTPClient and the
+
+311
+00:12:18.000 --> 00:12:19.833
+FeedStore
+
+312
+00:12:19.833 --> 00:12:21.833
+and the client stub is a very simple
+
+313
+00:12:21.833 --> 00:12:22.933
+implementation
+
+314
+00:12:22.933 --> 00:12:25.600
+where we give it a stub closure that
+
+315
+00:12:25.600 --> 00:12:26.366
+will return
+
+316
+00:12:26.366 --> 00:12:30.300
+a result for any given URL
+
+317
+00:12:30.300 --> 00:12:32.533
+and we can give a default offline
+
+318
+00:12:32.533 --> 00:12:34.066
+implementation that always
+
+319
+00:12:34.066 --> 00:12:37.333
+fails and an online implementation that
+
+320
+00:12:37.333 --> 00:12:38.800
+always succeeds
+
+321
+00:12:38.800 --> 00:12:42.066
+with the given stub for the URL
+
+322
+00:12:42.066 --> 00:12:44.300
+and the in-memory store literally just
+
+323
+00:12:44.300 --> 00:12:45.900
+stores the values
+
+324
+00:12:45.900 --> 00:12:49.600
+in memory in a property
+
+325
+00:12:49.600 --> 00:12:53.200
+so in this test we want an empty
+
+326
+00:12:53.200 --> 00:12:56.300
+in-memory store and we need
+
+327
+00:12:56.300 --> 00:12:59.433
+an online HTTPClient
+
+328
+00:12:59.433 --> 00:13:01.500
+and we need to give a function that maps
+
+329
+00:13:01.500 --> 00:13:03.266
+a URL to a successful
+
+330
+00:13:03.266 --> 00:13:07.266
+response we have such a function already
+
+331
+00:13:07.266 --> 00:13:09.200
+it was used in the DebuggingScene
+
+332
+00:13:09.200 --> 00:13:11.200
+Delegate so in the DebuggingScene
+
+333
+00:13:11.200 --> 00:13:12.000
+Delegate
+
+334
+00:13:12.000 --> 00:13:13.833
+we have a function with the exact same
+
+335
+00:13:13.833 --> 00:13:16.633
+signature it receives a URL as parameter
+
+336
+00:13:16.633 --> 00:13:19.733
+and returns a successful response so we
+
+337
+00:13:19.733 --> 00:13:20.000
+can
+
+338
+00:13:20.000 --> 00:13:22.466
+use exactly the same in the integration
+
+339
+00:13:22.466 --> 00:13:25.833
+acceptance tests
+
+340
+00:13:25.833 --> 00:13:27.333
+we can even make this shorter and call
+
+341
+00:13:27.333 --> 00:13:29.266
+it response for
+
+342
+00:13:29.266 --> 00:13:32.300
+URL and since we are in the test target
+
+343
+00:13:32.300 --> 00:13:35.666
+we can use our helper UIImage
+
+344
+00:13:35.666 --> 00:13:42.133
+make with color red much simpler
+
+345
+00:13:42.133 --> 00:13:45.600
+okay so this is an HTTPClient with the
+
+346
+00:13:45.600 --> 00:13:46.466
+response
+
+347
+00:13:46.466 --> 00:13:48.366
+function we just created which is going
+
+348
+00:13:48.366 --> 00:13:49.600
+to map the URL
+
+349
+00:13:49.600 --> 00:13:52.633
+to a successful response that's it now
+
+350
+00:13:52.633 --> 00:13:53.500
+we just need to add
+
+351
+00:13:53.500 --> 00:13:55.266
+a convenience initializer in the Scene
+
+352
+00:13:55.266 --> 00:13:58.233
+Delegate so we can pass the dependencies
+
+353
+00:13:58.233 --> 00:14:02.066
+right so convenience
+
+354
+00:14:02.066 --> 00:14:04.366
+initializer where we receive the
+
+355
+00:14:04.366 --> 00:14:07.033
+dependencies
+
+356
+00:14:07.033 --> 00:14:10.466
+so the HTTPClient is an HTTPClient
+
+357
+00:14:10.466 --> 00:14:12.800
+and a store is a store that conforms to
+
+358
+00:14:12.800 --> 00:14:15.033
+both the FeedStore and the FeedImage
+
+359
+00:14:15.033 --> 00:14:18.000
+DataStore protocol that's it but we
+
+360
+00:14:18.000 --> 00:14:19.666
+want to have default values
+
+361
+00:14:19.666 --> 00:14:22.066
+for those dependencies so instead of
+
+362
+00:14:22.066 --> 00:14:22.866
+making them
+
+363
+00:14:22.866 --> 00:14:26.300
+lets we can make them lazy vars
+
+364
+00:14:26.300 --> 00:14:29.033
+so if they are not set we have a chance
+
+365
+00:14:29.033 --> 00:14:30.366
+of instantiating them
+
+366
+00:14:30.366 --> 00:14:34.000
+lazily so the HTTPClient is the same as
+
+367
+00:14:34.000 --> 00:14:35.266
+created here
+
+368
+00:14:35.266 --> 00:14:37.733
+so we are moving the creation into the
+
+369
+00:14:37.733 --> 00:14:38.533
+lazily
+
+370
+00:14:38.533 --> 00:14:41.733
+loaded property and the same
+
+371
+00:14:41.733 --> 00:14:49.266
+for the store
+
+372
+00:14:49.266 --> 00:14:51.033
+so if we provide one we're going to use
+
+373
+00:14:51.033 --> 00:14:52.700
+the provided one
+
+374
+00:14:52.700 --> 00:14:56.000
+otherwise it lazily loads as needed
+
+375
+00:14:56.000 --> 00:15:00.000
+that's it let's run the test now
+
+376
+00:15:00.000 --> 00:15:03.433
+okay it's building and the tests
+
+377
+00:15:03.433 --> 00:15:05.833
+are passing because this behavior has
+
+378
+00:15:05.833 --> 00:15:07.033
+already been tested
+
+379
+00:15:07.033 --> 00:15:09.600
+and implemented with the UI tests
+
+380
+00:15:09.600 --> 00:15:10.933
+exactly
+
+381
+00:15:10.933 --> 00:15:13.166
+as you can see we have much more control
+
+382
+00:15:13.166 --> 00:15:14.366
+with integration tests
+
+383
+00:15:14.366 --> 00:15:17.100
+than with UI tests we don't need to add
+
+384
+00:15:17.100 --> 00:15:18.066
+this code
+
+385
+00:15:18.066 --> 00:15:21.833
+in production exactly and we can even be
+
+386
+00:15:21.833 --> 00:15:23.733
+more thorough with those tests
+
+387
+00:15:23.733 --> 00:15:25.666
+instead of just checking that the image
+
+388
+00:15:25.666 --> 00:15:27.166
+is not nil
+
+389
+00:15:27.166 --> 00:15:30.300
+can even assert the exact value that was
+
+390
+00:15:30.300 --> 00:15:31.100
+rendered
+
+391
+00:15:31.100 --> 00:15:34.133
+in each cell exactly
+
+392
+00:15:34.133 --> 00:15:36.300
+we're not checking just the existence of
+
+393
+00:15:36.300 --> 00:15:38.700
+the images as we did with the UI tests
+
+394
+00:15:38.700 --> 00:15:42.066
+but here we can test the consistency of
+
+395
+00:15:42.066 --> 00:15:43.600
+the images as well
+
+396
+00:15:43.600 --> 00:15:46.000
+which gives us much more confidence that
+
+397
+00:15:46.000 --> 00:15:47.500
+this feature is working
+
+398
+00:15:47.500 --> 00:15:50.466
+as intended because we are comparing the
+
+399
+00:15:50.466 --> 00:15:51.733
+value that was rendered
+
+400
+00:15:51.733 --> 00:15:54.233
+with the data that was returned in the
+
+401
+00:15:54.233 --> 00:15:55.266
+successful
+
+402
+00:15:55.266 --> 00:15:58.866
+HTTP response
+
+403
+00:15:58.866 --> 00:16:01.333
+we can even create a helper to simplify
+
+404
+00:16:01.333 --> 00:16:02.933
+this code
+
+405
+00:16:02.933 --> 00:16:11.166
+like renderedFeedImageData at index
+
+406
+00:16:11.166 --> 00:16:14.233
+look at that much nicer
+
+407
+00:16:14.233 --> 00:16:16.866
+still passing one more refactoring we
+
+408
+00:16:16.866 --> 00:16:17.833
+can do
+
+409
+00:16:17.833 --> 00:16:21.266
+is get all the setup code and move it
+
+410
+00:16:21.266 --> 00:16:23.033
+into a function
+
+411
+00:16:23.033 --> 00:16:26.466
+right something like
+
+412
+00:16:26.466 --> 00:16:29.733
+launch with the HTTPClient and store
+
+413
+00:16:29.733 --> 00:16:33.033
+and we move all the setup logic in here
+
+414
+00:16:33.033 --> 00:16:36.866
+that's it now that's it
+
+415
+00:16:36.866 --> 00:16:39.600
+on launch displays remote feed when
+
+416
+00:16:39.600 --> 00:16:41.600
+customer has connectivity
+
+417
+00:16:41.600 --> 00:16:44.633
+so we launch the app with an
+
+418
+00:16:44.633 --> 00:16:48.633
+online stubbed HTTPClient
+
+419
+00:16:48.633 --> 00:16:51.900
+then we test that our feed loaded
+
+420
+00:16:51.900 --> 00:16:55.666
+the images let's run the tests
+
+421
+00:16:55.666 --> 00:16:58.366
+passing yeah I really like this
+
+422
+00:16:58.366 --> 00:16:59.500
+refactoring because
+
+423
+00:16:59.500 --> 00:17:02.000
+the test now is completely decoupled
+
+424
+00:17:02.000 --> 00:17:03.666
+from the implementation details
+
+425
+00:17:03.666 --> 00:17:06.766
+of the SceneDelegate exactly
+
+426
+00:17:06.766 --> 00:17:10.400
+let's commit displays remote feed
+
+427
+00:17:10.400 --> 00:17:15.266
+on launch when customer has connectivity
+
+428
+00:17:15.266 --> 00:17:18.233
+so the next test on launch displays the
+
+429
+00:17:18.233 --> 00:17:18.766
+cached
+
+430
+00:17:18.766 --> 00:17:21.566
+remote feed so there is a cached feed
+
+431
+00:17:21.566 --> 00:17:23.333
+and no connectivity
+
+432
+00:17:23.333 --> 00:17:25.500
+so just like in the UI test first we
+
+433
+00:17:25.500 --> 00:17:27.433
+need to populate the cache
+
+434
+00:17:27.433 --> 00:17:29.433
+in this case we launched the app with
+
+435
+00:17:29.433 --> 00:17:30.533
+connectivity
+
+436
+00:17:30.533 --> 00:17:33.333
+and a shared store and then we make sure
+
+437
+00:17:33.333 --> 00:17:34.700
+that the images
+
+438
+00:17:34.700 --> 00:17:37.266
+became visible which loads the images
+
+439
+00:17:37.266 --> 00:17:38.766
+and then we launched the app
+
+440
+00:17:38.766 --> 00:17:41.900
+as offline but with the same shared
+
+441
+00:17:41.900 --> 00:17:42.766
+store
+
+442
+00:17:42.766 --> 00:17:46.133
+to make sure that we loaded the items
+
+443
+00:17:46.133 --> 00:17:49.266
+from the cache so we should still show
+
+444
+00:17:49.266 --> 00:17:53.266
+two images and render the image data
+
+445
+00:17:53.266 --> 00:17:56.700
+let's run my tests passing
+
+446
+00:17:56.700 --> 00:18:00.066
+ok let's commit displays
+
+447
+00:18:00.066 --> 00:18:02.533
+cached feed on launch when customer has
+
+448
+00:18:02.533 --> 00:18:05.266
+no connectivity
+
+449
+00:18:05.266 --> 00:18:08.466
+and finally on launch displays empty
+
+450
+00:18:08.466 --> 00:18:08.866
+feed
+
+451
+00:18:08.866 --> 00:18:11.666
+when customer has no connectivity and no
+
+452
+00:18:11.666 --> 00:18:12.700
+cache
+
+453
+00:18:12.700 --> 00:18:15.833
+so if we launch the app offline and
+
+454
+00:18:15.833 --> 00:18:16.633
+with an empty
+
+455
+00:18:16.633 --> 00:18:19.500
+store well it should show an empty
+
+456
+00:18:19.500 --> 00:18:20.300
+screen
+
+457
+00:18:20.300 --> 00:18:23.333
+that's it let's run the tests
+
+458
+00:18:23.333 --> 00:18:27.033
+passing ok let's commit
+
+459
+00:18:27.033 --> 00:18:29.666
+displays empty feed on launch when
+
+460
+00:18:29.666 --> 00:18:31.266
+customer has no connectivity
+
+461
+00:18:31.266 --> 00:18:34.533
+and no cache
+
+462
+00:18:34.533 --> 00:18:37.333
+okay so we migrated the UI tests to
+
+463
+00:18:37.333 --> 00:18:38.466
+integration tests
+
+464
+00:18:38.466 --> 00:18:41.266
+validating exactly the same scenarios
+
+465
+00:18:41.266 --> 00:18:42.133
+but we haven't seen
+
+466
+00:18:42.133 --> 00:18:43.900
+any failing tests because this scenario
+
+467
+00:18:43.900 --> 00:18:45.600
+was already implemented
+
+468
+00:18:45.600 --> 00:18:47.733
+right so why don't we change the
+
+469
+00:18:47.733 --> 00:18:49.666
+composition just to make sure
+
+470
+00:18:49.666 --> 00:18:51.600
+the test would fail with the wrong
+
+471
+00:18:51.600 --> 00:18:52.933
+composition
+
+472
+00:18:52.933 --> 00:18:55.833
+for example if we just compose the UI
+
+473
+00:18:55.833 --> 00:18:57.666
+with the RemoteFeedLoader without a
+
+474
+00:18:57.666 --> 00:18:58.933
+fallback
+
+475
+00:18:58.933 --> 00:19:03.033
+and the same for the image
+
+476
+00:19:03.033 --> 00:19:06.466
+let's run the tests
+
+477
+00:19:06.466 --> 00:19:10.000
+okay it's failing but it's failing
+
+478
+00:19:10.000 --> 00:19:12.466
+with an exception because our tests is
+
+479
+00:19:12.466 --> 00:19:14.400
+trying to investigate a cell
+
+480
+00:19:14.400 --> 00:19:17.433
+that does not exist so we're getting an
+
+481
+00:19:17.433 --> 00:19:21.600
+index out of range exception
+
+482
+00:19:21.600 --> 00:19:23.333
+instead of a fatal error it would be
+
+483
+00:19:23.333 --> 00:19:25.200
+better if we get an assertion
+
+484
+00:19:25.200 --> 00:19:28.700
+error so let's look at the stack trace
+
+485
+00:19:28.700 --> 00:19:32.133
+to find which method invoked the cell
+
+486
+00:19:32.133 --> 00:19:33.600
+lookup
+
+487
+00:19:33.600 --> 00:19:35.666
+and it was this test helper the feed
+
+488
+00:19:35.666 --> 00:19:36.633
+image view
+
+489
+00:19:36.633 --> 00:19:40.066
+at row so here we need to check
+
+490
+00:19:40.066 --> 00:19:42.466
+if we are requesting a cell within the
+
+491
+00:19:42.466 --> 00:19:44.233
+collection of cells
+
+492
+00:19:44.233 --> 00:19:47.733
+if it's not we just return nil instantly
+
+493
+00:19:47.733 --> 00:19:51.266
+which means there is no cell at that row
+
+494
+00:19:51.266 --> 00:19:55.600
+right let's run the test again
+
+495
+00:19:55.600 --> 00:19:58.066
+now we get failing assertions rather
+
+496
+00:19:58.066 --> 00:20:00.866
+than a fatal error
+
+497
+00:20:00.866 --> 00:20:02.866
+as you can see since we've removed the
+
+498
+00:20:02.866 --> 00:20:05.200
+composition with the cache
+
+499
+00:20:05.200 --> 00:20:07.266
+the test that checks the offline
+
+500
+00:20:07.266 --> 00:20:09.666
+behavior start failing
+
+501
+00:20:09.666 --> 00:20:13.200
+fantastic yes the tests now fail
+
+502
+00:20:13.200 --> 00:20:15.433
+instead of crashing and they don't
+
+503
+00:20:15.433 --> 00:20:16.933
+interrupt the flow
+
+504
+00:20:16.933 --> 00:20:18.833
+which is a much better feedback
+
+505
+00:20:18.833 --> 00:20:21.333
+mechanism that's it
+
+506
+00:20:21.333 --> 00:20:24.633
+let's bring back the right composition
+
+507
+00:20:24.633 --> 00:20:28.233
+run the test again
+
+508
+00:20:28.233 --> 00:20:31.266
+now it's passing
+
+509
+00:20:31.266 --> 00:20:34.633
+and any different composition here
+
+510
+00:20:34.633 --> 00:20:39.033
+will make the test fail
+
+511
+00:20:39.033 --> 00:20:42.533
+there it is so the acceptance tests
+
+512
+00:20:42.533 --> 00:20:45.333
+give us this high level confidence that
+
+513
+00:20:45.333 --> 00:20:46.300
+the system does
+
+514
+00:20:46.300 --> 00:20:48.633
+what is intended to do and we don't need
+
+515
+00:20:48.633 --> 00:20:49.333
+to do it
+
+516
+00:20:49.333 --> 00:20:51.900
+through UI tests if you write good
+
+517
+00:20:51.900 --> 00:20:53.266
+integration tests
+
+518
+00:20:53.266 --> 00:20:55.333
+you can have the same confidence and
+
+519
+00:20:55.333 --> 00:20:56.400
+without adding
+
+520
+00:20:56.400 --> 00:20:59.433
+test code to production or running super
+
+521
+00:20:59.433 --> 00:21:01.433
+slow tests
+
+522
+00:21:01.433 --> 00:21:05.333
+so let's commit our last change so check
+
+523
+00:21:05.333 --> 00:21:07.266
+number of cells before fetching cell
+
+524
+00:21:07.266 --> 00:21:08.933
+at index to avoid
+
+525
+00:21:08.933 --> 00:21:12.633
+out of bounds exception
+
+526
+00:21:12.633 --> 00:21:15.900
+and now let's delete the UI acceptance
+
+527
+00:21:15.900 --> 00:21:17.433
+test target
+
+528
+00:21:17.433 --> 00:21:23.100
+because now it is redundant
+
+529
+00:21:23.100 --> 00:21:26.400
+so let's make sure we delete the scheme
+
+530
+00:21:26.400 --> 00:21:30.233
+for the acceptance test as well
+
+531
+00:21:30.233 --> 00:21:34.133
+and remove it from the CI scheme
+
+532
+00:21:34.133 --> 00:21:40.866
+okay let's build and run the test again
+
+533
+00:21:40.866 --> 00:21:44.133
+passing let's commit so
+
+534
+00:21:44.133 --> 00:21:48.066
+remove EssentialAppUIAcceptanceTests
+
+535
+00:21:48.066 --> 00:21:51.033
+in favor of faster and more precise
+
+536
+00:21:51.033 --> 00:21:54.533
+integration tests
+
+537
+00:21:54.533 --> 00:21:57.200
+now finally we can remove the Debugging
+
+538
+00:21:57.200 --> 00:21:58.866
+SceneDelegate
+
+539
+00:21:58.866 --> 00:22:01.733
+from production and we don't need to
+
+540
+00:22:01.733 --> 00:22:02.533
+swap
+
+541
+00:22:02.533 --> 00:22:05.433
+our delegate class for debug builds
+
+542
+00:22:05.433 --> 00:22:07.433
+anymore
+
+543
+00:22:07.433 --> 00:22:08.866
+which means we don't need the make
+
+544
+00:22:08.866 --> 00:22:10.933
+RemoteClient function anymore
+
+545
+00:22:10.933 --> 00:22:13.833
+which was overridden by the debugging
+
+546
+00:22:13.833 --> 00:22:15.333
+delegate
+
+547
+00:22:15.333 --> 00:22:18.300
+you can just use the HTTPClient
+
+548
+00:22:18.300 --> 00:22:20.933
+directly
+
+549
+00:22:20.933 --> 00:22:24.133
+same goes for the localStoreURL
+
+550
+00:22:24.133 --> 00:22:28.700
+these can now be a private detail
+
+551
+00:22:28.700 --> 00:22:32.633
+that's it much better encapsulation
+
+552
+00:22:32.633 --> 00:22:37.100
+let's run the tests still passing
+
+553
+00:22:37.100 --> 00:22:41.200
+let's commit remove unused debugging
+
+554
+00:22:41.200 --> 00:22:41.900
+code
+
+555
+00:22:41.900 --> 00:22:46.866
+that was previously used during UI tests
+
+556
+00:22:46.866 --> 00:22:49.733
+gone no more test coding production
+
+557
+00:22:49.733 --> 00:22:52.000
+fantastic
+
+558
+00:22:52.000 --> 00:22:54.633
+so the FeedAcceptanceTests in an
+
+559
+00:22:54.633 --> 00:22:56.000
+integration style
+
+560
+00:22:56.000 --> 00:22:59.033
+can be a better alternative to UI
+
+561
+00:22:59.033 --> 00:23:02.066
+tests yeah and we can even be more
+
+562
+00:23:02.066 --> 00:23:03.033
+thorough
+
+563
+00:23:03.033 --> 00:23:06.400
+and test one use case that we couldn't
+
+564
+00:23:06.400 --> 00:23:07.433
+actually test
+
+565
+00:23:07.433 --> 00:23:10.233
+with UI tests and that is when the app
+
+566
+00:23:10.233 --> 00:23:10.866
+enters
+
+567
+00:23:10.866 --> 00:23:15.200
+background we want to validate the cache
+
+568
+00:23:15.200 --> 00:23:18.133
+exactly we implemented the validate
+
+569
+00:23:18.133 --> 00:23:19.333
+cache
+
+570
+00:23:19.333 --> 00:23:22.133
+use case but so far we are never calling
+
+571
+00:23:22.133 --> 00:23:23.733
+it
+
+572
+00:23:23.733 --> 00:23:25.600
+this use case must be called every time
+
+573
+00:23:25.600 --> 00:23:27.100
+the app will enter
+
+574
+00:23:27.100 --> 00:23:30.400
+background now we can test this behavior
+
+575
+00:23:30.400 --> 00:23:33.033
+with the integration tests so if we
+
+576
+00:23:33.033 --> 00:23:34.000
+enter background
+
+577
+00:23:34.000 --> 00:23:37.500
+with an expired cache the cache should
+
+578
+00:23:37.500 --> 00:23:38.066
+be
+
+579
+00:23:38.066 --> 00:23:41.500
+deleted so it should be nil
+
+580
+00:23:41.500 --> 00:23:43.333
+but if it enters background with a non
+
+581
+00:23:43.333 --> 00:23:44.766
+expired cache
+
+582
+00:23:44.766 --> 00:23:46.866
+the system should keep the cache so it
+
+583
+00:23:46.866 --> 00:23:48.833
+should be not nil
+
+584
+00:23:48.833 --> 00:23:51.733
+exactly let's add the helper
+
+585
+00:23:51.733 --> 00:23:54.766
+enter background which simply creates
+
+586
+00:23:54.766 --> 00:23:57.666
+the SceneDelegate with the given store
+
+587
+00:23:57.666 --> 00:23:59.200
+and calls the delegate method
+
+588
+00:23:59.200 --> 00:24:00.933
+that is invoked when the app is
+
+589
+00:24:00.933 --> 00:24:04.066
+transitioning to the background
+
+590
+00:24:04.066 --> 00:24:06.133
+and we also need to add the static
+
+591
+00:24:06.133 --> 00:24:07.200
+helpers
+
+592
+00:24:07.200 --> 00:24:09.900
+that creates an expired feed cache so
+
+593
+00:24:09.900 --> 00:24:10.766
+it's a cache
+
+594
+00:24:10.766 --> 00:24:15.033
+with an old timestamp so distant past
+
+595
+00:24:15.033 --> 00:24:16.933
+and a non expired one with a fresh
+
+596
+00:24:16.933 --> 00:24:21.666
+timestamp
+
+597
+00:24:21.666 --> 00:24:23.333
+and now we need to implement the scene
+
+598
+00:24:23.333 --> 00:24:25.833
+we resign active
+
+599
+00:24:25.833 --> 00:24:30.833
+in the SceneDelegate let's run the
+
+600
+00:24:30.833 --> 00:24:32.300
+tests
+
+601
+00:24:32.300 --> 00:24:35.266
+failing it is not deleting the expired
+
+602
+00:24:35.266 --> 00:24:37.833
+cache
+
+603
+00:24:37.833 --> 00:24:40.233
+so we need to invoke the validate cache
+
+604
+00:24:40.233 --> 00:24:41.100
+method
+
+605
+00:24:41.100 --> 00:24:43.200
+implemented by the LocalFeedLoader
+
+606
+00:24:43.200 --> 00:24:44.133
+exactly
+
+607
+00:24:44.133 --> 00:24:45.433
+but we don't have access to the Local
+
+608
+00:24:45.433 --> 00:24:47.200
+FeedLoader in this
+
+609
+00:24:47.200 --> 00:24:51.100
+scope so we can make it
+
+610
+00:24:51.100 --> 00:24:54.466
+a lazy var instead so every instance
+
+611
+00:24:54.466 --> 00:24:55.733
+method has access
+
+612
+00:24:55.733 --> 00:24:58.400
+to this property that's it that should
+
+613
+00:24:58.400 --> 00:25:00.066
+do it
+
+614
+00:25:00.066 --> 00:25:03.266
+let's run the test again now it's
+
+615
+00:25:03.266 --> 00:25:05.500
+passing
+
+616
+00:25:05.500 --> 00:25:08.300
+so it is deleting expired cache when
+
+617
+00:25:08.300 --> 00:25:10.633
+entering background
+
+618
+00:25:10.633 --> 00:25:13.266
+but it keeps non expired cache when
+
+619
+00:25:13.266 --> 00:25:15.333
+entering background
+
+620
+00:25:15.333 --> 00:25:19.266
+let's commit validate feed cache
+
+621
+00:25:19.266 --> 00:25:23.100
+on entering background so that's it
+
+622
+00:25:23.100 --> 00:25:26.133
+an alternative to UI tests is to write
+
+623
+00:25:26.133 --> 00:25:28.766
+integration tests that can be more
+
+624
+00:25:28.766 --> 00:25:29.600
+thorough
+
+625
+00:25:29.600 --> 00:25:32.233
+and don't require you to add test code
+
+626
+00:25:32.233 --> 00:25:33.600
+in production
+
+627
+00:25:33.600 --> 00:25:36.766
+exactly they allow you to increase
+
+628
+00:25:36.766 --> 00:25:39.433
+the code coverage and of course they
+
+629
+00:25:39.433 --> 00:25:40.133
+come
+
+630
+00:25:40.133 --> 00:25:43.033
+at a much much cheaper cost than UI
+
+631
+00:25:43.033 --> 00:25:44.300
+tests
+
+632
+00:25:44.300 --> 00:25:46.466
+they are easier to write and they are
+
+633
+00:25:46.466 --> 00:25:48.233
+much faster
+
+634
+00:25:48.233 --> 00:25:51.266
+as you can see 5 integration tests
+
+635
+00:25:51.266 --> 00:25:54.766
+took only 0.2 seconds
+
+636
+00:25:54.766 --> 00:25:57.733
+to run in comparison to the UI tests
+
+637
+00:25:57.733 --> 00:25:58.233
+where
+
+638
+00:25:58.233 --> 00:26:02.633
+3 tests took almost 30 seconds
+
+639
+00:26:02.633 --> 00:26:05.600
+so that's at least 100 times
+
+640
+00:26:05.600 --> 00:26:06.700
+faster
+
+641
+00:26:06.700 --> 00:26:08.400
+exactly there is no comparison between
+
+642
+00:26:08.400 --> 00:26:10.400
+integration tests and UI tests when
+
+643
+00:26:10.400 --> 00:26:13.200
+it comes to speed these numbers speak
+
+644
+00:26:13.200 --> 00:26:14.533
+for themselves
+
+645
+00:26:14.533 --> 00:26:16.233
+and it's important to think about the
+
+646
+00:26:16.233 --> 00:26:18.700
+future of the project as well
+
+647
+00:26:18.700 --> 00:26:21.600
+the next added feature how much would
+
+648
+00:26:21.600 --> 00:26:22.133
+that
+
+649
+00:26:22.133 --> 00:26:25.833
+increase these times so when possible
+
+650
+00:26:25.833 --> 00:26:28.633
+use integration tests rather than UI
+
+651
+00:26:28.633 --> 00:26:29.500
+tests
+
+652
+00:26:29.500 --> 00:26:31.733
+to improve your coverage and make your
+
+653
+00:26:31.733 --> 00:26:33.100
+development process
+
+654
+00:26:33.100 --> 00:26:36.400
+faster okay this is going to do it for
+
+655
+00:26:36.400 --> 00:26:37.333
+this lecture
+
+656
+00:26:37.333 --> 00:26:40.300
+we'll see you all next time bye y'all
+
+657
+00:26:40.300 --> 00:26:53.833
+see ya

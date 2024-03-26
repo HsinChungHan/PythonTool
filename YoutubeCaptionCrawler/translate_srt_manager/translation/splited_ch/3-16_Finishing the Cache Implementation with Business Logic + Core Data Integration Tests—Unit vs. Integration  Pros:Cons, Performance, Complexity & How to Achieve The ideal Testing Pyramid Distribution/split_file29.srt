@@ -1,0 +1,33 @@
+340
+00:11:45,333 --> 00:11:48,366
+and again we have multiple system under
+再次，我們在這裡有多個系統正在
+
+341
+00:11:48,366 --> 00:11:49,833
+test instances here
+這裡進行多個實章測試
+
+342
+00:11:49,833 --> 00:11:53,033
+each one for each specific operation so
+每一個操作都有一個特定的實例，
+
+343
+00:11:53,033 --> 00:11:55,833
+an sut to perform the first save another
+
+344
+00:11:55,833 --> 00:11:57,200
+one to perform the last save
+一個來執行最後的儲存，
+
+345
+00:11:57,200 --> 00:11:58,800
+and another one to perform the load so
+還有一個來執行載入，
+
+346
+00:11:58,800 --> 00:12:00,233
+we have three objects
+所以我們有三個對象

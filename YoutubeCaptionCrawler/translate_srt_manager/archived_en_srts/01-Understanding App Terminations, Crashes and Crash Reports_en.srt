@@ -1,0 +1,2448 @@
+1
+00:00:00.000 --> 00:00:12.000 
+Hi everyone, let me know in the chat if you can hear me, hey.
+
+2
+00:00:12.000 --> 00:00:17.120 
+Ok, Mukesh, thanks.
+
+3
+00:00:17.120 --> 00:00:20.120 
+Thanks Dan.
+
+4
+00:00:20.120 --> 00:00:26.320 
+This time we'll cover a bigger topic, which is Crashes and Crash reports.
+
+5
+00:00:26.320 --> 00:00:31.440 
+It's a very important and essential topic.
+
+6
+00:00:31.440 --> 00:00:37.160 
+First we'll take a look at what app terminations are and why they happen.
+
+7
+00:00:37.160 --> 00:00:43.120 
+We'll see what is a Crash and what is a Crash report.
+
+8
+00:00:43.120 --> 00:00:52.200 
+We'll look at the structure of a Crash report and we'll learn how to lead such a report.
+
+9
+00:00:52.200 --> 00:00:58.760 
+So we'll cover the theoretical part of Crashes and Crash reports today and leave the door
+
+10
+00:00:58.760 --> 00:01:05.280 
+open for a lecture dedicated on practical examples.
+
+11
+00:01:05.280 --> 00:01:07.480 
+So app terminations.
+
+12
+00:01:07.480 --> 00:01:14.080 
+Well, we all strive to create beautiful and interactive apps that run smoothly on the
+
+13
+00:01:14.080 --> 00:01:17.280 
+devices of our users.
+
+14
+00:01:17.280 --> 00:01:23.080 
+We do our best to test them, but it's such a complex task, given the number of OS versions
+
+15
+00:01:23.080 --> 00:01:29.760 
+we support, the different devices with different sizes and even odd features like the Mac Catalyst,
+
+16
+00:01:29.760 --> 00:01:34.240 
+which allows running iOS apps on Macs.
+
+17
+00:01:34.240 --> 00:01:41.020 
+And we then release these apps to our users and we realize that sometimes these apps behave
+
+18
+00:01:41.020 --> 00:01:46.680 
+differently than what we expected or what we tested.
+
+19
+00:01:46.680 --> 00:01:54.000 
+One major class of events where the app behaves differently or in an unpredicted way is represented
+
+20
+00:01:54.000 --> 00:02:02.080 
+by terminations, where the operating system just comes in and stops the process that runs
+
+21
+00:02:02.080 --> 00:02:04.440 
+our app.
+
+22
+00:02:04.440 --> 00:02:14.280 
+And this can happen while our app is in the foreground or is the currently active app
+
+23
+00:02:14.280 --> 00:02:19.760 
+and a Crash occurs during the execution of the AppCode.
+
+24
+00:02:19.760 --> 00:02:27.520 
+From the user's point of View, this sounds like I was doing X and the app suddenly closed.
+
+25
+00:02:27.520 --> 00:02:31.280 
+That's how they see this.
+
+26
+00:02:31.280 --> 00:02:36.400 
+Terminations can also happen when the app, our app is in the background.
+
+27
+00:02:36.400 --> 00:02:40.860 
+So another app is the active app.
+
+28
+00:02:40.860 --> 00:02:44.560 
+And this can happen for a number of reasons.
+
+29
+00:02:44.560 --> 00:02:50.920 
+Again, if we look at it from the user's point of View, it will look like this.
+
+30
+00:02:50.920 --> 00:02:56.200 
+I was running an app, I switched to another app and when I switched back, all my input
+
+31
+00:02:56.200 --> 00:03:02.760 
+was lost and the app reset to the home screen or whatever the Main screen is.
+
+32
+00:03:02.760 --> 00:03:06.500 
+That's how users see it.
+
+33
+00:03:06.500 --> 00:03:17.240 
+What we know, behind doors, the operating system just killed our app.
+
+34
+00:03:17.240 --> 00:03:21.800 
+And this is worse, especially if, like I said here, input is lost.
+
+35
+00:03:21.800 --> 00:03:30.600 
+So if the user was entering some text or note or something else and that data is lost, that's
+
+36
+00:03:30.600 --> 00:03:34.760 
+pretty bad.
+
+37
+00:03:34.760 --> 00:03:41.480 
+So these terminations are a part of the app life cycle.
+
+38
+00:03:41.480 --> 00:03:48.520 
+When the system stops your process, you can significantly reduce terminations by fixing
+
+39
+00:03:48.520 --> 00:03:54.320 
+bugs and lowering the overall app Resource consumption.
+
+40
+00:03:54.320 --> 00:04:01.040 
+However, terminations are expected and you cannot fully eliminate them.
+
+41
+00:04:01.040 --> 00:04:06.260 
+The system uses terminations to prioritize the resources needed to keep the foreground
+
+42
+00:04:06.260 --> 00:04:10.960 
+user experience fluid.
+
+43
+00:04:10.960 --> 00:04:19.440 
+When the system terminates your app, your app must relaunch the next time a user activates.
+
+44
+00:04:19.440 --> 00:04:24.960 
+And since a relaunch is much slower than just bringing an app from background to foreground
+
+45
+00:04:24.960 --> 00:04:32.000 
+or reactivating it, it results in a worse user experience.
+
+46
+00:04:32.000 --> 00:04:39.800 
+That's why we try to avoid terminations as much as possible.
+
+47
+00:04:39.800 --> 00:04:46.520 
+Let's see what the Main reasons for app terminations.
+
+48
+00:04:46.520 --> 00:04:50.280 
+First, aborts.
+
+49
+00:04:50.280 --> 00:04:55.640 
+An abort happens when your process calls the abort function.
+
+50
+00:04:55.640 --> 00:05:05.360 
+This commonly occurs when your app encounters uncut exceptions or failed assert calls, often
+
+51
+00:05:05.360 --> 00:05:09.080 
+to a framework that your app uses.
+
+52
+00:05:09.080 --> 00:05:22.760 
+An abort makes use of the SIGABORT signal and please note that aborts are Crashes.
+
+53
+00:05:22.760 --> 00:05:29.040 
+Another type of app termination are memory limit terminations.
+
+54
+00:05:29.040 --> 00:05:36.020 
+On iOS, the system attempts to provide foreground apps with as much memory as possible.
+
+55
+00:05:36.020 --> 00:05:40.720 
+If your app attempts to use more memory than the system can provide, the system terminates
+
+56
+00:05:40.720 --> 00:05:44.200 
+it.
+
+57
+00:05:44.200 --> 00:05:50.080 
+Next, bad access.
+
+58
+00:05:50.080 --> 00:05:56.200 
+A bad access termination happens when your app attempts to access invalid memory.
+
+59
+00:05:56.200 --> 00:06:06.280 
+For example, by dereferencing Null pointers, as you see here in an Objective-C example,
+
+60
+00:06:06.280 --> 00:06:16.700 
+we were using a property that's weak linked, weak referenced.
+
+61
+00:06:16.700 --> 00:06:26.020 
+If we use it later and that variable was deallocated, when trying to dereference the pointer, so
+
+62
+00:06:26.020 --> 00:06:32.760 
+the MyArray pointer to the Array, we get a Crash.
+
+63
+00:06:32.760 --> 00:06:39.720 
+Another example is accessing an Array's element with an index out of bounds.
+
+64
+00:06:39.720 --> 00:06:48.360 
+Again, we have an Objective-C Array and empty Array and if we try to access the element
+
+65
+00:06:48.360 --> 00:06:55.400 
+with index one, we also get a bad access Crash or termination.
+
+66
+00:06:55.400 --> 00:07:02.360 
+And I mentioned the Crash because bad access terminations are actually Crashes.
+
+67
+00:07:02.360 --> 00:07:12.360 
+Next, illegal instructions happen when your app attempts to execute an instruction that
+
+68
+00:07:12.360 --> 00:07:17.080 
+the system cannot interpret.
+
+69
+00:07:17.080 --> 00:07:29.080 
+An example on Intel CPUs, like Intel Max, watchOS, tvOS, is force unwrapping an optional
+
+70
+00:07:29.080 --> 00:07:32.600 
+with a new value.
+
+71
+00:07:32.600 --> 00:07:39.240 
+This is illegal and the system just cannot recover from this because it cannot execute
+
+72
+00:07:39.240 --> 00:07:41.400 
+this instruction.
+
+73
+00:07:41.400 --> 00:07:50.880 
+So it will Crash and illegal instruction terminations are Crashes.
+
+74
+00:07:50.880 --> 00:08:02.040 
+Another reason for an app termination comes from the watchdog and for those of you who
+
+75
+00:08:02.040 --> 00:08:08.720 
+haven't used or haven't heard of the watchdog before, the watchdog is just a system, a part
+
+76
+00:08:08.720 --> 00:08:15.440 
+of the operating system that monitors launch times and app responsiveness and just terminates
+
+77
+00:08:15.440 --> 00:08:21.260 
+unresponsive apps.
+
+78
+00:08:21.260 --> 00:08:29.160 
+Usually an app timeout happens when your app takes too long to launch, suspend or resume
+
+79
+00:08:29.160 --> 00:08:38.080 
+and it results in a termination with the eight bad foot Error code that you see here.
+
+80
+00:08:38.080 --> 00:08:43.520 
+And that's usually indicative of your app getting stuck at launch.
+
+81
+00:08:43.520 --> 00:08:52.040 
+Currently, the timeout limit is 20 seconds, but it may change in Future OS versions.
+
+82
+00:08:52.040 --> 00:08:57.280 
+And we remember it used to be 10 seconds, a few OS versions back.
+
+83
+00:08:57.280 --> 00:09:05.240 
+So be careful about this.
+
+84
+00:09:05.240 --> 00:09:13.080 
+Also note that many users will not wait these 20 seconds, so they will just quit your app
+
+85
+00:09:13.080 --> 00:09:17.760 
+before the limit is hit and you won't actually see an app timeout.
+
+86
+00:09:17.760 --> 00:09:22.960 
+So just measure your app launch time consistently.
+
+87
+00:09:22.960 --> 00:09:25.080 
+Also note that this happens on iOS.
+
+88
+00:09:25.080 --> 00:09:34.080 
+So for instance, on macOS, there's no app launch limit.
+
+89
+00:09:34.080 --> 00:09:38.920 
+Another type of app termination is memory pressure.
+
+90
+00:09:38.920 --> 00:09:47.860 
+This is very similar to the memory limit termination, just that in this case it happens in the background.
+
+91
+00:09:47.860 --> 00:09:56.880 
+Because as we know on iOS and watchOS as part of the normal app lifecycle, the system terminates
+
+92
+00:09:56.880 --> 00:10:04.960 
+apps when it needs more memory than currently available.
+
+93
+00:10:04.960 --> 00:10:09.840 
+And the system most often terminates apps in the background when the foreground or the
+
+94
+00:10:09.840 --> 00:10:14.440 
+active app needs more memory.
+
+95
+00:10:14.440 --> 00:10:21.560 
+You can reduce the frequency of memory pressure terminations by reducing your memory footprint
+
+96
+00:10:21.560 --> 00:10:30.280 
+when going to background or suspending your app.
+
+97
+00:10:30.280 --> 00:10:36.960 
+And because you cannot remove all memory pressure terminations, it's a very good idea to implement
+
+98
+00:10:36.960 --> 00:10:43.240 
+a proper state restoration as recommended by Apple to provide a fluid user experience.
+
+99
+00:10:43.240 --> 00:10:50.960 
+This is just because if you hit this termination, when the user restarts your app, all their
+
+100
+00:10:50.960 --> 00:10:58.800 
+data will be preserved and ideally they will be restored on the same screen that they used
+
+101
+00:10:58.800 --> 00:11:02.360 
+to be before the app got closed.
+
+102
+00:11:02.360 --> 00:11:08.680 
+So that's very smooth for the user.
+
+103
+00:11:08.680 --> 00:11:15.560 
+Another type of background app termination is a Task timeout.
+
+104
+00:11:15.560 --> 00:11:20.640 
+The system allows your app to continue executing in the background after the user has placed
+
+105
+00:11:20.640 --> 00:11:26.600 
+the app in the background, through the use of the BeginBackgroundTask API.
+
+106
+00:11:26.600 --> 00:11:31.880 
+But if your app does not finish its work in the allocated time, the system will terminate
+
+107
+00:11:31.880 --> 00:11:37.800 
+it with the task timeout reason.
+
+108
+00:11:37.800 --> 00:11:45.000 
+So make sure to finish in the allocated time, whatever that is, it depends on the OS, and
+
+109
+00:11:45.000 --> 00:11:53.880 
+call and BackgroundTask, because if you don't, you'll definitely hit the timeout.
+
+110
+00:11:53.880 --> 00:12:03.000 
+And the last of the most common reasons for app terminations is the File lock, which happens
+
+111
+00:12:03.000 --> 00:12:08.520 
+when your app continues to hold the lock on a shared File held in your app group when
+
+112
+00:12:08.520 --> 00:12:12.560 
+the user puts your app in the background.
+
+113
+00:12:12.560 --> 00:12:23.560 
+The system performs termination to avoid blocking on a lock that your app may never release.
+
+114
+00:12:23.560 --> 00:12:34.320 
+So you can avoid this by using the BeginBackgroundTask API to finish writing in the File and then
+
+115
+00:12:34.320 --> 00:12:37.880 
+just unlocking.
+
+116
+00:12:37.880 --> 00:12:46.000 
+That's very important, so you can complete whatever write operation you began before
+
+117
+00:12:46.000 --> 00:12:52.720 
+going to background, because there's no other way to unlock that File.
+
+118
+00:12:52.720 --> 00:12:59.140 
+For instance, like writing in a CoreData Database.
+
+119
+00:12:59.140 --> 00:13:04.440 
+So you just ask for extra time from the system to the BeginBackgroundTask and BackgroundTask
+
+120
+00:13:04.440 --> 00:13:10.800 
+APIs, and you finish the writing operation, and that's it.
+
+121
+00:13:10.800 --> 00:13:17.200 
+That's how you avoid this type of termination.
+
+122
+00:13:17.200 --> 00:13:24.660 
+So when mentioning these app termination reasons, we mentioned some of them are Crashes.
+
+123
+00:13:24.660 --> 00:13:31.280 
+So now we want to focus on the topic of Crashes and see what is a Crash.
+
+124
+00:13:31.280 --> 00:13:38.280 
+Well, a Crash is a sudden termination of your app when it attempts to do something that's
+
+125
+00:13:38.280 --> 00:13:40.280 
+not allowed.
+
+126
+00:13:40.280 --> 00:13:42.560 
+So what's not allowed?
+
+127
+00:13:42.560 --> 00:13:49.800 
+Well, sometimes it's impossible for the CPU to execute code.
+
+128
+00:13:49.800 --> 00:13:54.240 
+And an example would be like the CPU cannot divide by zero because it just doesn't know
+
+129
+00:13:54.240 --> 00:13:57.920 
+how to do it.
+
+130
+00:13:57.920 --> 00:14:06.120 
+Or sometimes the operating system is enforcing some policy.
+
+131
+00:14:06.120 --> 00:14:10.680 
+The operating system will preserve the user experience by killing your app if it takes
+
+132
+00:14:10.680 --> 00:14:18.580 
+too long to launch or if it's using too much memory.
+
+133
+00:14:18.580 --> 00:14:23.040 
+Sometimes the programming language you're using is trying to prevent a failure and will
+
+134
+00:14:23.040 --> 00:14:25.760 
+trigger a Crash.
+
+135
+00:14:25.760 --> 00:14:34.120 
+For example, when a Swift Array or an NSArray is trying to go outside the arrayed bounds,
+
+136
+00:14:34.120 --> 00:14:42.040 
+like we've shown in the previous example of accessing an index out of bounds, this will
+
+137
+00:14:42.040 --> 00:14:48.200 
+Result in crashing and halting the process.
+
+138
+00:14:48.200 --> 00:14:55.360 
+Or you as a developer might be trying to prevent a failure.
+
+139
+00:14:55.360 --> 00:15:01.920 
+So for instance, if you're designing an API like this do something function with the parameter
+
+140
+00:15:01.920 --> 00:15:09.000 
+and you assert to one of the mechanisms, like assert precondition or fatal Error, that this
+
+141
+00:15:09.000 --> 00:15:10.920 
+parameter cannot be nil.
+
+142
+00:15:10.920 --> 00:15:16.520 
+So your API do something does not know how to handle nil values.
+
+143
+00:15:16.520 --> 00:15:28.520 
+You can mark this to one of the instructions I mentioned and if somebody calls this API
+
+144
+00:15:28.520 --> 00:15:39.240 
+with the nil value, it will Result in a Crash, which is not that bad because you want to
+
+145
+00:15:39.240 --> 00:15:45.960 
+make it clear to your clients that this API cannot be used with the nil.
+
+146
+00:15:45.960 --> 00:15:52.200 
+And I know some of you might wonder, okay, if you don't support nil values, then why
+
+147
+00:15:52.200 --> 00:15:55.800 
+don't you use a non-optional value type?
+
+148
+00:15:55.800 --> 00:16:02.920 
+Well, sometimes if you need to conform to some interface, you might need to support
+
+149
+00:16:02.920 --> 00:16:03.920 
+the optional.
+
+150
+00:16:03.920 --> 00:16:07.680 
+So it's just an example.
+
+151
+00:16:07.680 --> 00:16:10.880 
+Don't take it literally.
+
+152
+00:16:10.880 --> 00:16:13.200 
+Okay.
+
+153
+00:16:13.200 --> 00:16:22.640 
+So we've talked about the reasons why the system will Crash your app and whenever an
+
+154
+00:16:22.640 --> 00:16:28.280 
+app Crashes, the system will generate a report which is called a Crash report describing
+
+155
+00:16:28.280 --> 00:16:33.440 
+the device type, OS and other circumstances of the Crash.
+
+156
+00:16:33.440 --> 00:16:38.520 
+They help us understand how and why the Crash happened.
+
+157
+00:16:38.520 --> 00:16:47.440 
+And a Crash report is just a plain text File with the.Crash extension that contains
+
+158
+00:16:47.440 --> 00:16:54.960 
+a detailed log of an app state when it crashed, making it a crucial Resource to identifying
+
+159
+00:16:54.960 --> 00:17:00.800 
+the problem before attempting to fix it.
+
+160
+00:17:00.800 --> 00:17:05.000 
+So what does a Crash report look like?
+
+161
+00:17:05.000 --> 00:17:13.600 
+Well, the information in the report is grouped in a few sections.
+
+162
+00:17:13.600 --> 00:17:22.680 
+So we'll try to look at each of these sections and see what's in there.
+
+163
+00:17:22.680 --> 00:17:32.520 
+I have a few Crashes here or parts of Crashes, which I'm going to use to the following examples.
+
+164
+00:17:32.520 --> 00:17:41.400 
+So I'll try to explain how I got each one and what's in each of these files.
+
+165
+00:17:41.400 --> 00:17:46.520 
+But if it's unclear, just let me know.
+
+166
+00:17:46.520 --> 00:17:53.800 
+So this first example is an app Crash which I generated by making some changes to the
+
+167
+00:17:53.800 --> 00:18:04.320 
+EssentialFeed use case repository and forcing a Crash in the SceneDelegate will connect
+
+168
+00:18:04.320 --> 00:18:15.600 
+to function by force unwrapping an optional.
+
+169
+00:18:15.600 --> 00:18:21.120 
+So that's the Crash report and we can see a few sections here.
+
+170
+00:18:21.120 --> 00:18:27.640 
+So this first section is called the header and it has various information which we'll
+
+171
+00:18:27.640 --> 00:18:30.960 
+take a look at in a second.
+
+172
+00:18:30.960 --> 00:18:36.560 
+Then we have another section called the exception information.
+
+173
+00:18:36.560 --> 00:18:39.200 
+And there are a few fields here describing the exception.
+
+174
+00:18:39.200 --> 00:18:45.200 
+And by the way, this does not refer to a language exception, so it's not a Swift or an objective
+
+175
+00:18:45.200 --> 00:18:53.400 
+see exception is actually an operating system exception, which is different.
+
+176
+00:18:53.400 --> 00:18:56.860 
+And then we see the culprit.
+
+177
+00:18:56.860 --> 00:19:04.600 
+So the threat that triggered the Crash or crashed on and then we have the backtraces
+
+178
+00:19:04.600 --> 00:19:09.400 
+which will also cover.
+
+179
+00:19:09.400 --> 00:19:16.520 
+The state of the CPU registers.
+
+180
+00:19:16.520 --> 00:19:18.520 
+And the binary Images.
+
+181
+00:19:18.520 --> 00:19:28.000 
+So that's the overall structure and we'll go field by field.
+
+182
+00:19:28.000 --> 00:19:32.600 
+So Crash report begins with the header section that describes the environment Crash occurred
+
+183
+00:19:32.600 --> 00:19:36.520 
+in the fields in the header section.
+
+184
+00:19:36.520 --> 00:19:43.520 
+So this section can't contain the following information, but no single Crash report contains
+
+185
+00:19:43.520 --> 00:19:47.600 
+all the following fields.
+
+186
+00:19:47.600 --> 00:19:50.520 
+First there's the incident identifier.
+
+187
+00:19:50.520 --> 00:19:53.920 
+This is a unique identifier for the Crash report.
+
+188
+00:19:53.920 --> 00:19:59.960 
+So two reports never share the same identifier.
+
+189
+00:19:59.960 --> 00:20:04.600 
+The next field is the Crash reported key.
+
+190
+00:20:04.600 --> 00:20:08.360 
+This is an anonymized per device identifier.
+
+191
+00:20:08.360 --> 00:20:15.000 
+So two reports for the same device contain identical values.
+
+192
+00:20:15.000 --> 00:20:25.720 
+Note that this identifier is reset when erasing the device.
+
+193
+00:20:25.720 --> 00:20:36.560 
+Instead of the Crash reporter key that's available for AppStore builds or AppStore build Crashes
+
+194
+00:20:36.560 --> 00:20:47.120 
+on TestFlight builds, we'll have another ID which is called a beta identifier, which
+
+195
+00:20:47.120 --> 00:20:54.640 
+is again a unique identifier for the combination of the device and vendor of the crashed application.
+
+196
+00:20:54.640 --> 00:21:04.840 
+So you can either have one or the other.
+
+197
+00:21:04.840 --> 00:21:09.920 
+Next there's the hardware Model, which is the specific device Model that the app was
+
+198
+00:21:09.920 --> 00:21:11.600 
+running on.
+
+199
+00:21:11.600 --> 00:21:18.040 
+If you haven't seen this format, there are resources from Apple which contains almost
+
+200
+00:21:18.040 --> 00:21:22.640 
+all the devices and their corresponding hardware Model.
+
+201
+00:21:22.640 --> 00:21:32.760 
+This iPhone 12,8 represents an iPhone SE 2.
+
+202
+00:21:32.760 --> 00:21:39.320 
+Next there's the process and the process field contains the executable name for the process
+
+203
+00:21:39.320 --> 00:21:48.020 
+that crashed and this matches the CF Bundle executable value in the app information List.
+
+204
+00:21:48.020 --> 00:21:53.380 
+The number in the brackets is the process ID.
+
+205
+00:21:53.380 --> 00:21:58.940 
+Then comes the path, which is the location of the executable on disk.
+
+206
+00:21:58.940 --> 00:22:12.960 
+So if we scroll here, we see the path to the EssentialApp binary on our device.
+
+207
+00:22:12.960 --> 00:22:19.960 
+And if this was a macOS Crash, some of the paths, some of the components in the path
+
+208
+00:22:19.960 --> 00:22:30.040 
+might be replaced with placeholders to protect the user's privacy.
+
+209
+00:22:30.040 --> 00:22:36.640 
+Then we have the identifier, which is the CF BundleIdentifier of the process that crashed.
+
+210
+00:22:36.640 --> 00:22:41.120 
+And if the process does not have a CF BundleIdentifier, if the binary does not have a
+
+211
+00:22:41.120 --> 00:22:49.080 
+BundleIdentifier, this field is either the process name or just a placeholder value.
+
+212
+00:22:49.080 --> 00:22:53.760 
+Then the version, which is the version of the process that crashed.
+
+213
+00:22:53.760 --> 00:23:00.680 
+And it's a concatenation of the app's CF Bundle version and CF Bundle short version
+
+214
+00:23:00.680 --> 00:23:13.780 
+String, which both are set to the Info.plist.
+
+215
+00:23:13.780 --> 00:23:25.680 
+On some Crashes, we can have another field called AppStore tools.
+
+216
+00:23:25.680 --> 00:23:32.200 
+And this is just the version of Xcode used to compile your app's Bitcode and to thin
+
+217
+00:23:32.200 --> 00:23:35.320 
+your app to device specific variants.
+
+218
+00:23:35.320 --> 00:23:54.000 
+And for instance, for Xcode 12, 13.1, this would look like this, the build ID.
+
+219
+00:23:54.000 --> 00:24:05.280 
+We can also have an app variant field, which is the specific variant of your app produced
+
+220
+00:24:05.280 --> 00:24:11.560 
+by app thinning.
+
+221
+00:24:11.560 --> 00:24:15.500 
+And one example might look like this.
+
+222
+00:24:15.500 --> 00:24:26.600 
+So it contains three values separated by columns, and the first value, the one, is an internal
+
+223
+00:24:26.600 --> 00:24:33.980 
+system value, which isn't really useful when Debugging a Crash.
+
+224
+00:24:33.980 --> 00:24:37.920 
+The next value, the second value is the name of the thinning variant.
+
+225
+00:24:37.920 --> 00:24:43.160 
+And this variant represents a class of devices with similar characteristics such as screen
+
+226
+00:24:43.160 --> 00:24:48.000 
+scale, memory class, metal GPU, family, and so on.
+
+227
+00:24:48.000 --> 00:24:52.920 
+So the thinning variant's name does not indicate the exact hardware Model.
+
+228
+00:24:52.920 --> 00:24:58.920 
+So you might see a value in the hardware Model and another value in the app variant because
+
+229
+00:24:58.920 --> 00:25:03.080 
+the class might be different.
+
+230
+00:25:03.080 --> 00:25:11.600 
+Actually, more devices can make up the same class.
+
+231
+00:25:11.600 --> 00:25:16.720 
+And in this example, the class is an iPhone 10, 6.
+
+232
+00:25:16.720 --> 00:25:23.640 
+And the third value here is the variant of the OS version.
+
+233
+00:25:23.640 --> 00:25:30.640 
+In this example, this is 12.2, indicating that this variant targets iOS devices running
+
+234
+00:25:30.640 --> 00:25:38.280 
+iOS 12 or higher.
+
+235
+00:25:38.280 --> 00:25:48.640 
+Next we have code type, which is the CPU architecture of the process that crashed.
+
+236
+00:25:48.640 --> 00:26:00.960 
+And this value can be ARM64, as in this example, ARM, or the latest macOS processors, x86
+
+237
+00:26:00.960 --> 00:26:06.680 
+for the Intel-based CPUs.
+
+238
+00:26:06.680 --> 00:26:12.440 
+Next Role is the task Role assigned to the process at the time of termination.
+
+239
+00:26:12.440 --> 00:26:17.720 
+And again, this field is not that useful when analyzing the Crash report.
+
+240
+00:26:17.720 --> 00:26:20.900 
+So I usually skip it.
+
+241
+00:26:20.900 --> 00:26:26.480 
+The parent process, which is the name of the process and the ID that launched the Crash
+
+242
+00:26:26.480 --> 00:26:32.680 
+process, in our case, it was the launchd process.
+
+243
+00:26:32.680 --> 00:26:38.400 
+And the coalition, which is the name of the process coalition containing the app.
+
+244
+00:26:38.400 --> 00:26:44.880 
+Process coalitions track Resource usage among groups of related processes, such as an operating
+
+245
+00:26:44.880 --> 00:26:50.880 
+system process supporting a specific API functionality in the app.
+
+246
+00:26:50.880 --> 00:26:56.880 
+Most processes, including app extensions, form their own coalition.
+
+247
+00:26:56.880 --> 00:27:04.160 
+And we have the Date and time of the Crash and the Date and time of the launch of the
+
+248
+00:27:04.160 --> 00:27:05.600 
+app.
+
+249
+00:27:05.600 --> 00:27:12.200 
+So using these two values, we can compute the duration of the session.
+
+250
+00:27:12.200 --> 00:27:21.640 
+In our case, very short duration, just a few milliseconds.
+
+251
+00:27:21.640 --> 00:27:28.360 
+And finally, the OS version, which is the version of the operating system, including
+
+252
+00:27:28.360 --> 00:27:35.640 
+the build number on which the Crash occurred.
+
+253
+00:27:35.640 --> 00:27:43.840 
+The next section is the exception information section.
+
+254
+00:27:43.840 --> 00:27:47.160 
+Every Crash report contains exception information.
+
+255
+00:27:47.160 --> 00:27:52.720 
+This information section tells you how the process terminated, but it may not fully explain
+
+256
+00:27:52.720 --> 00:27:55.040 
+why.
+
+257
+00:27:55.040 --> 00:28:00.040 
+This information is important, but often overlooked.
+
+258
+00:28:00.040 --> 00:28:05.600 
+And again, as I mentioned, this does not refer to language exceptions thrown by an API, but
+
+259
+00:28:05.600 --> 00:28:09.720 
+rather to OS exceptions.
+
+260
+00:28:09.720 --> 00:28:15.680 
+So the following fields here provide information about the exception, but again, no single
+
+261
+00:28:15.680 --> 00:28:19.200 
+Crash reports will contain all the following fields.
+
+262
+00:28:19.200 --> 00:28:31.600 
+First, there is the exception type, which contains the name of the Mac exception, in
+
+263
+00:28:31.600 --> 00:28:39.040 
+our case, XCBreakpoint, that terminated the process and the name of the BSD termination
+
+264
+00:28:39.040 --> 00:28:45.360 
+signal, in our case, SIGTRAP.
+
+265
+00:28:45.360 --> 00:28:53.400 
+There are multiple values that you can see here for the exception type and for the BSD
+
+266
+00:28:53.400 --> 00:28:59.560 
+signal, and we'll try to cover this in a Future lecture.
+
+267
+00:28:59.560 --> 00:29:09.920 
+Next, we have exception codes, which are processor-specific information about the exception encoded into
+
+268
+00:29:09.920 --> 00:29:14.560 
+one or more 64-bit hexadecimal numbers.
+
+269
+00:29:14.560 --> 00:29:19.920 
+Typically, this field isn't present because the OS presents the information as human-readable
+
+270
+00:29:19.920 --> 00:29:24.960 
+information in the other fields in the section.
+
+271
+00:29:24.960 --> 00:29:27.720 
+But we have it here.
+
+272
+00:29:27.720 --> 00:29:34.760 
+Next, we have an exception subtype and exception Message fields, which, as you can see, are
+
+273
+00:29:34.760 --> 00:29:40.000 
+not part of our Crash report here.
+
+274
+00:29:40.000 --> 00:29:45.840 
+But we have a different example where we can see those.
+
+275
+00:29:45.840 --> 00:29:54.920 
+This is a part of another Crash, and we can see a different exception type, xccrash and
+
+276
+00:29:54.920 --> 00:30:02.200 
+a SIGABORT signal, and this time we have an exception subtype, which is a human-readable
+
+277
+00:30:02.200 --> 00:30:10.640 
+description of the exception codes, which is LaunchHang, and the exception Message contains
+
+278
+00:30:10.640 --> 00:30:15.920 
+additional human-readable information extracted from the exception codes, and in our case,
+
+279
+00:30:15.920 --> 00:30:20.200 
+the extension took too much time to initialize.
+
+280
+00:30:20.200 --> 00:30:28.760 
+This is actually a watchdog Crash from an app extension that took too long to launch,
+
+281
+00:30:28.760 --> 00:30:37.200 
+and that's how it's gonna look.
+
+282
+00:30:37.200 --> 00:30:44.000 
+Back to our Crash here.
+
+283
+00:30:44.000 --> 00:30:52.960 
+The next field is exceptionNode, and this exceptionNode contains additional information
+
+284
+00:30:52.960 --> 00:30:55.880 
+that isn't specific to one exception type.
+
+285
+00:30:55.880 --> 00:31:04.880 
+If this field contains EXC_CORPSE_NOTIFY, as in our example, the Crash didn't originate from
+
+286
+00:31:04.880 --> 00:31:10.520 
+a hardware trap, either because the process was explicitly terminated by the OS or the
+
+287
+00:31:10.520 --> 00:31:15.080 
+process called Abort.
+
+288
+00:31:15.080 --> 00:31:27.720 
+Another value which you might see here is simulated.
+
+289
+00:31:27.720 --> 00:31:32.800 
+The exceptionNode contains simulated, again, this is not a Crash.
+
+290
+00:31:32.800 --> 00:31:38.020 
+The process didn't Crash, but the OS might have subsequently requested the termination
+
+291
+00:31:38.020 --> 00:31:40.600 
+of the process.
+
+292
+00:31:40.600 --> 00:31:52.420 
+And another value which you might see here is non-fatal condition.
+
+293
+00:31:52.420 --> 00:31:57.720 
+Also for cases that are not Crashes, where the process didn't terminate because the issue
+
+294
+00:31:57.720 --> 00:32:04.560 
+that created the Crash report wasn't fatal.
+
+295
+00:32:04.560 --> 00:32:13.160 
+Next the termination reason contains exit reason information specified when the OS terminates
+
+296
+00:32:13.160 --> 00:32:16.200 
+a process.
+
+297
+00:32:16.200 --> 00:32:22.200 
+Key OS components, both inside and outside of a process, terminate a process upon encountering
+
+298
+00:32:22.200 --> 00:32:26.960 
+a fatal Error and record a reason in this field.
+
+299
+00:32:26.960 --> 00:32:31.280 
+Examples of the information you can find in this field are messages about an invalid code
+
+300
+00:32:31.280 --> 00:32:38.280 
+signature, a missing dependent library or accessing privacy sensitive information without
+
+301
+00:32:38.280 --> 00:32:42.360 
+the purpose String in the Info.plist.
+
+302
+00:32:42.360 --> 00:32:50.760 
+And finally, you can either see triggered by Thread, like in our case, or you can see
+
+303
+00:32:50.760 --> 00:33:00.020 
+the crashed Thread and it can be 01.
+
+304
+00:33:00.020 --> 00:33:04.360 
+So either one or the other.
+
+305
+00:33:04.360 --> 00:33:19.520 
+And they basically flag the Thread that caused the Crash or on which the exception originated.
+
+306
+00:33:19.520 --> 00:33:26.240 
+The next section is a diagnostics messages section, which again, our Crash here doesn't
+
+307
+00:33:26.240 --> 00:33:29.040 
+have.
+
+308
+00:33:29.040 --> 00:33:38.000 
+But we can use another Crash.
+
+309
+00:33:38.000 --> 00:33:44.040 
+And we refer to this part.
+
+310
+00:33:44.040 --> 00:33:49.040 
+So the OS sometimes includes additional diagnostic information in the Crash report.
+
+311
+00:33:49.040 --> 00:33:54.140 
+This information uses a variety of formats depending on the reason of the Crash and isn't
+
+312
+00:33:54.140 --> 00:33:59.160 
+present in every Crash report, as you just saw.
+
+313
+00:33:59.160 --> 00:34:05.440 
+In this first example, framework Error messages occurring just before the process terminated
+
+314
+00:34:05.440 --> 00:34:09.920 
+appear in the application specific information field.
+
+315
+00:34:09.920 --> 00:34:14.840 
+In our example, the dispatch framework logged an Error about incorrect use of a DispatchQueue.
+
+316
+00:34:14.840 --> 00:34:19.740 
+In our example, the dispatch framework logged an Error about incorrect use of a DispatchQueue.
+
+317
+00:34:19.740 --> 00:34:33.240 
+Another example, the app specific information reveals an index out of range Error when accessing
+
+318
+00:34:33.240 --> 00:34:38.960 
+a Swift Array.
+
+319
+00:34:38.960 --> 00:34:51.080 
+And another example is a watchdog termination, where the termination
+
+320
+00:34:51.080 --> 00:34:56.160 
+description field contains the reason why the watchdog trigger.
+
+321
+00:34:56.160 --> 00:35:04.040 
+In our case, because our application exhausted real time allowance of the 20 seconds I mentioned,
+
+322
+00:35:04.040 --> 00:35:10.080 
+which is listed at 19.97.
+
+323
+00:35:10.080 --> 00:35:17.640 
+So if we return to our original Crash report, which we used, we can see that this Crash
+
+324
+00:35:17.640 --> 00:35:21.480 
+does not have any diagnostic messages.
+
+325
+00:35:21.480 --> 00:35:31.280 
+And this can happen because sometimes the OS might be protecting privacy sensitive information
+
+326
+00:35:31.280 --> 00:35:41.680 
+and just removing or not adding this part in a Crash report.
+
+327
+00:35:41.680 --> 00:35:49.520 
+We will ignore this kernel triage because it usually does not appear in Crash reports
+
+328
+00:35:49.520 --> 00:35:53.400 
+and does not contain any valuable information.
+
+329
+00:35:53.400 --> 00:35:57.240 
+And we'll look at the backtraces section.
+
+330
+00:35:57.240 --> 00:36:06.200 
+The backtrace section contains the trace for each of the Threads that was running at the
+
+331
+00:36:06.200 --> 00:36:08.000 
+time of the Crash.
+
+332
+00:36:08.000 --> 00:36:11.940 
+So in our case, we had eight Threads.
+
+333
+00:36:11.940 --> 00:36:22.040 
+So from 0 to 7, eight Threads running and we have the backtrace for each of these Threads.
+
+334
+00:36:22.040 --> 00:36:29.520 
+So we basically get the documentation of all the code running when the process terminated.
+
+335
+00:36:29.520 --> 00:36:35.680 
+These backtraces you see here are very similar to what you see when you pause the process
+
+336
+00:36:35.680 --> 00:36:37.680 
+with the debugger.
+
+337
+00:36:37.680 --> 00:36:43.420 
+So let's do that really quickly just to get a feeling.
+
+338
+00:36:43.420 --> 00:36:56.720 
+So if we run the EssentialApp, so I pause the debugger on this entry line in the will
+
+339
+00:36:56.720 --> 00:37:00.760 
+connect to API from the SceneDelegate.
+
+340
+00:37:00.760 --> 00:37:06.200 
+And over here, you see the first Thread, Thread one, which is the Main Thread.
+
+341
+00:37:06.200 --> 00:37:17.680 
+And we see all the backtrace starting from the app start on entry 26 up to our specific
+
+342
+00:37:17.680 --> 00:37:18.800 
+line of code.
+
+343
+00:37:18.800 --> 00:37:24.920 
+So going through the UIApplication Main and all the other calls that were involved, all
+
+344
+00:37:24.920 --> 00:37:32.340 
+the specific function calls that were involved up to the point where we set the breakpoint.
+
+345
+00:37:32.340 --> 00:37:38.060 
+And if you are willing to do the comparison, you'll see that my stack trace here is the
+
+346
+00:37:38.060 --> 00:37:41.440 
+exact same stack trace.
+
+347
+00:37:41.440 --> 00:37:47.280 
+So that's how stack traces are represented in Crash reports.
+
+348
+00:37:47.280 --> 00:37:51.980 
+They contain all the function calls from the entry point.
+
+349
+00:37:51.980 --> 00:38:01.560 
+So from the start function to each of the function it involves up until your, your explicit
+
+350
+00:38:01.560 --> 00:38:02.560 
+code.
+
+351
+00:38:02.560 --> 00:38:11.980 
+So you can see here a bunch of system frameworks and then our own code.
+
+352
+00:38:11.980 --> 00:38:19.200 
+And we get these stack trace for each of the running Threads.
+
+353
+00:38:19.200 --> 00:38:26.380 
+So yeah, I was mentioning this entry point again, like the start function, then we invoke
+
+354
+00:38:26.380 --> 00:38:29.280 
+the Main from the EssentialApp.
+
+355
+00:38:29.280 --> 00:38:36.180 
+Then UIApplication Main, your application run, and then the RunLoop starts.
+
+356
+00:38:36.180 --> 00:38:45.680 
+So it's kind of the, the common entry point for each of the iOS apps or most of the iOS
+
+357
+00:38:45.680 --> 00:38:48.860 
+apps we have.
+
+358
+00:38:48.860 --> 00:38:56.220 
+In this backtrace section, we can have a last exception backtrace, which again in our case
+
+359
+00:38:56.220 --> 00:39:03.100 
+is missing, but we have it in a different Crash.
+
+360
+00:39:03.100 --> 00:39:10.980 
+So before the Thread zero stack trace and the other Threads, we have another stack trace,
+
+361
+00:39:10.980 --> 00:39:18.460 
+which is the last exception backtrace.
+
+362
+00:39:18.460 --> 00:39:23.060 
+Crashes that are caused by a language exception include an additional backtrace, the last
+
+363
+00:39:23.060 --> 00:39:30.340 
+exception backtrace, as I said, located before the first Thread.
+
+364
+00:39:30.340 --> 00:39:37.860 
+The first line of each backtrace with the Thread number and the Thread name.
+
+365
+00:39:37.860 --> 00:39:47.480 
+So if we go back to our initial Crash report, we see the Thread number zero and the name
+
+366
+00:39:47.480 --> 00:39:55.740 
+is missing because for privacy reasons, Crash reports delivered to the Crash organizer in
+
+367
+00:39:55.740 --> 00:40:02.420 
+Xcode don't contain the Thread names, only the Thread number.
+
+368
+00:40:02.420 --> 00:40:10.300 
+So again, in our example, we have the backtraces from Threads zero to seven, so eight Threads
+
+369
+00:40:10.300 --> 00:40:15.220 
+in total.
+
+370
+00:40:15.220 --> 00:40:22.500 
+And the Crash Thread is Thread zero, which is running on the MainQueue and identified
+
+371
+00:40:22.500 --> 00:40:27.140 
+as the app's Main Thread.
+
+372
+00:40:27.140 --> 00:40:39.260 
+After the Thread number, each line here of a backtrace represents a stack frame in it.
+
+373
+00:40:39.260 --> 00:40:45.580 
+Each column represents different information.
+
+374
+00:40:45.580 --> 00:40:53.020 
+First, so zero, one, two are the stack frame numbers.
+
+375
+00:40:53.020 --> 00:40:59.100 
+Stack frames are in calling order where frame zero is the function that was executing at
+
+376
+00:40:59.100 --> 00:41:05.900 
+the time the execution halted and frame one is the function that called the function in
+
+377
+00:41:05.900 --> 00:41:12.940 
+frame zero and frame two is the function that called the function at frame one and so on.
+
+378
+00:41:12.940 --> 00:41:16.340 
+You see the point.
+
+379
+00:41:16.340 --> 00:41:27.260 
+Then there's the binary name containing the binary where that function was coming from.
+
+380
+00:41:27.260 --> 00:41:32.180 
+Then some address, which is the address of the machine instruction that is executing
+
+381
+00:41:32.180 --> 00:41:38.140 
+for frame zero in each backtrace, this is the address of the machine instruction executing
+
+382
+00:41:38.140 --> 00:41:41.300 
+on a Thread when the process terminated.
+
+383
+00:41:41.300 --> 00:41:49.520 
+For other stack frames, this is the address of the first machine instruction that executes
+
+384
+00:41:49.520 --> 00:41:58.580 
+after control returns to that stack frame.
+
+385
+00:41:58.580 --> 00:42:06.100 
+Then we have the name of the function.
+
+386
+00:42:06.100 --> 00:42:12.540 
+So in our case is the SceneDelegate Scene will connect to options.
+
+387
+00:42:12.540 --> 00:42:19.220 
+And since this is a fully symbolicated Crash report, the name of the function appears.
+
+388
+00:42:19.220 --> 00:42:25.380 
+And by the way, we'll talk about symbolication in a Future lecture.
+
+389
+00:42:25.380 --> 00:42:32.300 
+But just to simplify it, symbolication is the process of translating memory addresses
+
+390
+00:42:32.300 --> 00:42:43.020 
+into a human readable or developer readable format that contains File names, line numbers,
+
+391
+00:42:43.020 --> 00:42:44.020 
+function names.
+
+392
+00:42:44.020 --> 00:42:50.660 
+So something we developers can understand as opposed to just the memory addresses that
+
+393
+00:42:50.660 --> 00:43:01.780 
+are written in an unsymbolicated Crash report, which is really unusable for us.
+
+394
+00:43:01.780 --> 00:43:10.820 
+Next we have a byte offset, which in this case is plus 2288.
+
+395
+00:43:10.820 --> 00:43:15.220 
+And that's the offset from the function's entry point to the current instruction in
+
+396
+00:43:15.220 --> 00:43:18.500 
+the function.
+
+397
+00:43:18.500 --> 00:43:30.300 
+And at the end we have the File name SceneDelegate.Swift and the line number 65.
+
+398
+00:43:30.300 --> 00:43:40.620 
+And again, this appears because this is a fully symbolicated Crash report.
+
+399
+00:43:40.620 --> 00:43:58.100 
+In some situations, the File name might be missing and be replaced by compiler generated.
+
+400
+00:43:58.100 --> 00:44:02.340 
+And this happens when the compiler creates the code for that frame and that code isn't
+
+401
+00:44:02.340 --> 00:44:05.380 
+in your source files.
+
+402
+00:44:05.380 --> 00:44:10.420 
+But if this is the top frame in the Crash Thread, look at the preceding stack frames
+
+403
+00:44:10.420 --> 00:44:14.340 
+for clues.
+
+404
+00:44:14.340 --> 00:44:20.780 
+Or another thing you can see here is the line number being zero.
+
+405
+00:44:20.780 --> 00:44:24.620 
+If the line number of a source File is zero, this means that the backtrace doesn't Map
+
+406
+00:44:24.620 --> 00:44:28.220 
+to a specific line of code in the original File.
+
+407
+00:44:28.220 --> 00:44:34.500 
+This is because the compiler optimized the code and one example is inlining functions
+
+408
+00:44:34.500 --> 00:44:38.860 
+and the code executing at the time of the Crash doesn't correspond to an exact line
+
+409
+00:44:38.860 --> 00:44:40.060 
+in the original code.
+
+410
+00:44:40.060 --> 00:44:49.040 
+So when symbolicating, there is no line that corresponds to the current instruction.
+
+411
+00:44:49.040 --> 00:44:53.620 
+So you will see a zero value.
+
+412
+00:44:53.620 --> 00:45:02.420 
+But you can always use the other frames as a reference.
+
+413
+00:45:02.420 --> 00:45:09.300 
+And you can use all these backtraces to understand what your app was doing at the time of the
+
+414
+00:45:09.300 --> 00:45:10.300 
+Crash.
+
+415
+00:45:10.300 --> 00:45:17.220 
+So you see all the functions that called each other or what all the Threads were doing.
+
+416
+00:45:17.220 --> 00:45:26.380 
+If any Thread was doing something interesting or out of the ordinary, you can see it here.
+
+417
+00:45:26.380 --> 00:45:29.820 
+And we'll talk about some strategies about how to analyze these backtraces.
+
+418
+00:45:29.820 --> 00:45:37.420 
+For now, you just need to understand the format of the information here.
+
+419
+00:45:37.420 --> 00:45:43.460 
+And we can look at the remaining sections.
+
+420
+00:45:43.460 --> 00:45:54.140 
+The first section is this Thread state that contains the CP registers and their values
+
+421
+00:45:54.140 --> 00:45:57.780 
+at the time of the Crash.
+
+422
+00:45:57.780 --> 00:46:02.380 
+Identifying the Thread state is an advanced topic that requires understanding of the application
+
+423
+00:46:02.380 --> 00:46:06.540 
+binary interface or ABI for the operating system.
+
+424
+00:46:06.540 --> 00:46:12.780 
+So there's no point in going into this detail for now, as it's very, very complex and you
+
+425
+00:46:12.780 --> 00:46:18.340 
+have a much bigger chance of fixing the Crash by looking at all the other information and
+
+426
+00:46:18.340 --> 00:46:26.220 
+by starting to analyze the values in each CP register and trying to disassemble the
+
+427
+00:46:26.220 --> 00:46:29.820 
+code.
+
+428
+00:46:29.820 --> 00:46:33.060 
+And finally, there's a binary Images section.
+
+429
+00:46:33.060 --> 00:46:40.220 
+This contains all the code loaded in the process at the time of termination, such as your app
+
+430
+00:46:40.220 --> 00:46:45.220 
+executable, which is on the first line, the EssentialApp, or system frameworks like the
+
+431
+00:46:45.220 --> 00:46:54.340 
+UIKit core, core Foundation, graphics services, Foundation, and so on.
+
+432
+00:46:54.340 --> 00:47:03.780 
+This List contains the component from the preceding example.
+
+433
+00:47:03.780 --> 00:47:08.420 
+And each line will contain a different binary.
+
+434
+00:47:08.420 --> 00:47:10.260 
+Let's see what this format is.
+
+435
+00:47:10.260 --> 00:47:16.880 
+And by the way, the format we're looking at is the same for iOS, watchOS, and tvOS.
+
+436
+00:47:16.880 --> 00:47:25.700 
+So first, we have an address range, which is the binary Images address range within
+
+437
+00:47:25.700 --> 00:47:27.280 
+the process.
+
+438
+00:47:27.280 --> 00:47:33.060 
+The first address is the binary's load address.
+
+439
+00:47:33.060 --> 00:47:43.100 
+Then there's the binary name, like EssentialApp, the CPU architecture, ARM64, a build
+
+440
+00:47:43.100 --> 00:47:51.180 
+UUID, like the one I just selected, that uniquely identifies the binary Image.
+
+441
+00:47:51.180 --> 00:47:56.180 
+And we can use these to locate the corresponding DSYM when we symbolicate.
+
+442
+00:47:56.180 --> 00:48:01.560 
+And we'll see how we can do that in another lecture, like I said.
+
+443
+00:48:01.560 --> 00:48:04.600 
+And finally, the path to the binary.
+
+444
+00:48:04.600 --> 00:48:12.300 
+So pretty long path, but in the end, we get the path to our EssentialApp or to the core
+
+445
+00:48:12.300 --> 00:48:18.500 
+Foundation framework under system library frameworks.
+
+446
+00:48:18.500 --> 00:48:22.440 
+So as I mentioned, this is the format used for iOS.
+
+447
+00:48:22.440 --> 00:48:29.500 
+If you want to see a slight variation of the macOS format, I'll use another Crash report.
+
+448
+00:48:29.500 --> 00:48:33.780 
+And we'll see a similar section here.
+
+449
+00:48:33.780 --> 00:48:41.100 
+The format is very similar, so it also has an address range.
+
+450
+00:48:41.100 --> 00:48:54.860 
+Within the name of the binary, a star or a plus, depending on if this binary is a system
+
+451
+00:48:54.860 --> 00:49:10.220 
+binary or not, the identifier and the path which might be obfuscated or just parts of
+
+452
+00:49:10.220 --> 00:49:16.380 
+the path being replaced with placeholders to preserve privacy.
+
+453
+00:49:16.380 --> 00:49:18.300 
+So pretty similar.
+
+454
+00:49:18.300 --> 00:49:25.880 
+And you might have a version information here if that's available, like in this case.
+
+455
+00:49:25.880 --> 00:49:35.660 
+The core Foundation version 6.9.
+
+456
+00:49:35.660 --> 00:49:41.180 
+Back to our Crash.
+
+457
+00:49:41.180 --> 00:49:51.100 
+Let's talk about some general ways on how to read these Crash reports.
+
+458
+00:49:51.100 --> 00:49:57.540 
+So when analyzing a Crash report, read all the information in all the sections.
+
+459
+00:49:57.540 --> 00:50:03.740 
+As you formulate a hypothesis about the cause of a Crash, ask questions about what the data
+
+460
+00:50:03.740 --> 00:50:09.860 
+in each section of the Crash says to refine or disprove the hypothesis.
+
+461
+00:50:09.860 --> 00:50:20.500 
+Some clues are explicitly captured by fields in the Crash report.
+
+462
+00:50:20.500 --> 00:50:27.220 
+But others are subtle and require you to uncover them by noticing small details.
+
+463
+00:50:27.220 --> 00:50:33.020 
+Performing a total analysis of a Crash report and formulating a hypothesis takes time and
+
+464
+00:50:33.020 --> 00:50:42.020 
+practice to develop, but it's a critical tool for making your app more robust.
+
+465
+00:50:42.020 --> 00:50:46.460 
+Find a starting point from the Crash report's information to think about the Crash from
+
+466
+00:50:46.460 --> 00:50:51.100 
+the user's perspective to refine the hypothesis.
+
+467
+00:50:51.100 --> 00:51:03.500 
+For example, look at the frame in the backtrace that may indicate a particular feature of
+
+468
+00:51:03.500 --> 00:51:05.300 
+the app in use.
+
+469
+00:51:05.300 --> 00:51:14.260 
+And you can think about how other information in the Crash report relates to that feature.
+
+470
+00:51:14.260 --> 00:51:19.900 
+Also if you have many Crash reports, try to organize them into groups to clarify the source
+
+471
+00:51:19.900 --> 00:51:23.660 
+of a Crash.
+
+472
+00:51:23.660 --> 00:51:29.020 
+If many Crash reports contain the exact same information, the problem likely is consistently
+
+473
+00:51:29.020 --> 00:51:35.960 
+reproducible and the common details in the Crash reports help you isolate the issue.
+
+474
+00:51:35.960 --> 00:51:40.620 
+If you have Crash reports that all appear different, but you suspect the underlying
+
+475
+00:51:40.620 --> 00:51:46.740 
+cause is the same, pay attention to any detail that looks unusual.
+
+476
+00:51:46.740 --> 00:51:50.980 
+Place any Crash reports with unusual details in their own group.
+
+477
+00:51:50.980 --> 00:51:56.420 
+By grouping Crash reports based on similar and dissimilar details, you sometimes uncover
+
+478
+00:51:56.420 --> 00:52:09.620 
+insights into the cause of a Crash that aren't visible when looking at Crash reports individually.
+
+479
+00:52:09.620 --> 00:52:16.540 
+If you have multiple Crash reports that are similar, use the header information to help
+
+480
+00:52:16.540 --> 00:52:20.940 
+understand the scope of the problem and to target the specific operating system version
+
+481
+00:52:20.940 --> 00:52:24.180 
+and devices, you need to reproduce the problem.
+
+482
+00:52:24.180 --> 00:52:30.740 
+Some questions that can help refine your hypothesis about the Crashes are, does the Crash occur
+
+483
+00:52:30.740 --> 00:52:34.820 
+in multiple versions of the app or just one?
+
+484
+00:52:34.820 --> 00:52:41.060 
+So you look at multiple Crash reports and see what the version says.
+
+485
+00:52:41.060 --> 00:52:46.580 
+Does the Crash occur on multiple versions of the operating system?
+
+486
+00:52:46.580 --> 00:52:52.860 
+So you take a look at the operating system over multiple Crashes and you draw your conclusion.
+
+487
+00:52:52.860 --> 00:53:01.140 
+If it's limited to maybe iOS 15 only, or if it spans across multiple OS versions, that's
+
+488
+00:53:01.140 --> 00:53:04.900 
+useful information.
+
+489
+00:53:04.900 --> 00:53:14.060 
+Other information is, did the Crash originate from your Main app or from one of your app
+
+490
+00:53:14.060 --> 00:53:17.240 
+extensions?
+
+491
+00:53:17.240 --> 00:53:29.660 
+So for this you can use the process and path fields to see where the Crash happened.
+
+492
+00:53:29.660 --> 00:53:35.100 
+Is the Crash from only one type of device, such as an iPad but not an iPhone?
+
+493
+00:53:35.100 --> 00:53:41.900 
+For this you can check the hardware Model and see what the distribution across devices
+
+494
+00:53:41.900 --> 00:53:45.540 
+is.
+
+495
+00:53:45.540 --> 00:53:51.820 
+Is the Crash from a TestFlight beta of your app or from an AppStore version?
+
+496
+00:53:51.820 --> 00:54:00.160 
+Then you look at the Crash reporter key or the beta identifier key and you can immediately
+
+497
+00:54:00.160 --> 00:54:07.120 
+see which type of Crash it is.
+
+498
+00:54:07.120 --> 00:54:10.100 
+What device Model did the app Crash on?
+
+499
+00:54:10.100 --> 00:54:14.940 
+And how much Testing did you do on devices with similar capabilities?
+
+500
+00:54:14.940 --> 00:54:22.660 
+For this you can use the app variant or the hardware Model.
+
+501
+00:54:22.660 --> 00:54:28.180 
+Do multiple users experience the Crash or only a small number of unique users?
+
+502
+00:54:28.180 --> 00:54:36.100 
+For this you can use the Crash reporter key or a beta identifier to see if some users
+
+503
+00:54:36.100 --> 00:54:45.580 
+get more than one Crash or if this is sporadically happening to a user maybe once or twice.
+
+504
+00:54:45.580 --> 00:54:49.780 
+And another important question is, how long was the app running before it crashed?
+
+505
+00:54:49.780 --> 00:55:02.580 
+So you can use the Date of the Crash and the launch time to compute the session duration.
+
+506
+00:55:02.580 --> 00:55:09.980 
+And if you see a long session like a few hours or a few days then you might have a hypothesis
+
+507
+00:55:09.980 --> 00:55:13.540 
+about why the Crash happened.
+
+508
+00:55:13.540 --> 00:55:19.380 
+Or if you see a very short duration again you can draw the conclusion that something
+
+509
+00:55:19.380 --> 00:55:25.520 
+is happening during your app launch.
+
+510
+00:55:25.520 --> 00:55:31.020 
+So that's how we look at the header information.
+
+511
+00:55:31.020 --> 00:55:36.620 
+We also want to take a look at the exception information, because every Crash report records
+
+512
+00:55:36.620 --> 00:55:43.060 
+exception information that shows the exact mechanism by which the app's process terminated.
+
+513
+00:55:43.060 --> 00:55:48.140 
+Termination is always the last step in the Error handling, but it starts when an unrecoverable
+
+514
+00:55:48.140 --> 00:55:52.180 
+condition occurs in the app or the framework it uses.
+
+515
+00:55:52.180 --> 00:55:57.800 
+For example, the app may request termination directly, such as calling abort, so you might
+
+516
+00:55:57.800 --> 00:56:01.880 
+see an abort on the frame 0 of the Crash Thread.
+
+517
+00:56:01.880 --> 00:56:08.540 
+But that's not the cause, that's just the last step.
+
+518
+00:56:08.540 --> 00:56:13.260 
+As a different example, the OS may terminate the process to enforce a system policy, such
+
+519
+00:56:13.260 --> 00:56:20.740 
+as a watchdog, that ensures the app's responsiveness.
+
+520
+00:56:20.740 --> 00:56:25.100 
+Exception information narrows the sources for the Crash you're analyzing and helps
+
+521
+00:56:25.100 --> 00:56:31.420 
+identify the clues you look for in other sections of the Crash report.
+
+522
+00:56:31.420 --> 00:56:38.740 
+So try to answer the following questions.
+
+523
+00:56:38.740 --> 00:56:42.580 
+What is the exception type?
+
+524
+00:56:42.580 --> 00:56:49.100 
+What Thread triggered the Crash?
+
+525
+00:56:49.100 --> 00:57:05.100 
+What's the relationship between the frames of the Crash Thread and the exception type?
+
+526
+00:57:05.100 --> 00:57:10.020 
+For certain types of problems, a Crash report may contain additional diagnostic information
+
+527
+00:57:10.020 --> 00:57:14.940 
+between the exception information section and the backtracing section.
+
+528
+00:57:14.940 --> 00:57:19.540 
+This information is directly related to an exception type.
+
+529
+00:57:19.540 --> 00:57:28.520 
+Based on the exception type, what is the Crash due to an uncut language exception, like in
+
+530
+00:57:28.520 --> 00:57:31.380 
+our case here?
+
+531
+00:57:31.380 --> 00:57:37.580 
+And we can see an uncut NSUnknownKeyException.
+
+532
+00:57:37.580 --> 00:57:42.540 
+If so, what additional information about the API throwing the exception is in the Message?
+
+533
+00:57:42.540 --> 00:57:51.100 
+Well, we can see the extra information that for my class setValueForUndefinedKey, this
+
+534
+00:57:51.100 --> 00:57:57.100 
+class is not keyValueCodingCompliant.
+
+535
+00:57:57.100 --> 00:58:12.860 
+Again, based on the exception type, is the Crash due to a memory access issue?
+
+536
+00:58:12.860 --> 00:58:16.220 
+That's another important question to ask.
+
+537
+00:58:16.220 --> 00:58:23.780 
+And if there is an application-specific information field, what does it contain?
+
+538
+00:58:23.780 --> 00:58:30.020 
+Is there a specific API named in that Message, like we just saw?
+
+539
+00:58:30.020 --> 00:58:36.740 
+And where to use that API in your code?
+
+540
+00:58:36.740 --> 00:58:44.180 
+Or if you got a termination description, is there a termination description field and
+
+541
+00:58:44.180 --> 00:58:52.920 
+that's indicating something?
+
+542
+00:58:52.920 --> 00:58:57.140 
+The backtraces in a Crash report show the exact methods executing at the time of the
+
+543
+00:58:57.140 --> 00:58:58.760 
+Crash.
+
+544
+00:58:58.760 --> 00:59:07.120 
+As a starting point, look at the Crash Thread as well as the last exception backtrace, if
+
+545
+00:59:07.120 --> 00:59:12.540 
+we have one.
+
+546
+00:59:12.540 --> 00:59:16.180 
+And try to answer the following questions.
+
+547
+00:59:16.180 --> 00:59:21.700 
+For the Crash Thread, what function is this Thread serving to the app?
+
+548
+00:59:21.700 --> 00:59:27.580 
+Is it the Main Thread or another Thread with a specific purpose?
+
+549
+00:59:27.580 --> 00:59:34.140 
+Was a language exception thrown?
+
+550
+00:59:34.140 --> 00:59:39.420 
+And what does the last exception backtrace show?
+
+551
+00:59:39.420 --> 00:59:43.740 
+You look at these backtraces.
+
+552
+00:59:43.740 --> 00:59:55.860 
+What parts of the app use this Thread and the function that appear in the backtrace?
+
+553
+00:59:55.860 --> 01:00:16.980 
+And what mix of binaries in your app and the system frameworks are in the backtrace?
+
+554
+01:00:16.980 --> 01:00:23.260 
+Even if the functions in the backtrace aren't ones you directly call, they contain key clues.
+
+555
+01:00:23.260 --> 01:00:35.500 
+So like in this example, you don't see the EssentialApp entry only at the entry level
+
+556
+01:00:35.500 --> 01:00:37.980 
+on AppDelegate and that's it.
+
+557
+01:00:37.980 --> 01:00:47.880 
+And from there, there's only calls to system binaries, but there's still important information.
+
+558
+01:00:47.880 --> 01:00:55.940 
+One example is in another Crash that happened and we got only the last exception backtrace
+
+559
+01:00:55.940 --> 01:01:00.460 
+here.
+
+560
+01:01:00.460 --> 01:01:12.020 
+And again, we can see that except for stack frame 14 with migrate app, all the other binaries
+
+561
+01:01:12.020 --> 01:01:22.140 
+and functions are system functions.
+
+562
+01:01:22.140 --> 01:01:27.740 
+But the Crash is due to an invalid popover configuration.
+
+563
+01:01:27.740 --> 01:01:40.420 
+Frames 3 and 4 provide a clue that this Crash relates to presenting a ViewController, UI
+
+564
+01:01:40.420 --> 01:01:42.900 
+Presentation controller.
+
+565
+01:01:42.900 --> 01:01:52.660 
+And if we look at frame 2, we can see that it's actually a UI popover Presentation controller.
+
+566
+01:01:52.660 --> 01:01:57.660 
+This information narrows down the parts of your app's code to focus on.
+
+567
+01:01:57.660 --> 01:02:07.080 
+So we'll just look for the parts that are using UI popover Controllers.
+
+568
+01:02:07.080 --> 01:02:15.100 
+And even if there's no specific AppCode in the last exception backtrace, we can still
+
+569
+01:02:15.100 --> 01:02:20.860 
+have some idea about where to look.
+
+570
+01:02:20.860 --> 01:02:29.460 
+Back to our original Crash report, which we've shown.
+
+571
+01:02:29.460 --> 01:02:33.460 
+I want to mention that you can frequently determine the purpose of a Thread based on
+
+572
+01:02:33.460 --> 01:02:37.740 
+the bottom frames in the Thread's backtrace.
+
+573
+01:02:37.740 --> 01:02:52.700 
+So an app's Main Thread has NSApplication or UIApplication Main in the bottom frames.
+
+574
+01:02:52.700 --> 01:03:05.580 
+And other Threads created to the dispatch framework have start_wqthread in the bottom frames.
+
+575
+01:03:05.580 --> 01:03:12.180 
+As we look closer at the Crash Thread's backtrace, consider whether your app appears in a coherent
+
+576
+01:03:12.180 --> 01:03:22.780 
+state that matches your expectations about how your app functions.
+
+577
+01:03:22.780 --> 01:03:29.380 
+So again, looking at Thread 0, should the code from the app be running on this specific
+
+578
+01:03:29.380 --> 01:03:30.380 
+Thread?
+
+579
+01:03:30.380 --> 01:03:35.100 
+Is the Crash Thread a background Thread or the Main Thread?
+
+580
+01:03:35.100 --> 01:03:40.000 
+And an important question is, do any of the backtraces show the app manipulating UI elements
+
+581
+01:03:40.000 --> 01:03:42.740 
+on any Thread except the Main Thread?
+
+582
+01:03:42.740 --> 01:03:53.100 
+Because as we know, UIKit is pretty strict about setting UIKit object values from background
+
+583
+01:03:53.100 --> 01:03:54.940 
+Threads.
+
+584
+01:03:54.940 --> 01:04:01.060 
+And in order to test this more thoroughly, you can use the Main Thread checker from the
+
+585
+01:04:01.060 --> 01:04:09.900 
+Scheme Editor to run the app in debug with this Main Thread checker that will signal
+
+586
+01:04:09.900 --> 01:04:19.660 
+every situation where you're trying to set a UIKit property from a background Thread.
+
+587
+01:04:19.660 --> 01:04:22.460 
+So that can be very useful.
+
+588
+01:04:22.460 --> 01:04:27.180 
+And another question is relating to APIs with Completion handlers.
+
+589
+01:04:27.180 --> 01:04:38.620 
+So if you see an API with a Completion handler listed in these backtraces, does the API guarantee
+
+590
+01:04:38.620 --> 01:04:41.340 
+the specific queue of that Completion handler?
+
+591
+01:04:41.340 --> 01:04:43.340 
+So you should be checking that.
+
+592
+01:04:43.340 --> 01:04:54.380 
+And check if the code call is on that expected queue or not.
+
+593
+01:04:54.380 --> 01:04:59.660 
+And in addition to the backtrace for the Crash Thread or the language exception, other Threads
+
+594
+01:04:59.660 --> 01:05:07.860 
+backtraces provide additional but more subtle clues about the Crash.
+
+595
+01:05:07.860 --> 01:05:12.740 
+So in some types of Crashes, the Crash Threads backtrace doesn't contain the source of the
+
+596
+01:05:12.740 --> 01:05:23.500 
+issue, like in the case of the watchdog termination or memory access Crashes, memory access Crashes.
+
+597
+01:05:23.500 --> 01:05:34.580 
+And finally, you should take a look at the binary Images and make sure all the binaries,
+
+598
+01:05:34.580 --> 01:05:36.740 
+at least your binaries, are listed there.
+
+599
+01:05:36.740 --> 01:05:43.260 
+So if you have any frameworks that your app loads, make sure they appear here.
+
+600
+01:05:43.260 --> 01:05:48.660 
+And if you're investigating a watchdog termination and you have a high number of frameworks inside
+
+601
+01:05:48.660 --> 01:05:57.900 
+your app, that can be an indication of why your app's launch time takes longer.
+
+602
+01:05:57.900 --> 01:05:59.520 
+Thank you.
+
+603
+01:05:59.520 --> 01:06:04.420 
+So I know this might sound a bit more theoretical, like I said in the beginning, but it's really
+
+604
+01:06:04.420 --> 01:06:11.700 
+important to have this foundational knowledge before we try to look at more, I know, specific
+
+605
+01:06:11.700 --> 01:06:20.300 
+or concrete examples, just to understand everything or most of the information that's available
+
+606
+01:06:20.300 --> 01:06:25.180 
+through these reports, because sometimes we just don't know how to read them.
+
+607
+01:06:25.180 --> 01:06:33.460 
+So at least for me, this was a big improvement when I started to understand the information
+
+608
+01:06:33.460 --> 01:06:41.140 
+in Crash reports that gave me a lot of room to maneuver when trying to deal with Crashes
+
+609
+01:06:41.140 --> 01:06:42.260 
+and Crash reports.
+
+610
+01:06:42.260 --> 01:06:49.260 
+So we'll continue with another lecture soon.
+
+611
+01:06:49.260 --> 01:06:50.260 
+Thanks everyone.
+
+612
+01:06:50.260 --> 01:07:11.540 
+Bye.
+

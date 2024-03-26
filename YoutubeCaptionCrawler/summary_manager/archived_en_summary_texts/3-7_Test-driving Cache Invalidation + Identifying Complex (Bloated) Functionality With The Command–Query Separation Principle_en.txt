@@ -1,0 +1,13 @@
+1. Mike and Caio discuss implementing cache invalidation and state that the rules are part of the 'load feed from cache' use case.
+2. The system validates that the cache is no older than 7 days when it retrieves feed data, and an error in retrieval should lead to cache invalidation.
+3. If there's an issue retrieving data from the store, it suggests a problem with the data which could be a reason to delete the cache.
+4. Cache deletion isn't always recommended in all use cases, and developers' approaches might need to change as the situation evolves.
+5. They discuss that they might have conflated cache invalidation with data loading, suggesting the architecture might be doing too much at once.
+6. Their conversation moves on to first commit changes in the README file to clarify 'load feed from cache' use case.
+7. The first test is deleting the cache upon retrieval error, which means if there's an issue with the data, the cache must be deleted.
+8. They also covered scenarios where it shouldn't delete a cache that is empty and not older than 7 days i.e., a valid cache.
+9. If a cache is 7 days old (or older), it should be deleted as it becomes invalid.
+10. The system needs to handle both deletion and success messages, and duplication of the success with an empty array could be avoided using a fallthrough.
+11. The conversation further tackles potential refactoring issues, one of them being getting rid of an 'unowned' reference, which shows a missing test for non-delivery of results after the System Under Test (SUT) instance has been deallocated.
+12. They end up discussing the complexities due to the 'load command' doing both data retrieval from the cache and cache invalidation, suggesting it might be better to break the use case into two separate use cases.
+13. Mike and Caio propose to continue their work on splitting the use case in the next session.

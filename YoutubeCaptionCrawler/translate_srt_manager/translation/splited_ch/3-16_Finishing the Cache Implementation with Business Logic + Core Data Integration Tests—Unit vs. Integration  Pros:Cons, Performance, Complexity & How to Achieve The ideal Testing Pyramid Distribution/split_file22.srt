@@ -1,0 +1,44 @@
+292
+00:10:02,700 --> 00:10:05,833
+between tests
+在測試之間
+
+293
+00:10:05,833 --> 00:10:08,533
+now we can commit the tests so LocalFeed
+現在我們可以提交測試以便 LocalFeed
+
+294
+00:10:08,533 --> 00:10:10,700
+Loader in integration with the Core Data
+Loader 與 Core Data 的整合
+
+295
+00:10:10,700 --> 00:10:11,433
+FeedStore
+FeedStore
+
+296
+00:10:11,433 --> 00:10:13,733
+delivers items saved on separate 
+可以提供儲存在不同
+
+297
+00:10:13,733 --> 00:10:14,700
+instances
+實例的項目
+
+298
+00:10:14,700 --> 00:10:16,933
+proving we correctly persist the data
+證明我們將數據正確持久化
+
+299
+00:10:16,933 --> 00:10:18,300
+models to disk
+模型保存至磁盤
+
+300
+00:10:18,300 --> 00:10:21,200
+that's it and again I really like how we
+就是這樣，再次感叹，我真的很喜歡我們的做法

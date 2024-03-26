@@ -1,0 +1,14 @@
+1. The lecture begins with the concept of splitting the load feed from cache use case into two, separating the loading from the invalidation logic.
+2. They discuss the violation of the Command Query Separation principle caused by a bloated use case, where a method that should only be a query, actually alters the state of the system.
+3. The Command Query Separation principle implies to separate querying tasks from commands that alter the state of the system.
+4. They show the procedure on how to separate these tasks by creating a new use case.
+5. The main course of the new 'validate feed cache' use case is to execute the "validate cache" command. It retrieves the data from the cache and validates that the cache is less than 7 days old.
+6. If there is a retrieval error, it means the feed data in the cache is invalid and so it is deleted.
+7. If the feed is found but the cache is expired, it is also deleted.
+8. It is highlighted that use cases are subject to change due to evolving requirements and new information about the system.
+9. They draw attention on the necessity to compile, run and test the code periodically during the creation process to ensure functionality and fix errors.
+10. They also discuss how to move the side-effects from the load method into a new 'validate cache' method, and how to manage and prevent possible crashes in production.
+11. If the cache is valid (less than 7 days old), no action is taken, but if the cache is invalid or older than 7 days, it's deleted.
+12. The lecture moves towards refining the code; highlighting duplication and discussing the use of a higher scope for shared helpers to reduce code complexity.
+13. Eventually, they manage to separate the functionalities into extensions and make LocalFeedLoader conform to the FeedLoader protocol.
+14. The lecture concludes with discussing the next step, which will be to extract the validation policy from the use case to a new model type.

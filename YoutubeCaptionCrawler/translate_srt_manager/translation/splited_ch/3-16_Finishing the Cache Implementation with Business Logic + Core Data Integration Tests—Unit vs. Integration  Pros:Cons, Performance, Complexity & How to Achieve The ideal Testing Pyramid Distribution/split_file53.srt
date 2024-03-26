@@ -1,0 +1,34 @@
+514
+00:17:43,833 --> 00:17:46,400
+所有的cache integration tests 作為
+所有的cache integration tests 作為
+
+515
+00:17:46,400 --> 00:17:49,333
+the continuous integration pipeline
+持續整合管道的一部分
+
+516
+00:17:49,333 --> 00:17:52,133
+and we are all set okay let's have a
+一切都準備就緒，好的，讓我們來看
+
+517
+00:17:52,133 --> 00:17:53,100
+look at the logs
+看看日誌
+
+518
+00:17:53,100 --> 00:17:55,900
+for test times as you can see the unit
+對於測試時間，如你可以看到的單元
+
+519
+00:17:55,900 --> 00:17:57,200
+tests
+測試
+
+520
+00:17:57,200 --> 00:18:00,533
+55 tests took 0.5 seconds to run
+55個測試只花了0.5秒來運行

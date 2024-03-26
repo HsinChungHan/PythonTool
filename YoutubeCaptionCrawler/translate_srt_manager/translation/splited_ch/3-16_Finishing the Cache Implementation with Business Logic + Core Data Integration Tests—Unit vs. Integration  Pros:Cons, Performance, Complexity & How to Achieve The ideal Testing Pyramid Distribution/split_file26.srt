@@ -1,0 +1,26 @@
+地方看到失敗
+
+328
+00:11:16,933 --> 00:11:20,500
+context cutoff should be the file and line
+切斷應為檔案以及行數
+
+329
+00:11:20,500 --> 00:11:23,100
+at the call site not just in the helper
+在調用位置，而非僅在助手中
+
+330
+00:11:23,100 --> 00:11:26,433
+this way we can click on the failure
+這樣我們可以點擊失敗
+
+331
+00:11:26,433 --> 00:11:29,733
+and it will navigate to the proper test
+並會導航到正確的測試
+
+332
+00:11:29,733 --> 00:11:33,033
+location and it's so easy to fix
+位置，這樣修復簡單多了。

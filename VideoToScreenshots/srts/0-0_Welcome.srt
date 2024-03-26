@@ -1,0 +1,599 @@
+1
+00:00:00.000 --> 00:00:02.533
+Welcome to the iOS Lead Essentials
+歡迎來到 iOS Lead Essentials
+
+2
+00:00:02.533 --> 00:00:03.500
+program
+課程
+
+3
+00:00:03.500 --> 00:00:06.633
+we're so excited to have you with us and
+我們很高興你能加入我們，並且
+
+4
+00:00:06.633 --> 00:00:08.533
+you may be excited to join as well
+你也可能對此感到興奮
+
+5
+00:00:08.533 --> 00:00:11.100
+hopefully or you may be wondering if you
+希望如此，或者你可能在想你是否
+
+6
+00:00:11.100 --> 00:00:11.666
+made
+做了
+
+7
+00:00:11.666 --> 00:00:14.466
+the right choice what I want to say for
+正確的選擇，我想確定說的是
+
+8
+00:00:14.466 --> 00:00:14.933
+sure
+確定的是
+
+9
+00:00:14.933 --> 00:00:18.400
+is that this program works you will see
+這個課程是有效的，你將會看見並且
+
+10
+00:00:18.400 --> 00:00:19.500
+and interact with
+互動與
+
+11
+00:00:19.500 --> 00:00:22.400
+lead iOS developers working in exciting
+在激動人心的應用程式和公司工作的 iOS 主程式設計師
+
+12
+00:00:22.400 --> 00:00:24.233
+apps and companies
+所以，見證他們的成功會激勵你
+
+13
+00:00:24.233 --> 00:00:26.800
+so seeing their success will inspire you
+也去達成
+
+14
+00:00:26.800 --> 00:00:27.500
+to get there
+因此別忘了打個招呼並且
+
+15
+00:00:27.500 --> 00:00:30.133
+too so don't forget to say hi and
+自我介紹
+
+16
+00:00:30.133 --> 00:00:31.333
+present yourself
+在 Slack 社群上
+
+17
+00:00:31.333 --> 00:00:35.200
+in the Slack community exactly
+確實如此
+
+18
+00:00:35.200 --> 00:00:37.900
+in our community there are bootcamp and
+在我們的社群裡有訓練營和
+
+19
+00:00:37.900 --> 00:00:39.833
+university graduates
+大學畢業生
+
+20
+00:00:39.833 --> 00:00:42.933
+self-taught developers, juniors, mid-level
+自學成才的開發者，初級、中階
+
+21
+00:00:42.933 --> 00:00:46.066
+seniors, lead developers so
+資深、主程式設計師，所以
+
+22
+00:00:46.066 --> 00:00:48.300
+regardless your current level there is
+無論你現在的水平如何，這裡都有
+
+23
+00:00:48.300 --> 00:00:50.466
+space for you to thrive in the program
+你在課程中蓬勃發展的空間
+
+24
+00:00:50.466 --> 00:00:53.733
+definitely so before you jump right in
+無疑的是，在你真正投入
+
+25
+00:00:53.733 --> 00:00:55.033
+the lectures
+講座之前
+
+26
+00:00:55.033 --> 00:00:57.033
+we'd like to get you ready for what's to
+我們希望讓你為接下來的事情做好準備
+
+27
+00:00:57.033 --> 00:00:59.333
+come so this dev program is designed to
+所以這個開發者計劃是為了提升你的
+
+28
+00:00:59.333 --> 00:01:00.466
+get your dev skills
+開發技巧
+
+29
+00:01:00.466 --> 00:01:02.533
+to the next level your goal in this
+把它提升到下一個等級你在這個
+
+30
+00:01:02.533 --> 00:01:03.900
+program is to achieve
+計劃中的目標是
+
+31
+00:01:03.900 --> 00:01:06.300
+technical excellence as an iOS developer
+成為技術卓越的 iOS 開發者
+
+32
+00:01:06.300 --> 00:01:08.466
+and position yourself as a leader
+並將自己定位為行業的領導者
+
+33
+00:01:08.466 --> 00:01:10.633
+in the software industry so there are
+在軟件行業中所以這裡有
+
+34
+00:01:10.633 --> 00:01:12.000
+over 60 lectures
+超過60堂課
+
+35
+00:01:12.000 --> 00:01:14.866
+here plus mentoring sessions and live
+還有邊袖指導和現場
+
+36
+00:01:14.866 --> 00:01:15.900
+sessions
+會議
+
+37
+00:01:15.900 --> 00:01:19.100
+lots and lots of detail but just like
+內容非常詳細但就像
+
+38
+00:01:19.100 --> 00:01:20.066
+you don't learn
+你不能僅靠看視頻學會
+
+39
+00:01:20.066 --> 00:01:22.466
+to ride a bike by watching videos you
+騎自行車一樣，看視頻也無法
+
+40
+00:01:22.466 --> 00:01:24.300
+don't master software development
+掌握軟件開發
+
+41
+00:01:24.300 --> 00:01:27.333
+by watching videos you master it by
+看視頻無法使你掌握它，你需要
+
+42
+00:01:27.333 --> 00:01:28.533
+doing it
+去做才行
+
+43
+00:01:28.533 --> 00:01:31.200
+exactly and this program is all about
+對，這個計劃就是要讓
+
+44
+00:01:31.200 --> 00:01:33.733
+getting you doing the right things
+你去做正確的事情
+
+45
+00:01:33.733 --> 00:01:35.500
+hundreds of developers have taken this
+數百個開發者參加了此
+
+46
+00:01:35.500 --> 00:01:37.333
+course because it works
+課程因為它確實有效
+
+47
+00:01:37.333 --> 00:01:40.466
+but you need to do the work so just
+但你需要去做這些工作所以僅僅
+
+48
+00:01:40.466 --> 00:01:42.766
+watching a lecture and watching it with
+看一堂課並且專注地
+
+49
+00:01:42.766 --> 00:01:43.833
+intention
+看這堂課。
+
+50
+00:01:43.833 --> 00:01:45.900
+is 100% different it's a completely
+是100%不同的，是完全
+
+51
+00:01:45.900 --> 00:01:47.100
+different thing
+不同的東西
+
+52
+00:01:47.100 --> 00:01:50.633
+so do it with the intention to learn
+所以要帶著學習的態度去做
+
+53
+00:01:50.633 --> 00:01:53.733
+take notes and practice
+作筆記並加以實踐
+
+54
+00:01:53.733 --> 00:01:56.766
+so you need to complete all lectures
+所以你需要完成所有的講座
+
+55
+00:01:56.766 --> 00:01:59.666
+all of them all of them and it is your
+全部，都要全部, 這是你的
+
+56
+00:01:59.666 --> 00:02:00.766
+practice
+實踐
+
+57
+00:02:00.766 --> 00:02:03.433
+so follow the instructions and complete
+所以跟著指示，完成
+
+58
+00:02:03.433 --> 00:02:05.333
+all challenges as well
+所有的挑戰
+
+59
+00:02:05.333 --> 00:02:07.100
+Mike and I will review all your
+Mike和我將審查你所有的
+
+60
+00:02:07.100 --> 00:02:09.033
+challenges one by one
+挑戰一個接一個
+
+61
+00:02:09.033 --> 00:02:12.533
+and will provide feedback to you exactly
+並且將對你完成每一節講座時
+
+62
+00:02:12.533 --> 00:02:14.466
+and every time you complete a lecture
+提供反饋
+
+63
+00:02:14.466 --> 00:02:15.733
+don't forget to press
+不要忘記按
+
+64
+00:02:15.733 --> 00:02:18.300
+the complete button and also to submit
+完成按鈕，並把你的解決方案提交到GitHub
+
+65
+00:02:18.300 --> 00:02:20.633
+your challenge solutions to GitHub
+如果你按序完成講座
+
+66
+00:02:20.633 --> 00:02:23.200
+exactly if you complete the lectures in
+如果你按序完成講座
+
+67
+00:02:23.200 --> 00:02:23.833
+order
+按順序
+
+68
+00:02:23.833 --> 00:02:25.833
+and you solve the challenges you will
+並解決挑戰，你將會
+
+69
+00:02:25.833 --> 00:02:27.900
+get invited to mentoring sessions with
+被邀請參加我們的指導環節
+
+70
+00:02:27.900 --> 00:02:28.800
+us
+與我們一起
+
+71
+00:02:28.800 --> 00:02:30.466
+we are here to help you but we cannot do
+我們在這裡幫助你，但無法替你
+
+72
+00:02:30.466 --> 00:02:31.900
+the work for you
+完成工作
+
+73
+00:02:31.900 --> 00:02:33.733
+so if you do the work you get the
+所以如果你完成工作，你將會
+
+74
+00:02:33.733 --> 00:02:35.100
+results
+獲得結果
+
+75
+00:02:35.100 --> 00:02:37.200
+exactly and of course during the
+確實的，在課程的
+
+76
+00:02:37.200 --> 00:02:40.133
+lectures a lot of questions will come up
+在聽講座時將會產生許多問題
+
+77
+00:02:40.133 --> 00:02:41.900
+so you need to ask questions about the
+因此您需要提出關於
+
+78
+00:02:41.900 --> 00:02:43.333
+lectures that's how you're gonna get the
+講座的問題，這樣您才能從中
+
+79
+00:02:43.333 --> 00:02:43.733
+most
+獲得
+
+80
+00:02:43.733 --> 00:02:45.433
+of this program you need to interact
+最多的收益，您需要與我們互動
+
+81
+00:02:45.433 --> 00:02:48.400
+with us because we're here to help you
+因為我們在這裡就是要幫助您
+
+82
+00:02:48.400 --> 00:02:50.066
+so you'll find guidelines to ask
+所以您會找到提問的
+
+83
+00:02:50.066 --> 00:02:52.400
+questions to ask good questions
+指南，以提出好的問題
+
+84
+00:02:52.400 --> 00:02:54.800
+so don't skip this section you need to
+所以不要跳過這部分，您需要
+
+85
+00:02:54.800 --> 00:02:56.933
+go one by one and you need to read it
+一步步來，並且需要閱讀它
+
+86
+00:02:56.933 --> 00:03:00.533
+exactly one by one in order
+按照順序一步步來
+
+87
+00:03:00.533 --> 00:03:03.433
+so you get the most of this program
+這樣您才能從這個程序中獲得最多的收益
+
+88
+00:03:03.433 --> 00:03:04.000
+you'll also learn
+您還會學習到
+
+89
+00:03:04.000 --> 00:03:06.233
+from answers to thousands of questions
+來自數千個問題的答案
+
+90
+00:03:06.233 --> 00:03:07.566
+from the students
+來自學生的
+
+91
+00:03:07.566 --> 00:03:10.300
+you have access to all of them so you'll
+您可以查看所有的，因此您會
+
+92
+00:03:10.300 --> 00:03:11.266
+see how people
+看到其他人
+
+93
+00:03:11.266 --> 00:03:15.200
+like you are leveling up for example
+就像您一樣正在進步，例如
+
+94
+00:03:15.200 --> 00:03:18.000
+let's search for Core Data we have
+我們搜尋Core Data，我們有
+
+95
+00:03:18.000 --> 00:03:20.066
+lectures about Core Data
+關於Core Data的講座
+
+96
+00:03:20.066 --> 00:03:22.066
+and there are threads and threads and
+並且還有關於Core Data的
+
+97
+00:03:22.066 --> 00:03:23.433
+threads about Core Data
+討論串和討論串，以及討論串
+
+98
+00:03:23.433 --> 00:03:25.433
+from other students from questions
+來自其他學生的問題
+
+99
+00:03:25.433 --> 00:03:27.333
+that's it so you can find here by
+就是這樣，所以你可以在這裡找到
+
+100
+00:03:27.333 --> 00:03:28.066
+keyword
+關鍵字
+
+101
+00:03:28.066 --> 00:03:30.700
+the topics you want to learn about but
+你想學習的主題，但是
+
+102
+00:03:30.700 --> 00:03:32.233
+you need to follow the lectures in order
+你需要按照順序跟著講座才行
+
+103
+00:03:32.233 --> 00:03:33.433
+you need to complete
+你需要完成
+
+104
+00:03:33.433 --> 00:03:37.033
+all of them yes so your next step
+所有這些，所以你的下一步
+
+105
+00:03:37.033 --> 00:03:39.100
+is to read all the information in the
+是閱讀在
+
+106
+00:03:39.100 --> 00:03:40.700
+Start here module
+開始這裡模組的所有信息
+
+107
+00:03:40.700 --> 00:03:42.866
+in this first section read all of them
+在這第一部分閱讀所有的
+
+108
+00:03:42.866 --> 00:03:44.700
+in order to make the most
+為了充分利用
+
+109
+00:03:44.700 --> 00:03:47.566
+of this program and of course we're here
+這個程序，並且我們在這裡
+
+110
+00:03:47.566 --> 00:03:48.400
+to help
+幫助你
+
+111
+00:03:48.400 --> 00:03:51.500
+but you need to do the work we cannot do
+但是你需要去做這些工作，我們不能替你做
+
+112
+00:03:51.500 --> 00:03:52.700
+the work for you
+不能做你需要做的工作
+
+113
+00:03:52.700 --> 00:03:57.033
+no so that's it it starts now
+不，所以就是這樣，現在開始
+
+114
+00:03:57.033 --> 00:03:58.766
+keep doing the work go through the
+繼續做這些工作，依次通過
+
+115
+00:03:58.766 --> 00:04:00.066
+lectures one by one
+講座
+
+116
+00:04:00.066 --> 00:04:03.033
+complete them practice take notes ask
+完成它們，練習，做筆記，提問
+
+117
+00:04:03.033 --> 00:04:04.133
+questions
+問問題
+
+118
+00:04:04.133 --> 00:04:07.200
+and we are here to help that's it we'll
+我們在這裡幫助你，就是這樣，我們會
+
+119
+00:04:07.200 --> 00:04:07.733
+see you
+見你
+
+120
+00:04:07.733 --> 00:04:12.533
+in the next lecture see ya
+在下次講座，再見

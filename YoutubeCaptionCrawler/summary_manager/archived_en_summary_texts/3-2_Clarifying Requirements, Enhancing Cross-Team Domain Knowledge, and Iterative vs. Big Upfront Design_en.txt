@@ -1,0 +1,25 @@
+1. The lecture starts with the importance of understanding requirements and specifications before starting to code. Regular refining of these specifications is suggested for optimal knowledge sharing.
+
+2. The speakers identify a disconnect in language used by different teams (business and backend) which could potentially hamper communication. 
+
+3. The topic of cache requirements is introduced, with emphasis on connectivity scenarios for the customers. In scenarios of no connectivity, the current specifications on cache duration seem vague.
+
+4. The speakers conclude that an explicit cache policy should be defined to avoid legal implications. They decide on a maximum cache age of 7 days.
+
+5. The scenarios for new cache policy are explained, including what should happen when cache is more than 7 days old and when the cache is empty.
+
+6. The conversation moves on to 'load feed from remote' use case which is already complete and has tests confirming its implementation.
+
+7. The speakers decide to rename this case as LoadFeedFromRemoteUseCaseTests to clarify the intent of these tests.
+
+8. They clarify that a use case and the class encapsulating its rules don't need to have a one-to-one relationship. Multiple objects can collaborate to fulfill a use case.
+
+9. The 'load feed from cache' use case is discussed next. They decide to encapsulate the logic of cache validation in a policy or model.
+
+10. The discussion also includes potential error scenarios during the cache load, with emphasis on communication and information gathering between technical and business teams.
+
+11.  The conversation steers towards the 'cache feed use case'. The system should delete the old cache data before saving the new cache data – a process that could fail and therefore requires error handling.
+
+12. The speakers conclude by reinforcing the importance of iteratively improving requirements, never regarding decisions as final, and being adaptable and responsive to missing requirements or unexpected opportunities. 
+
+13. In the next lecture, they plan to start test-driving the cache feed use case.

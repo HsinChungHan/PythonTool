@@ -1,0 +1,19 @@
+197
+00:06:49,266 --> 00:06:52,633
+so the load method should deliver items
+因此，load 方法應該能交付項目
+
+198
+00:06:52,633 --> 00:06:55,333
+saved on separate instances proving that
+保存在分開的實例上，證明了
+
+199
+00:06:55,333 --> 00:06:57,266
+we are storing things to disk
+我們正在把東西儲存到磁盤中
+
+200
+00:06:57,266 --> 00:06:59,166
+and another instance can fetch that data
+並且另一個實例可以獲取該數據

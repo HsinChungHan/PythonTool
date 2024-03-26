@@ -1,0 +1,29 @@
+308
+00:10:35,600 --> 00:10:38,533
+like expect the sut to load an empty
+像是預期sut載入一個空的
+
+309
+00:10:38,533 --> 00:10:40,233
+array of images
+影像的陣列
+
+310
+00:10:40,233 --> 00:10:42,300
+exactly despite these being integration
+儘管這些是整合測試
+
+311
+00:10:42,300 --> 00:10:43,900
+tests the refactoring rules
+重構規則依然適用於此
+
+312
+00:10:43,900 --> 00:10:46,700
+of course apply here as well, exactly we
+當然，我們也應該在這裡
+
+313
+00:10:46,700 --> 00:10:48,533
+should have the same level of care
+投入同級別的關懷和照護

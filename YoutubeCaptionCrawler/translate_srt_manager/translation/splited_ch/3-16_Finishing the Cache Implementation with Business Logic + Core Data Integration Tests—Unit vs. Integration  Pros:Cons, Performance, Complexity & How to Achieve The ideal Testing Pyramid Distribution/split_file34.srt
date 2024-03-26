@@ -1,0 +1,31 @@
+的helper，
+
+386
+00:13:18,800 --> 00:13:20,666
+believes that instead of defining a new
+我們相信，與其定義一個新的
+
+387
+00:13:20,666 --> 00:13:24,933
+sut every time we can have this helper that
+每次都要定義sut，我們可以有這個helper，
+
+388
+00:13:24,933 --> 00:13:27,066
+takes as a parameter the item to be saved
+作為參數去保存項目，
+
+389
+00:13:27,066 --> 00:13:30,866
+and the sut itself this would save a lot
+還有sut本身，這會節省很多
+
+390
+00:13:30,866 --> 00:13:34,533
+of time and ensure consistency across all
+的時間，並確保整體的一致性，
+
+391
+00:13:34,533 --> 00:13:36,200
+different parts of the code
+程式碼的不同部分。

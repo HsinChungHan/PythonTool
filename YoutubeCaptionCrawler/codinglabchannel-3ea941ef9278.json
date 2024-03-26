@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "codinglabchannel",
+  "private_key_id": "3ea941ef92781bbbeaeb0502afe40b2c66aaa897",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC6FHmCixyKcUrb\nF38xxW7nxVkYSlKqTKDcrs5kpdyMIb4lWa8fL7lT3kZ1tJu4ZGJr0DmR4ahE62zz\nhPVFITHvj0Yff+wouPx6kDBRMrnp0EMm6P3lIpr2fFEfAmwZZJPZ5PAuGzgKRBGu\n9wPwgqNJ13JDs1Lvihyjrb4zGpV6m31kxS76M3KAnEjluEt8RHNxZwYvrVfVeyFk\nG7vb728dkdO93Yi44iNBz0XifXFgerwYqOzjEb4WykFHnCjyu0nBfM/9RoGAeehk\nCSqqPD2tumOs6C+j5WppL4fCfbm6ADJDTOIUQFGpoAkDIs10H/cDZod1Czztyz3m\neqDqrfXxAgMBAAECggEAAtIQQV3f6DsQBSQdDuVY9qlJk2uT0dN6JtLdQOjY9Unm\nZgO++rOkbR3qmV/cHP0ZYbxw9UoGF6qDeZ7oK8S6sHCjzGgkmDLYIbiNa/Cp9o48\nKK2vJLXROEzhev0/A6+a1F/i57RXdXk19P4MagJlQgd35V3wAxP3y8pvQ8WVPWvR\nmsgl+wQdLNVigR/fZOSubIP6dnWb5lHbTKUhOnnmHtyRciW97f6lHf8aVObvPfYL\n3ok13ybJVY509jk0s6Z73X8SGWLeU39vMWTCLgJzc646GHqDzbJr0zCGaMUI8Lwy\nWTchZg/07vkgoehxGw4s8eeMwmyAl9NadIjegMOuYQKBgQDr6UDgRY/SWG+vOAbY\n8tJ6rKrEAmyU+YY3QDiHImjZB1ttRFARvv6hwSagfuG1iulBoaUPKwlJFqxq2Q6k\ne0r2nOQRZkHCs4lQtwwb9atwd/h8Vfa8YL9OuVPjZ8aAk6m1ykj0q10Sd04sWUDs\nFE6OsLnzA9QeUsKPFayFkAXMkQKBgQDJ7O0mvw0+rxkSpUpcoi0GSOGRAxLJda9b\nqw3ngqPWXVUh7frnXUyoMPIBrAS1yf53L1DbWseDs/4dNd/NfKhgVXP7MtRDnE0e\nDBUQWrDMfSdiFkTjmnOv16WrwzONoLt+mvZWIGif8bDQYwRDkfcV6bG1LrsFX6ne\nEuGQe5nDYQKBgBFL38LRttLAQygAnpfnbcEqybZnSxi9FrcUUVCvGCrZXD2tpYU3\nkKnBZJid1OSfk6yJMnXjPOIL9IY89dLfa0abiCkyax3gVfACC7Q9Fd3AHgrXrqhv\nG3elJN5mbGpe6TF37FNsAP3qm2OrA5SLhJr3oBqOLE4w2SzudOCyB4rRAoGAA7pm\nHoMEgZXGBrwahV9RKX6K+5xs6l9L34tm9FFLKRgMDFZSfZcRZUGSFknQxHJ4SkcL\nXSFt8ZaPKIboHOkiSrUJMSgdFyp5mgZrFSQ3g28EHSGAIBun6yU2H9e4yfKfw5Sk\n2645gEp8EzzgxUaao0LvTwMP3OeJQVpj48EEc8ECgYAUrLOnPJIUPwyw5XPlhpuN\ng3FkmKHByb97RRl70PJrBoVV7nIsZrgDKJyZyrxDKv9SYXocnzo5B965JlIjdH3f\nZXL86puBhT1hwuItNgVIix0xZxhTntxuMJqkWlYZ72oAyD+w/ZZNFmakj26NohgY\nhSE+zi+pxiXA7D8JjNMC1g==\n-----END PRIVATE KEY-----\n",
+  "client_email": "codinglabchannelencaptioncrawl@codinglabchannel.iam.gserviceaccount.com",
+  "client_id": "110837153615734117769",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/codinglabchannelencaptioncrawl%40codinglabchannel.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

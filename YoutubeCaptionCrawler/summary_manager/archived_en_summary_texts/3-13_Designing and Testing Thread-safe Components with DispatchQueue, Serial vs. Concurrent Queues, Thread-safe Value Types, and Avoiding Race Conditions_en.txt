@@ -1,0 +1,13 @@
+1. The lecture focuses on CodableFeedStore side-effects and ensuring they run serially.
+2. The speakers underlie the need to guarantee that operations finish in order; for example, an insert operation should always conclude before a delete operation.
+3. By capturing operations in an array, an assertion can be made that they terminate in the right sequence.
+4. The lecture emphasizes the importance of running tests for checking operations' execution order.
+5. They discuss incorporating threads into the object's code without interrupting serial execution.
+6. The discussion then revolves around ensuring that code does not block clients. Therefore, they dispatch operations to a shared queue that runs in the background.
+7. There is an observation that this switch to the background makes the operations' order unpredictable, which is not ideal for data consistency.
+8. By introducing a shared queue that the system uses instead of the global one, they regain control over the operations' execution order. This fact is confirmed successfully through testing.
+9. The speakers underscore that side-effects and concurrency are opposing forces; hence, it's best to create side-effects free functions for easier concurrency implementation.
+10. Parallel execution of operations is considered possible for those without side-effects, such as the 'retrieve' method, while operations with side-effects still run serially. This setup preserves consistent database management.
+11. Changes to operation execution are backed up by tests; otherwise, issues might only surface when clients complain of data corruption, for example.
+12. The lecture concludes with the introduction of another boundary in the Network module, the HTTPClient, which they document for the client's benefit. This boundary will decide when and which thread to dispatch to.
+13. Finally, the lecturers propose creating reusable specs for easy implementation of any FeedStore solution to be discussed in the next session.

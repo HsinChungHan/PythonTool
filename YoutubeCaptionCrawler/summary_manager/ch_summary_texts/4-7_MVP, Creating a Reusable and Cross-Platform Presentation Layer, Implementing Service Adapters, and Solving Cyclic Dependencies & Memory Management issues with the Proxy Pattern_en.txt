@@ -1,0 +1,10 @@
+1. 本次演講討論的是Model-View-Presenter (MVP)模式，此模式提供了介面（UI）與展示邏輯之間清晰的分割。它允許創建跨平臺且可重用的Presentation層，這與Model-View-ViewModel (MVVM)模式很相似。
+2. 與Model-View-Controller模式相較，其中的Controller保留對於具體View的引用，MVP則讓Presenter透過協定形式保留對View的抽象引用。這種依賴性的翻轉有助於創建跨平臺的Presentation層。
+3. MVP允許View和Presenter之間的雙向通訊渠道。然而，這個通道可能引入潛在的記憶體管理問題，包含保留週期。在組合View與Presenter時須需謹慎避免這些問題。
+4. Presenter直接與域模型和服務進行通訊，把模型值轉換後傳遞給View。Presenter管理狀態變更並以包含數據但不包含任何行為的ViewModel通知View。
+5. 使用UIKit，實現MVP的另一種方式是通過一個監督控制器，它充當View與Presenter之間的雙向通訊渠道。這種方式簡化了View層的開發與維護。
+6. 演講進一步提到介面隔離原則，建議分離不同的顯示協定，例如FeedLoadingView和FeedView。
+7. 透過從MVVM到MVP的重構，展示了一個FeedPresenter的實現方式，突顯了此變更的簡單性和迅速性。
+8. 演講強調了記憶體管理在MVP實現中的重要性，展示瞭如何使用虛擬代理以避免保留週期，以及為何建構式注入應優於屬性注入以獲得更好的物件生命週期管理。
+9. 演講也展示了不同的MVP變化型態，從以委託協定替換閉包以獲得更好的組成，到通過轉接器實現Presenter與View之間的單向溝通，達到更簡單的Presenter設計。
+10. 最後，演講重申了MVC, MVVM, 和MVP選擇取決於特定專案的挑戰，並強調了MVP在增加或減少耦合性時的靈活性。

@@ -1,0 +1,14 @@
+1. The topic of discussion is handling an unowned reference to self that could potentially generate unexpected behaviors or crashes.
+2. The objective is to prevent a completion block from running after an instance is deallocated, and tests were performed to assert this.
+3. The test involved setting up a store and a current date, with FeedStoreSpy as the store and 'save' as the desired action with any unique item.
+4. ReceivedResults were captured to verify that the action wasn't invoked post deallocation, asserting that the array should remain empty.
+5. The reference to 'self' was weakified and checked if it had been deallocated, with nothing being returned if true.
+6. The system was protected further by not allowing an insertion error to be delivered post deallocation, which was checked by another test.
+7. The code was subsequently refactored with an inversion of an if-else statement, leading to more efficient paths for the code.
+8. The logic was streamlined by extracting it into a helper function and removing the need for 'self.'
+9. The elements in the code such as class, protocol, and initializer were made public, and the LocalFeedLoader and FeedStore were moved to their own files. 
+10. The hard-coded optional Error type was replaced with a typealias SaveResult to prevent the breaking of the test when the result type changed.
+11. The importance of encapsulation of business logic in the controller types or use case types was stressed, with the view that the implementation should be changed without affecting the rest of the system.
+12. There was an alarming number of strong dependencies pointing to the FeedItem; potentially leading to a bottleneck for change.
+13. The FeedItem's source code dependency situation was compared with HTTPClient's situation in the Feed API module, where it had only dependencies on Foundation types, making it domain-specific and decoupled.
+14. A plan was outlined in the conversation to remove source code dependencies on FeedItem in the next episode.

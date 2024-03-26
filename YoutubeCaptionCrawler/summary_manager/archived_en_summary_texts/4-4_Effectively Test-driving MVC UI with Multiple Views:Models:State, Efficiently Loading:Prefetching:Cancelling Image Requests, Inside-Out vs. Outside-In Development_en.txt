@@ -1,0 +1,14 @@
+1. The lecture presents how to test-drive rendering items in an tableView with Model-View-Controller (MVC) in iOS.
+2. They discuss implementing feed load logic that functions automatically, showing a loading indicator during the process.
+3. The FeedViewController inherits from UITableViewController, communicates with a FeedLoader to manage the UIRefreshControl state depending on the load state.
+4. A FeedItem in this context is a FeedImage model with attributes: description, location, and a URL to retrieve the image data.
+5. They introduce a new Domain-Specific Language (DSL) to abstract tests from concrete UI elements.
+6. The rendering of tableView depends on an array of FeedImages returned by the FeedLoader.
+7. The lecture discusses that when a cell becomes visible, it should trigger an image URL request. They note not to directly use URLSession to avoid coupling the UIViewController with URLSession's implementation.
+8. Implementing the FeedImageDataLoader protocol allows the division of load tasks between different interfaces.
+9. The test for cell rendering includes the scenarios of having both description and location, having either description or location, and not having both.
+10. The lecture showcases handling feed load errors, where an already loaded feed should remain intact and the loading indicator should disappear regardless of the result.
+11. The FeedViewController handles preloading of images when they become near visible and cancelling the loading when an image view is not visible.
+12. The loading process includes a shimmering animation until the image data request completes, with scenarios for handling load error and invalid image data considered.
+13. A tap on the retry button triggers another load sequence.
+14. The lecturers end with noting the heavy responsibilities of the FeedViewController and hinting at the possibility of breaking down the complexity with a multi-MVC approach.

@@ -1,0 +1,3079 @@
+1
+00:00:00.133 --> 00:00:02.233
+Alright after going through the Start
+
+2
+00:00:02.233 --> 00:00:03.100
+here section
+
+3
+00:00:03.100 --> 00:00:05.600
+you are ready to start the program so
+
+4
+00:00:05.600 --> 00:00:06.533
+this first
+
+5
+00:00:06.533 --> 00:00:10.133
+module is an introduction to planning
+
+6
+00:00:10.133 --> 00:00:13.200
+software design and architecture
+
+7
+00:00:13.200 --> 00:00:15.566
+there is code there's diagrams and there
+
+8
+00:00:15.566 --> 00:00:17.166
+are concepts you may have
+
+9
+00:00:17.166 --> 00:00:20.866
+never heard before so be open-minded
+
+10
+00:00:20.866 --> 00:00:24.133
+to new ideas exactly and if you feel
+
+11
+00:00:24.133 --> 00:00:25.033
+overwhelmed
+
+12
+00:00:25.033 --> 00:00:28.466
+be sure you'll learn every concept you see
+
+13
+00:00:28.466 --> 00:00:29.500
+in this section
+
+14
+00:00:29.500 --> 00:00:32.366
+in detail with concrete examples as you
+
+15
+00:00:32.366 --> 00:00:34.300
+progress in the program
+
+16
+00:00:34.300 --> 00:00:36.233
+so don't wait to move on to the next
+
+17
+00:00:36.233 --> 00:00:38.133
+lectures even if you don't get the
+
+18
+00:00:38.133 --> 00:00:39.600
+concepts 100%
+
+19
+00:00:39.600 --> 00:00:41.900
+at this point so let me say that again
+
+20
+00:00:41.900 --> 00:00:43.100
+don't get stuck
+
+21
+00:00:43.100 --> 00:00:45.500
+in the first module this is just an
+
+22
+00:00:45.500 --> 00:00:47.033
+introduction
+
+23
+00:00:47.033 --> 00:00:50.066
+you will learn every concept in detail
+
+24
+00:00:50.066 --> 00:00:52.366
+with concrete examples as you progress
+
+25
+00:00:52.366 --> 00:00:53.500
+in the program
+
+26
+00:00:53.500 --> 00:00:55.900
+so don't feel overwhelmed right now you
+
+27
+00:00:55.900 --> 00:00:56.700
+will learn
+
+28
+00:00:56.700 --> 00:01:00.466
+every concept in detail exactly
+
+29
+00:01:00.466 --> 00:01:02.300
+and in this lecture you learn how
+
+30
+00:01:02.300 --> 00:01:04.466
+singletons and global state
+
+31
+00:01:04.466 --> 00:01:06.700
+can damage your app architecture and
+
+32
+00:01:06.700 --> 00:01:08.766
+make code harder to test
+
+33
+00:01:08.766 --> 00:01:11.500
+especially in the networking layer
+
+34
+00:01:11.500 --> 00:01:12.000
+exactly
+
+35
+00:01:12.000 --> 00:01:14.933
+that's a common issue in iOS codebases
+
+36
+00:01:14.933 --> 00:01:15.266
+over-using
+
+37
+00:01:15.266 --> 00:01:18.300
+Singletons and global state
+
+38
+00:01:18.300 --> 00:01:19.900
+so you will learn that there are better
+
+39
+00:01:19.900 --> 00:01:22.000
+ways and again you will learn those
+
+40
+00:01:22.000 --> 00:01:22.866
+better solutions
+
+41
+00:01:22.866 --> 00:01:25.033
+in detail as you progress in the
+
+42
+00:01:25.033 --> 00:01:26.066
+lectures
+
+43
+00:01:26.066 --> 00:01:28.700
+remember this is just an introduction so
+
+44
+00:01:28.700 --> 00:01:29.333
+don't
+
+45
+00:01:29.333 --> 00:01:32.400
+get stuck here keep moving complete the
+
+46
+00:01:32.400 --> 00:01:33.100
+lectures
+
+47
+00:01:33.100 --> 00:01:38.633
+and ask questions below let's start
+
+48
+00:01:38.633 --> 00:01:42.000
+So two big topics here first is this
+
+49
+00:01:42.000 --> 00:01:43.200
+networking layer
+
+50
+00:01:43.200 --> 00:01:45.100
+testability and then we have the
+
+51
+00:01:45.100 --> 00:01:47.033
+Singleton so should we talk about
+
+52
+00:01:47.033 --> 00:01:48.066
+Singletons first
+
+53
+00:01:48.066 --> 00:01:50.366
+okay I have the definition of the
+
+54
+00:01:50.366 --> 00:01:52.000
+Singleton pattern from
+
+55
+00:01:52.000 --> 00:01:54.366
+the Design Patterns book by Gamma
+
+56
+00:01:54.366 --> 00:01:55.100
+Johnson
+
+57
+00:01:55.100 --> 00:01:58.133
+Vlissides and Helm, the GOF book the Gang
+
+58
+00:01:58.133 --> 00:01:59.100
+of Four
+
+59
+00:01:59.100 --> 00:02:02.133
+so basically the authors say that
+
+60
+00:02:02.133 --> 00:02:04.700
+the design pattern the Singleton is a
+
+61
+00:02:04.700 --> 00:02:06.866
+way to make sure that the class has only
+
+62
+00:02:06.866 --> 00:02:09.433
+one instance and it provides a single
+
+63
+00:02:09.433 --> 00:02:10.800
+point of access to it
+
+64
+00:02:10.800 --> 00:02:13.100
+the pattern specifies that the class
+
+65
+00:02:13.100 --> 00:02:15.100
+should be responsible itself for keeping
+
+66
+00:02:15.100 --> 00:02:16.066
+track of its sole
+
+67
+00:02:16.066 --> 00:02:18.933
+instance and it can further ensure that
+
+68
+00:02:18.933 --> 00:02:21.033
+no other instance can be created by
+
+69
+00:02:21.033 --> 00:02:23.333
+intercepting requests for creating new
+
+70
+00:02:23.333 --> 00:02:24.133
+objects
+
+71
+00:02:24.133 --> 00:02:26.533
+and provide a way to access the sole
+
+72
+00:02:26.533 --> 00:02:27.566
+instance
+
+73
+00:02:27.566 --> 00:02:30.400
+okay that's a lot yeah let's put some
+
+74
+00:02:30.400 --> 00:02:31.200
+code here
+
+75
+00:02:31.200 --> 00:02:34.000
+and go one by one let's start with a
+
+76
+00:02:34.000 --> 00:02:35.200
+class here
+
+77
+00:02:35.200 --> 00:02:39.100
+ApiClient and I can just create my
+
+78
+00:02:39.100 --> 00:02:40.933
+client
+
+79
+00:02:40.933 --> 00:02:43.200
+for example that's fine that's a normal
+
+80
+00:02:43.200 --> 00:02:45.433
+class you define your type you define
+
+81
+00:02:45.433 --> 00:02:46.466
+the methods
+
+82
+00:02:46.466 --> 00:02:49.033
+and properties in here the initializer
+
+83
+00:02:49.033 --> 00:02:50.000
+and that's it
+
+84
+00:02:50.000 --> 00:02:52.133
+now how can we make this a Singleton so
+
+85
+00:02:52.133 --> 00:02:54.233
+the key points here is that
+
+86
+00:02:54.233 --> 00:02:57.033
+this class needs to have a single point
+
+87
+00:02:57.033 --> 00:02:57.900
+of access
+
+88
+00:02:57.900 --> 00:02:59.733
+right so the whole point of a Singleton
+
+89
+00:02:59.733 --> 00:03:01.566
+is to have only
+
+90
+00:03:01.566 --> 00:03:03.200
+one instance of this class right to
+
+91
+00:03:03.200 --> 00:03:05.200
+guarantee that right I shouldn't be able
+
+92
+00:03:05.200 --> 00:03:06.400
+to just create
+
+93
+00:03:06.400 --> 00:03:09.500
+an ApiClient like this so first of all
+
+94
+00:03:09.500 --> 00:03:12.233
+we can prevent people from creating
+
+95
+00:03:12.233 --> 00:03:13.266
+ApiClients by just
+
+96
+00:03:13.266 --> 00:03:14.933
+making the initializer private that's
+
+97
+00:03:14.933 --> 00:03:16.300
+correct now
+
+98
+00:03:16.300 --> 00:03:18.633
+the type should give you access to one
+
+99
+00:03:18.633 --> 00:03:19.333
+right
+
+100
+00:03:19.333 --> 00:03:21.200
+and if you follow it by the book we
+
+101
+00:03:21.200 --> 00:03:23.900
+would end up with a private
+
+102
+00:03:23.900 --> 00:03:28.700
+static instance and that's an ApiClient
+
+103
+00:03:28.700 --> 00:03:32.000
+and then we would have a static function
+
+104
+00:03:32.000 --> 00:03:35.033
+getInstance yeah that returns
+
+105
+00:03:35.033 --> 00:03:36.466
+an ApiClient
+
+106
+00:03:36.466 --> 00:03:38.233
+that's it and you return here the
+
+107
+00:03:38.233 --> 00:03:40.300
+instance
+
+108
+00:03:40.300 --> 00:03:42.766
+okay yeah so now from the outside world
+
+109
+00:03:42.766 --> 00:03:43.900
+we can say
+
+110
+00:03:43.900 --> 00:03:47.100
+getInstance but in Swift
+
+111
+00:03:47.100 --> 00:03:48.933
+what we can do is we can just make this
+
+112
+00:03:48.933 --> 00:03:51.200
+a static let
+
+113
+00:03:51.200 --> 00:03:54.133
+instance because we cannot mutate it the
+
+114
+00:03:54.133 --> 00:03:55.566
+type system already
+
+115
+00:03:55.566 --> 00:03:57.666
+enforces this for us so it's much
+
+116
+00:03:57.666 --> 00:03:59.566
+simpler here we can just say
+
+117
+00:03:59.566 --> 00:04:02.466
+instance and boom we have access to the
+
+118
+00:04:02.466 --> 00:04:04.233
+shared instance and we guarantee that
+
+119
+00:04:04.233 --> 00:04:07.333
+we can only have one instance per
+
+120
+00:04:07.333 --> 00:04:09.900
+application run that's it so this is a
+
+121
+00:04:09.900 --> 00:04:10.533
+Singleton
+
+122
+00:04:10.533 --> 00:04:12.866
+this is a Singleton so what if I make
+
+123
+00:04:12.866 --> 00:04:14.700
+this class final then
+
+124
+00:04:14.700 --> 00:04:18.000
+right the book though says you shouldn't
+
+125
+00:04:18.000 --> 00:04:18.766
+be doing this
+
+126
+00:04:18.766 --> 00:04:22.000
+because a Singleton may be extended in
+
+127
+00:04:22.000 --> 00:04:23.266
+the future
+
+128
+00:04:23.266 --> 00:04:25.100
+the pattern is saying that we should
+
+129
+00:04:25.100 --> 00:04:27.100
+allow extension for example adding more
+
+130
+00:04:27.100 --> 00:04:29.500
+methods to the ApiClient by having a
+
+131
+00:04:29.500 --> 00:04:30.466
+subclass
+
+132
+00:04:30.466 --> 00:04:33.733
+right right so we could have a class
+
+133
+00:04:33.733 --> 00:04:36.933
+MyApiClient that inherits from
+
+134
+00:04:36.933 --> 00:04:39.266
+ApiClient and then we can add more
+
+135
+00:04:39.266 --> 00:04:40.066
+methods
+
+136
+00:04:40.066 --> 00:04:42.466
+to it yes or we can even override some
+
+137
+00:04:42.466 --> 00:04:43.166
+behavior
+
+138
+00:04:43.166 --> 00:04:45.100
+yeah you can override yeah but you can
+
+139
+00:04:45.100 --> 00:04:47.433
+make a case that in Swift we can use
+
+140
+00:04:47.433 --> 00:04:48.866
+extensions
+
+141
+00:04:48.866 --> 00:04:50.800
+without using subclass so we cannot
+
+142
+00:04:50.800 --> 00:04:52.533
+override behavior but we can still add
+
+143
+00:04:52.533 --> 00:04:53.500
+more behavior
+
+144
+00:04:53.500 --> 00:04:55.166
+so it's a trade-off here if you want to
+
+145
+00:04:55.166 --> 00:04:57.266
+allow people to change the behavior of your
+
+146
+00:04:57.266 --> 00:04:57.733
+class
+
+147
+00:04:57.733 --> 00:05:00.800
+you allow subclassing otherwise
+
+148
+00:05:00.800 --> 00:05:04.000
+you just use extensions yes this looks
+
+149
+00:05:04.000 --> 00:05:04.533
+good
+
+150
+00:05:04.533 --> 00:05:06.800
+that's how you would implement a
+
+151
+00:05:06.800 --> 00:05:09.033
+Singleton you have only one instance
+
+152
+00:05:09.033 --> 00:05:12.066
+but URLSession.shared
+
+153
+00:05:12.066 --> 00:05:14.233
+it says that this method provides a
+
+154
+00:05:14.233 --> 00:05:15.433
+shared singleton
+
+155
+00:05:15.433 --> 00:05:17.433
+session object right the weird thing is
+
+156
+00:05:17.433 --> 00:05:19.833
+that I can still create
+
+157
+00:05:19.833 --> 00:05:23.033
+a URLSession myself yeah with different
+
+158
+00:05:23.033 --> 00:05:25.100
+configurations as well this is just a
+
+159
+00:05:25.100 --> 00:05:26.400
+convenience
+
+160
+00:05:26.400 --> 00:05:28.300
+but of course this breaks the whole
+
+161
+00:05:28.300 --> 00:05:30.133
+contract that the
+
+162
+00:05:30.133 --> 00:05:33.500
+Gang of Four refer to in their book so
+
+163
+00:05:33.500 --> 00:05:36.466
+this is the Singleton with capital "s"
+
+164
+00:05:36.466 --> 00:05:37.166
+the
+
+165
+00:05:37.166 --> 00:05:40.066
+by the book implementation and you have
+
+166
+00:05:40.066 --> 00:05:41.900
+the lowercase singleton
+
+167
+00:05:41.900 --> 00:05:44.700
+which is like a convenience right okay
+
+168
+00:05:44.700 --> 00:05:46.466
+in this case you have the shared
+
+169
+00:05:46.466 --> 00:05:48.400
+type there is only a getter you cannot
+
+170
+00:05:48.400 --> 00:05:50.466
+set the shared to point to another
+
+171
+00:05:50.466 --> 00:05:51.033
+instance
+
+172
+00:05:51.033 --> 00:05:52.866
+which means you still have like this
+
+173
+00:05:52.866 --> 00:05:54.933
+unique instance per application run
+
+174
+00:05:54.933 --> 00:05:56.533
+but you can still create your own if you
+
+175
+00:05:56.533 --> 00:05:58.233
+want to yeah exactly
+
+176
+00:05:58.233 --> 00:05:59.333
+so this is the difference from the
+
+177
+00:05:59.333 --> 00:06:01.600
+singleton with capital "S" and the
+
+178
+00:06:01.600 --> 00:06:04.300
+lowercase "s" and then people start asking
+
+179
+00:06:04.300 --> 00:06:07.266
+well how can I test code that uses
+
+180
+00:06:07.266 --> 00:06:09.600
+a singleton for example well it
+
+181
+00:06:09.600 --> 00:06:10.400
+depends
+
+182
+00:06:10.400 --> 00:06:11.733
+because there's nothing wrong with
+
+183
+00:06:11.733 --> 00:06:13.666
+having a singleton and still have
+
+184
+00:06:13.666 --> 00:06:14.933
+testable code
+
+185
+00:06:14.933 --> 00:06:17.333
+so let's illustrate this with
+
+186
+00:06:17.333 --> 00:06:18.133
+for example
+
+187
+00:06:18.133 --> 00:06:21.666
+a ViewController like a
+
+188
+00:06:21.666 --> 00:06:24.933
+LoginViewController and you have a method
+
+189
+00:06:24.933 --> 00:06:28.866
+didTapLoginButton
+
+190
+00:06:28.866 --> 00:06:30.700
+and here you want to use the ApiClient
+
+191
+00:06:30.700 --> 00:06:32.800
+okay to log in to a service
+
+192
+00:06:32.800 --> 00:06:36.533
+let's say yes the Singleton ApiClient
+
+193
+00:06:36.533 --> 00:06:39.900
+.instance .login
+
+194
+00:06:39.900 --> 00:06:43.600
+right and you pass a login request
+
+195
+00:06:43.600 --> 00:06:47.166
+and you get a user back for example
+
+196
+00:06:47.166 --> 00:06:50.066
+right and then you do something after
+
+197
+00:06:50.066 --> 00:06:51.033
+you log in
+
+198
+00:06:51.033 --> 00:06:54.533
+like show next screen now
+
+199
+00:06:54.533 --> 00:06:56.633
+this would be hard to test first of all
+
+200
+00:06:56.633 --> 00:06:57.900
+we would need to have a
+
+201
+00:06:57.900 --> 00:07:00.833
+function login it gets a closure for
+
+202
+00:07:00.833 --> 00:07:02.400
+example
+
+203
+00:07:02.400 --> 00:07:05.566
+LoggedInUser
+
+204
+00:07:05.566 --> 00:07:08.700
+and let's define here
+
+205
+00:07:08.700 --> 00:07:13.733
+our LoggedInUser
+
+206
+00:07:13.733 --> 00:07:15.166
+now if you want to test that LoginViewController
+
+207
+00:07:15.166 --> 00:07:16.800
+is working properly but you
+
+208
+00:07:16.800 --> 00:07:18.533
+don't want to make an API request
+
+209
+00:07:18.533 --> 00:07:21.100
+right how can you override this call
+
+210
+00:07:21.100 --> 00:07:22.233
+here how can you
+
+211
+00:07:22.233 --> 00:07:26.300
+replace the ApiClient with a mocked one
+
+212
+00:07:26.300 --> 00:07:27.833
+to be honest personally I don't know any
+
+213
+00:07:27.833 --> 00:07:30.066
+way to do that in Swift probably in
+
+214
+00:07:30.066 --> 00:07:32.233
+Objective-C you could swizzle the
+
+215
+00:07:32.233 --> 00:07:34.866
+getter and replace it with a mock but in
+
+216
+00:07:34.866 --> 00:07:35.666
+this case
+
+217
+00:07:35.666 --> 00:07:38.400
+since you cannot subclass ApiClient and
+
+218
+00:07:38.400 --> 00:07:39.666
+this is a let
+
+219
+00:07:39.666 --> 00:07:43.166
+you cannot do it at least in Swift yep
+
+220
+00:07:43.166 --> 00:07:46.000
+it sounds accurate but there are other
+
+221
+00:07:46.000 --> 00:07:47.100
+choices we can make here
+
+222
+00:07:47.100 --> 00:07:49.033
+so I want to be able to at least
+
+223
+00:07:49.033 --> 00:07:50.133
+subclass it
+
+224
+00:07:50.133 --> 00:07:53.833
+because now I can have an api
+
+225
+00:07:53.833 --> 00:07:55.666
+in here okay I see what you're doing so
+
+226
+00:07:55.666 --> 00:07:57.166
+you're gonna have a property injection
+
+227
+00:07:57.166 --> 00:07:58.066
+basically
+
+228
+00:07:58.066 --> 00:08:01.266
+yes for example ApiClient.instance
+
+229
+00:08:01.266 --> 00:08:04.300
+and now I don't access this
+
+230
+00:08:04.300 --> 00:08:04.933
+directly
+
+231
+00:08:04.933 --> 00:08:07.666
+which means in my tests I can inject
+
+232
+00:08:07.666 --> 00:08:08.800
+this with a
+
+233
+00:08:08.800 --> 00:08:12.700
+MockApiClient
+
+234
+00:08:12.700 --> 00:08:15.733
+for example
+
+235
+00:08:15.733 --> 00:08:18.466
+that overrides this login and does something
+
+236
+00:08:18.466 --> 00:08:19.166
+else
+
+237
+00:08:19.166 --> 00:08:21.900
+right and you can intercept now the
+
+238
+00:08:21.900 --> 00:08:23.566
+request to this login
+
+239
+00:08:23.566 --> 00:08:26.066
+function and you can test whatever it is
+
+240
+00:08:26.066 --> 00:08:27.433
+that you need to test in your
+
+241
+00:08:27.433 --> 00:08:30.233
+unit tests yes okay and then there's
+
+242
+00:08:30.233 --> 00:08:32.133
+another thing that I see people doing
+
+243
+00:08:32.133 --> 00:08:34.133
+as well nothing wrong with it but again
+
+244
+00:08:34.133 --> 00:08:35.666
+it breaks the pattern
+
+245
+00:08:35.666 --> 00:08:38.866
+that is to make this thing settable
+
+246
+00:08:38.866 --> 00:08:40.933
+so now what I can do in my test here in
+
+247
+00:08:40.933 --> 00:08:42.300
+this case is to
+
+248
+00:08:42.300 --> 00:08:45.900
+inject the instance to be a
+
+249
+00:08:45.900 --> 00:08:47.500
+MockApiClient
+
+250
+00:08:47.500 --> 00:08:50.533
+and then I don't even need this anymore
+
+251
+00:08:50.533 --> 00:08:53.733
+I can just go back to what it was right
+
+252
+00:08:53.733 --> 00:08:55.500
+so now you introduce global state
+
+253
+00:08:55.500 --> 00:08:58.633
+for the test target yes so probably
+
+254
+00:08:58.633 --> 00:09:00.133
+in the setup I need to
+
+255
+00:09:00.133 --> 00:09:02.866
+set up the mock client and in the tear
+
+256
+00:09:02.866 --> 00:09:04.933
+down I need to remember to replace it
+
+257
+00:09:04.933 --> 00:09:05.333
+back
+
+258
+00:09:05.333 --> 00:09:06.800
+yeah so this is not a singleton anymore
+
+259
+00:09:06.800 --> 00:09:08.633
+this is something else because it's not
+
+260
+00:09:08.633 --> 00:09:09.900
+a single term with capital "s"
+
+261
+00:09:09.900 --> 00:09:12.133
+it's not a single term with lowercase "s"
+
+262
+00:09:12.133 --> 00:09:13.266
+this is just
+
+263
+00:09:13.266 --> 00:09:17.200
+global state mutable global state
+
+264
+00:09:17.200 --> 00:09:19.433
+mutable global state yes the dark arts
+
+265
+00:09:19.433 --> 00:09:20.933
+that's what it is
+
+266
+00:09:20.933 --> 00:09:23.033
+but people still call it singleton
+
+267
+00:09:23.033 --> 00:09:24.633
+because of the semantics it looks like a
+
+268
+00:09:24.633 --> 00:09:26.300
+singleton it has a static
+
+269
+00:09:26.300 --> 00:09:28.800
+instance right no I think that's very
+
+270
+00:09:28.800 --> 00:09:30.300
+important what you mentioned there the
+
+271
+00:09:30.300 --> 00:09:31.200
+semantics
+
+272
+00:09:31.200 --> 00:09:33.733
+I feel that if developers see the
+
+273
+00:09:33.733 --> 00:09:35.433
+word instance somewhere or sharedInstance
+
+274
+00:09:35.433 --> 00:09:36.233
+or
+
+275
+00:09:36.233 --> 00:09:39.666
+.shared something like that they
+
+276
+00:09:39.666 --> 00:09:42.000
+tend to think that this is the singleton
+
+277
+00:09:42.000 --> 00:09:43.200
+pattern but then there's no
+
+278
+00:09:43.200 --> 00:09:44.133
+differentiation
+
+279
+00:09:44.133 --> 00:09:46.800
+between the singleton and mutable global
+
+280
+00:09:46.800 --> 00:09:47.500
+state
+
+281
+00:09:47.500 --> 00:09:49.433
+yeah in this case what's the point of
+
+282
+00:09:49.433 --> 00:09:51.033
+making this private
+
+283
+00:09:51.033 --> 00:09:52.633
+right and I think that's even better
+
+284
+00:09:52.633 --> 00:09:54.866
+because now this can go back to a let
+
+285
+00:09:54.866 --> 00:09:58.000
+so it's an immutable shared instance and
+
+286
+00:09:58.000 --> 00:09:59.900
+if you want to create new instances of
+
+287
+00:09:59.900 --> 00:10:01.200
+this ApiClient
+
+288
+00:10:01.200 --> 00:10:04.700
+well you have the initializer now exactly so
+
+289
+00:10:04.700 --> 00:10:06.933
+at least this global state now is
+
+290
+00:10:06.933 --> 00:10:08.533
+contained so this is back to
+
+291
+00:10:08.533 --> 00:10:11.266
+lowercase "s" singleton an instance that
+
+292
+00:10:11.266 --> 00:10:12.533
+is only created once
+
+293
+00:10:12.533 --> 00:10:14.133
+it cannot be replaced but you can still
+
+294
+00:10:14.133 --> 00:10:16.233
+create your own and pass it along
+
+295
+00:10:16.233 --> 00:10:17.900
+yeah exactly so that's the difference
+
+296
+00:10:17.900 --> 00:10:19.900
+from capital case Singleton lowercase
+
+297
+00:10:19.900 --> 00:10:20.533
+singleton
+
+298
+00:10:20.533 --> 00:10:24.133
+and just mutable global shared state
+
+299
+00:10:24.133 --> 00:10:29.833
+yeah so okay let's fix the problems here
+
+300
+00:10:29.833 --> 00:10:33.200
+what this is now is just shared but
+
+301
+00:10:33.200 --> 00:10:35.200
+in this case if you want to test it you
+
+302
+00:10:35.200 --> 00:10:38.933
+will need to have a property
+
+303
+00:10:38.933 --> 00:10:40.800
+and now we can use property injection to
+
+304
+00:10:40.800 --> 00:10:42.633
+replace it during tests so you don't
+
+305
+00:10:42.633 --> 00:10:44.366
+make API requests right
+
+306
+00:10:44.366 --> 00:10:47.733
+and for example let's say that this is a
+
+307
+00:10:47.733 --> 00:10:50.366
+Instagram-like application and when you
+
+308
+00:10:50.366 --> 00:10:52.933
+log in you go to the feed screen
+
+309
+00:10:52.933 --> 00:10:54.633
+so let's expand this problem a little
+
+310
+00:10:54.633 --> 00:10:56.633
+bit let's say we have a
+
+311
+00:10:56.633 --> 00:10:58.300
+FeedViewController now
+
+312
+00:10:58.300 --> 00:11:01.433
+and on viewDidLoad we're going to call
+
+313
+00:11:01.433 --> 00:11:04.933
+loadFeed right
+
+314
+00:11:04.933 --> 00:11:06.533
+and when you load the feed you expect to
+
+315
+00:11:06.533 --> 00:11:10.300
+get like loaded items
+
+316
+00:11:10.300 --> 00:11:13.433
+and then you update UI for example
+
+317
+00:11:13.433 --> 00:11:16.633
+okay so what we would need here is also
+
+318
+00:11:16.633 --> 00:11:17.733
+to have an API
+
+319
+00:11:17.733 --> 00:11:21.500
+and add a new method to the ApiClient
+
+320
+00:11:21.500 --> 00:11:26.866
+right load feed before your completion
+
+321
+00:11:26.866 --> 00:11:28.933
+and let's say it's an array of
+
+322
+00:11:28.933 --> 00:11:32.366
+FeedItems
+
+323
+00:11:32.366 --> 00:11:35.900
+so we need to define our FeedItem
+
+324
+00:11:35.900 --> 00:11:39.100
+here cool did you see the problem
+
+325
+00:11:39.100 --> 00:11:41.200
+I implemented a new feature the FeedViewController
+
+326
+00:11:41.200 --> 00:11:44.366
+and I had to add a new method
+
+327
+00:11:44.366 --> 00:11:46.233
+to this shared type right and then the
+
+328
+00:11:46.233 --> 00:11:48.133
+question is why is this a problem what's
+
+329
+00:11:48.133 --> 00:11:49.100
+wrong with that
+
+330
+00:11:49.100 --> 00:11:51.266
+well let's have a look at the diagram so
+
+331
+00:11:51.266 --> 00:11:52.933
+imagine you have the ApiClient and then
+
+332
+00:11:52.933 --> 00:11:53.900
+you have the Login
+
+333
+00:11:53.900 --> 00:11:55.266
+and then you have a login function and
+
+334
+00:11:55.266 --> 00:11:56.533
+then you have the Feed and you have a
+
+335
+00:11:56.533 --> 00:11:57.333
+loadFeed function
+
+336
+00:11:57.333 --> 00:11:58.866
+and if you've implemented the followers
+
+337
+00:11:58.866 --> 00:12:00.633
+feature you have a loadFollowers
+
+338
+00:12:00.633 --> 00:12:01.100
+function
+
+339
+00:12:01.100 --> 00:12:03.733
+but the Login doesn't care about feed
+
+340
+00:12:03.733 --> 00:12:04.800
+or followers
+
+341
+00:12:04.800 --> 00:12:06.066
+and the followers doesn't care about
+
+342
+00:12:06.066 --> 00:12:08.233
+login or feed and the feed doesn't care
+
+343
+00:12:08.233 --> 00:12:08.800
+about
+
+344
+00:12:08.800 --> 00:12:11.600
+login or followers but since this is
+
+345
+00:12:11.600 --> 00:12:12.633
+shared we have these
+
+346
+00:12:12.633 --> 00:12:15.666
+different modules sharing this type in
+
+347
+00:12:15.666 --> 00:12:16.300
+the middle
+
+348
+00:12:16.300 --> 00:12:19.433
+this concrete type ApiClient and every
+
+349
+00:12:19.433 --> 00:12:19.833
+time
+
+350
+00:12:19.833 --> 00:12:21.666
+I need to add a new method here I need
+
+351
+00:12:21.666 --> 00:12:23.333
+to recompile redeploy all the other
+
+352
+00:12:23.333 --> 00:12:24.700
+modules because they depend on the
+
+353
+00:12:24.700 --> 00:12:25.500
+concrete type
+
+354
+00:12:25.500 --> 00:12:27.600
+so what's happening here is that we have
+
+355
+00:12:27.600 --> 00:12:29.100
+source code dependency
+
+356
+00:12:29.100 --> 00:12:31.833
+in this ApiClient layer so if I want to
+
+357
+00:12:31.833 --> 00:12:32.933
+reuse the Login
+
+358
+00:12:32.933 --> 00:12:34.466
+in a different context in a different
+
+359
+00:12:34.466 --> 00:12:36.700
+application how can I move the Login
+
+360
+00:12:36.700 --> 00:12:38.866
+module to a separate application without
+
+361
+00:12:38.866 --> 00:12:40.800
+bringing the ApiClient with me
+
+362
+00:12:40.800 --> 00:12:44.633
+you can't is the answer well you can
+
+363
+00:12:44.633 --> 00:12:47.666
+if you now move the ApiClient to a
+
+364
+00:12:47.666 --> 00:12:49.833
+shared module and then you move the
+
+365
+00:12:49.833 --> 00:12:51.266
+Login and you reference it
+
+366
+00:12:51.266 --> 00:12:52.700
+right but then you make a change and
+
+367
+00:12:52.700 --> 00:12:54.700
+then the other modules break as well
+
+368
+00:12:54.700 --> 00:12:56.633
+yeah if we add another module for
+
+369
+00:12:56.633 --> 00:12:58.300
+example upload videos
+
+370
+00:12:58.300 --> 00:13:00.366
+you need to add a new method here uploadVideo
+
+371
+00:13:00.366 --> 00:13:02.300
+and you break all the other
+
+372
+00:13:02.300 --> 00:13:03.333
+modules you need to
+
+373
+00:13:03.333 --> 00:13:06.133
+bump a version in this framework and now
+
+374
+00:13:06.133 --> 00:13:06.933
+everyone else
+
+375
+00:13:06.933 --> 00:13:09.033
+needs to update yeah the references and
+
+376
+00:13:09.033 --> 00:13:10.000
+then you start having
+
+377
+00:13:10.000 --> 00:13:12.066
+semantic versioning issues right but we
+
+378
+00:13:12.066 --> 00:13:13.266
+can solve that yeah
+
+379
+00:13:13.266 --> 00:13:15.433
+we can solve it if you care about
+
+380
+00:13:15.433 --> 00:13:16.466
+modular design
+
+381
+00:13:16.466 --> 00:13:18.633
+you should probably consider breaking
+
+382
+00:13:18.633 --> 00:13:20.066
+these things into
+
+383
+00:13:20.066 --> 00:13:22.800
+something much more responsible exactly
+
+384
+00:13:22.800 --> 00:13:24.700
+what this class needs is just to call a
+
+385
+00:13:24.700 --> 00:13:25.266
+function
+
+386
+00:13:25.266 --> 00:13:27.900
+right but now this class actually needs
+
+387
+00:13:27.900 --> 00:13:28.466
+to
+
+388
+00:13:28.466 --> 00:13:31.033
+know where to find this instance know
+
+389
+00:13:31.033 --> 00:13:32.066
+it's concrete type
+
+390
+00:13:32.066 --> 00:13:33.733
+and an invoker function right there are
+
+391
+00:13:33.733 --> 00:13:35.433
+three layers here where you should need
+
+392
+00:13:35.433 --> 00:13:37.433
+one and it creates this implicit
+
+393
+00:13:37.433 --> 00:13:39.433
+dependency of this ApiClient
+
+394
+00:13:39.433 --> 00:13:42.466
+as well yes this global shared state
+
+395
+00:13:42.466 --> 00:13:43.900
+here is very convenient
+
+396
+00:13:43.900 --> 00:13:46.133
+yeah it's easy to create into use but
+
+397
+00:13:46.133 --> 00:13:47.433
+introduce some problems
+
+398
+00:13:47.433 --> 00:13:49.433
+so what we're doing here is making a
+
+399
+00:13:49.433 --> 00:13:51.333
+case that if you need to achieve some
+
+400
+00:13:51.333 --> 00:13:52.700
+kind of reusability
+
+401
+00:13:52.700 --> 00:13:53.833
+you might need to think about these
+
+402
+00:13:53.833 --> 00:13:55.033
+problems you need to understand the
+
+403
+00:13:55.033 --> 00:13:56.933
+trade-offs so when this trade-off bites
+
+404
+00:13:56.933 --> 00:13:57.266
+you
+
+405
+00:13:57.266 --> 00:13:59.600
+you know what to do about it absolutely
+
+406
+00:13:59.600 --> 00:14:00.700
+absolutely
+
+407
+00:14:00.700 --> 00:14:02.866
+so a solution to this problem of every
+
+408
+00:14:02.866 --> 00:14:04.300
+time you add a new method you might
+
+409
+00:14:04.300 --> 00:14:04.800
+break
+
+410
+00:14:04.800 --> 00:14:07.033
+other modules it's actually fairly
+
+411
+00:14:07.033 --> 00:14:09.100
+simple what we could do here
+
+412
+00:14:09.100 --> 00:14:12.866
+in Swift is to use extensions
+
+413
+00:14:12.866 --> 00:14:15.500
+for example we can have a generic method
+
+414
+00:14:15.500 --> 00:14:16.000
+executeRequest
+
+415
+00:14:16.000 --> 00:14:17.900
+that can execute any type of
+
+416
+00:14:17.900 --> 00:14:19.033
+request and then
+
+417
+00:14:19.033 --> 00:14:21.100
+every module has its own ApiClient
+
+418
+00:14:21.100 --> 00:14:22.133
+extension with
+
+419
+00:14:22.133 --> 00:14:25.600
+whatever method they need so let's say
+
+420
+00:14:25.600 --> 00:14:27.433
+we are breaking this now in modules so
+
+421
+00:14:27.433 --> 00:14:29.100
+this is the
+
+422
+00:14:29.100 --> 00:14:32.700
+Api Module
+
+423
+00:14:32.700 --> 00:14:35.100
+then we have the Login Module for
+
+424
+00:14:35.100 --> 00:14:36.066
+example
+
+425
+00:14:36.066 --> 00:14:39.100
+and we have the Feed Module
+
+426
+00:14:39.100 --> 00:14:41.166
+and what if we had like a generic
+
+427
+00:14:41.166 --> 00:14:42.833
+function here
+
+428
+00:14:42.833 --> 00:14:47.433
+execute and then it has a completion
+
+429
+00:14:47.433 --> 00:14:49.266
+let's say it just completes with data
+
+430
+00:14:49.266 --> 00:14:51.333
+for now we're not handling errors
+
+431
+00:14:51.333 --> 00:14:54.366
+right so this API is enough to execute
+
+432
+00:14:54.366 --> 00:14:54.933
+any
+
+433
+00:14:54.933 --> 00:14:57.166
+get or post request for example maybe
+
+434
+00:14:57.166 --> 00:14:58.466
+not enough for uploads
+
+435
+00:14:58.466 --> 00:15:00.066
+and downloads but we don't have this
+
+436
+00:15:00.066 --> 00:15:02.000
+requirement yet and then what we can do
+
+437
+00:15:02.000 --> 00:15:03.033
+is move
+
+438
+00:15:03.033 --> 00:15:05.833
+the login function to the Login module
+
+439
+00:15:05.833 --> 00:15:07.433
+by introducing an extension
+
+440
+00:15:07.433 --> 00:15:10.466
+in a separate module to the ApiClient
+
+441
+00:15:10.466 --> 00:15:12.000
+with the login implementation we can
+
+442
+00:15:12.000 --> 00:15:14.366
+even move
+
+443
+00:15:14.366 --> 00:15:16.466
+the LoggedInUser struct to that
+
+444
+00:15:16.466 --> 00:15:18.300
+module as well yeah that makes sense
+
+445
+00:15:18.300 --> 00:15:19.666
+and we can do the same thing for the
+
+446
+00:15:19.666 --> 00:15:22.700
+Feed module we have an extension
+
+447
+00:15:22.700 --> 00:15:26.066
+in the ApiClient that is the loadFeed
+
+448
+00:15:26.066 --> 00:15:26.933
+and the loadFeed
+
+449
+00:15:26.933 --> 00:15:29.333
+and the login methods we'll call the
+
+450
+00:15:29.333 --> 00:15:30.066
+execute
+
+451
+00:15:30.066 --> 00:15:32.933
+the generic method and then we can move
+
+452
+00:15:32.933 --> 00:15:33.266
+the
+
+453
+00:15:33.266 --> 00:15:36.300
+FeedItem to the Feed module
+
+454
+00:15:36.300 --> 00:15:38.466
+as well and now we have this
+
+455
+00:15:38.466 --> 00:15:39.600
+implementation
+
+456
+00:15:39.600 --> 00:15:42.066
+where we specialize the client for the
+
+457
+00:15:42.066 --> 00:15:42.633
+module
+
+458
+00:15:42.633 --> 00:15:44.300
+and we have a generic client in the
+
+459
+00:15:44.300 --> 00:15:46.300
+middle which can make this
+
+460
+00:15:46.300 --> 00:15:48.533
+ApiClient thing redundant we could have
+
+461
+00:15:48.533 --> 00:15:49.333
+just used
+
+462
+00:15:49.333 --> 00:15:51.666
+plain URLSessions by creating
+
+463
+00:15:51.666 --> 00:15:53.333
+extensions on URLSession
+
+464
+00:15:53.333 --> 00:15:55.833
+or AlamoFire or whatever you use and
+
+465
+00:15:55.833 --> 00:15:57.033
+look how we broke the
+
+466
+00:15:57.033 --> 00:15:58.866
+dependencies without breaking the
+
+467
+00:15:58.866 --> 00:16:01.033
+implementation we just restructured
+
+468
+00:16:01.033 --> 00:16:02.533
+changed a little bit the architecture
+
+469
+00:16:02.533 --> 00:16:04.800
+the dependency graph
+
+470
+00:16:04.800 --> 00:16:06.700
+but look how the ApiClient is still
+
+471
+00:16:06.700 --> 00:16:08.133
+shared between
+
+472
+00:16:08.133 --> 00:16:10.000
+all those modules so if at some point
+
+473
+00:16:10.000 --> 00:16:11.333
+you need to add a new module where you
+
+474
+00:16:11.333 --> 00:16:12.700
+want to upload
+
+475
+00:16:12.700 --> 00:16:16.000
+data to the API you might have to add
+
+476
+00:16:16.000 --> 00:16:17.600
+a new method here and you break the
+
+477
+00:16:17.600 --> 00:16:19.266
+clients as well you're not completely
+
+478
+00:16:19.266 --> 00:16:19.666
+safe
+
+479
+00:16:19.666 --> 00:16:22.466
+from change but it's much more flexible
+
+480
+00:16:22.466 --> 00:16:23.166
+now
+
+481
+00:16:23.166 --> 00:16:26.000
+now this is stage one yeah what if you
+
+482
+00:16:26.000 --> 00:16:27.833
+need a little bit more flexibility
+
+483
+00:16:27.833 --> 00:16:29.500
+to make this more reusable and not
+
+484
+00:16:29.500 --> 00:16:30.866
+breaking the clients
+
+485
+00:16:30.866 --> 00:16:32.866
+now we talk about inverting the
+
+486
+00:16:32.866 --> 00:16:34.233
+dependency
+
+487
+00:16:34.233 --> 00:16:36.300
+what if instead of the modules depending
+
+488
+00:16:36.300 --> 00:16:37.333
+on a concrete
+
+489
+00:16:37.333 --> 00:16:40.633
+ApiClient we actually make
+
+490
+00:16:40.633 --> 00:16:43.033
+the concrete ApiClient depend on the
+
+491
+00:16:43.033 --> 00:16:43.733
+modules
+
+492
+00:16:43.733 --> 00:16:46.800
+yeah that's the second stage and this is
+
+493
+00:16:46.800 --> 00:16:48.000
+going to give us
+
+494
+00:16:48.000 --> 00:16:50.133
+all the freedom that we want basically
+
+495
+00:16:50.133 --> 00:16:51.033
+exactly
+
+496
+00:16:51.033 --> 00:16:54.233
+and most applications I've seen 99%
+
+497
+00:16:54.233 --> 00:16:55.733
+of the applications I've seen stop
+
+498
+00:16:55.733 --> 00:16:58.800
+here yeah and eventually
+
+499
+00:16:58.800 --> 00:17:02.000
+when this gets too messy the solution is
+
+500
+00:17:02.000 --> 00:17:02.300
+to
+
+501
+00:17:02.300 --> 00:17:04.866
+rewrite the application right because
+
+502
+00:17:04.866 --> 00:17:06.300
+that's what's going to happen if you
+
+503
+00:17:06.300 --> 00:17:07.033
+don't
+
+504
+00:17:07.033 --> 00:17:09.833
+proactively understand where your
+
+505
+00:17:09.833 --> 00:17:11.333
+architecture is moving to
+
+506
+00:17:11.333 --> 00:17:13.166
+and change it as needed you don't need
+
+507
+00:17:13.166 --> 00:17:15.266
+to start with a super abstract
+
+508
+00:17:15.266 --> 00:17:17.733
+implementation you can move little by
+
+509
+00:17:17.733 --> 00:17:18.300
+little
+
+510
+00:17:18.300 --> 00:17:20.533
+yeah but you need to move you need to be
+
+511
+00:17:20.533 --> 00:17:22.633
+proactive and to make those decisions
+
+512
+00:17:22.633 --> 00:17:24.633
+as you go and at some point you might
+
+513
+00:17:24.633 --> 00:17:26.466
+need to invert dependency
+
+514
+00:17:26.466 --> 00:17:28.700
+because the ApiClient is just a detail
+
+515
+00:17:28.700 --> 00:17:30.466
+what is important to the business
+
+516
+00:17:30.466 --> 00:17:32.700
+is not the ApiClient implementation
+
+517
+00:17:32.700 --> 00:17:34.766
+yeah and API requests
+
+518
+00:17:34.766 --> 00:17:36.766
+if you go to your boss and say oh we're
+
+519
+00:17:36.766 --> 00:17:38.133
+having a problem with the request they
+
+520
+00:17:38.133 --> 00:17:38.766
+don't care
+
+521
+00:17:38.766 --> 00:17:41.900
+right right they care about the features
+
+522
+00:17:41.900 --> 00:17:42.933
+they don't care about
+
+523
+00:17:42.933 --> 00:17:45.100
+the technicalities and the details
+
+524
+00:17:45.100 --> 00:17:46.066
+that's why
+
+525
+00:17:46.066 --> 00:17:48.933
+I prefer to have contained logic in
+
+526
+00:17:48.933 --> 00:17:49.900
+modules
+
+527
+00:17:49.900 --> 00:17:52.300
+and details depend on the features in
+
+528
+00:17:52.300 --> 00:17:54.133
+this case the details the ApiClient
+
+529
+00:17:54.133 --> 00:17:57.200
+and to do so we introduce
+
+530
+00:17:57.200 --> 00:17:59.833
+protocol or closures or any type of
+
+531
+00:17:59.833 --> 00:18:00.700
+interface
+
+532
+00:18:00.700 --> 00:18:02.466
+for the modules for example the Login
+
+533
+00:18:02.466 --> 00:18:03.733
+it needs a function
+
+534
+00:18:03.733 --> 00:18:05.333
+or it needs a type that implements a
+
+535
+00:18:05.333 --> 00:18:07.333
+function talking to an API
+
+536
+00:18:07.333 --> 00:18:09.833
+the Feed will need a function to load
+
+537
+00:18:09.833 --> 00:18:10.633
+the feed
+
+538
+00:18:10.633 --> 00:18:12.300
+the Followers will need a function to
+
+539
+00:18:12.300 --> 00:18:14.000
+load the followers and that's all they
+
+540
+00:18:14.000 --> 00:18:14.400
+need
+
+541
+00:18:14.400 --> 00:18:15.733
+it doesn't need to know where it comes
+
+542
+00:18:15.733 --> 00:18:17.600
+from so when you have a concrete type
+
+543
+00:18:17.600 --> 00:18:18.633
+dependency
+
+544
+00:18:18.633 --> 00:18:21.733
+as we have here when
+
+545
+00:18:21.733 --> 00:18:25.100
+the Login module directly references
+
+546
+00:18:25.100 --> 00:18:26.466
+the ApiClient
+
+547
+00:18:26.466 --> 00:18:28.866
+we depend on the ApiClient we need to
+
+548
+00:18:28.866 --> 00:18:31.833
+know how to locate the instance
+
+549
+00:18:31.833 --> 00:18:33.833
+in the shared pointer and then we need
+
+550
+00:18:33.833 --> 00:18:35.833
+to invoke the function we want
+
+551
+00:18:35.833 --> 00:18:38.466
+when all we want is a function so why
+
+552
+00:18:38.466 --> 00:18:39.200
+don't we
+
+553
+00:18:39.200 --> 00:18:41.433
+just depend on a function or on a
+
+554
+00:18:41.433 --> 00:18:43.333
+protocol that implements the function
+
+555
+00:18:43.333 --> 00:18:45.100
+right so now there is this
+
+556
+00:18:45.100 --> 00:18:47.033
+specialization that you mentioned before
+
+557
+00:18:47.033 --> 00:18:49.733
+so what do I need as a Login module as a
+
+558
+00:18:49.733 --> 00:18:51.600
+Feed module as a Followers module what
+
+559
+00:18:51.600 --> 00:18:53.500
+do I need and I don't care about
+
+560
+00:18:53.500 --> 00:18:54.866
+anything else
+
+561
+00:18:54.866 --> 00:18:58.300
+you can go level four yeah and level
+
+562
+00:18:58.300 --> 00:18:58.866
+four is
+
+563
+00:18:58.866 --> 00:19:00.466
+you have your generic ApiClient in the
+
+564
+00:19:00.466 --> 00:19:02.133
+center you have your
+
+565
+00:19:02.133 --> 00:19:05.200
+modules with only what they need and
+
+566
+00:19:05.200 --> 00:19:06.400
+then you implement
+
+567
+00:19:06.400 --> 00:19:09.666
+the adapters this is completely modular
+
+568
+00:19:09.666 --> 00:19:11.100
+because you can use this ApiClient in
+
+569
+00:19:11.100 --> 00:19:12.300
+other applications you can use the
+
+570
+00:19:12.300 --> 00:19:13.733
+Login in other applications
+
+571
+00:19:13.733 --> 00:19:15.266
+in other contexts you can use the
+
+572
+00:19:15.266 --> 00:19:17.100
+Followers module in other contexts as
+
+573
+00:19:17.100 --> 00:19:17.433
+well
+
+574
+00:19:17.433 --> 00:19:19.033
+you can just compose all those things
+
+575
+00:19:19.033 --> 00:19:20.533
+together and when you're testing you
+
+576
+00:19:20.533 --> 00:19:21.900
+compose it with mocks
+
+577
+00:19:21.900 --> 00:19:24.866
+or you compose it with stubs you compose
+
+578
+00:19:24.866 --> 00:19:26.466
+it with whatever you need absolutely
+
+579
+00:19:26.466 --> 00:19:29.600
+you open up possibilities level four
+
+580
+00:19:29.600 --> 00:19:32.066
+yeah as I mentioned before freedom by
+
+581
+00:19:32.066 --> 00:19:33.100
+the way these levels
+
+582
+00:19:33.100 --> 00:19:35.733
+we just mentioned them as a way
+
+583
+00:19:35.733 --> 00:19:36.766
+to keep count for
+
+584
+00:19:36.766 --> 00:19:38.766
+the slides right it's not a thing no
+
+585
+00:19:38.766 --> 00:19:40.000
+it's not a thing it's a level of
+
+586
+00:19:40.000 --> 00:19:40.866
+abstraction
+
+587
+00:19:40.866 --> 00:19:43.033
+based on the slides that we have there
+
+588
+00:19:43.033 --> 00:19:44.133
+and
+
+589
+00:19:44.133 --> 00:19:46.533
+the bigger the codebase and the more
+
+590
+00:19:46.533 --> 00:19:47.500
+complex it is
+
+591
+00:19:47.500 --> 00:19:49.433
+the more complex the requirements are I
+
+592
+00:19:49.433 --> 00:19:52.066
+think freedom is a tremendous asset
+
+593
+00:19:52.066 --> 00:19:54.066
+to have on the other hand it doesn't
+
+594
+00:19:54.066 --> 00:19:55.600
+come easily
+
+595
+00:19:55.600 --> 00:19:57.666
+you need to be very disciplined to reach
+
+596
+00:19:57.666 --> 00:19:59.666
+that stage and as we mentioned before
+
+597
+00:19:59.666 --> 00:20:02.533
+if you're making a small application and
+
+598
+00:20:02.533 --> 00:20:03.900
+you should definitely not start with a
+
+599
+00:20:03.900 --> 00:20:05.100
+level four
+
+600
+00:20:05.100 --> 00:20:07.500
+I agree this is not easy but I think
+
+601
+00:20:07.500 --> 00:20:08.933
+this is simple it is simple
+
+602
+00:20:08.933 --> 00:20:11.200
+you can compose those things simply you
+
+603
+00:20:11.200 --> 00:20:12.066
+can change things
+
+604
+00:20:12.066 --> 00:20:14.866
+simply you can test things simply and to
+
+605
+00:20:14.866 --> 00:20:15.500
+be fair
+
+606
+00:20:15.500 --> 00:20:17.100
+people look at this diagram and they
+
+607
+00:20:17.100 --> 00:20:18.933
+compare with the first one we showed
+
+608
+00:20:18.933 --> 00:20:20.633
+and they're like this is over-engineered
+
+609
+00:20:20.633 --> 00:20:22.066
+look how many things
+
+610
+00:20:22.066 --> 00:20:24.533
+but the diagram doesn't tell the truth
+
+611
+00:20:24.533 --> 00:20:25.666
+exactly it's not over-engineered
+
+612
+00:20:25.666 --> 00:20:28.233
+the architecture is in the code so
+
+613
+00:20:28.233 --> 00:20:30.133
+let's show the code that implements
+
+614
+00:20:30.133 --> 00:20:32.233
+exactly that
+
+615
+00:20:32.233 --> 00:20:34.700
+all we need is a login function and the
+
+616
+00:20:34.700 --> 00:20:37.733
+login function is this
+
+617
+00:20:37.733 --> 00:20:41.733
+so all we need here is a login function
+
+618
+00:20:41.733 --> 00:20:45.433
+that gets a callback let's make this
+
+619
+00:20:45.433 --> 00:20:46.233
+optional
+
+620
+00:20:46.233 --> 00:20:50.233
+for now it needs to be injected
+
+621
+00:20:50.233 --> 00:20:51.666
+of course this is a closure where you
+
+622
+00:20:51.666 --> 00:20:53.333
+invoke with a closure callback
+
+623
+00:20:53.333 --> 00:20:58.533
+right now you can move the ApiClient
+
+624
+00:20:58.533 --> 00:21:03.900
+to a Main module
+
+625
+00:21:03.900 --> 00:21:07.200
+great now the feed
+
+626
+00:21:07.200 --> 00:21:10.466
+all you need is a function or a protocol
+
+627
+00:21:10.466 --> 00:21:12.933
+with that function
+
+628
+00:21:12.933 --> 00:21:15.033
+so we have a loadFeed function where
+
+629
+00:21:15.033 --> 00:21:23.433
+you pass a closure
+
+630
+00:21:23.433 --> 00:21:26.533
+and now you move the loadFeed to the
+
+631
+00:21:26.533 --> 00:21:28.133
+Main module
+
+632
+00:21:28.133 --> 00:21:29.333
+and now the Main module just needs to
+
+633
+00:21:29.333 --> 00:21:31.333
+compose the functions by passing
+
+634
+00:21:31.333 --> 00:21:33.833
+it to the modules and not just these
+
+635
+00:21:33.833 --> 00:21:34.533
+functions
+
+636
+00:21:34.533 --> 00:21:36.533
+the Main module can compose any
+
+637
+00:21:36.533 --> 00:21:38.466
+functions right so this is very
+
+638
+00:21:38.466 --> 00:21:40.300
+important as well here because we just
+
+639
+00:21:40.300 --> 00:21:41.200
+abstracted the
+
+640
+00:21:41.200 --> 00:21:44.633
+Api the remote part for these
+
+641
+00:21:44.633 --> 00:21:47.200
+actions you know login and loadFeed
+
+642
+00:21:47.200 --> 00:21:48.066
+however
+
+643
+00:21:48.066 --> 00:21:49.500
+these are just signatures of these
+
+644
+00:21:49.500 --> 00:21:51.500
+functions right meaning that you can
+
+645
+00:21:51.500 --> 00:21:52.633
+have a remote
+
+646
+00:21:52.633 --> 00:21:55.033
+or a cached version for example yeah
+
+647
+00:21:55.033 --> 00:21:56.833
+you're free to do whatever you want very
+
+648
+00:21:56.833 --> 00:21:59.100
+simply and you have the same amount of
+
+649
+00:21:59.100 --> 00:22:00.866
+code
+
+650
+00:22:00.866 --> 00:22:03.100
+yeah absolutely absolutely so maybe you
+
+651
+00:22:03.100 --> 00:22:04.466
+look at this diagram and you feel
+
+652
+00:22:04.466 --> 00:22:05.266
+intimidated
+
+653
+00:22:05.266 --> 00:22:06.300
+but it's just because you cannot
+
+654
+00:22:06.300 --> 00:22:08.300
+translate diagrams
+
+655
+00:22:08.300 --> 00:22:11.666
+concepts modularity into code
+
+656
+00:22:11.666 --> 00:22:14.133
+sometimes it's not as difficult as we
+
+657
+00:22:14.133 --> 00:22:14.933
+think it is
+
+658
+00:22:14.933 --> 00:22:16.633
+yeah certainly not it just takes some
+
+659
+00:22:16.633 --> 00:22:19.033
+time to fiddle around with these things
+
+660
+00:22:19.033 --> 00:22:22.400
+and get it working definitely in my
+
+661
+00:22:22.400 --> 00:22:23.200
+opinion
+
+662
+00:22:23.200 --> 00:22:25.833
+test-driving these things and working
+
+663
+00:22:25.833 --> 00:22:26.400
+with
+
+664
+00:22:26.400 --> 00:22:29.100
+protocols or closures for dependency
+
+665
+00:22:29.100 --> 00:22:30.066
+injection
+
+666
+00:22:30.066 --> 00:22:32.933
+I think that's a great way to become
+
+667
+00:22:32.933 --> 00:22:35.266
+better improve
+
+668
+00:22:35.266 --> 00:22:38.000
+so now how would you test this how easy
+
+669
+00:22:38.000 --> 00:22:39.900
+would it be to just inject a function
+
+670
+00:22:39.900 --> 00:22:40.766
+and expect
+
+671
+00:22:40.766 --> 00:22:42.933
+something to happen right that's it yeah
+
+672
+00:22:42.933 --> 00:22:44.766
+how easy would it be yeah and it doesn't
+
+673
+00:22:44.766 --> 00:22:46.400
+need to be a ViewController
+
+674
+00:22:46.400 --> 00:22:50.766
+of course you could be using a ViewModel
+
+675
+00:22:50.766 --> 00:22:54.000
+in here right it can be anything right a
+
+676
+00:22:54.000 --> 00:22:54.933
+ViewModel
+
+677
+00:22:54.933 --> 00:22:57.900
+and then you have like a load function
+
+678
+00:22:57.900 --> 00:22:58.933
+yeah
+
+679
+00:22:58.933 --> 00:23:02.866
+it can be a service a service
+
+680
+00:23:02.866 --> 00:23:05.200
+exactly it can be other things it
+
+681
+00:23:05.200 --> 00:23:06.633
+doesn't need to be a ViewController
+
+682
+00:23:06.633 --> 00:23:08.633
+let's say it's a Feed module somewhere
+
+683
+00:23:08.633 --> 00:23:10.233
+you need to load this data
+
+684
+00:23:10.233 --> 00:23:12.766
+and it needs to talk to an API but it's
+
+685
+00:23:12.766 --> 00:23:14.533
+not your concern where this API
+
+686
+00:23:14.533 --> 00:23:17.266
+is how to locate it in memory what kind
+
+687
+00:23:17.266 --> 00:23:19.033
+of implementation what kind of concrete
+
+688
+00:23:19.033 --> 00:23:19.833
+type
+
+689
+00:23:19.833 --> 00:23:22.300
+I need to talk to and then from all the
+
+690
+00:23:22.300 --> 00:23:24.066
+methods it implements which one should I
+
+691
+00:23:24.066 --> 00:23:24.533
+call
+
+692
+00:23:24.533 --> 00:23:25.666
+you don't need to be concerned about
+
+693
+00:23:25.666 --> 00:23:27.266
+that I think the word concern is
+
+694
+00:23:27.266 --> 00:23:28.700
+extremely important here
+
+695
+00:23:28.700 --> 00:23:30.866
+that you mentioned because that's what
+
+696
+00:23:30.866 --> 00:23:32.466
+we're doing here we're doing separation
+
+697
+00:23:32.466 --> 00:23:34.000
+of concerns basically
+
+698
+00:23:34.000 --> 00:23:37.200
+and each component like this service or
+
+699
+00:23:37.200 --> 00:23:38.700
+this ViewController before
+
+700
+00:23:38.700 --> 00:23:40.300
+they were just concerned about
+
+701
+00:23:40.300 --> 00:23:42.466
+themselves they were not trying to fit
+
+702
+00:23:42.466 --> 00:23:44.700
+everything in nor have access to
+
+703
+00:23:44.700 --> 00:23:46.866
+everything that's very very important
+
+704
+00:23:46.866 --> 00:23:49.266
+all this code here can be tested without
+
+705
+00:23:49.266 --> 00:23:50.300
+actually talking
+
+706
+00:23:50.300 --> 00:23:52.533
+to a real API now the way you're going
+
+707
+00:23:52.533 --> 00:23:54.466
+to implement this ApiClient
+
+708
+00:23:54.466 --> 00:23:56.533
+if you have this separation here I don't
+
+709
+00:23:56.533 --> 00:23:58.300
+care it can be a Singleton
+
+710
+00:23:58.300 --> 00:24:01.100
+it can be global state it can be a capital
+
+711
+00:24:01.100 --> 00:24:03.433
+"s" Singleton a lowercase singleton
+
+712
+00:24:03.433 --> 00:24:05.333
+it can be URLSession it can be AFNetwork
+
+713
+00:24:05.333 --> 00:24:06.700
+I don't care
+
+714
+00:24:06.700 --> 00:24:08.533
+as long as my modules are abstracted
+
+715
+00:24:08.533 --> 00:24:10.000
+from that and I'm able
+
+716
+00:24:10.000 --> 00:24:12.300
+to easily replace it I'm able to easily
+
+717
+00:24:12.300 --> 00:24:14.000
+compose those types together
+
+718
+00:24:14.000 --> 00:24:16.300
+I don't care about the ApiClient I have
+
+719
+00:24:16.300 --> 00:24:18.766
+my preferences how I would implement
+
+720
+00:24:18.766 --> 00:24:19.500
+this
+
+721
+00:24:19.500 --> 00:24:21.733
+but then it's a personal preference all
+
+722
+00:24:21.733 --> 00:24:23.433
+I advise people to do is to
+
+723
+00:24:23.433 --> 00:24:25.900
+go to step one two three four or maybe
+
+724
+00:24:25.900 --> 00:24:27.033
+five, six
+
+725
+00:24:27.033 --> 00:24:29.333
+when needed just understand how you can
+
+726
+00:24:29.333 --> 00:24:31.433
+go from one step to the other
+
+727
+00:24:31.433 --> 00:24:33.033
+understand the limitations of singletons
+
+728
+00:24:33.033 --> 00:24:34.633
+with capital "s"
+
+729
+00:24:34.633 --> 00:24:37.200
+with lowercase "s" and make the choices
+
+730
+00:24:37.200 --> 00:24:38.466
+for your current problem
+
+731
+00:24:38.466 --> 00:24:40.300
+you can make Singletons testable and
+
+732
+00:24:40.300 --> 00:24:42.000
+you can make lowercase singletons
+
+733
+00:24:42.000 --> 00:24:43.833
+testable as well while property
+
+734
+00:24:43.833 --> 00:24:45.100
+injection if you allow
+
+735
+00:24:45.100 --> 00:24:47.500
+subclasses for example and then you can
+
+736
+00:24:47.500 --> 00:24:50.000
+just transform your singleton into a
+
+737
+00:24:50.000 --> 00:24:52.633
+global mutable state and replace it in
+
+738
+00:24:52.633 --> 00:24:53.100
+tests
+
+739
+00:24:53.100 --> 00:24:55.266
+that's another approach I don't
+
+740
+00:24:55.266 --> 00:24:57.100
+recommend it but sometimes it pays off
+
+741
+00:24:57.100 --> 00:24:57.433
+so
+
+742
+00:24:57.433 --> 00:24:59.266
+maybe you start there but know that
+
+743
+00:24:59.266 --> 00:25:00.533
+there might be a problem and when the
+
+744
+00:25:00.533 --> 00:25:01.600
+problem occurs
+
+745
+00:25:01.600 --> 00:25:03.266
+you know where to go to the next step
+
+746
+00:25:03.266 --> 00:25:04.633
+and then to the next step and then to
+
+747
+00:25:04.633 --> 00:25:05.433
+the next step
+
+748
+00:25:05.433 --> 00:25:08.466
+your code should be soft that's the
+
+749
+00:25:08.466 --> 00:25:09.900
+essence of software
+
+750
+00:25:09.900 --> 00:25:11.033
+you should be able to make those
+
+751
+00:25:11.033 --> 00:25:13.433
+decisions as you go so don't limit your
+
+752
+00:25:13.433 --> 00:25:14.300
+decisions
+
+753
+00:25:14.300 --> 00:25:17.333
+with frameworks or design patterns
+
+754
+00:25:17.333 --> 00:25:20.400
+yeah practice is the number one thing if
+
+755
+00:25:20.400 --> 00:25:21.500
+you would like something like that to
+
+756
+00:25:21.500 --> 00:25:22.466
+work
+
+757
+00:25:22.466 --> 00:25:25.200
+that's our advice I recommend you to try
+
+758
+00:25:25.200 --> 00:25:26.233
+it out yourself
+
+759
+00:25:26.233 --> 00:25:27.666
+try to look at your code right now and
+
+760
+00:25:27.666 --> 00:25:29.266
+draw some diagrams
+
+761
+00:25:29.266 --> 00:25:31.333
+try to find some bottlenecks in there
+
+762
+00:25:31.333 --> 00:25:33.333
+yeah you need to spend some time
+
+763
+00:25:33.333 --> 00:25:35.100
+testing out these things trying new
+
+764
+00:25:35.100 --> 00:25:37.500
+ideas recognizing
+
+765
+00:25:37.500 --> 00:25:40.400
+what you "did wrong" in previous
+
+766
+00:25:40.400 --> 00:25:41.333
+projects
+
+767
+00:25:41.333 --> 00:25:43.500
+and then at some point it will click
+
+768
+00:25:43.500 --> 00:25:45.433
+cool don't forget to check the links in
+
+769
+00:25:45.433 --> 00:25:46.466
+the description
+
+770
+00:25:46.466 --> 00:25:56.300
+and we'll see you next time, bye y'all

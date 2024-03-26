@@ -1,0 +1,2467 @@
+1
+00:00:00.466 --> 00:00:03.166
+Hello Mike, hey Caio
+
+2
+00:00:03.166 --> 00:00:06.000
+in this lecture you'll learn different ways
+
+3
+00:00:06.000 --> 00:00:06.933
+to organize
+
+4
+00:00:06.933 --> 00:00:09.666
+a modular project so let's start with a
+
+5
+00:00:09.666 --> 00:00:10.866
+quick review
+
+6
+00:00:10.866 --> 00:00:13.200
+of the current design of the Feed
+
+7
+00:00:13.200 --> 00:00:14.633
+Feature
+
+8
+00:00:14.633 --> 00:00:17.500
+so at the core we have the Feed Feature
+
+9
+00:00:17.500 --> 00:00:18.700
+core module
+
+10
+00:00:18.700 --> 00:00:22.000
+that defines the models and the service
+
+11
+00:00:22.000 --> 00:00:25.433
+interfaces exactly so we have models
+
+12
+00:00:25.433 --> 00:00:28.466
+and abstractions yes that represents the
+
+13
+00:00:28.466 --> 00:00:29.500
+domain
+
+14
+00:00:29.500 --> 00:00:32.233
+so we have a protocol defining a way to
+
+15
+00:00:32.233 --> 00:00:32.700
+load
+
+16
+00:00:32.700 --> 00:00:36.633
+image data, another one to load the feed
+
+17
+00:00:36.633 --> 00:00:39.433
+and we have a domain model representing
+
+18
+00:00:39.433 --> 00:00:41.600
+the feed image
+
+19
+00:00:41.600 --> 00:00:44.133
+so this core module does not depend on
+
+20
+00:00:44.133 --> 00:00:45.500
+any other module
+
+21
+00:00:45.500 --> 00:00:48.000
+there are no arrows from this module
+
+22
+00:00:48.000 --> 00:00:48.633
+pointing
+
+23
+00:00:48.633 --> 00:00:51.900
+to other modules on the contrary other
+
+24
+00:00:51.900 --> 00:00:52.533
+modules
+
+25
+00:00:52.533 --> 00:00:55.733
+depend on the core module
+
+26
+00:00:55.733 --> 00:00:58.800
+for example the Feed API module
+
+27
+00:00:58.800 --> 00:01:02.000
+has implementations of the services and
+
+28
+00:01:02.000 --> 00:01:03.833
+the use cases
+
+29
+00:01:03.833 --> 00:01:07.266
+exactly and the same for the Feed Cache
+
+30
+00:01:07.266 --> 00:01:08.766
+module
+
+31
+00:01:08.766 --> 00:01:12.066
+again we have use case implementations
+
+32
+00:01:12.066 --> 00:01:14.533
+validating and controlling the cache
+
+33
+00:01:14.533 --> 00:01:15.433
+based
+
+34
+00:01:15.433 --> 00:01:18.633
+on business rules exactly
+
+35
+00:01:18.633 --> 00:01:21.100
+so the Feed Cache also depends on the
+
+36
+00:01:21.100 --> 00:01:22.133
+Feed Feature
+
+37
+00:01:22.133 --> 00:01:24.133
+and then we have the Feed Presentation
+
+38
+00:01:24.133 --> 00:01:25.333
+module which
+
+39
+00:01:25.333 --> 00:01:29.200
+also depends on the Feed Feature module
+
+40
+00:01:29.200 --> 00:01:31.266
+and the Feed Presentation module
+
+41
+00:01:31.266 --> 00:01:32.233
+translates
+
+42
+00:01:32.233 --> 00:01:35.433
+feed images to presentable data
+
+43
+00:01:35.433 --> 00:01:38.633
+that can be displayed by the UI
+
+44
+00:01:38.633 --> 00:01:42.066
+and finally we have the UI the renders
+
+45
+00:01:42.066 --> 00:01:45.433
+the feed image view model on the screen
+
+46
+00:01:45.433 --> 00:01:48.233
+exactly and specifically it's a UIKit
+
+47
+00:01:48.233 --> 00:01:49.100
+implementation
+
+48
+00:01:49.100 --> 00:01:51.833
+for iOS so since this is a modular
+
+49
+00:01:51.833 --> 00:01:53.100
+design we could easily
+
+50
+00:01:53.100 --> 00:01:55.666
+replace this UI with a SwiftUI
+
+51
+00:01:55.666 --> 00:01:57.266
+implementation for example without
+
+52
+00:01:57.266 --> 00:01:58.066
+changing
+
+53
+00:01:58.066 --> 00:02:01.666
+anything in other modules exactly
+
+54
+00:02:01.666 --> 00:02:04.533
+and that's the power of modular design
+
+55
+00:02:04.533 --> 00:02:05.500
+so at the bottom
+
+56
+00:02:05.500 --> 00:02:08.933
+we have platform specific modules and
+
+57
+00:02:08.933 --> 00:02:10.466
+components
+
+58
+00:02:10.466 --> 00:02:13.100
+and all of those modules on the top are
+
+59
+00:02:13.100 --> 00:02:14.300
+platform agnostic
+
+60
+00:02:14.300 --> 00:02:17.200
+they can be used cross-platform you can
+
+61
+00:02:17.200 --> 00:02:18.233
+reuse
+
+62
+00:02:18.233 --> 00:02:22.533
+all those modules in macOS, watchOS
+
+63
+00:02:22.533 --> 00:02:26.400
+tvOS, iPadOS and etc
+
+64
+00:02:26.400 --> 00:02:29.566
+but you couldn't use it on Linux
+
+65
+00:02:29.566 --> 00:02:33.100
+or Android or on Microsoft platforms
+
+66
+00:02:33.100 --> 00:02:35.833
+because we have Core Data in the cache
+
+67
+00:02:35.833 --> 00:02:36.633
+module
+
+68
+00:02:36.633 --> 00:02:40.233
+and URLSession in the API module right
+
+69
+00:02:40.233 --> 00:02:43.333
+and URLSession and Core Data they are
+
+70
+00:02:43.333 --> 00:02:45.733
+somehow platform specific because they
+
+71
+00:02:45.733 --> 00:02:46.466
+only
+
+72
+00:02:46.466 --> 00:02:49.500
+work on Apple platforms
+
+73
+00:02:49.500 --> 00:02:51.666
+so if you're only delivering Apple
+
+74
+00:02:51.666 --> 00:02:52.800
+applications
+
+75
+00:02:52.800 --> 00:02:54.466
+that should be fine but if you want to
+
+76
+00:02:54.466 --> 00:02:56.800
+use these modules in other platforms
+
+77
+00:02:56.800 --> 00:03:00.066
+like Linux or the web you would have to
+
+78
+00:03:00.066 --> 00:03:02.533
+take this implementation out of the
+
+79
+00:03:02.533 --> 00:03:03.733
+module
+
+80
+00:03:03.733 --> 00:03:06.000
+and since no other component depends on
+
+81
+00:03:06.000 --> 00:03:07.500
+it that's an easy change
+
+82
+00:03:07.500 --> 00:03:09.900
+we simply move the class into another
+
+83
+00:03:09.900 --> 00:03:10.800
+module
+
+84
+00:03:10.800 --> 00:03:13.900
+exactly you extract
+
+85
+00:03:13.900 --> 00:03:17.200
+database infrastructure in this case
+
+86
+00:03:17.200 --> 00:03:19.833
+and the same thing with the URLSession
+
+87
+00:03:19.833 --> 00:03:20.933
+that's an easy change
+
+88
+00:03:20.933 --> 00:03:23.200
+as you can see no other component
+
+89
+00:03:23.200 --> 00:03:24.466
+depends on it
+
+90
+00:03:24.466 --> 00:03:26.700
+we can easily replace Core Data with
+
+91
+00:03:26.700 --> 00:03:28.233
+other frameworks
+
+92
+00:03:28.233 --> 00:03:31.500
+for example Realm, SQLite or an in-memory
+
+93
+00:03:31.500 --> 00:03:32.766
+database
+
+94
+00:03:32.766 --> 00:03:35.900
+exactly or in the case of the Feed API
+
+95
+00:03:35.900 --> 00:03:37.900
+we can change the infrastructure from
+
+96
+00:03:37.900 --> 00:03:39.100
+URLSession
+
+97
+00:03:39.100 --> 00:03:42.000
+to AlamoFire or some other framework
+
+98
+00:03:42.000 --> 00:03:44.300
+that Apple might release in the future
+
+99
+00:03:44.300 --> 00:03:47.266
+or on a Linux application you can use a
+
+100
+00:03:47.266 --> 00:03:48.000
+Linux
+
+101
+00:03:48.000 --> 00:03:51.033
+networking framework that's it so that's
+
+102
+00:03:51.033 --> 00:03:53.100
+the power of modular design
+
+103
+00:03:53.100 --> 00:03:55.833
+as long as no other component depends on
+
+104
+00:03:55.833 --> 00:03:56.633
+frameworks
+
+105
+00:03:56.633 --> 00:04:00.233
+we can replace them easily exactly and
+
+106
+00:04:00.233 --> 00:04:02.933
+let's zoom out a bit and observe just
+
+107
+00:04:02.933 --> 00:04:05.033
+the modular dependencies
+
+108
+00:04:05.033 --> 00:04:07.100
+so the core module it does not depend on
+
+109
+00:04:07.100 --> 00:04:08.700
+anyone
+
+110
+00:04:08.700 --> 00:04:11.433
+the Feed API depends on the Feed Feature
+
+111
+00:04:11.433 --> 00:04:12.933
+but it does not depend on any other
+
+112
+00:04:12.933 --> 00:04:14.066
+module
+
+113
+00:04:14.066 --> 00:04:16.233
+and the Feed API infrastructure which in
+
+114
+00:04:16.233 --> 00:04:17.900
+that case would be the URLSession
+
+115
+00:04:17.900 --> 00:04:20.866
+or AlamoFire or some Linux framework
+
+116
+00:04:20.866 --> 00:04:22.933
+depends on the Feed API but only on the
+
+117
+00:04:22.933 --> 00:04:24.533
+Feed API
+
+118
+00:04:24.533 --> 00:04:26.633
+exactly the same holds for the Feed
+
+119
+00:04:26.633 --> 00:04:29.166
+Cache with the Feed Cache infrastructure
+
+120
+00:04:29.166 --> 00:04:30.066
+module
+
+121
+00:04:30.066 --> 00:04:32.933
+and the actual database infrastructure
+
+122
+00:04:32.933 --> 00:04:33.733
+might be
+
+123
+00:04:33.733 --> 00:04:37.033
+Core Data, Realm, SQLite or
+
+124
+00:04:37.033 --> 00:04:39.833
+another implementation and on the
+
+125
+00:04:39.833 --> 00:04:41.166
+Presentation side
+
+126
+00:04:41.166 --> 00:04:43.600
+the Presentation depends on the core
+
+127
+00:04:43.600 --> 00:04:44.866
+module as well
+
+128
+00:04:44.866 --> 00:04:46.800
+and the iOS module depends on the
+
+129
+00:04:46.800 --> 00:04:48.233
+Presentation
+
+130
+00:04:48.233 --> 00:04:50.233
+so we can change the Presentation and
+
+131
+00:04:50.233 --> 00:04:52.133
+the UI without affecting any other
+
+132
+00:04:52.133 --> 00:04:53.333
+module
+
+133
+00:04:53.333 --> 00:04:55.333
+we can change the API without affecting
+
+134
+00:04:55.333 --> 00:04:56.400
+any other module
+
+135
+00:04:56.400 --> 00:04:57.833
+we can change the Cache without
+
+136
+00:04:57.833 --> 00:04:59.733
+affecting any other module
+
+137
+00:04:59.733 --> 00:05:01.900
+we can plug new user interfaces we can
+
+138
+00:05:01.900 --> 00:05:03.833
+plug new Cache infrastructure we can
+
+139
+00:05:03.833 --> 00:05:05.900
+plug new API infrastructure
+
+140
+00:05:05.900 --> 00:05:09.100
+because our modules are decoupled at the
+
+141
+00:05:09.100 --> 00:05:10.466
+center we have only
+
+142
+00:05:10.466 --> 00:05:13.900
+domain specific service abstractions and
+
+143
+00:05:13.900 --> 00:05:17.100
+domain models and around it we have more
+
+144
+00:05:17.100 --> 00:05:18.066
+specialized
+
+145
+00:05:18.066 --> 00:05:22.300
+implementations and on the outer layers
+
+146
+00:05:22.300 --> 00:05:26.400
+we have infrastructure implementations
+
+147
+00:05:26.400 --> 00:05:29.100
+and in an even outer layer we have
+
+148
+00:05:29.100 --> 00:05:30.533
+frameworks
+
+149
+00:05:30.533 --> 00:05:31.900
+and that's how you protect your code
+
+150
+00:05:31.900 --> 00:05:33.733
+base from external
+
+151
+00:05:33.733 --> 00:05:37.666
+influences exactly so we can represent
+
+152
+00:05:37.666 --> 00:05:38.466
+these layers
+
+153
+00:05:38.466 --> 00:05:41.733
+in a circular form the infamous
+
+154
+00:05:41.733 --> 00:05:44.933
+onion architecture that's it
+
+155
+00:05:44.933 --> 00:05:46.066
+and now we're going to understand why
+
+156
+00:05:46.066 --> 00:05:48.700
+they call it onion architecture
+
+157
+00:05:48.700 --> 00:05:51.733
+so at the center we have the core
+
+158
+00:05:51.733 --> 00:05:55.100
+models and service interfaces
+
+159
+00:05:55.100 --> 00:05:59.333
+this is platform and framework agnostic
+
+160
+00:05:59.333 --> 00:06:02.300
+then on an outer layer we have the use
+
+161
+00:06:02.300 --> 00:06:04.000
+case implementations the service
+
+162
+00:06:04.000 --> 00:06:05.433
+implementations
+
+163
+00:06:05.433 --> 00:06:07.833
+and in our case the presentation as well
+
+164
+00:06:07.833 --> 00:06:09.033
+but notice how
+
+165
+00:06:09.033 --> 00:06:10.700
+the Feed API doesn't know about the Feed
+
+166
+00:06:10.700 --> 00:06:12.066
+Cache the Feed Cache doesn't know about
+
+167
+00:06:12.066 --> 00:06:12.866
+the Presentation
+
+168
+00:06:12.866 --> 00:06:15.100
+they are independent they only know
+
+169
+00:06:15.100 --> 00:06:16.633
+about the direct
+
+170
+00:06:16.633 --> 00:06:18.833
+inner layer the Feed Feature in this
+
+171
+00:06:18.833 --> 00:06:20.800
+case
+
+172
+00:06:20.800 --> 00:06:23.666
+and then in an outer layer we have the
+
+173
+00:06:23.666 --> 00:06:24.800
+infrastructure
+
+174
+00:06:24.800 --> 00:06:26.700
+adapters that will provide the
+
+175
+00:06:26.700 --> 00:06:29.166
+communication with external
+
+176
+00:06:29.166 --> 00:06:31.500
+frameworks so the infrastructure
+
+177
+00:06:31.500 --> 00:06:32.533
+adapters
+
+178
+00:06:32.533 --> 00:06:35.733
+are platform and or framework
+
+179
+00:06:35.733 --> 00:06:39.166
+specific so the Feed Cache infra
+
+180
+00:06:39.166 --> 00:06:42.533
+might depend on Core Data, Realm, SQLite
+
+181
+00:06:42.533 --> 00:06:45.033
+to provide the infrastructure
+
+182
+00:06:45.033 --> 00:06:45.900
+implementation
+
+183
+00:06:45.900 --> 00:06:48.866
+for the Feed Cache exactly as you can see
+
+184
+00:06:48.866 --> 00:06:50.066
+they're all
+
+185
+00:06:50.066 --> 00:06:53.733
+in the same slice but
+
+186
+00:06:53.733 --> 00:06:56.133
+the Feed Cache does not know about outer
+
+187
+00:06:56.133 --> 00:06:57.166
+layers
+
+188
+00:06:57.166 --> 00:07:00.533
+outer layers know only about the direct
+
+189
+00:07:00.533 --> 00:07:03.500
+inner layer so the Feed Cache infra knows
+
+190
+00:07:03.500 --> 00:07:05.033
+only about the Feed Cache
+
+191
+00:07:05.033 --> 00:07:07.333
+module and the Feed Cache module knows
+
+192
+00:07:07.333 --> 00:07:08.933
+only about the Feed Feature
+
+193
+00:07:08.933 --> 00:07:13.100
+module so inner layers don't know about
+
+194
+00:07:13.100 --> 00:07:16.133
+outer layers and outer layers only know
+
+195
+00:07:16.133 --> 00:07:17.566
+about their direct
+
+196
+00:07:17.566 --> 00:07:20.866
+inner layer so what does that give us
+
+197
+00:07:20.866 --> 00:07:24.466
+is that we can easily peel this onion
+
+198
+00:07:24.466 --> 00:07:27.566
+and take pieces off and replace them we
+
+199
+00:07:27.566 --> 00:07:30.466
+can take this entire block the cache and
+
+200
+00:07:30.466 --> 00:07:31.100
+the infra
+
+201
+00:07:31.100 --> 00:07:32.533
+and replace with something else or
+
+202
+00:07:32.533 --> 00:07:34.933
+simply remove it without affecting
+
+203
+00:07:34.933 --> 00:07:38.000
+any other part of the application
+
+204
+00:07:38.000 --> 00:07:40.400
+we can also replace the infra with
+
+205
+00:07:40.400 --> 00:07:41.733
+something completely different we can
+
+206
+00:07:41.733 --> 00:07:43.166
+take this slice off
+
+207
+00:07:43.166 --> 00:07:45.266
+put a new slice here and the rest of the
+
+208
+00:07:45.266 --> 00:07:47.033
+application will be unaffected
+
+209
+00:07:47.033 --> 00:07:49.900
+exactly the same in the API infra here
+
+210
+00:07:49.900 --> 00:07:50.866
+you can have
+
+211
+00:07:50.866 --> 00:07:54.133
+Firebase, URLSession, AlamoFire you just
+
+212
+00:07:54.133 --> 00:07:56.066
+peel the onion and you can put something
+
+213
+00:07:56.066 --> 00:07:58.866
+in place in the Presentation
+
+214
+00:07:58.866 --> 00:08:02.133
+same thing we can completely remove
+
+215
+00:08:02.133 --> 00:08:03.900
+the Presentation slice and replace it
+
+216
+00:08:03.900 --> 00:08:05.666
+with something else
+
+217
+00:08:05.666 --> 00:08:08.533
+we can plug in new user interfaces to
+
+218
+00:08:08.533 --> 00:08:09.833
+this Presentation
+
+219
+00:08:09.833 --> 00:08:13.500
+like the macOS AppKit UI, WatchKit
+
+220
+00:08:13.500 --> 00:08:18.233
+UI, SwiftUI, UIKit UI
+
+221
+00:08:18.233 --> 00:08:19.900
+you can replace these layers remove
+
+222
+00:08:19.900 --> 00:08:22.933
+layers easily without affecting the rest
+
+223
+00:08:22.933 --> 00:08:25.900
+of the application yeah we're talking
+
+224
+00:08:25.900 --> 00:08:26.400
+about
+
+225
+00:08:26.400 --> 00:08:29.900
+ultimate plug-ability, ultimate freedom
+
+226
+00:08:29.900 --> 00:08:33.033
+when it comes to change and another way
+
+227
+00:08:33.033 --> 00:08:34.066
+of seeing this
+
+228
+00:08:34.066 --> 00:08:37.333
+is in this stack of layers from high
+
+229
+00:08:37.333 --> 00:08:38.000
+level
+
+230
+00:08:38.000 --> 00:08:41.433
+at the top to lower level at the bottom
+
+231
+00:08:41.433 --> 00:08:44.233
+so every layer stacks on top of each
+
+232
+00:08:44.233 --> 00:08:45.100
+other
+
+233
+00:08:45.100 --> 00:08:47.333
+we have the models and service
+
+234
+00:08:47.333 --> 00:08:48.366
+interfaces
+
+235
+00:08:48.366 --> 00:08:50.866
+at a higher level and below it we have
+
+236
+00:08:50.866 --> 00:08:52.000
+the use cases
+
+237
+00:08:52.000 --> 00:08:53.833
+and service implementations
+
+238
+00:08:53.833 --> 00:08:55.500
+infrastructure adapters and
+
+239
+00:08:55.500 --> 00:08:58.300
+the infrastructure frameworks so high
+
+240
+00:08:58.300 --> 00:08:59.200
+level layers
+
+241
+00:08:59.200 --> 00:09:02.133
+at the top and as you start going down
+
+242
+00:09:02.133 --> 00:09:02.866
+you go
+
+243
+00:09:02.866 --> 00:09:05.666
+to lower and lower level layers that's
+
+244
+00:09:05.666 --> 00:09:06.466
+it
+
+245
+00:09:06.466 --> 00:09:08.300
+it's all about slicing your application
+
+246
+00:09:08.300 --> 00:09:10.133
+into layers and managing the
+
+247
+00:09:10.133 --> 00:09:11.266
+dependencies
+
+248
+00:09:11.266 --> 00:09:13.500
+between them high level modules should
+
+249
+00:09:13.500 --> 00:09:14.300
+not depend
+
+250
+00:09:14.300 --> 00:09:17.500
+on lower level modules exactly
+
+251
+00:09:17.500 --> 00:09:19.733
+but how can we now organize and separate
+
+252
+00:09:19.733 --> 00:09:21.100
+those modules
+
+253
+00:09:21.100 --> 00:09:24.233
+in your project let's have a look first
+
+254
+00:09:24.233 --> 00:09:26.466
+and see how the project looks like right
+
+255
+00:09:26.466 --> 00:09:27.833
+now
+
+256
+00:09:27.833 --> 00:09:30.933
+so currently we have a workspace
+
+257
+00:09:30.933 --> 00:09:34.000
+with two projects, one project
+
+258
+00:09:34.000 --> 00:09:35.500
+is the EssentialFeed project that
+
+259
+00:09:35.500 --> 00:09:37.033
+represents the Feed Feature
+
+260
+00:09:37.033 --> 00:09:39.200
+and inside the project we have two
+
+261
+00:09:39.200 --> 00:09:40.800
+frameworks
+
+262
+00:09:40.800 --> 00:09:42.933
+the EssentialFeed framework for
+
+263
+00:09:42.933 --> 00:09:43.833
+platform
+
+264
+00:09:43.833 --> 00:09:46.366
+agnostic components so the Essential
+
+265
+00:09:46.366 --> 00:09:47.100
+Feed
+
+266
+00:09:47.100 --> 00:09:50.233
+works for both macOS and iOS and then
+
+267
+00:09:50.233 --> 00:09:52.066
+we have a platform specific
+
+268
+00:09:52.066 --> 00:09:55.033
+framework for iOS specific components
+
+269
+00:09:55.033 --> 00:09:58.233
+like the user interface
+
+270
+00:09:58.233 --> 00:10:00.700
+and the other project is the application
+
+271
+00:10:00.700 --> 00:10:01.500
+specific
+
+272
+00:10:01.500 --> 00:10:03.733
+project so we have one application
+
+273
+00:10:03.733 --> 00:10:04.800
+target
+
+274
+00:10:04.800 --> 00:10:07.900
+that depends on the Feed frameworks
+
+275
+00:10:07.900 --> 00:10:09.500
+so here in the EssentialApp we have the
+
+276
+00:10:09.500 --> 00:10:11.833
+Composition Root that composes
+
+277
+00:10:11.833 --> 00:10:13.833
+the platform agnostic with the platform
+
+278
+00:10:13.833 --> 00:10:15.500
+specific modules
+
+279
+00:10:15.500 --> 00:10:18.466
+exactly so right now we have one
+
+280
+00:10:18.466 --> 00:10:19.500
+workspace
+
+281
+00:10:19.500 --> 00:10:22.866
+two projects and three targets
+
+282
+00:10:22.866 --> 00:10:24.533
+the EssentialApp has the application
+
+283
+00:10:24.533 --> 00:10:27.100
+target and the EssentialFeed
+
+284
+00:10:27.100 --> 00:10:30.233
+have two framework targets the platform
+
+285
+00:10:30.233 --> 00:10:31.600
+agnostic
+
+286
+00:10:31.600 --> 00:10:35.266
+and a platform specific
+
+287
+00:10:35.266 --> 00:10:38.366
+so here we have the platform agnostic
+
+288
+00:10:38.366 --> 00:10:41.666
+modules at the top
+
+289
+00:10:41.666 --> 00:10:44.366
+and the platform specific the iOS module
+
+290
+00:10:44.366 --> 00:10:45.200
+at the bottom
+
+291
+00:10:45.200 --> 00:10:48.366
+that depends on UIKit so although we
+
+292
+00:10:48.366 --> 00:10:50.366
+have different colors here
+
+293
+00:10:50.366 --> 00:10:52.466
+the platform agnostic types all live in
+
+294
+00:10:52.466 --> 00:10:54.000
+the same module
+
+295
+00:10:54.000 --> 00:10:57.200
+and that's the EssentialFeed yes
+
+296
+00:10:57.200 --> 00:10:59.266
+so our separation right now pretty much
+
+297
+00:10:59.266 --> 00:11:00.700
+looks like this
+
+298
+00:11:00.700 --> 00:11:02.700
+everything in red represents modules
+
+299
+00:11:02.700 --> 00:11:04.933
+that live in the same framework
+
+300
+00:11:04.933 --> 00:11:08.000
+the EssentialFeed
+
+301
+00:11:08.000 --> 00:11:11.500
+purple is the iOS module
+
+302
+00:11:11.500 --> 00:11:15.033
+and green third-party frameworks
+
+303
+00:11:15.033 --> 00:11:18.133
+so all those modules right now
+
+304
+00:11:18.133 --> 00:11:20.633
+live in the EssentialFeed framework
+
+305
+00:11:20.633 --> 00:11:21.900
+target
+
+306
+00:11:21.900 --> 00:11:24.866
+exactly and although all these modules
+
+307
+00:11:24.866 --> 00:11:26.066
+live under the same
+
+308
+00:11:26.066 --> 00:11:29.100
+EssentialFeed target they're separated
+
+309
+00:11:29.100 --> 00:11:30.466
+into folders
+
+310
+00:11:30.466 --> 00:11:33.200
+so they still keep this modular
+
+311
+00:11:33.200 --> 00:11:34.000
+separation
+
+312
+00:11:34.000 --> 00:11:37.900
+because we keep them separated yes
+
+313
+00:11:37.900 --> 00:11:41.033
+we separate them into folders here
+
+314
+00:11:41.033 --> 00:11:43.033
+we make a conscious effort of
+
+315
+00:11:43.033 --> 00:11:44.533
+maintaining the types
+
+316
+00:11:44.533 --> 00:11:46.700
+separated but there is no physical
+
+317
+00:11:46.700 --> 00:11:48.866
+separation
+
+318
+00:11:48.866 --> 00:11:51.433
+so if you keep a bunch of modules in the
+
+319
+00:11:51.433 --> 00:11:51.900
+same
+
+320
+00:11:51.900 --> 00:11:53.666
+framework it requires a lot of
+
+321
+00:11:53.666 --> 00:11:55.600
+discipline not to couple them
+
+322
+00:11:55.600 --> 00:11:56.633
+because you have access to all
+
+323
+00:11:56.633 --> 00:11:59.733
+components exactly the compiler will not
+
+324
+00:11:59.733 --> 00:12:00.700
+prevent you
+
+325
+00:12:00.700 --> 00:12:03.900
+from crossing boundaries exactly
+
+326
+00:12:03.900 --> 00:12:06.466
+so keeping things in the same framework
+
+327
+00:12:06.466 --> 00:12:07.200
+is easier
+
+328
+00:12:07.200 --> 00:12:09.433
+to set up but then it requires a lot of
+
+329
+00:12:09.433 --> 00:12:10.233
+discipline
+
+330
+00:12:10.233 --> 00:12:13.600
+to keep your components decoupled yeah
+
+331
+00:12:13.600 --> 00:12:15.900
+and it can be a great way to start off
+
+332
+00:12:15.900 --> 00:12:17.200
+your project
+
+333
+00:12:17.200 --> 00:12:19.266
+and then break the modules down into
+
+334
+00:12:19.266 --> 00:12:20.533
+their own frameworks
+
+335
+00:12:20.533 --> 00:12:24.366
+as needed so how would it look like
+
+336
+00:12:24.366 --> 00:12:27.666
+if we break down the Feed API for example
+
+337
+00:12:27.666 --> 00:12:29.900
+into another framework to create a
+
+338
+00:12:29.900 --> 00:12:31.033
+physical
+
+339
+00:12:31.033 --> 00:12:34.933
+separation between these modules okay
+
+340
+00:12:34.933 --> 00:12:40.000
+we would first create a framework
+
+341
+00:12:40.000 --> 00:12:46.700
+let's call it EssentialFeedAPI
+
+342
+00:12:46.700 --> 00:12:47.733
+so we have a new target for the
+
+343
+00:12:47.733 --> 00:12:50.700
+EssentialFeedAPI framework
+
+344
+00:12:50.700 --> 00:12:53.333
+and the API is platform agnostic so
+
+345
+00:12:53.333 --> 00:12:55.200
+let's add support
+
+346
+00:12:55.200 --> 00:12:59.100
+for the iphonesimulator and the iphoneos
+
+347
+00:12:59.100 --> 00:13:03.100
+okay and
+
+348
+00:13:03.100 --> 00:13:05.600
+the Feed API module depends on the Feed
+
+349
+00:13:05.600 --> 00:13:09.033
+Feature module
+
+350
+00:13:09.033 --> 00:13:10.933
+so we need the EssentialFeed as a
+
+351
+00:13:10.933 --> 00:13:13.733
+dependency here
+
+352
+00:13:13.733 --> 00:13:17.100
+so now we can see this direct dependency
+
+353
+00:13:17.100 --> 00:13:20.000
+exactly the EssentialFeed does not
+
+354
+00:13:20.000 --> 00:13:21.200
+depend on the API
+
+355
+00:13:21.200 --> 00:13:23.600
+but the API depends on the Essential
+
+356
+00:13:23.600 --> 00:13:24.300
+Feed
+
+357
+00:13:24.300 --> 00:13:27.433
+just like in the diagram exactly this is
+
+358
+00:13:27.433 --> 00:13:29.433
+a modular dependency
+
+359
+00:13:29.433 --> 00:13:32.833
+of the Feed API to the Feed Feature
+
+360
+00:13:32.833 --> 00:13:36.366
+module so now we would just drag
+
+361
+00:13:36.366 --> 00:13:40.800
+the files to the new EssentialFeedAPI
+
+362
+00:13:40.800 --> 00:13:44.133
+module folder let's select
+
+363
+00:13:44.133 --> 00:13:46.800
+all of them and make sure they are in
+
+364
+00:13:46.800 --> 00:13:48.866
+the right target membership
+
+365
+00:13:48.866 --> 00:13:55.033
+so they should be in the API now
+
+366
+00:13:55.033 --> 00:13:58.000
+let's move the tests as well so the Feed
+
+367
+00:13:58.000 --> 00:14:00.300
+API tests
+
+368
+00:14:00.300 --> 00:14:03.600
+go to the new FeedAPITests
+
+369
+00:14:03.600 --> 00:14:07.333
+folder let's also make sure
+
+370
+00:14:07.333 --> 00:14:09.433
+the files are in the right target
+
+371
+00:14:09.433 --> 00:14:11.600
+membership
+
+372
+00:14:11.600 --> 00:14:15.333
+they should now be in the FeedAPITests
+
+373
+00:14:15.333 --> 00:14:17.433
+so the EssentialFeed module does not
+
+374
+00:14:17.433 --> 00:14:18.533
+need the Feed API
+
+375
+00:14:18.533 --> 00:14:22.533
+empty folder anymore
+
+376
+00:14:22.533 --> 00:14:25.033
+so now that we have a new framework
+
+377
+00:14:25.033 --> 00:14:25.833
+target
+
+378
+00:14:25.833 --> 00:14:30.466
+we also gain a new scheme
+
+379
+00:14:30.466 --> 00:14:34.933
+so let's try to build this new framework
+
+380
+00:14:34.933 --> 00:14:38.866
+and we got some failures okay
+
+381
+00:14:38.866 --> 00:14:40.700
+we do not have access to the FeedImage
+
+382
+00:14:40.700 --> 00:14:42.633
+DataLoader anymore
+
+383
+00:14:42.633 --> 00:14:45.900
+because the FeedImageDataLoader lives
+
+384
+00:14:45.900 --> 00:14:49.266
+in the EssentialFeed module
+
+385
+00:14:49.266 --> 00:14:53.600
+so we need to import EssentialFeed
+
+386
+00:14:53.600 --> 00:14:56.300
+in every file that depends on types of
+
+387
+00:14:56.300 --> 00:14:57.433
+the Essential Feed
+
+388
+00:14:57.433 --> 00:15:00.366
+module and that's the physical separation
+
+389
+00:15:00.366 --> 00:15:01.333
+between them
+
+390
+00:15:01.333 --> 00:15:04.000
+now we need to import that module to be
+
+391
+00:15:04.000 --> 00:15:05.666
+able to access the types
+
+392
+00:15:05.666 --> 00:15:08.066
+which will help you enforce a clean
+
+393
+00:15:08.066 --> 00:15:12.366
+separation between them
+
+394
+00:15:12.366 --> 00:15:15.433
+okay let's run the tests
+
+395
+00:15:15.433 --> 00:15:18.466
+and it's passing fantastic
+
+396
+00:15:18.466 --> 00:15:21.033
+so we extracted this new framework out
+
+397
+00:15:21.033 --> 00:15:23.600
+of the core framework
+
+398
+00:15:23.600 --> 00:15:26.533
+so now we have this separation here the
+
+399
+00:15:26.533 --> 00:15:27.500
+Feed API module
+
+400
+00:15:27.500 --> 00:15:31.100
+lives on its own but what about
+
+401
+00:15:31.100 --> 00:15:34.233
+the application that composes them
+
+402
+00:15:34.233 --> 00:15:36.466
+if we try to run the application now
+
+403
+00:15:36.466 --> 00:15:38.466
+we're going to get build errors as well
+
+404
+00:15:38.466 --> 00:15:41.033
+exactly this module doesn't know about
+
+405
+00:15:41.033 --> 00:15:42.366
+the EssentialFeedAPI
+
+406
+00:15:42.366 --> 00:15:45.733
+module so now the application
+
+407
+00:15:45.733 --> 00:15:48.866
+target needs to also depend on the
+
+408
+00:15:48.866 --> 00:15:50.066
+EssentialFeed
+
+409
+00:15:50.066 --> 00:15:53.166
+API
+
+410
+00:15:53.166 --> 00:15:56.366
+so in our Composition Root
+
+411
+00:15:56.366 --> 00:15:59.666
+can now import the EssentialFeed
+
+412
+00:15:59.666 --> 00:16:02.133
+API and we should be able to run the
+
+413
+00:16:02.133 --> 00:16:06.133
+application
+
+414
+00:16:06.133 --> 00:16:09.333
+there you go fantastic
+
+415
+00:16:09.333 --> 00:16:12.366
+there it is we separate our modules and
+
+416
+00:16:12.366 --> 00:16:13.833
+we decouple them
+
+417
+00:16:13.833 --> 00:16:15.333
+but at some point we need to compose
+
+418
+00:16:15.333 --> 00:16:17.100
+them together and we do it
+
+419
+00:16:17.100 --> 00:16:20.300
+in a centralized place so this is the
+
+420
+00:16:20.300 --> 00:16:21.600
+Composition Root
+
+421
+00:16:21.600 --> 00:16:23.100
+and you can see here in the Composition
+
+422
+00:16:23.100 --> 00:16:24.933
+Root all the imports
+
+423
+00:16:24.933 --> 00:16:27.433
+exactly so you can break down your
+
+424
+00:16:27.433 --> 00:16:28.233
+application
+
+425
+00:16:28.233 --> 00:16:31.433
+into many modules and compose them in a
+
+426
+00:16:31.433 --> 00:16:33.433
+centralized place
+
+427
+00:16:33.433 --> 00:16:34.933
+so the Composition Root is the only
+
+428
+00:16:34.933 --> 00:16:37.100
+place that we import all the modules
+
+429
+00:16:37.100 --> 00:16:39.666
+to compose them and that's how you keep
+
+430
+00:16:39.666 --> 00:16:40.533
+the modules
+
+431
+00:16:40.533 --> 00:16:43.166
+agnostic of each other and still combine
+
+432
+00:16:43.166 --> 00:16:44.066
+them
+
+433
+00:16:44.066 --> 00:16:47.433
+exactly so you can have a separation
+
+434
+00:16:47.433 --> 00:16:48.633
+like this
+
+435
+00:16:48.633 --> 00:16:51.100
+your feature projects with the separator
+
+436
+00:16:51.100 --> 00:16:52.633
+modules
+
+437
+00:16:52.633 --> 00:16:54.000
+then you can have an application
+
+438
+00:16:54.000 --> 00:16:55.833
+specific workspace
+
+439
+00:16:55.833 --> 00:16:58.000
+composing all the projects and modules
+
+440
+00:16:58.000 --> 00:16:59.266
+in the Composition
+
+441
+00:16:59.266 --> 00:17:02.800
+Root that's it you can follow the steps
+
+442
+00:17:02.800 --> 00:17:03.500
+we just
+
+443
+00:17:03.500 --> 00:17:06.533
+did and break down every module
+
+444
+00:17:06.533 --> 00:17:09.833
+into separate frameworks and at the end
+
+445
+00:17:09.833 --> 00:17:13.266
+it would look like this ok
+
+446
+00:17:13.266 --> 00:17:16.400
+the EssentialFeed will only contain
+
+447
+00:17:16.400 --> 00:17:18.700
+the domain service interfaces and domain
+
+448
+00:17:18.700 --> 00:17:20.233
+models
+
+449
+00:17:20.233 --> 00:17:24.700
+so it does not depend on anyone
+
+450
+00:17:24.700 --> 00:17:27.566
+the EssentialFeedAPI contains domain
+
+451
+00:17:27.566 --> 00:17:29.433
+service implementations
+
+452
+00:17:29.433 --> 00:17:32.533
+based on the use cases and it depends on
+
+453
+00:17:32.533 --> 00:17:34.066
+the EssentialFeed module
+
+454
+00:17:34.066 --> 00:17:37.900
+only and then on the outer layer you
+
+455
+00:17:37.900 --> 00:17:40.400
+have the API infrastructure
+
+456
+00:17:40.400 --> 00:17:43.266
+with the infrastructure implementations
+
+457
+00:17:43.266 --> 00:17:44.933
+so it only depends on the Feed
+
+458
+00:17:44.933 --> 00:17:54.000
+API just like here
+
+459
+00:17:54.000 --> 00:17:56.000
+the EssentialFeedCache follows the
+
+460
+00:17:56.000 --> 00:17:58.000
+same principle
+
+461
+00:17:58.000 --> 00:18:00.133
+it depends on the EssentialFeed and
+
+462
+00:18:00.133 --> 00:18:01.566
+implements the service
+
+463
+00:18:01.566 --> 00:18:04.066
+based on the use cases for caching and
+
+464
+00:18:04.066 --> 00:18:05.266
+the infrastructure
+
+465
+00:18:05.266 --> 00:18:07.333
+implements the infrastructure adapters
+
+466
+00:18:07.333 --> 00:18:08.633
+and depends on the Feed
+
+467
+00:18:08.633 --> 00:18:14.400
+Cache like here and the Feed
+
+468
+00:18:14.400 --> 00:18:15.900
+Presentation
+
+469
+00:18:15.900 --> 00:18:19.600
+depends on the EssentialFeed module
+
+470
+00:18:19.600 --> 00:18:23.666
+like here and the iOS
+
+471
+00:18:23.666 --> 00:18:26.833
+module depends only on the Feed
+
+472
+00:18:26.833 --> 00:18:28.300
+Presentation
+
+473
+00:18:28.300 --> 00:18:31.433
+like here so that's a choice
+
+474
+00:18:31.433 --> 00:18:33.033
+if you want to enforce that physical
+
+475
+00:18:33.033 --> 00:18:34.766
+separation between the modules
+
+476
+00:18:34.766 --> 00:18:36.300
+you can break them down into separate
+
+477
+00:18:36.300 --> 00:18:38.300
+frameworks but they can still live
+
+478
+00:18:38.300 --> 00:18:41.266
+in the same project representing a
+
+479
+00:18:41.266 --> 00:18:42.700
+feature
+
+480
+00:18:42.700 --> 00:18:44.933
+and then you need a Composition Root to
+
+481
+00:18:44.933 --> 00:18:46.300
+compose all the modules
+
+482
+00:18:46.300 --> 00:18:51.100
+together so the EssentialApp target
+
+483
+00:18:51.100 --> 00:18:56.866
+depends on all separated modules
+
+484
+00:18:56.866 --> 00:19:00.000
+so we can import all of them and compose
+
+485
+00:19:00.000 --> 00:19:00.866
+all the modules
+
+486
+00:19:00.866 --> 00:19:03.333
+in a centralized place the Composition
+
+487
+00:19:03.333 --> 00:19:04.766
+Root
+
+488
+00:19:04.766 --> 00:19:07.100
+but as you can see this will be harder
+
+489
+00:19:07.100 --> 00:19:08.133
+to maintain
+
+490
+00:19:08.133 --> 00:19:10.933
+than having things in the same framework
+
+491
+00:19:10.933 --> 00:19:14.233
+so you need to balance the trade-offs
+
+492
+00:19:14.233 --> 00:19:16.066
+so we recommend you to start simple and
+
+493
+00:19:16.066 --> 00:19:17.266
+only break down
+
+494
+00:19:17.266 --> 00:19:20.066
+into physical separated modules when
+
+495
+00:19:20.066 --> 00:19:21.033
+needed
+
+496
+00:19:21.033 --> 00:19:24.066
+exactly and there are other ways we can
+
+497
+00:19:24.066 --> 00:19:24.400
+do
+
+498
+00:19:24.400 --> 00:19:27.266
+the separation we can have a simple
+
+499
+00:19:27.266 --> 00:19:27.900
+setup
+
+500
+00:19:27.900 --> 00:19:31.666
+of one project and one target
+
+501
+00:19:31.666 --> 00:19:33.833
+yeah so in this example here we have one
+
+502
+00:19:33.833 --> 00:19:36.633
+project the EssentialApp project
+
+503
+00:19:36.633 --> 00:19:38.133
+and it has only one target an
+
+504
+00:19:38.133 --> 00:19:40.000
+application target that is
+
+505
+00:19:40.000 --> 00:19:43.200
+iOS specific and we just separate
+
+506
+00:19:43.200 --> 00:19:46.933
+our components virtually with folders
+
+507
+00:19:46.933 --> 00:19:48.633
+so it requires a lot of discipline to
+
+508
+00:19:48.633 --> 00:19:50.700
+maintain the features
+
+509
+00:19:50.700 --> 00:19:53.200
+modules and components decoupled because
+
+510
+00:19:53.200 --> 00:19:53.733
+there's
+
+511
+00:19:53.733 --> 00:19:56.300
+no physical separation and of course in
+
+512
+00:19:56.300 --> 00:19:57.266
+this case
+
+513
+00:19:57.266 --> 00:19:58.866
+the tests would run through the
+
+514
+00:19:58.866 --> 00:20:01.266
+simulator yes because the
+
+515
+00:20:01.266 --> 00:20:03.433
+EssentialApp is an iOS application
+
+516
+00:20:03.433 --> 00:20:06.233
+target so it has to run on the simulator
+
+517
+00:20:06.233 --> 00:20:08.633
+so this might increase test times and
+
+518
+00:20:08.633 --> 00:20:10.466
+build times because everything is in the
+
+519
+00:20:10.466 --> 00:20:10.933
+same
+
+520
+00:20:10.933 --> 00:20:14.400
+module exactly but it works fine
+
+521
+00:20:14.400 --> 00:20:16.000
+for small applications when you're
+
+522
+00:20:16.000 --> 00:20:18.466
+starting off it also works fine for
+
+523
+00:20:18.466 --> 00:20:19.266
+prototypes
+
+524
+00:20:19.266 --> 00:20:20.466
+and projects that you are going to
+
+525
+00:20:20.466 --> 00:20:23.600
+discard soon
+
+526
+00:20:23.600 --> 00:20:26.400
+another valid setup one project but
+
+527
+00:20:26.400 --> 00:20:27.266
+multiple
+
+528
+00:20:27.266 --> 00:20:30.466
+targets, one target per feature so if you
+
+529
+00:20:30.466 --> 00:20:32.066
+have a Login Feature for example you
+
+530
+00:20:32.066 --> 00:20:33.200
+have a login
+
+531
+00:20:33.200 --> 00:20:35.333
+framework and if you have a Feed Feature
+
+532
+00:20:35.333 --> 00:20:36.633
+you have a feed
+
+533
+00:20:36.633 --> 00:20:38.400
+framework and then you have the
+
+534
+00:20:38.400 --> 00:20:39.733
+application target
+
+535
+00:20:39.733 --> 00:20:42.933
+composing the two frameworks
+
+536
+00:20:42.933 --> 00:20:46.000
+but everything within the same project
+
+537
+00:20:46.000 --> 00:20:48.866
+only one project so now we have physical
+
+538
+00:20:48.866 --> 00:20:49.733
+separation
+
+539
+00:20:49.733 --> 00:20:52.233
+of the features but the modules within
+
+540
+00:20:52.233 --> 00:20:53.266
+those features
+
+541
+00:20:53.266 --> 00:20:55.266
+are not separated they are just
+
+542
+00:20:55.266 --> 00:20:56.766
+separated virtually with
+
+543
+00:20:56.766 --> 00:20:59.833
+folders so the Login Feature has a
+
+544
+00:20:59.833 --> 00:21:01.666
+bunch of layers inside of it
+
+545
+00:21:01.666 --> 00:21:04.633
+that's the horizontal slicing and the
+
+546
+00:21:04.633 --> 00:21:06.533
+EssentialFeed will also have
+
+547
+00:21:06.533 --> 00:21:09.600
+its own horizontal slicing
+
+548
+00:21:09.600 --> 00:21:11.266
+and EssentialApp contains the
+
+549
+00:21:11.266 --> 00:21:13.500
+Composition Root to compose
+
+550
+00:21:13.500 --> 00:21:17.600
+the features that's it so one project
+
+551
+00:21:17.600 --> 00:21:22.000
+one framework per feature
+
+552
+00:21:22.000 --> 00:21:26.766
+another valid setup is multiple projects
+
+553
+00:21:26.766 --> 00:21:32.133
+one per feature with its own target
+
+554
+00:21:32.133 --> 00:21:35.500
+and the EssentialApp iOS application
+
+555
+00:21:35.500 --> 00:21:38.400
+composes both frameworks in the
+
+556
+00:21:38.400 --> 00:21:41.033
+application target
+
+557
+00:21:41.033 --> 00:21:44.066
+but in all of those examples every
+
+558
+00:21:44.066 --> 00:21:45.500
+project lives in the same
+
+559
+00:21:45.500 --> 00:21:48.066
+repository which is the easiest way to
+
+560
+00:21:48.066 --> 00:21:48.766
+maintain
+
+561
+00:21:48.766 --> 00:21:50.633
+your modular application under source
+
+562
+00:21:50.633 --> 00:21:54.133
+control everything in one repository
+
+563
+00:21:54.133 --> 00:21:56.233
+separate projects, separate targets
+
+564
+00:21:56.233 --> 00:21:57.500
+depending on what you need
+
+565
+00:21:57.500 --> 00:22:00.233
+but all we think the same repository now
+
+566
+00:22:00.233 --> 00:22:01.600
+if you want to share code across
+
+567
+00:22:01.600 --> 00:22:02.766
+repositories
+
+568
+00:22:02.766 --> 00:22:05.200
+you can put down every feature or every
+
+569
+00:22:05.200 --> 00:22:06.866
+module into separate
+
+570
+00:22:06.866 --> 00:22:09.033
+repositories that's much harder to
+
+571
+00:22:09.033 --> 00:22:10.633
+maintain you will probably need
+
+572
+00:22:10.633 --> 00:22:12.400
+something like CocoaPods
+
+573
+00:22:12.400 --> 00:22:15.900
+git submodules, Carthage or
+
+574
+00:22:15.900 --> 00:22:20.533
+Swift Package Manager exactly
+
+575
+00:22:20.533 --> 00:22:22.466
+so our recommendation is for you to
+
+576
+00:22:22.466 --> 00:22:24.000
+start simple
+
+577
+00:22:24.000 --> 00:22:27.200
+and only separate things as needed
+
+578
+00:22:27.200 --> 00:22:28.533
+because it increases the amount of
+
+579
+00:22:28.533 --> 00:22:30.866
+maintenance you and your team will have
+
+580
+00:22:30.866 --> 00:22:31.333
+to
+
+581
+00:22:31.333 --> 00:22:35.266
+do around the projects very well said
+
+582
+00:22:35.266 --> 00:22:37.600
+you and your team need to run your own
+
+583
+00:22:37.600 --> 00:22:40.133
+individual cost/benefit analysis
+
+584
+00:22:40.133 --> 00:22:43.266
+and see what will suit your
+
+585
+00:22:43.266 --> 00:22:46.700
+needs and that's going to be based on
+
+586
+00:22:46.700 --> 00:22:49.500
+your architecture and design it's going
+
+587
+00:22:49.500 --> 00:22:52.133
+to be based on your team structure
+
+588
+00:22:52.133 --> 00:22:55.900
+if you have feature teams or remote teams
+
+589
+00:22:55.900 --> 00:22:57.433
+all of that influences how you're going
+
+590
+00:22:57.433 --> 00:22:58.933
+to organize your project
+
+591
+00:22:58.933 --> 00:23:01.100
+so you need to find a good balance
+
+592
+00:23:01.100 --> 00:23:02.633
+exactly
+
+593
+00:23:02.633 --> 00:23:04.700
+but as long as you achieve a clear
+
+594
+00:23:04.700 --> 00:23:06.233
+separation between
+
+595
+00:23:06.233 --> 00:23:09.266
+your layers that gives you this ability
+
+596
+00:23:09.266 --> 00:23:10.000
+to
+
+597
+00:23:10.000 --> 00:23:12.133
+slice and peel your architecture and
+
+598
+00:23:12.133 --> 00:23:14.000
+replace things easily
+
+599
+00:23:14.000 --> 00:23:16.233
+then you're good to go then your project
+
+600
+00:23:16.233 --> 00:23:17.333
+can grow easily
+
+601
+00:23:17.333 --> 00:23:19.433
+you can accommodate more people you can
+
+602
+00:23:19.433 --> 00:23:20.866
+accommodate changes
+
+603
+00:23:20.866 --> 00:23:24.066
+you welcome changes as we add more
+
+604
+00:23:24.066 --> 00:23:25.733
+features we want to maintain this
+
+605
+00:23:25.733 --> 00:23:27.200
+plug-ability as well
+
+606
+00:23:27.200 --> 00:23:30.300
+for all our features so you are happy
+
+607
+00:23:30.300 --> 00:23:31.500
+the team is happy
+
+608
+00:23:31.500 --> 00:23:33.900
+the customers are happy the business is
+
+609
+00:23:33.900 --> 00:23:34.700
+happy
+
+610
+00:23:34.700 --> 00:23:38.000
+and everyone benefit and profit from the
+
+611
+00:23:38.000 --> 00:23:40.066
+whole operation
+
+612
+00:23:40.066 --> 00:23:41.900
+and that's exactly how you're going to
+
+613
+00:23:41.900 --> 00:23:44.633
+achieve remarkable results as well
+
+614
+00:23:44.633 --> 00:23:48.000
+that's it okay that's it for this
+
+615
+00:23:48.000 --> 00:23:48.700
+lecture
+
+616
+00:23:48.700 --> 00:23:52.000
+we'll see you again next time bye y'all
+
+617
+00:23:52.000 --> 00:24:05.833
+see ya

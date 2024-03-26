@@ -1,0 +1,17 @@
+1. The lecture discusses how to add and test static and localized content within clean architecture.
+2. So far, the content that's been rendered come from API calls, such as the image location, description, and image data.
+3. The lecturer mentions that every app also has bundled content that doesn't change unless a new app version is released, for instance, the view title.
+4. Such static content needs to be shipped with the app which is usually localized, which means adjusting it according to the language and cultural context of its user.
+5. The main aim of this lecture is to teach how to deal with such static and localized content.
+6. The lecturer uses an instance of setting a Feed View Controller's title to illustrate how to add and test such content.
+7. It's noted that in different architectural designs like MVC, MVVM, and MVP, string values like titles belong to different components - Controllers, ViewModels, and Presenters respectively.
+8. They deliberated the need for making a title variable flexible, i.e., not directly depending on a static Feed Presenter title to allow for easy replacement with other titles.
+9. It's suggested that the Feed Presenter's title configuration should be moved to the composer.
+10. If the title changes based on the loading state, you can add a title property to the view model and set the title when creating the view model in the presenter.
+11. They then discussed localizing content and stressed the importance of distinguished keys and actual translations.
+12. In localization, there's the creation of a Feed.strings file that contains key-value pairs of localized content.
+13. The development was test-driven; they test that they're setting the value for the correct key, not the localized value.
+14. A test helper was created to help locate missing localized strings.
+15. They added support for Portuguese and Greek language translations to underline the concept.
+16. To ensure all keys and values are accounted for in different languages, all possible keys in a table are traced and iterated through all localization bundles. 
+17. The lecture concluded with a reminder that static and localized strings belong to the Presentation module and that the UI module just renders data passed to it.

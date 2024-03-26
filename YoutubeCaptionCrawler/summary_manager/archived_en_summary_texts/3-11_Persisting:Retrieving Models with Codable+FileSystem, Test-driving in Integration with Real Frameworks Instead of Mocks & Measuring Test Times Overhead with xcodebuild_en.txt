@@ -1,0 +1,21 @@
+1. Mike and Caio discuss working on the FeedStore implementations, beginning with a Codable and File system.
+2. They consider whether to create a new project for this implementation or place it initially in the Feed Cache module.
+3. They agree to respect the principles of separation of concerns, allowing for the option to move the implementation to a separate project later.
+4. They pick the easiest use case to start with, which is retrieving an empty cache.
+5. They create a new test file, CodableFeedStoreTests, and write a coded implementation for retrieving an empty cache.
+6. They build and repair any errors, fix compiler issues, and continue through to the retrieval process.
+7. They aim to ensure the cache delivery system functions correctly, with the result either being empty, a found case or failure.
+8. They identify the need to refine the error case by elaborating for any other case than an empty result.
+9. They decide on the naming for descriptions and messages within their coding.
+10. Growth and adaptation of the requirements is acknowledged, proving that retrieving from the cache has no side-effects.
+11. They discuss updating the code to cover any new edge case and to make it more descriptive.
+12. They identify a need for a system under consideration, which leads to the creation of Codable Feed Store.
+13. They continue with their test-run, dealing with any build errors, and create a quick testing environment in the process.
+14. They address stateful issues and solve them by managing and cleaning up the state as necessary.
+15. They highlight the importance of maintaining a clean system for tests to avoid non-deterministic results caused by side effects.
+16. They address the issue of flaky tests and implement measures to avoid their recurrence.
+17. The importance of the underlying architecture design is emphasised, with a notable shift from implicit to explicit dependencies. 
+18. The CodableFeedStore is decoupled from the Feed Cache module, underlining a push for more modular and decoupled system design.
+19. They discuss the importance of not optimising too early and ensuring to measure things before changing critical implementations or strategies.
+20. By pushing business logic away from infrastructure types, the number of tests run against types dealing with side effects is minimized. They ensure efficient and reliable implementation of the system by following instructions and placing focus on side-effect-free functions. 
+21. Mike and Caio finish the lecture by underlining the fact that moving forward, it will be crucial to keep an eye on test speeds and maintain a decoupled system design.

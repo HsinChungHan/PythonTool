@@ -1,0 +1,1177 @@
+
+1
+00:00:00.800 --> 00:00:07.040 
+Hi everyone and welcome back to the tooling series. Today we'll talk about Crash reports.
+
+2
+00:00:08.000 --> 00:00:14.800 
+I know this is an uncomfortable topic for many developers. I remember how I often struggled
+
+3
+00:00:14.800 --> 00:00:21.040 
+whenever I was assigned to fix a Crash and just could not understand the report itself
+
+4
+00:00:21.040 --> 00:00:26.720 
+and how to put together all the pieces of information. For that, within this series,
+
+5
+00:00:26.720 --> 00:00:34.080 
+we're trying to demystify the topic of how to approach fixing Crashes. Today we'll focus on
+
+6
+00:00:34.080 --> 00:00:40.080 
+how to get Crash reports and how to symbolicate them, which is an essential piece in getting from
+
+7
+00:00:40.080 --> 00:00:48.880 
+Crash to fix. So today we'll go over the ways in which we can acquire Crash reports. We'll see what
+
+8
+00:00:48.880 --> 00:00:55.680 
+symbolication is and how it works and we'll explain the different levels of symbolication
+
+9
+00:00:55.680 --> 00:01:00.640 
+and how to get fully symbolicated Crash reports, which we can read properly.
+
+10
+00:01:04.160 --> 00:01:11.120 
+When we share our app with other people, we have the following options. We can share it internally
+
+11
+00:01:11.120 --> 00:01:20.480 
+within our team via TestFlight, which is a service offered by Apple, where you upload your app
+
+12
+00:01:20.480 --> 00:01:26.240 
+build to AppStore and share them internally with an explicit List of users.
+
+13
+00:01:29.120 --> 00:01:34.800 
+You can also share them via a third-party service like Firebase Distribution or others.
+
+14
+00:01:36.400 --> 00:01:43.520 
+They are very similar to TestFlight, just that in this case you'll be distributing an ad-hoc
+
+15
+00:01:43.520 --> 00:01:50.800 
+or enterprise version of your build again to a List of explicit users, whereas with TestFlight
+
+16
+00:01:50.800 --> 00:01:56.880 
+you distribute the AppStore version of your build. And you can always do it manually,
+
+17
+00:01:57.520 --> 00:02:07.040 
+which means building, archiving and exporting as an IPA and sending that IPA File as you want via
+
+18
+00:02:07.040 --> 00:02:16.800 
+email or other sharing options and the users will install it using Xcode or other tools.
+
+19
+00:02:19.280 --> 00:02:25.840 
+You can also share outside your team, so externally, and the Main mechanism for that
+
+20
+00:02:25.840 --> 00:02:33.200 
+is the AppStore, which is where your app becomes public so everyone on the AppStore can download it.
+
+21
+00:02:33.200 --> 00:02:38.320 
+After your app is distributed to customers, you can find ways to improve it by collecting
+
+22
+00:02:38.320 --> 00:02:46.080 
+Crash reports and diagnostic logs. For this, Apple provides a report service that collects logs from
+
+23
+00:02:46.080 --> 00:02:54.160 
+users for apps that you distribute using TestFlight or to the AppStore. The service recognizes the
+
+24
+00:02:54.160 --> 00:03:01.840 
+logs for the past year into downloadable Crash, energy and metric reports, and then sends them
+
+25
+00:03:01.840 --> 00:03:11.360 
+to users. In a general way, the service does the following. It collects logs from apps and app
+
+26
+00:03:11.360 --> 00:03:18.800 
+extensions running on users' devices. It symbolizes these logs, which means replacing memory addresses
+
+27
+00:03:18.800 --> 00:03:25.600 
+with human readable names and we'll dig deeper into symbolization in this lecture. The service
+
+28
+00:03:25.600 --> 00:03:33.680 
+compares stack traces to identify and group similar logs into reports. It removes personal user data
+
+29
+00:03:33.680 --> 00:03:41.680 
+from logs. It provides the total number of unique devices where the event occurred. It provides
+
+30
+00:03:41.680 --> 00:03:47.440 
+a sample set of logs for each report and it updates reports on a daily basis.
+
+31
+00:03:47.440 --> 00:03:53.280 
+Note that this service collects the logs only from the devices where the user has opted into
+
+32
+00:03:53.280 --> 00:03:58.560 
+sharing this information with the developers, so take into consideration you might not have the full
+
+33
+00:03:58.560 --> 00:04:04.720 
+picture as some users might not agree to share this because of privacy concerns or even a lack
+
+34
+00:04:04.720 --> 00:04:12.560 
+of understanding about what they're asked to do. So you see the settings here,
+
+35
+00:04:12.560 --> 00:04:20.800 
+share with app developers option, which by default is off, and you also see the prompt
+
+36
+00:04:21.360 --> 00:04:28.080 
+that TestFlight users get whenever their app Crashes. It's either one or the other.
+
+37
+00:04:31.920 --> 00:04:37.040 
+All the reports compiled by the service are available in Xcode in the organizer with the
+
+38
+00:04:37.040 --> 00:04:43.440 
+under the Crashes section or you can also View it on the AppStoreConnect dashboard
+
+39
+00:04:43.440 --> 00:04:51.440 
+that will focus on the Crash organizer for now. To see it in action, let's switch to Xcode.
+
+40
+00:04:53.840 --> 00:04:58.640 
+I've selected my app here in the window organizer
+
+41
+00:04:58.640 --> 00:05:08.880 
+and I'll select the Crashes section. This shows me all the Crashes for the currently selected app,
+
+42
+00:05:08.880 --> 00:05:16.880 
+whether they are from the AppStore or TestFlight builds. The first column contains each report or
+
+43
+00:05:16.880 --> 00:05:25.040 
+let's say group of Crashes. The second column contains the reports from the AppStore and the
+
+44
+00:05:25.040 --> 00:05:31.200 
+each report or let's say group of Crashes. The second column contains the stack trace of the
+
+45
+00:05:31.200 --> 00:05:38.640 
+Crash Thread and there's also an assistant on the right that has more information about the
+
+46
+00:05:38.640 --> 00:05:45.520 
+app version, some statistics about like device type, app version, OS, release and so on.
+
+47
+00:05:45.520 --> 00:05:54.640 
+You can see notes or, by using this tab selector, even comments from the TestFlight users.
+
+48
+00:05:57.120 --> 00:06:01.920 
+And you can finally mark a Crash as resolved when you're done with it.
+
+49
+00:06:04.640 --> 00:06:08.480 
+So that's the Main idea of this Crash organizer.
+
+50
+00:06:08.480 --> 00:06:11.840 
+Of course there's more to it but I'll let you discover it.
+
+51
+00:06:11.840 --> 00:06:17.120 
+The Crashes organizer is an out-of-the-box solution by Apple to monitor your app Crashes
+
+52
+00:06:17.680 --> 00:06:24.720 
+and it's a fine one, so feel free to use it. But you must know that there are other alternatives
+
+53
+00:06:24.720 --> 00:06:30.880 
+to this. Third-party services like Firebase Crashlytics, Sentry, Instabug and more that
+
+54
+00:06:30.880 --> 00:06:35.680 
+can do a similar job of collecting Crash reports and displaying them in a dashboard.
+
+55
+00:06:35.680 --> 00:06:40.240 
+One important difference between Apple's report service and the third-party survey is the
+
+56
+00:06:40.240 --> 00:06:45.600 
+following. Apple will only collect the reports from devices that have opted in to share in
+
+57
+00:06:45.600 --> 00:06:51.680 
+these reports with the developers, as I previously showed. In the case of third-party services,
+
+58
+00:06:51.680 --> 00:06:57.120 
+they may not ask the user for their option, so some of them can collect all the reports
+
+59
+00:06:57.120 --> 00:06:58.640 
+from the user's devices.
+
+60
+00:06:58.640 --> 00:07:04.000 
+TestFlight and the AppStore collect Crash reports for every submitted version of your app.
+
+61
+00:07:04.000 --> 00:07:09.200 
+Apple's service also does symbolication, if you include the symbol information when sub-intica
+
+62
+00:07:09.200 --> 00:07:10.640 
+built to the AppStore.
+
+63
+00:07:14.640 --> 00:07:20.640 
+The process of symbolication is the process of making the Crash reports available to the
+
+64
+00:07:20.640 --> 00:07:26.640 
+AppStore. The process of symbolication is the process of making the Crash reports available
+
+65
+00:07:26.640 --> 00:07:32.640 
+by developers by replacing addresses and bits with File and entity names from your project.
+
+66
+00:07:34.640 --> 00:07:39.120 
+Crash reports from customers who send diagnostic and usage information are presented in this
+
+67
+00:07:39.120 --> 00:07:44.640 
+Crash's organizer. TestFlight users of your app automatically share Crash reports with
+
+68
+00:07:44.640 --> 00:07:50.640 
+you, regardless of the device setting for sharing diagnostic and use data, while AppStore
+
+69
+00:07:50.640 --> 00:07:56.640 
+users must opt in to sharing this data with you, as I've shown previously from the settings.
+
+70
+00:08:00.640 --> 00:08:08.640 
+Either you're using Apple's service or a third-party service, there are a category of reports
+
+71
+00:08:08.640 --> 00:08:16.640 
+which are missing or cannot be collected by the services, and to get these you kind of
+
+72
+00:08:16.640 --> 00:08:22.640 
+have to collect them manually from devices, so we'll see in a minute what that means, but for now
+
+73
+00:08:22.640 --> 00:08:30.640 
+let's focus on the type of reports. First there are watchdog events, such as those of slow app
+
+74
+00:08:30.640 --> 00:08:38.640 
+launch time, slow app resume time and so on, and if you remember the watchdog is a service that just
+
+75
+00:08:38.640 --> 00:08:46.640 
+terminates unresponsive apps. There are also invalid code signature Crashes, thermal events
+
+76
+00:08:46.640 --> 00:08:54.640 
+where a device overheats because an app uses too much CPU, or Jetsam events where an app has
+
+77
+00:08:54.640 --> 00:09:04.640 
+high memory use. So we've talked about automatically collecting Crash reports through the Crash
+
+78
+00:09:04.640 --> 00:09:12.640 
+organizer, let's see how to do it manually. So in order to collect these special types of Crashes
+
+79
+00:09:12.640 --> 00:09:18.640 
+or any type in general, you can do it manually without the help of any service. This is kind of
+
+80
+00:09:18.640 --> 00:09:24.640 
+a fallback, where the user can connect their device to a computer and collect the logs and Crash
+
+81
+00:09:24.640 --> 00:09:32.640 
+reports and share them with the developers. For this we're going to use another window from
+
+82
+00:09:32.640 --> 00:09:40.640 
+Xcode, which is devices and simulators, and as you can see my iPhone SE2 is connected,
+
+83
+00:09:42.640 --> 00:09:50.640 
+and when I select it there's a bunch of debug information about it. The most important thing
+
+84
+00:09:50.640 --> 00:09:58.640 
+here is the View device logs, which will show me all the logs on the selected device. So let me
+
+85
+00:09:58.640 --> 00:10:07.640 
+make this window bigger. So here we have a List with all the logs on my current device, and we can
+
+86
+00:10:07.640 --> 00:10:17.640 
+inspect these logs by changing the selection, or we can right click and we have the following
+
+87
+00:10:17.640 --> 00:10:24.640 
+options to delete them, to export them, which will just copy this log File, which is a text File on
+
+88
+00:10:24.640 --> 00:10:34.640 
+my computer, or trigger a rest symbolication, which is just redoing the symbolication all over again.
+
+89
+00:10:36.640 --> 00:10:44.640 
+So that's how you manually collect them from a connected device. Or you can share them
+
+90
+00:10:44.640 --> 00:10:54.640 
+directly from the device. On iOS you go to settings, privacy, analytics and improvements, analytics
+
+91
+00:10:54.640 --> 00:11:02.640 
+data, and you get a List with the exact same logs I just showed you, and you can open each log
+
+92
+00:11:02.640 --> 00:11:10.640 
+individually, inspect it and share it. If you're looking for a particular report, the log name
+
+93
+00:11:10.640 --> 00:11:18.640 
+starts with the app binary name, and also it has a timestamp, or it's a Jetsam event for high memory
+
+94
+00:11:18.640 --> 00:11:30.640 
+use Crashes. This is on iOS. On macOS we can use the console app. And again, we see a List of
+
+95
+00:11:30.640 --> 00:11:39.640 
+this time the Crashes that happen on my Mac, on a simulator in this case, and we can inspect them,
+
+96
+00:11:39.640 --> 00:11:48.640 
+and there's a share button which allows us to share the Crash. Or right clicking will reveal it in
+
+97
+00:11:48.640 --> 00:11:55.640 
+Finder, and then we can take that text File and do what we want with it. So that's some of the
+
+98
+00:11:55.640 --> 00:12:03.640 
+options of how you can manually collect these reports. Note that you only need this approach
+
+99
+00:12:03.640 --> 00:12:09.640 
+when you know one or more users have encountered a Crash but you can't find it in Xcode Organizer
+
+100
+00:12:09.640 --> 00:12:16.640 
+or the third party's service platform, or if it's one of the types of Crashes mentioned earlier
+
+101
+00:12:16.640 --> 00:12:27.640 
+which are not available through the organizer. If you encounter a Crash while Debugging your app
+
+102
+00:12:27.640 --> 00:12:34.640 
+using Xcode, the debugger intercepts the Crash so you can inspect your app state. If you'd like to
+
+103
+00:12:34.640 --> 00:12:41.640 
+gather the full Crash report for the issue, you must detach the debugger, and to do this you can
+
+104
+00:12:41.640 --> 00:12:52.640 
+use the Xcode menu, debug, and there is a detach option here. So you just detach from the debugger
+
+105
+00:12:52.640 --> 00:12:57.640 
+and the Crash report will be generated in case you, I don't know, you reproduce a Crash while Debugging
+
+106
+00:12:57.640 --> 00:13:03.640 
+and you want to see how the Crash report would look like. By doing this you allow the app to finish
+
+107
+00:13:03.640 --> 00:13:11.640 
+crashing and let the OS generate the Crash report you want to see.
+
+108
+00:13:11.640 --> 00:13:19.640 
+Now let's talk about symbolication. When an app Crashes, the OS collects diagnostic information
+
+109
+00:13:19.640 --> 00:13:24.640 
+about what the app was doing at the time of the Crash. One of the most important parts of the Crash
+
+110
+00:13:24.640 --> 00:13:32.640 
+report are the Thread backtraces reported at hexadecimal addresses. You translate these backtraces
+
+111
+00:13:32.640 --> 00:13:39.640 
+into readable function name and line numbers in a source code, a process called symbolication, and
+
+112
+00:13:39.640 --> 00:13:46.640 
+then use that information to understand why your app crashed. In many cases, the Crash is organized
+
+113
+00:13:46.640 --> 00:13:53.640 
+in Xcode automatically symbolicates the Crash reports for you. Symbolication in general is a
+
+114
+00:13:53.640 --> 00:13:59.640 
+mechanism to convert or translate how our devices see our apps at run times in terms of memory
+
+115
+00:13:59.640 --> 00:14:07.640 
+addresses and instructions, like in the left column, back to how we see it as developers in terms of
+
+116
+00:14:07.640 --> 00:14:15.640 
+function names and files, as we see in the right column. So in other words, the process of
+
+117
+00:14:15.640 --> 00:14:27.640 
+symbolication means replacing memory addresses with human readable function names and line numbers.
+
+118
+00:14:27.640 --> 00:14:33.640 
+Let's look at one of the Crash reports I generated using the EssentialApp project.
+
+119
+00:14:33.640 --> 00:14:39.640 
+Because the most common use case of symbolication is translating the Crash reports generated on a device
+
+120
+00:14:39.640 --> 00:14:45.640 
+by the OS, which contain memory addresses and instructions, into human readable format that
+
+121
+00:14:45.640 --> 00:14:56.640 
+mentions explicit File names, function names, and line numbers. This refers to the memory addresses
+
+122
+00:14:56.640 --> 00:15:05.640 
+from this backtrace section of the Crash report. But that's not the only use case of symbolication.
+
+123
+00:15:05.640 --> 00:15:14.640 
+Xcode uses symbolication to resolve and show symbols during Debugging or when running Instruments.
+
+124
+00:15:14.640 --> 00:15:19.640 
+The process of translating the memory addresses at runtime into addresses from your binaries and
+
+125
+00:15:19.640 --> 00:15:25.640 
+then using the debug symbols to convert these binary addresses into their corresponding File names,
+
+126
+00:15:25.640 --> 00:15:31.640 
+function names, and line numbers is quite complex and involves multiple tools. If you need to dig
+
+127
+00:15:31.640 --> 00:15:39.640 
+into the details, I recommend you check out this session from WWDC 2021, the session called
+
+128
+00:15:39.640 --> 00:15:49.640 
+Symbolication Beyond the Basics. I'll add a link to the lecture article.
+
+129
+00:15:49.640 --> 00:15:55.640 
+In order to perform symbolication, we need access to the debug symbols corresponding to the binaries
+
+130
+00:15:55.640 --> 00:16:02.640 
+loaded by the process or Crash report we want to symbolicate. Debug symbols are extra information
+
+131
+00:16:02.640 --> 00:16:09.640 
+produced during a build that complements the binaries that were built. This debug info allows us
+
+132
+00:16:09.640 --> 00:16:15.640 
+to debug an app in Xcode to profile and also to symbolicate. You can see it as a mapping between
+
+133
+00:16:15.640 --> 00:16:22.640 
+the instructions in the binary code and our source files and entities. The debug symbols or debug
+
+134
+00:16:22.640 --> 00:16:28.640 
+information is created during build and is either embedded into the binaries or stored as a
+
+135
+00:16:28.640 --> 00:16:36.640 
+separate File such as a DSYM. There are different types of debug information produced by the Xcode
+
+136
+00:16:36.640 --> 00:16:45.640 
+build system. We'll quickly go through them. First, function starts. They have the least
+
+137
+00:16:45.640 --> 00:16:50.640 
+source code detail as they only contain the address where each function starts but no other
+
+138
+00:16:50.640 --> 00:16:57.640 
+information so they don't contain the function name or the File name on that matter. function starts
+
+139
+00:16:57.640 --> 00:17:05.640 
+info is embedded into the binaries and is mainly used by debuggers. So it's just the address where
+
+140
+00:17:05.640 --> 00:17:14.640 
+each function starts. The next level is enlist symbol tables. They contain extra information
+
+141
+00:17:14.640 --> 00:17:20.640 
+besides the function starts, so they contain function names, and they're also embedded into the binaries.
+
+142
+00:17:20.640 --> 00:17:25.640 
+While they contain more information than the function starts, they are still missing important
+
+143
+00:17:25.640 --> 00:17:32.640 
+information needed for a full symbolication. For example, information about local or private functions
+
+144
+00:17:32.640 --> 00:17:42.640 
+might be missing. Also, many of these symbols are stripped, which means excluded, in the release build.
+
+145
+00:17:42.640 --> 00:17:50.640 
+The symbol tables are influenced by a bunch of build settings, which all contain the strip name.
+
+146
+00:17:50.640 --> 00:18:01.640 
+So strip debug symbols during copy, strip link products, strip styles, Swift symbols.
+
+147
+00:18:01.640 --> 00:18:07.640 
+So to recap, function starts and enlist symbol tables have only some information needed for
+
+148
+00:18:07.640 --> 00:18:14.640 
+symbolication. They are directly included into the binaries. Actually, all the binaries that you
+
+149
+00:18:14.640 --> 00:18:21.640 
+produce will contain at least the function starts information. While the enlist symbol tables info
+
+150
+00:18:21.640 --> 00:18:27.640 
+depends on the build settings I mentioned, so they may or may not be there. The important thing to
+
+151
+00:18:27.640 --> 00:18:34.640 
+take from this is, if you see symbolication that's applied partially, so you only see some of the
+
+152
+00:18:34.640 --> 00:18:39.640 
+information there, it might be because it was done using only these partial level Debugging symbols,
+
+153
+00:18:39.640 --> 00:18:46.640 
+and it was missing the most important and most complete level of debug symbols, which is DWARF.
+
+154
+00:18:46.640 --> 00:18:55.640 
+So let's talk about DWARF. Like I said, DWARF is the richest level of debug info detail.
+
+155
+00:18:55.640 --> 00:19:01.640 
+It strives to describe everything, like function names, File names, line numbers, and even include
+
+156
+00:19:01.640 --> 00:19:08.640 
+information about compiler optimizations. Compiler optimizations are a tricky subject for symbolication,
+
+157
+00:19:08.640 --> 00:19:15.640 
+as we need all the information about the optimizations applied. These optimizations are basically
+
+158
+00:19:15.640 --> 00:19:23.640 
+source code changes the compiler made before generating the binaries, so the Result is optimal.
+
+159
+00:19:23.640 --> 00:19:29.640 
+One example of a compiler optimization is inlining the body of a function instead of defining that
+
+160
+00:19:29.640 --> 00:19:35.640 
+function and calling it, which takes more time and memory, as the body and params need to be
+
+161
+00:19:35.640 --> 00:19:45.640 
+loaded on the stack. So as an exercise, in our EssentialApp project, in the SceneDelegate,
+
+162
+00:19:45.640 --> 00:19:54.640 
+the willConnectToScene function calls a configureWindow function, and that's the only function
+
+163
+00:19:54.640 --> 00:20:01.640 
+that calls this function. So if we build this in release with optimizations on, the compiler might decide
+
+164
+00:20:01.640 --> 00:20:09.640 
+to inline the configureWindow function. What this means is it will just take the body, delete this function,
+
+165
+00:20:09.640 --> 00:20:15.640 
+so it would never exist, and just replace the call site with the body of the function.
+
+166
+00:20:15.640 --> 00:20:24.640 
+This will Result in a faster execution, because we won't need to load this function on the stack,
+
+167
+00:20:24.640 --> 00:20:33.640 
+but it's really difficult to symbolicate, because we need all this information about what the source code
+
+168
+00:20:33.640 --> 00:20:39.640 
+was before the optimization, what optimization was applied, and so on. So unless we have the full
+
+169
+00:20:39.640 --> 00:20:48.640 
+DWARF information, we can't really symbolicate back to this. That was just an exercise.
+
+170
+00:20:48.640 --> 00:20:53.640 
+So again, for more details about debug symbols and how they're used for symbolication,
+
+171
+00:20:53.640 --> 00:20:57.640 
+go back to the WWDC session I recommended.
+
+172
+00:21:00.640 --> 00:21:07.640 
+The buildSetting debugInformationFormat controls the format of the debug information.
+
+173
+00:21:07.640 --> 00:21:18.640 
+It has two options, DWARF and DWARF with DSYM. At first, this may be confusing, as both of the options
+
+174
+00:21:18.640 --> 00:21:28.640 
+include DWARF, but the level of detail of the debug information is different between these two options.
+
+175
+00:21:28.640 --> 00:21:35.640 
+Using just DWARF will generate debug information included directly into the resulting binary,
+
+176
+00:21:35.640 --> 00:21:45.640 
+while DWARF with DSYM will generate the most debug information possible and will output it in a DSYM File.
+
+177
+00:21:45.640 --> 00:21:53.640 
+As you might know, Apple recommends using DWARF setting for debug builds and DWARF with DSYM for release builds,
+
+178
+00:21:53.640 --> 00:22:01.640 
+since the release builds need all the extra details from DSYM for symbolication and more.
+
+179
+00:22:01.640 --> 00:22:09.640 
+Performance-wise, generating and storing all the debug information can take time and require extra storage.
+
+180
+00:22:09.640 --> 00:22:14.640 
+That's why we don't always want the full level of debug information details.
+
+181
+00:22:14.640 --> 00:22:24.640 
+If we were to use DWARF with DSYM for the debug build, it would take longer to build,
+
+182
+00:22:24.640 --> 00:22:30.640 
+but we want debug builds to be fast, so we don't do that.
+
+183
+00:22:30.640 --> 00:22:38.640 
+On the other hand, we want optimized release builds, so that's why for release builds we, as the compiler,
+
+184
+00:22:38.640 --> 00:22:44.640 
+to apply all kinds of optimizations, like reducing the binary size or making the code run faster,
+
+185
+00:22:44.640 --> 00:22:53.640 
+and we've covered this in a build settings lecture before, options for optimization.
+
+186
+00:22:53.640 --> 00:23:00.640 
+But the most important thing here is we want the release build to be optimized,
+
+187
+00:23:00.640 --> 00:23:07.640 
+and therefore we also want to generate the DSYM, so we can symbolic it back.
+
+188
+00:23:07.640 --> 00:23:13.640 
+This also reduces the installed app size, because when installing on the user's devices,
+
+189
+00:23:13.640 --> 00:23:18.640 
+we only style the app binary, but not the DSYM.
+
+190
+00:23:18.640 --> 00:23:25.640 
+When you build with DSYM debug information format, you'll see a DSYM folder for each binary that you build,
+
+191
+00:23:25.640 --> 00:23:28.640 
+and has the setting on.
+
+192
+00:23:28.640 --> 00:23:32.640 
+You will then use these DSYM for symbolication.
+
+193
+00:23:32.640 --> 00:23:35.640 
+So let's see how they look.
+
+194
+00:23:35.640 --> 00:23:44.640 
+I have a copy of a DSYM here, so the EssentialApp, DSYM.
+
+195
+00:23:44.640 --> 00:23:50.640 
+And if we use show Package contents, you see it has a contents folder,
+
+196
+00:23:50.640 --> 00:23:55.640 
+which includes an Info.plist and a Resource folder, which contains a DWARF folder.
+
+197
+00:23:55.640 --> 00:24:03.640 
+And finally, there's a 1.7 megabytes binary File, which contains all these debug symbols, relationship,
+
+198
+00:24:03.640 --> 00:24:07.640 
+and all the other information I mentioned in the DWARF format.
+
+199
+00:24:07.640 --> 00:24:12.640 
+So that's how it looks.
+
+200
+00:24:12.640 --> 00:24:20.640 
+Please note, if you're using Bitcode and uploading your app, the Apple service will recompile your app,
+
+201
+00:24:20.640 --> 00:24:23.640 
+so you get a new set of DSYMs.
+
+202
+00:24:23.640 --> 00:24:29.640 
+You should download these using Xcode Organizer I just showed, but this time choosing archives,
+
+203
+00:24:29.640 --> 00:24:36.640 
+I'll choose my app, and for each build, there's a download debug symbols button here,
+
+204
+00:24:36.640 --> 00:24:43.640 
+which will just download all the new DSYMs into my archive folder.
+
+205
+00:24:43.640 --> 00:24:46.640 
+Now let's see how the symbolication really works.
+
+206
+00:24:46.640 --> 00:24:52.640 
+And for that, I will use a sample of a backtrace in three states,
+
+207
+00:24:52.640 --> 00:24:58.640 
+unsymbolicated, partially symbolicated, and fully symbolicated.
+
+208
+00:24:58.640 --> 00:25:05.640 
+A Crash report just generated on a device without any symbolication applied looks like this.
+
+209
+00:25:05.640 --> 00:25:07.640 
+At least the backtrace is section.
+
+210
+00:25:07.640 --> 00:25:09.640 
+It's just addresses and offsets.
+
+211
+00:25:09.640 --> 00:25:15.640 
+So unless you know how to read binary code, this is not useful to us.
+
+212
+00:25:15.640 --> 00:25:23.640 
+The address plus offset on each line is the Result from the function starts debug symbol I mentioned earlier.
+
+213
+00:25:23.640 --> 00:25:31.640 
+Since they contain only the address of each function start, that's what you see here.
+
+214
+00:25:31.640 --> 00:25:35.640 
+There's no other information like the function name.
+
+215
+00:25:35.640 --> 00:25:40.640 
+So as you can see, this is pretty useless.
+
+216
+00:25:40.640 --> 00:25:45.640 
+Running the symbolication on such a Crash report, but without having access to the DSYM,
+
+217
+00:25:45.640 --> 00:25:48.640 
+will Result in a partial symbolication.
+
+218
+00:25:48.640 --> 00:25:53.640 
+This is because the symbolication will be done using the debug symbols embedded in the binary
+
+219
+00:25:53.640 --> 00:25:58.640 
+and the debug symbols for the system frameworks that exist on the machine.
+
+220
+00:25:58.640 --> 00:26:05.640 
+A partially symbolicated Crash report has function names for some of the backtrace frames
+
+221
+00:26:05.640 --> 00:26:14.640 
+and hexadecimal addresses for your binaries.
+
+222
+00:26:14.640 --> 00:26:19.640 
+A partially symbolicated Crash report may contain enough information to understand the Crash,
+
+223
+00:26:19.640 --> 00:26:23.640 
+depending on the type of Crash and which frames in the backtrace are symbolicated.
+
+224
+00:26:23.640 --> 00:26:29.640 
+However, you should still symbolicate the Crash report in Xcode to make the report fully symbolicated,
+
+225
+00:26:29.640 --> 00:26:34.640 
+which will give you a complete understanding over the Crash.
+
+226
+00:26:34.640 --> 00:26:42.640 
+And finally, a fully symbolicated Crash report is obtained when all the debug symbols are available
+
+227
+00:26:42.640 --> 00:26:45.640 
+for the symbolication tool.
+
+228
+00:26:45.640 --> 00:26:53.640 
+It has function names on every frame of the backtrace, so including our app binary,
+
+229
+00:26:53.640 --> 00:26:56.640 
+which is touch canvas in this example.
+
+230
+00:26:56.640 --> 00:27:02.640 
+Each frame represents a single function code that's currently running on the specific Thread
+
+231
+00:27:02.640 --> 00:27:07.640 
+and provides a View of the functions from your app and the OS framers that were executed
+
+232
+00:27:07.640 --> 00:27:11.640 
+at the time of your app Crash.
+
+233
+00:27:11.640 --> 00:27:16.640 
+Fully symbolicated Crash reports give you the most insight about the Crash.
+
+234
+00:27:16.640 --> 00:27:22.640 
+A fully symbolicated Crash report requires symbolicating using the fully detailed debug info,
+
+235
+00:27:22.640 --> 00:27:29.640 
+so we need the desims for every one of our binaries.
+
+236
+00:27:29.640 --> 00:27:37.640 
+If we go back to one of the full Crash reports I gathered
+
+237
+00:27:37.640 --> 00:27:43.640 
+and look at the binary Images section,
+
+238
+00:27:43.640 --> 00:27:52.640 
+we see that each binary has a unique identifier.
+
+239
+00:27:52.640 --> 00:28:01.640 
+And this identifier will be used to link back to the desim that's corresponding to that binary,
+
+240
+00:28:01.640 --> 00:28:07.640 
+because there's a one-on-one relationship between a binary and its corresponding desim,
+
+241
+00:28:07.640 --> 00:28:14.640 
+represented by this unique ID.
+
+242
+00:28:14.640 --> 00:28:27.640 
+So in our case for the EssentialApp, we see our identifier 0, 4, bc, 39, a9, and so on.
+
+243
+00:28:27.640 --> 00:28:35.640 
+We can retrieve IDs from desims and app binaries using the dwarfdump command.
+
+244
+00:28:35.640 --> 00:28:38.640 
+Let's see how that works.
+
+245
+00:28:38.640 --> 00:28:45.640 
+First, if I use it with the minus minus UUID on an app binary like the EssentialApp,
+
+246
+00:28:45.640 --> 00:28:51.640 
+it will print a UUID, which is very similar to the one I just showed.
+
+247
+00:28:51.640 --> 00:28:58.640 
+It's actually the same, only formatted differently, so it's still 0, 4, bc, 39, a9,
+
+248
+00:28:58.640 --> 00:29:07.640 
+just that the ID showed in the Crash report is all lowercase and no dashes,
+
+249
+00:29:07.640 --> 00:29:14.640 
+while the one used by dwarfdump uses some dashes and it's all uppercase.
+
+250
+00:29:14.640 --> 00:29:21.640 
+But other than that, all the digits and letters are the same, I assure you.
+
+251
+00:29:21.640 --> 00:29:26.640 
+So that's how you print the UUID of an app binary.
+
+252
+00:29:26.640 --> 00:29:32.640 
+If you want to print the UUID of a desim, use the same command,
+
+253
+00:29:32.640 --> 00:29:38.640 
+and you'll notice that it's the same ID, because these two match.
+
+254
+00:29:38.640 --> 00:29:48.640 
+The same Image, the same desim, they correspond to the Crash report I just showed you.
+
+255
+00:29:48.640 --> 00:29:55.640 
+So like I said, every Crash report, each binary is matched by exactly one desim,
+
+256
+00:29:55.640 --> 00:30:01.640 
+and the match is done to this UUID.
+
+257
+00:30:01.640 --> 00:30:04.640 
+The build UUID is unique for each build,
+
+258
+00:30:04.640 --> 00:30:14.640 
+so even if you rebuild from the same exact sources, each time this UUID will change.
+
+259
+00:30:14.640 --> 00:30:20.640 
+That's why it's important to have the exact desims corresponding to the build you're trying to symbolicate.
+
+260
+00:30:20.640 --> 00:30:25.640 
+Also, when going back to source files with the filenames and line numbers from Crash reports,
+
+261
+00:30:25.640 --> 00:30:29.640 
+make sure you're looking at the same exact version of the code,
+
+262
+00:30:29.640 --> 00:30:44.640 
+otherwise this line number might be inaccurate, because that File might have changed in the meantime.
+
+263
+00:30:44.640 --> 00:30:48.640 
+Xcode Organizer can automatically handle the symbolication.
+
+264
+00:30:48.640 --> 00:30:54.640 
+It will search through all the local archives and find the desim needed for each binary and perform the symbolication.
+
+265
+00:30:54.640 --> 00:31:01.640 
+Back in the days, we used to do this process manually, and since its core has remained the same,
+
+266
+00:31:01.640 --> 00:31:10.640 
+I think it's valuable to understand how it works, so you can intervene if needed.
+
+267
+00:31:10.640 --> 00:31:24.640 
+After you acquire the Crash report, you can use the mdefind command with these com Apple Xcode desim UUIDs,
+
+268
+00:31:24.640 --> 00:31:33.640 
+and you paste the desim UUID or the ID you get from your Crash report,
+
+269
+00:31:33.640 --> 00:31:45.640 
+and mdefind behind doors uses the Spotlight and it will search all the desims on your machine and find the one that matches the ID.
+
+270
+00:31:45.640 --> 00:31:51.640 
+So that's how the matching is done behind doors.
+
+271
+00:31:51.640 --> 00:32:02.640 
+And finally, when we have all this information like the Crash report and the desim, we can trigger the symbolication on our own.
+
+272
+00:32:02.640 --> 00:32:14.640 
+And for this, there's a utility under the Xcode app within the dvd Foundation framework called SymbolicateCrash,
+
+273
+00:32:14.640 --> 00:32:22.640 
+and we'll just need to pass minus d and the desim and the path to the Crash.
+
+274
+00:32:22.640 --> 00:32:29.640 
+This will redo the symbolication.
+
+275
+00:32:29.640 --> 00:32:37.640 
+Or you can use the a2s command, but this would not do the entire symbolication,
+
+276
+00:32:37.640 --> 00:32:45.640 
+as a2s will convert addresses into symbols and you need to pass each explicit address you want to translate into a symbol,
+
+277
+00:32:45.640 --> 00:32:54.640 
+so it would not symbolicate your full Crash report. If you want to do that, you can use the SymbolicateCrash I just showed.
+
+278
+00:32:54.640 --> 00:33:03.640 
+To make symbols from the operating system frameworks identifiable in a Crash report, you need to collect the symbols for the system frameworks from a device.
+
+279
+00:33:03.640 --> 00:33:12.640 
+For iOS, iPadOS, watchOS and tvOS, Xcode automatically copies these symbols from each device you connect to your Mac.
+
+280
+00:33:12.640 --> 00:33:22.640 
+For macOS and Mac Catalyst apps, symbolicate the Crash log by using Xcode on a version of macOS that matches the macOS version named in the Crash report.
+
+281
+00:33:22.640 --> 00:33:25.640 
+That's a bit more complicated.
+
+282
+00:33:25.640 --> 00:33:33.640 
+But please know that the symbols for system frameworks are specific to the OS release and the CPU architecture of the device.
+
+283
+00:33:33.640 --> 00:33:45.640 
+For example, the symbols for an iPhone running iOS 13.1.0 are not the same as the symbols for an iPhone running iOS 13.1.2.
+
+284
+00:33:45.640 --> 00:33:55.640 
+So each version has its own symbols, and you need the exact ones to be able to symbolicate.
+
+285
+00:33:55.640 --> 00:34:02.640 
+As mentioned earlier, if you're using Bitcode, you need to download the D-DSYMs after the recompilation on AppStoreConnect's site.
+
+286
+00:34:02.640 --> 00:34:19.640 
+You can do this through the Xcode organizer using the download debug symbols, or you can just go to AppStoreConnect's website and download them directly from there.
+
+287
+00:34:19.640 --> 00:34:25.640 
+And finally, let's talk about troubleshooting for a minute.
+
+288
+00:34:25.640 --> 00:34:35.640 
+Because sometimes our symbolication just doesn't work, so we get Crash reports that are partially symbolicated or worse, unsymbolicated.
+
+289
+00:34:35.640 --> 00:34:44.640 
+To address this, make sure you do your best to have the corresponding D-DSYMs for each Image binary on your machine and indexed by Spotlight.
+
+290
+00:34:44.640 --> 00:34:56.640 
+A good approach for this, if the build was uploaded to the AppStoreConnect, is to go to the Xcode organizer and download the debug symbol directly from Apple, then try to re-symbolicate.
+
+291
+00:34:56.640 --> 00:35:06.640 
+If your build was not uploaded to the AppStoreConnect, try to download the D-DSYMs from your CI or get them from a colleague if they created the archive locally.
+
+292
+00:35:06.640 --> 00:35:15.640 
+In case you're using a third-party service like Firebase Crashlytics, follow the steps in the documentation and make sure your setUp is correct.
+
+293
+00:35:15.640 --> 00:35:25.640 
+Such third-party services usually have a build step where they upload the D-DSYMs to a server, so make sure that build step works properly.
+
+294
+00:35:25.640 --> 00:35:37.640 
+That's it. Thank you.
+

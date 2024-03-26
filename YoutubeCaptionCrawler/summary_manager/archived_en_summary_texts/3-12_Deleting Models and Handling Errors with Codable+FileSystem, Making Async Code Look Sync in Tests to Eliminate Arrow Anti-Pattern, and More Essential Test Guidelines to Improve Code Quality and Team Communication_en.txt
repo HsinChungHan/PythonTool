@@ -1,0 +1,25 @@
+1. The lecture begins with the implementation of the CodableFeedStore specifications. They start with a retrieve test, checking that retrieve with no empty cache twice returns the same data to prove that there are no side-effects.
+
+2. The retrieval test checks for side-effects on non-empty cache. In this case, they first insert something to the cache and then retrieve it twice. By using pattern matching, they ensure they get the right feed and timestamp for each case.
+
+3. They observe that their test code contains duplications. To solve this, they suggest making asynchronous API look synchronous for the tests, thus minimizing the lines of code in the tests and increasing readability.
+
+4. They then rename assert correctly to facilitate comprehension. They also refactor the code to improve readability and avoid potential memory leaks.
+
+5. A new expectation method is introduced to manage code duplication in tests. They also highlight the importance of naming and code structure for clear communication to other developers.
+
+6. The lecture delves into error handling, discussing the necessity of wrapping try calls to prevent crashes due to invalid JSON data. They also talk about conventions to be followed while writing code.
+
+7. To illustrate efficient testing, a test where a URL that can't be deleted is used. This helps test cases dealing with not having permission to delete certain files, thereby testing for errors.
+
+8. They mention the importance of producing code that communicates well with other developers, making a case for readability, naming conventions, and documentation-driven approach to writing code.
+
+9. The next topic of discussion is insert tests. They show how insertions can fail and lead to errors, but also how these can be managed in the code. They demonstrate how to override values in a cache.
+
+10. The lecture then proceeds to deletion tests where they discuss the conditions when deleting from an empty cache doesn't lead to an error. 
+
+11. The CodableFeedStore is made to conform to all FeedStore's protocol methods, decoupling the test methods from the concrete implementation.
+
+12. In the end, they discuss the advantage of this approach to structuring tests and how this simplifies future extension and maintenance of the code. They move the CodableFeedStore to its own file in production.
+
+13. The lecture concludes with a recap and highlights their goal of teaching a highly iterative and disciplined process to create software systems. The next lecture is expected to cover the subject of running side-effects serially to prevent race conditions.

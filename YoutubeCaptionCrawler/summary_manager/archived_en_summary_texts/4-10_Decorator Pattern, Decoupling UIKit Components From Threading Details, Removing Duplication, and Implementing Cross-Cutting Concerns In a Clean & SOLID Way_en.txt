@@ -1,0 +1,15 @@
+1. The lecture discusses how to use the Decorator pattern to decouple threading logic from User Interface (UI) components.
+2. UIKit used for UI implementation is not thread-safe, invoking its APIs must be done within the main thread, especially when updating views.
+3. A FeedLoader test scenario reveals that executing a completion request in a background queue instead of the main thread can cause problems, highlighting the importance of dispatching work in the main queue before updating the UI.
+4. Not all implementation scenarios necessitate dispatching work in a background queue. For an in-memory cache that returns immediately if something's in the cache, dispatching in the main queue might not be required.
+5. However, checking if the UI class is in the main queue can result in code duplication. This indicates that the logic should ideally be placed elsewhere.
+6. Incorporating threading results in memory leak issues, where instances last longer than needed. Threading nuances lead to potential problems and coding complexities.
+7. The presenter discusses moving the threading dispatch to one level above – the Presentation layer. The presenter’s role is to stay agnostic of platform details.
+8. The UIKit details should not leak into the presenter. A higher level – the Composer can be involved to dispatch and manage threading details.
+9. To bridge the threading gap, a new type is introduced - a decorator - the MainQueueDispatchDecorator. It ensures that the FeedLoader always dispatches work on the main queue.
+10. The Decorator pattern allows adding behavior to an instance without changing the instance. This results in a centralized place for checking if we are already in the main thread.
+11. Any change in the UI requirement should not require changes in the database or a networking module. A MainQueueDispatchDecorator class could be made generic to ease this process.
+12. FeedImageDataLoader results could also return in a background thread – this can be solved by similarly decorating the FeedImageDataLoader instance.
+13. Composition helps in affecting changes within one place resulting in less change in implementations.
+14. Threading is dealt using a decorator in the composition layer - this proves key in hiding concrete implementation details from client components.
+15. Creating abstractions such as protocols helps to hide concrete details from the clients. This prevents leaking threading details of the FeedLoader implementations and reduces duplication and potential mistakes.

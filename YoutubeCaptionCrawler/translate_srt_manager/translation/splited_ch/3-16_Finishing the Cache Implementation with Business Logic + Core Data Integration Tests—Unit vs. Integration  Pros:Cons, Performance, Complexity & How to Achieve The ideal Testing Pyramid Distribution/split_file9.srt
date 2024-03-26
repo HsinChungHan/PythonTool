@@ -1,0 +1,29 @@
+207
+00:07:12,066 --> 00:07:14,166
+specifically for each operation storing and
+特定於每個操作，儲存與
+
+208
+00:07:14,166 --> 00:07:16,233
+loading from the document directory and
+從文件目錄加載和存儲，
+
+209
+00:07:16,233 --> 00:07:18,233
+the fact that this is working indicates
+這個事實表明是有效的
+
+210
+00:07:18,233 --> 00:07:20,233
+that there is some persistent storage
+表示存在某種持久存儲
+
+211
+00:07:20,233 --> 00:07:22,966
+going on across application runs which is
+正在跨應用程式執行，這是
+
+212
+00:07:22,966 --> 00:07:24,866
+what we want
+我們想要的

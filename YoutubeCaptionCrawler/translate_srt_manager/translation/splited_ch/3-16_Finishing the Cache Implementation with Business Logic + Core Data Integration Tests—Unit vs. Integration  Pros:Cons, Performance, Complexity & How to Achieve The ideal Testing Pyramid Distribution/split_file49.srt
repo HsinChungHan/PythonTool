@@ -1,0 +1,29 @@
+484
+00:16:34,700 --> 00:16:36,066
+test code
+測試代碼
+
+485
+00:16:36,066 --> 00:16:37,733
+for the CodableFeedStore
+關於CodableFeedStore的
+
+486
+00:16:37,733 --> 00:16:39,833
+implementation and of course if we want
+實施，當然，如果我們想要
+
+487
+00:16:39,833 --> 00:16:41,666
+to bring back the CodableFeedStore we
+帶回CodableFeedStore，我們
+
+488
+00:16:41,666 --> 00:16:43,833
+can do so easily as it will always be in
+可以輕易地做到，因為它會永遠存在於
+
+489
+00:16:43,833 --> 00:16:45,733
+the git history of our repository
+我們的倉庫的git歷史中

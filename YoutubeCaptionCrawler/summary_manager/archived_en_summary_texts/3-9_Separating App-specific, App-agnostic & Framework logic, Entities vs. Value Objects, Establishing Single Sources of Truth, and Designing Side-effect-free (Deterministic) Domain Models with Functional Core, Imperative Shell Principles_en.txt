@@ -1,0 +1,18 @@
+1. Use cases encapsulate application-specific business logic and the LocalFeedLoader implements these cases by working with other types to act as a 'controller' or a 'control boundary.'
+2. The LocalFeedLoader integrates with a range of application details like obtaining the current date and dealing with asynchronous tasks.
+3. The caching policy outlines the business rule for your specific application that can be shared across multiple use cases and applications. This might be changed based on legal regulations or business use case requirements.
+4. The caching policy and its integral aspects can be packaged into a separate, reusable model called the FeedCachePolicy to separate the use case from business rule logic.
+5. It's essential to refactor code, moving code without changing the behaviour, and test to verify the changes.
+6. The FeedCachePolicy should not be kept private in order to have access to the validate method. 
+7. The FeedCachePolicy does not hold any state, and can be made static since it is deterministic and has no side-effects.
+8. Business models are separated into models with identity and others without any. Entities are models with identity, whereas 'value objects' are models that don't.
+9. The FeedCachePolicy, being a deterministic and stateless policy, is an example of a non-identity model that can be made static.
+10. The FeedCachePolicy can be moved to its own file for better sharing with other use cases and applications.
+11. Policies, like caching policies, do not have the concept of identity, thus, it is crucial to hide such internal details from the test cases.
+12. It's important to move policy details, like the exact cache expiration period, to a centralized location to prevent breaking multiple sections when a single policy detail is modified.
+13. Subsequently, create a single source of truth for policy details for easy updates, changes, and maintenance.
+14. Freedom in the context of software system design means the ability to change policies like caching rules without other system modules or test cases being affected.
+15. Controllers, although they handle business rules, aren't themselves business models. They communicate with the models to deal with application-specific business logic. Properly separating these entities is key for modularity, testability, and flexible systems design.
+16. In order to achieve true decoupling, it's important to separate application-specific logic from concrete framework details.
+17. Business rules are application-agnostic, while controllers handle application-specific business logic. Both these should remain separate from the concrete framework.
+18. The lecture's core logic delves deep into Feed Cache modules with a promise to explore FeedStore implementations in the next session.

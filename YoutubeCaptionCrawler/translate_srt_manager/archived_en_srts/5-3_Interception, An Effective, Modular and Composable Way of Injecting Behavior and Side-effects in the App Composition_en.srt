@@ -1,0 +1,2595 @@
+1
+00:00:00.633 --> 00:00:03.333
+Hello Mike, hey Caio in the previous
+
+2
+00:00:03.333 --> 00:00:04.700
+lecture we created
+
+3
+00:00:04.700 --> 00:00:07.433
+the loader composites to compose the
+
+4
+00:00:07.433 --> 00:00:08.133
+Remote
+
+5
+00:00:08.133 --> 00:00:10.700
+with the LocalFeedLoader or any kind
+
+6
+00:00:10.700 --> 00:00:12.633
+of FeedLoader
+
+7
+00:00:12.633 --> 00:00:15.500
+so we can load from a primary loader in
+
+8
+00:00:15.500 --> 00:00:16.300
+this case
+
+9
+00:00:16.300 --> 00:00:19.166
+remotely and the fallback is the local
+
+10
+00:00:19.166 --> 00:00:20.633
+cache
+
+11
+00:00:20.633 --> 00:00:24.133
+but we never add anything to the cache
+
+12
+00:00:24.133 --> 00:00:27.433
+exactly we do not save the feed
+
+13
+00:00:27.433 --> 00:00:30.533
+thus if it fails to load from remote it
+
+14
+00:00:30.533 --> 00:00:32.633
+will never load anything from the cache
+
+15
+00:00:32.633 --> 00:00:36.300
+it would always be empty that is correct
+
+16
+00:00:36.300 --> 00:00:38.466
+and that's because we are separating
+
+17
+00:00:38.466 --> 00:00:39.666
+queries
+
+18
+00:00:39.666 --> 00:00:43.833
+from commands so loading is a query
+
+19
+00:00:43.833 --> 00:00:47.733
+exactly whilst saving implies
+
+20
+00:00:47.733 --> 00:00:51.033
+side-effects because it mutates the
+
+21
+00:00:51.033 --> 00:00:52.300
+state
+
+22
+00:00:52.300 --> 00:00:55.100
+exactly so we don't want the load
+
+23
+00:00:55.100 --> 00:00:56.300
+operation
+
+24
+00:00:56.300 --> 00:00:59.600
+to perform mutation or change the system
+
+25
+00:00:59.600 --> 00:01:00.800
+state
+
+26
+00:01:00.800 --> 00:01:03.833
+but we want to compose loading with
+
+27
+00:01:03.833 --> 00:01:06.466
+saving so every time we load something
+
+28
+00:01:06.466 --> 00:01:07.500
+from remote
+
+29
+00:01:07.500 --> 00:01:10.533
+we can save it to the local cache or to
+
+30
+00:01:10.533 --> 00:01:12.933
+an in-memory cache or to any kind of
+
+31
+00:01:12.933 --> 00:01:14.466
+cache we can create
+
+32
+00:01:14.466 --> 00:01:17.600
+to fulfill our use case okay
+
+33
+00:01:17.600 --> 00:01:20.933
+so we're talking about intercepting
+
+34
+00:01:20.933 --> 00:01:25.433
+the loading here and injecting
+
+35
+00:01:25.433 --> 00:01:27.833
+the side-effects of saving in the
+
+36
+00:01:27.833 --> 00:01:29.100
+composition
+
+37
+00:01:29.100 --> 00:01:32.300
+exactly and we have already implemented
+
+38
+00:01:32.300 --> 00:01:35.266
+the use case for saving so all we need
+
+39
+00:01:35.266 --> 00:01:36.133
+to do
+
+40
+00:01:36.133 --> 00:01:39.333
+is compose it with a loading
+
+41
+00:01:39.333 --> 00:01:42.066
+exactly the LocalFeedLoader holds the
+
+42
+00:01:42.066 --> 00:01:43.100
+implementation
+
+43
+00:01:43.100 --> 00:01:45.900
+for the cache logic yes so we need to
+
+44
+00:01:45.900 --> 00:01:46.766
+compose
+
+45
+00:01:46.766 --> 00:01:49.033
+the remote load with the LocalFeed
+
+46
+00:01:49.033 --> 00:01:49.900
+Loader
+
+47
+00:01:49.900 --> 00:01:53.500
+save operation exactly but we don't want
+
+48
+00:01:53.500 --> 00:01:55.900
+the RemoteFeedLoader knowing about the
+
+49
+00:01:55.900 --> 00:01:57.666
+LocalFeedLoader
+
+50
+00:01:57.666 --> 00:01:59.666
+to respect modularity they should not
+
+51
+00:01:59.666 --> 00:02:02.300
+know about other concrete components
+
+52
+00:02:02.300 --> 00:02:04.700
+exactly so we could do this at the
+
+53
+00:02:04.700 --> 00:02:05.733
+composite
+
+54
+00:02:05.733 --> 00:02:08.466
+level for example we could make the
+
+55
+00:02:08.466 --> 00:02:09.733
+fallback
+
+56
+00:02:09.733 --> 00:02:13.566
+be the concrete LocalFeedLoader
+
+57
+00:02:13.566 --> 00:02:15.333
+and we could perform the side-effect
+
+58
+00:02:15.333 --> 00:02:16.866
+here
+
+59
+00:02:16.866 --> 00:02:19.666
+so we could save the feed we get in a
+
+60
+00:02:19.666 --> 00:02:21.200
+successful load
+
+61
+00:02:21.200 --> 00:02:24.300
+right but now our composite
+
+62
+00:02:24.300 --> 00:02:27.433
+would not be very composable yes
+
+63
+00:02:27.433 --> 00:02:29.833
+because it can only compose a concrete
+
+64
+00:02:29.833 --> 00:02:31.500
+LocalFeedLoader
+
+65
+00:02:31.500 --> 00:02:34.466
+exactly so that's a solution but not a
+
+66
+00:02:34.466 --> 00:02:36.466
+very composable solution
+
+67
+00:02:36.466 --> 00:02:39.566
+so let's try something else another
+
+68
+00:02:39.566 --> 00:02:42.066
+solution would be to add
+
+69
+00:02:42.066 --> 00:02:45.266
+a save method to the FeedLoader
+
+70
+00:02:45.266 --> 00:02:46.466
+protocol
+
+71
+00:02:46.466 --> 00:02:50.400
+but again a FeedLoader should only load
+
+72
+00:02:50.400 --> 00:02:53.666
+exactly because not every FeedLoader
+
+73
+00:02:53.666 --> 00:02:56.700
+is capable of saving for example
+
+74
+00:02:56.700 --> 00:02:59.033
+the RemoteFeedLoader would not be able
+
+75
+00:02:59.033 --> 00:03:00.633
+to save
+
+76
+00:03:00.633 --> 00:03:03.200
+by adding this save function in the
+
+77
+00:03:03.200 --> 00:03:04.700
+FeedLoader protocol
+
+78
+00:03:04.700 --> 00:03:07.566
+we are violating the ISP the Interface
+
+79
+00:03:07.566 --> 00:03:08.933
+Segregation Principle
+
+80
+00:03:08.933 --> 00:03:11.900
+and potentially the LSP the Liskov
+
+81
+00:03:11.900 --> 00:03:13.666
+Substitution Principle
+
+82
+00:03:13.666 --> 00:03:16.400
+exactly so another thing we can do is to
+
+83
+00:03:16.400 --> 00:03:17.566
+create a new type
+
+84
+00:03:17.566 --> 00:03:20.933
+that intercepts the load and injects the
+
+85
+00:03:20.933 --> 00:03:22.533
+mutation side-effect
+
+86
+00:03:22.533 --> 00:03:26.066
+in the composition so in other words
+
+87
+00:03:26.066 --> 00:03:29.266
+we'll be intercepting FeedLoaders and
+
+88
+00:03:29.266 --> 00:03:29.733
+adding
+
+89
+00:03:29.733 --> 00:03:32.766
+a new behavior into it
+
+90
+00:03:32.766 --> 00:03:34.533
+and how do you add behavior to an
+
+91
+00:03:34.533 --> 00:03:35.900
+existing type
+
+92
+00:03:35.900 --> 00:03:39.033
+without altering that type
+
+93
+00:03:39.033 --> 00:03:42.700
+by decorating it right so we need
+
+94
+00:03:42.700 --> 00:03:45.733
+a Decorator awesome
+
+95
+00:03:45.733 --> 00:03:48.000
+so the goal for this lecture is to
+
+96
+00:03:48.000 --> 00:03:49.266
+intercept the load
+
+97
+00:03:49.266 --> 00:03:51.333
+of the remote loaders and when we get a
+
+98
+00:03:51.333 --> 00:03:52.533
+successful result
+
+99
+00:03:52.533 --> 00:03:55.566
+we save it and we're going to add this
+
+100
+00:03:55.566 --> 00:03:56.466
+behavior
+
+101
+00:03:56.466 --> 00:03:59.566
+with a decorator as always let's start
+
+102
+00:03:59.566 --> 00:04:01.100
+with the test
+
+103
+00:04:01.100 --> 00:04:03.200
+so this new type will decorate the Feed
+
+104
+00:04:03.200 --> 00:04:04.300
+Loader protocol
+
+105
+00:04:04.300 --> 00:04:07.266
+by adding the save functionality to it
+
+106
+00:04:07.266 --> 00:04:08.133
+so let's call it
+
+107
+00:04:08.133 --> 00:04:14.133
+FeedLoaderCacheDecorator
+
+108
+00:04:14.133 --> 00:04:16.866
+so the FeedLoaderCacheDecorator will
+
+109
+00:04:16.866 --> 00:04:17.833
+also be
+
+110
+00:04:17.833 --> 00:04:20.066
+a FeedLoader it will implement the Feed
+
+111
+00:04:20.066 --> 00:04:21.900
+Loader protocol
+
+112
+00:04:21.900 --> 00:04:24.233
+like any other decorator it maintains
+
+113
+00:04:24.233 --> 00:04:25.100
+the same
+
+114
+00:04:25.100 --> 00:04:28.300
+interface as the decoratee and we want
+
+115
+00:04:28.300 --> 00:04:30.300
+to maintain the same load behavior
+
+116
+00:04:30.300 --> 00:04:33.033
+but inject the save operation that
+
+117
+00:04:33.033 --> 00:04:35.033
+mutates the system
+
+118
+00:04:35.033 --> 00:04:36.466
+so let's start by testing that the
+
+119
+00:04:36.466 --> 00:04:38.866
+decorator maintains the same
+
+120
+00:04:38.866 --> 00:04:42.466
+load behavior as the decoratee
+
+121
+00:04:42.466 --> 00:04:44.700
+so the expectation is that the system
+
+122
+00:04:44.700 --> 00:04:45.600
+under test
+
+123
+00:04:45.600 --> 00:04:48.700
+should complete with a successful feed
+
+124
+00:04:48.700 --> 00:04:52.233
+when the decorated loader succeeds
+
+125
+00:04:52.233 --> 00:04:54.866
+with the given feed so we're just
+
+126
+00:04:54.866 --> 00:04:55.666
+testing that
+
+127
+00:04:55.666 --> 00:04:57.833
+we maintain the same loading behavior by
+
+128
+00:04:57.833 --> 00:04:58.700
+decorating
+
+129
+00:04:58.700 --> 00:05:00.933
+the loader and we can use the same
+
+130
+00:05:00.933 --> 00:05:02.000
+helpers
+
+131
+00:05:02.000 --> 00:05:05.100
+from the previous lecture we just need
+
+132
+00:05:05.100 --> 00:05:06.300
+to import
+
+133
+00:05:06.300 --> 00:05:09.600
+EssentialFeed okay
+
+134
+00:05:09.600 --> 00:05:11.733
+now let's create our new type the
+
+135
+00:05:11.733 --> 00:05:14.700
+FeedLoaderCacheDecorator
+
+136
+00:05:14.700 --> 00:05:16.866
+so the FeedLoaderCacheDecorator is a
+
+137
+00:05:16.866 --> 00:05:17.900
+FeedLoader
+
+138
+00:05:17.900 --> 00:05:20.300
+and you instantiate it with another
+
+139
+00:05:20.300 --> 00:05:22.633
+loader which is the decoratee
+
+140
+00:05:22.633 --> 00:05:25.666
+the loader we are decorating and step by
+
+141
+00:05:25.666 --> 00:05:26.133
+step
+
+142
+00:05:26.133 --> 00:05:28.133
+we are going to inject the save
+
+143
+00:05:28.133 --> 00:05:29.266
+operation
+
+144
+00:05:29.266 --> 00:05:32.633
+into it fantastic let's run the test
+
+145
+00:05:32.633 --> 00:05:33.333
+first
+
+146
+00:05:33.333 --> 00:05:35.433
+it should fail because we have no
+
+147
+00:05:35.433 --> 00:05:36.833
+behavior implemented
+
+148
+00:05:36.833 --> 00:05:40.866
+yet failing okay
+
+149
+00:05:40.866 --> 00:05:43.500
+to make it pass we need to forward the
+
+150
+00:05:43.500 --> 00:05:44.066
+message
+
+151
+00:05:44.066 --> 00:05:46.700
+to the decoratee proving that we are
+
+152
+00:05:46.700 --> 00:05:49.166
+maintaining the same load behavior
+
+153
+00:05:49.166 --> 00:05:53.166
+let's run the test again passing okay
+
+154
+00:05:53.166 --> 00:05:56.466
+so our test is only checking for the
+
+155
+00:05:56.466 --> 00:05:59.033
+success behavior what about the error
+
+156
+00:05:59.033 --> 00:06:00.300
+case
+
+157
+00:06:00.300 --> 00:06:02.800
+exactly we can increase the coverage by
+
+158
+00:06:02.800 --> 00:06:04.700
+adding a test that also checks
+
+159
+00:06:04.700 --> 00:06:07.666
+what happens in the failure case so if
+
+160
+00:06:07.666 --> 00:06:09.333
+the decorated loader
+
+161
+00:06:09.333 --> 00:06:12.066
+fails the decorator should also forward
+
+162
+00:06:12.066 --> 00:06:12.933
+the error
+
+163
+00:06:12.933 --> 00:06:15.166
+proving that it maintains the same load
+
+164
+00:06:15.166 --> 00:06:16.866
+behavior
+
+165
+00:06:16.866 --> 00:06:18.133
+and it should pass because we are
+
+166
+00:06:18.133 --> 00:06:20.066
+forwarding the message
+
+167
+00:06:20.066 --> 00:06:23.433
+let's run the tests passing okay
+
+168
+00:06:23.433 --> 00:06:27.100
+let's commit so FeedLoaderCache
+
+169
+00:06:27.100 --> 00:06:28.066
+Decorator
+
+170
+00:06:28.066 --> 00:06:31.266
+delivers the decoratee loader result
+
+171
+00:06:31.266 --> 00:06:33.500
+that's right for both cases either
+
+172
+00:06:33.500 --> 00:06:35.100
+success or failure
+
+173
+00:06:35.100 --> 00:06:39.600
+that's it but now we have duplication
+
+174
+00:06:39.600 --> 00:06:41.733
+as this loader is exactly the same as
+
+175
+00:06:41.733 --> 00:06:44.133
+the one created in the previous lecture
+
+176
+00:06:44.133 --> 00:06:48.233
+for the FeedLoader composite okay we can
+
+177
+00:06:48.233 --> 00:06:49.166
+extract that
+
+178
+00:06:49.166 --> 00:06:52.400
+in a test helper okay so since this is
+
+179
+00:06:52.400 --> 00:06:53.166
+going to
+
+180
+00:06:53.166 --> 00:06:55.166
+a shared scope let's give it a better
+
+181
+00:06:55.166 --> 00:06:56.633
+name this is a
+
+182
+00:06:56.633 --> 00:06:59.166
+FeedLoaderStub because it implements
+
+183
+00:06:59.166 --> 00:07:01.266
+the FeedLoader protocol
+
+184
+00:07:01.266 --> 00:07:04.933
+and let's move it to the helpers folder
+
+185
+00:07:04.933 --> 00:07:07.166
+and we can reuse it in the composite
+
+186
+00:07:07.166 --> 00:07:08.133
+tests
+
+187
+00:07:08.133 --> 00:07:11.500
+let's just rename this to facilitate
+
+188
+00:07:11.500 --> 00:07:15.733
+now we can delete run the tests
+
+189
+00:07:15.733 --> 00:07:18.933
+passing okay let's commit
+
+190
+00:07:18.933 --> 00:07:21.333
+extract FeedLoaderStub into a shared
+
+191
+00:07:21.333 --> 00:07:22.133
+scope
+
+192
+00:07:22.133 --> 00:07:26.233
+to remove duplication
+
+193
+00:07:26.233 --> 00:07:28.066
+you can also move the unique feed
+
+194
+00:07:28.066 --> 00:07:30.066
+factory method
+
+195
+00:07:30.066 --> 00:07:32.933
+to the shared test helpers let's make it
+
+196
+00:07:32.933 --> 00:07:34.866
+internal now
+
+197
+00:07:34.866 --> 00:07:38.700
+okay let's import the EssentialFeed
+
+198
+00:07:38.700 --> 00:07:42.133
+module and we can reuse it
+
+199
+00:07:42.133 --> 00:07:46.700
+in both tests let's run the test
+
+200
+00:07:46.700 --> 00:07:50.133
+passing so extract
+
+201
+00:07:50.133 --> 00:07:52.533
+unique feed factory helper into a shared
+
+202
+00:07:52.533 --> 00:07:55.666
+scope to remove duplication
+
+203
+00:07:55.666 --> 00:07:59.333
+and finally we can also reuse the expect
+
+204
+00:07:59.333 --> 00:08:03.566
+helper method okay but the expect method
+
+205
+00:08:03.566 --> 00:08:07.566
+is using XCTest instance methods
+
+206
+00:08:07.566 --> 00:08:10.700
+exactly the expectation and the wait
+
+207
+00:08:10.700 --> 00:08:14.066
+belong to XCTestCase instances
+
+208
+00:08:14.066 --> 00:08:17.166
+so we can move it to an extension
+
+209
+00:08:17.166 --> 00:08:20.533
+of the XCTestCase class so
+
+210
+00:08:20.533 --> 00:08:26.066
+XCTestCase+FeedLoader
+
+211
+00:08:26.066 --> 00:08:31.266
+okay so let's move this to an extension
+
+212
+00:08:31.266 --> 00:08:34.633
+of the XCTestCase class
+
+213
+00:08:34.633 --> 00:08:37.266
+but it should not be private yeah we
+
+214
+00:08:37.266 --> 00:08:40.366
+also need the EssentialFeed
+
+215
+00:08:40.366 --> 00:08:43.033
+okay and now we can reuse this helper in
+
+216
+00:08:43.033 --> 00:08:45.200
+both the composite and the decorator
+
+217
+00:08:45.200 --> 00:08:46.866
+tests
+
+218
+00:08:46.866 --> 00:08:50.366
+let's run the tests
+
+219
+00:08:50.366 --> 00:08:53.733
+passing awesome however now
+
+220
+00:08:53.733 --> 00:08:56.866
+every XCTestCase instance have
+
+221
+00:08:56.866 --> 00:08:59.600
+access to this method even the ones that
+
+222
+00:08:59.600 --> 00:09:00.700
+don't care about
+
+223
+00:09:00.700 --> 00:09:03.200
+the FeedLoader protocol so we are
+
+224
+00:09:03.200 --> 00:09:05.433
+exposing methods that are not
+
+225
+00:09:05.433 --> 00:09:08.300
+necessary for all XCTestCases and
+
+226
+00:09:08.300 --> 00:09:09.833
+that's not ideal
+
+227
+00:09:09.833 --> 00:09:13.333
+right so we want multiple XCTestCase
+
+228
+00:09:13.333 --> 00:09:16.233
+to have access to this method but only
+
+229
+00:09:16.233 --> 00:09:18.000
+the ones that care about
+
+230
+00:09:18.000 --> 00:09:21.433
+the FeedLoader protocol so one way to
+
+231
+00:09:21.433 --> 00:09:22.533
+do it is to
+
+232
+00:09:22.533 --> 00:09:25.600
+create a subclass of XCTestCase
+
+233
+00:09:25.600 --> 00:09:31.100
+like a FeedLoaderTestCase
+
+234
+00:09:31.100 --> 00:09:34.000
+and then we add the extension only for
+
+235
+00:09:34.000 --> 00:09:34.533
+that
+
+236
+00:09:34.533 --> 00:09:37.833
+class type and we need to make our tests
+
+237
+00:09:37.833 --> 00:09:42.233
+be a subtype of FeedLoaderTestCase
+
+238
+00:09:42.233 --> 00:09:45.100
+that works but the problem is that in
+
+239
+00:09:45.100 --> 00:09:47.266
+the future we might want to compose
+
+240
+00:09:47.266 --> 00:09:49.266
+this class with other operations
+
+241
+00:09:49.266 --> 00:09:50.700
+that can be reusable
+
+242
+00:09:50.700 --> 00:09:53.433
+but you can only inherit from one class
+
+243
+00:09:53.433 --> 00:09:53.733
+so
+
+244
+00:09:53.733 --> 00:09:56.700
+class inheritance is not composable you
+
+245
+00:09:56.700 --> 00:09:58.933
+can only inherit from one class
+
+246
+00:09:58.933 --> 00:10:01.833
+yes however there is another solution
+
+247
+00:10:01.833 --> 00:10:02.700
+and that is
+
+248
+00:10:02.700 --> 00:10:05.900
+to use protocols and protocol extensions
+
+249
+00:10:05.900 --> 00:10:09.900
+exactly a class can conform to
+
+250
+00:10:09.900 --> 00:10:12.700
+many protocols and inherit
+
+251
+00:10:12.700 --> 00:10:15.433
+implementations from their extensions
+
+252
+00:10:15.433 --> 00:10:17.733
+and you can constrain a protocol to a
+
+253
+00:10:17.733 --> 00:10:20.000
+specific class
+
+254
+00:10:20.000 --> 00:10:22.633
+so this protocol is composable but can
+
+255
+00:10:22.633 --> 00:10:24.233
+only be inherited by
+
+256
+00:10:24.233 --> 00:10:27.900
+XCTestCase subtypes exactly
+
+257
+00:10:27.900 --> 00:10:30.133
+that's a very nice Swift feature that
+
+258
+00:10:30.133 --> 00:10:32.466
+allows us to do so
+
+259
+00:10:32.466 --> 00:10:35.600
+that's it so our test cases need to
+
+260
+00:10:35.600 --> 00:10:38.466
+inherit from XCTestCase again
+
+261
+00:10:38.466 --> 00:10:41.600
+but they also get the protocol
+
+262
+00:10:41.600 --> 00:10:42.466
+extensions
+
+263
+00:10:42.466 --> 00:10:44.233
+because they conform to the FeedLoader
+
+264
+00:10:44.233 --> 00:10:46.300
+TestCase protocol
+
+265
+00:10:46.300 --> 00:10:48.533
+so that's why protocols in Swift compose
+
+266
+00:10:48.533 --> 00:10:50.300
+much better than classes
+
+267
+00:10:50.300 --> 00:10:51.500
+you can confirm through multiple
+
+268
+00:10:51.500 --> 00:10:54.066
+protocols and inherit all of their
+
+269
+00:10:54.066 --> 00:10:59.100
+extensions awesome let's run the tests
+
+270
+00:10:59.100 --> 00:11:01.266
+it's passing so we eliminated all the
+
+271
+00:11:01.266 --> 00:11:02.466
+duplication
+
+272
+00:11:02.466 --> 00:11:04.700
+yes quite important frankly you don't
+
+273
+00:11:04.700 --> 00:11:06.866
+want to skip the refactoring phase
+
+274
+00:11:06.866 --> 00:11:09.900
+you need to remove duplication both from
+
+275
+00:11:09.900 --> 00:11:10.866
+the production
+
+276
+00:11:10.866 --> 00:11:16.533
+and the test side, exactly so let's commit
+
+277
+00:11:16.533 --> 00:11:19.600
+extract FeedLoader test helpers into a
+
+278
+00:11:19.600 --> 00:11:21.033
+shared protocol extension
+
+279
+00:11:21.033 --> 00:11:24.366
+to remove duplication
+
+280
+00:11:24.366 --> 00:11:26.366
+and as always before we carry on let's
+
+281
+00:11:26.366 --> 00:11:28.233
+create the makeSUT
+
+282
+00:11:28.233 --> 00:11:30.366
+factory method to remove more
+
+283
+00:11:30.366 --> 00:11:33.500
+duplication
+
+284
+00:11:33.500 --> 00:11:37.833
+let's run the tests it's passing
+
+285
+00:11:37.833 --> 00:11:40.000
+so don't forget keep refactoring
+
+286
+00:11:40.000 --> 00:11:42.066
+production and test code
+
+287
+00:11:42.066 --> 00:11:47.033
+want both to be clean let's commit
+
+288
+00:11:47.033 --> 00:11:49.900
+extract this sut creation into a factory
+
+289
+00:11:49.900 --> 00:11:50.800
+method
+
+290
+00:11:50.800 --> 00:11:54.933
+that's it okay so our test so far
+
+291
+00:11:54.933 --> 00:11:57.833
+just proves that the cache decorator is
+
+292
+00:11:57.833 --> 00:11:59.033
+a FeedLoader
+
+293
+00:11:59.033 --> 00:12:01.666
+and it maintains the loading logic of
+
+294
+00:12:01.666 --> 00:12:03.600
+the decoratee
+
+295
+00:12:03.600 --> 00:12:06.233
+now it's time to test the actual
+
+296
+00:12:06.233 --> 00:12:07.666
+mutation side-effect
+
+297
+00:12:07.666 --> 00:12:11.033
+the saving operation okay
+
+298
+00:12:11.033 --> 00:12:14.533
+so load caches loaded feed
+
+299
+00:12:14.533 --> 00:12:17.833
+on loader success and to cache the
+
+300
+00:12:17.833 --> 00:12:19.200
+loaded result
+
+301
+00:12:19.200 --> 00:12:21.733
+we're gonna need the new component
+
+302
+00:12:21.733 --> 00:12:22.700
+responsible
+
+303
+00:12:22.700 --> 00:12:26.633
+for caching and we can call it
+
+304
+00:12:26.633 --> 00:12:30.466
+cache and we want to assert that
+
+305
+00:12:30.466 --> 00:12:33.900
+after loading successfully the cache
+
+306
+00:12:33.900 --> 00:12:37.333
+received a save message
+
+307
+00:12:37.333 --> 00:12:40.366
+exactly this is important because
+
+308
+00:12:40.366 --> 00:12:43.833
+the decorator doesn't cache the decorator
+
+309
+00:12:43.833 --> 00:12:48.300
+coordinates the loading and the caching
+
+310
+00:12:48.300 --> 00:12:51.200
+exactly it intercepts the load and on
+
+311
+00:12:51.200 --> 00:12:53.266
+success it needs to send a message
+
+312
+00:12:53.266 --> 00:12:56.233
+to the cache to save the loaded feed
+
+313
+00:12:56.233 --> 00:12:57.433
+that's it
+
+314
+00:12:57.433 --> 00:12:59.266
+but during tests we're not gonna use a
+
+315
+00:12:59.266 --> 00:13:01.100
+real cache we are using
+
+316
+00:13:01.100 --> 00:13:03.266
+a spy here that will capture all the
+
+317
+00:13:03.266 --> 00:13:04.800
+received messages
+
+318
+00:13:04.800 --> 00:13:06.533
+and at the end of this test we want to
+
+319
+00:13:06.533 --> 00:13:09.100
+assert that we received the save
+
+320
+00:13:09.100 --> 00:13:12.133
+message with the given feed and when
+
+321
+00:13:12.133 --> 00:13:14.066
+should this happen
+
+322
+00:13:14.066 --> 00:13:17.900
+after loading a successful result
+
+323
+00:13:17.900 --> 00:13:20.933
+that's it so we stub the loader result
+
+324
+00:13:20.933 --> 00:13:24.066
+with a successful feed
+
+325
+00:13:24.066 --> 00:13:26.466
+the same feed we expect to be saved in
+
+326
+00:13:26.466 --> 00:13:28.633
+the cache
+
+327
+00:13:28.633 --> 00:13:31.433
+so we need to create a CacheSpy to use
+
+328
+00:13:31.433 --> 00:13:35.733
+during tests
+
+329
+00:13:35.733 --> 00:13:38.533
+and we need to pass a cache to the make
+
+330
+00:13:38.533 --> 00:13:39.433
+sut
+
+331
+00:13:39.433 --> 00:13:40.700
+and since we don't want to break the
+
+332
+00:13:40.700 --> 00:13:44.466
+other tests let's give a default value
+
+333
+00:13:44.466 --> 00:13:46.833
+now we can pass the cache to the
+
+334
+00:13:46.833 --> 00:13:49.900
+decorator
+
+335
+00:13:49.900 --> 00:13:51.733
+and now we need to think what kind of
+
+336
+00:13:51.733 --> 00:13:53.600
+cache do we want here
+
+337
+00:13:53.600 --> 00:13:56.866
+do we want the LocalFeedLoader that
+
+338
+00:13:56.866 --> 00:14:00.066
+implements the cache use case
+
+339
+00:14:00.066 --> 00:14:03.266
+right we could but we don't want that
+
+340
+00:14:03.266 --> 00:14:05.733
+and that's because the local FeedLoader
+
+341
+00:14:05.733 --> 00:14:07.333
+is a concrete type
+
+342
+00:14:07.333 --> 00:14:09.833
+and it has dependencies so we would have
+
+343
+00:14:09.833 --> 00:14:10.466
+to create
+
+344
+00:14:10.466 --> 00:14:13.600
+all these dependencies inside our test
+
+345
+00:14:13.600 --> 00:14:16.700
+and if one of those dependencies changed
+
+346
+00:14:16.700 --> 00:14:20.466
+it would break our tests, so we could test
+
+347
+00:14:20.466 --> 00:14:21.333
+this decorator
+
+348
+00:14:21.333 --> 00:14:23.500
+integration with the LocalFeedLoader
+
+349
+00:14:23.500 --> 00:14:25.100
+concrete class
+
+350
+00:14:25.100 --> 00:14:27.500
+but our tests would be more fragile and
+
+351
+00:14:27.500 --> 00:14:28.800
+this decorator would be
+
+352
+00:14:28.800 --> 00:14:31.666
+less composable we want to test the
+
+353
+00:14:31.666 --> 00:14:32.633
+decorator
+
+354
+00:14:32.633 --> 00:14:34.800
+in isolation and we want to have an
+
+355
+00:14:34.800 --> 00:14:35.833
+abstraction
+
+356
+00:14:35.833 --> 00:14:39.100
+that also allows more composability
+
+357
+00:14:39.100 --> 00:14:41.833
+exactly just like we have the Feed
+
+358
+00:14:41.833 --> 00:14:43.033
+Loader abstraction
+
+359
+00:14:43.033 --> 00:14:46.366
+for loading we can have a new
+
+360
+00:14:46.366 --> 00:14:47.500
+abstraction
+
+361
+00:14:47.500 --> 00:14:51.733
+for saving we can call it a FeedSaver
+
+362
+00:14:51.733 --> 00:14:58.000
+or a FeedCache yeah I like FeedCache
+
+363
+00:14:58.000 --> 00:15:00.133
+alright and which methods the Feed
+
+364
+00:15:00.133 --> 00:15:01.100
+Cache
+
+365
+00:15:01.100 --> 00:15:03.666
+should have so the FeedCache is an
+
+366
+00:15:03.666 --> 00:15:06.133
+abstraction for the cache use case
+
+367
+00:15:06.133 --> 00:15:08.933
+and we already have an implementation
+
+368
+00:15:08.933 --> 00:15:10.133
+the save method
+
+369
+00:15:10.133 --> 00:15:15.500
+so that's the interface we want
+
+370
+00:15:15.500 --> 00:15:18.700
+we want a save method where we pass a
+
+371
+00:15:18.700 --> 00:15:19.100
+feed
+
+372
+00:15:19.100 --> 00:15:21.900
+which is an array of FeedImages and a
+
+373
+00:15:21.900 --> 00:15:22.533
+completion
+
+374
+00:15:22.533 --> 00:15:25.166
+closure with the Result type which is
+
+375
+00:15:25.166 --> 00:15:26.000
+either
+
+376
+00:15:26.000 --> 00:15:30.233
+success Void or an Error
+
+377
+00:15:30.233 --> 00:15:34.300
+okay so the spy needs to conform to
+
+378
+00:15:34.300 --> 00:15:35.266
+FeedCache
+
+379
+00:15:35.266 --> 00:15:38.933
+otherwise it's not going to compile okay
+
+380
+00:15:38.933 --> 00:15:40.933
+and the implementation for the spy is
+
+381
+00:15:40.933 --> 00:15:42.000
+simply to
+
+382
+00:15:42.000 --> 00:15:45.266
+capture the message that's it let's run
+
+383
+00:15:45.266 --> 00:15:46.366
+the tests
+
+384
+00:15:46.366 --> 00:15:48.000
+and it should fail because we are not
+
+385
+00:15:48.000 --> 00:15:52.000
+performing the save operation yet
+
+386
+00:15:52.000 --> 00:15:54.933
+fantastic failed the cache did not
+
+387
+00:15:54.933 --> 00:15:55.500
+receive
+
+388
+00:15:55.500 --> 00:16:00.533
+the save message so let's implement it
+
+389
+00:16:00.533 --> 00:16:03.600
+so now when we load the result
+
+390
+00:16:03.600 --> 00:16:06.800
+from the decoratee loader
+
+391
+00:16:06.800 --> 00:16:10.466
+we need to cache a successful result
+
+392
+00:16:10.466 --> 00:16:12.633
+otherwise let's just pass an empty array
+
+393
+00:16:12.633 --> 00:16:13.900
+for now
+
+394
+00:16:13.900 --> 00:16:16.533
+okay just to satisfy the compiler and of
+
+395
+00:16:16.533 --> 00:16:17.033
+course
+
+396
+00:16:17.033 --> 00:16:20.466
+forward the completion
+
+397
+00:16:20.466 --> 00:16:24.866
+let's capture the cache in a property
+
+398
+00:16:24.866 --> 00:16:27.900
+and let's run the tests
+
+399
+00:16:27.900 --> 00:16:31.900
+alright passing fantastic
+
+400
+00:16:31.900 --> 00:16:36.133
+let's commit so the FeedLoaderCache
+
+401
+00:16:36.133 --> 00:16:37.100
+Decorator
+
+402
+00:16:37.100 --> 00:16:41.333
+caches the loaded feed on loader success
+
+403
+00:16:41.333 --> 00:16:44.633
+that's it and we also need
+
+404
+00:16:44.633 --> 00:16:47.733
+a case on a loader failure
+
+405
+00:16:47.733 --> 00:16:51.100
+exactly so load
+
+406
+00:16:51.100 --> 00:16:54.233
+does not cache on loader failure we
+
+407
+00:16:54.233 --> 00:16:56.800
+should only mutate the system state
+
+408
+00:16:56.800 --> 00:17:00.066
+on success so again we create a cache
+
+409
+00:17:00.066 --> 00:17:03.733
+we stub a loader failure we execute the
+
+410
+00:17:03.733 --> 00:17:04.000
+load
+
+411
+00:17:04.000 --> 00:17:07.666
+operation and we expect no messages
+
+412
+00:17:07.666 --> 00:17:13.333
+in the failure case let's run the tests
+
+413
+00:17:13.333 --> 00:17:17.166
+okay it failed because we are
+
+414
+00:17:17.166 --> 00:17:20.300
+saving regardless yes in the failure
+
+415
+00:17:20.300 --> 00:17:20.866
+case
+
+416
+00:17:20.866 --> 00:17:23.166
+we are just saving an empty feed that's
+
+417
+00:17:23.166 --> 00:17:25.733
+not what we want
+
+418
+00:17:25.733 --> 00:17:28.633
+let's use an if let instead if we can
+
+419
+00:17:28.633 --> 00:17:29.666
+get the feed
+
+420
+00:17:29.666 --> 00:17:33.033
+out of the result then we cache it
+
+421
+00:17:33.033 --> 00:17:36.066
+only in the success case let's run the
+
+422
+00:17:36.066 --> 00:17:38.000
+tests
+
+423
+00:17:38.000 --> 00:17:42.400
+passing let's commit
+
+424
+00:17:42.400 --> 00:17:45.200
+FeedLoaderCacheDecorator does not
+
+425
+00:17:45.200 --> 00:17:46.700
+cache feed on loader
+
+426
+00:17:46.700 --> 00:17:51.566
+failure any refactorings we can do here
+
+427
+00:17:51.566 --> 00:17:55.100
+yeah we could eliminate the if statement
+
+428
+00:17:55.100 --> 00:17:58.533
+and use a map instead okay
+
+429
+00:17:58.533 --> 00:18:01.100
+if you really don't like if statements
+
+430
+00:18:01.100 --> 00:18:02.766
+you can use a map
+
+431
+00:18:02.766 --> 00:18:06.400
+so we map the result which is only
+
+432
+00:18:06.400 --> 00:18:07.266
+called
+
+433
+00:18:07.266 --> 00:18:10.933
+in the case of a successful result
+
+434
+00:18:10.933 --> 00:18:14.466
+and we can add the side-effect here save
+
+435
+00:18:14.466 --> 00:18:18.933
+feed
+
+436
+00:18:18.933 --> 00:18:21.666
+and we return the feed to maintain the
+
+437
+00:18:21.666 --> 00:18:22.533
+same
+
+438
+00:18:22.533 --> 00:18:25.600
+Result type that's it
+
+439
+00:18:25.600 --> 00:18:28.766
+okay test passing
+
+440
+00:18:28.766 --> 00:18:30.633
+if you want eliminate if statements from
+
+441
+00:18:30.633 --> 00:18:33.666
+your code that's one way of doing it
+
+442
+00:18:33.666 --> 00:18:38.000
+let's commit replace if try statement
+
+443
+00:18:38.000 --> 00:18:41.333
+with map but if you prefer if try
+
+444
+00:18:41.333 --> 00:18:42.233
+statement
+
+445
+00:18:42.233 --> 00:18:44.533
+that's fine as well what is important is
+
+446
+00:18:44.533 --> 00:18:46.233
+that the behavior is correct
+
+447
+00:18:46.233 --> 00:18:49.666
+and the tests are passing exactly
+
+448
+00:18:49.666 --> 00:18:53.100
+and we are done that's all the decorator
+
+449
+00:18:53.100 --> 00:18:54.133
+needs to do
+
+450
+00:18:54.133 --> 00:18:57.433
+it just injects the save operation
+
+451
+00:18:57.433 --> 00:19:00.866
+into the decorated loader
+
+452
+00:19:00.866 --> 00:19:02.700
+so the loader doesn't need to know about
+
+453
+00:19:02.700 --> 00:19:04.466
+saving or caching
+
+454
+00:19:04.466 --> 00:19:05.900
+and the cache doesn't need to know about
+
+455
+00:19:05.900 --> 00:19:08.066
+loading our composites are
+
+456
+00:19:08.066 --> 00:19:10.533
+still composable they don't depend on
+
+457
+00:19:10.533 --> 00:19:12.133
+concrete types
+
+458
+00:19:12.133 --> 00:19:14.933
+and the decorator is also composable
+
+459
+00:19:14.933 --> 00:19:18.300
+because we are depending on abstractions
+
+460
+00:19:18.300 --> 00:19:21.033
+look how simple those tests are that's
+
+461
+00:19:21.033 --> 00:19:22.400
+all we need
+
+462
+00:19:22.400 --> 00:19:24.866
+that's it let's move the type's
+
+463
+00:19:24.866 --> 00:19:26.866
+production now
+
+464
+00:19:26.866 --> 00:19:29.433
+okay where should we move the FeedCache
+
+465
+00:19:29.433 --> 00:19:31.200
+the abstraction
+
+466
+00:19:31.200 --> 00:19:33.333
+so I think the FeedCache can go close to
+
+467
+00:19:33.333 --> 00:19:34.533
+the FeedLoader
+
+468
+00:19:34.533 --> 00:19:38.000
+it does not depend on any other module
+
+469
+00:19:38.000 --> 00:19:40.400
+alright so the FeedLoader is in the
+
+470
+00:19:40.400 --> 00:19:42.700
+Feed Feature
+
+471
+00:19:42.700 --> 00:19:45.333
+so that looks like a good place to add
+
+472
+00:19:45.333 --> 00:19:49.033
+the FeedCache
+
+473
+00:19:49.033 --> 00:19:50.766
+so it's a public protocol because it's
+
+474
+00:19:50.766 --> 00:19:53.733
+implemented by other modules
+
+475
+00:19:53.733 --> 00:19:57.733
+yes let's run the tests
+
+476
+00:19:57.733 --> 00:20:01.500
+still passing let's commit
+
+477
+00:20:01.500 --> 00:20:03.600
+move FeedCache to the Feed Feature
+
+478
+00:20:03.600 --> 00:20:05.266
+production group
+
+479
+00:20:05.266 --> 00:20:10.133
+okay and we can also make the Local
+
+480
+00:20:10.133 --> 00:20:13.833
+FeedLoader implement the FeedCache
+
+481
+00:20:13.833 --> 00:20:16.066
+abstraction because it does implemented
+
+482
+00:20:16.066 --> 00:20:16.933
+the FeedCache
+
+483
+00:20:16.933 --> 00:20:20.233
+abstraction already the cache use case
+
+484
+00:20:20.233 --> 00:20:25.666
+yes exactly that's it run the test again
+
+485
+00:20:25.666 --> 00:20:29.266
+it's passing let's commit
+
+486
+00:20:29.266 --> 00:20:31.900
+make the LocalFeedLoader implement the
+
+487
+00:20:31.900 --> 00:20:33.666
+FeedCache protocol
+
+488
+00:20:33.666 --> 00:20:35.333
+so we can be composed with the
+
+489
+00:20:35.333 --> 00:20:39.033
+decorators awesome
+
+490
+00:20:39.033 --> 00:20:42.233
+alright should also move
+
+491
+00:20:42.233 --> 00:20:44.933
+the cache decorator to production in the
+
+492
+00:20:44.933 --> 00:20:46.400
+EssentialApp module
+
+493
+00:20:46.400 --> 00:20:53.900
+for now
+
+494
+00:20:53.900 --> 00:20:56.533
+so it's going to be public the
+
+495
+00:20:56.533 --> 00:20:57.600
+initializer
+
+496
+00:20:57.600 --> 00:21:00.400
+is public and the load function is
+
+497
+00:21:00.400 --> 00:21:01.666
+public
+
+498
+00:21:01.666 --> 00:21:05.333
+but the dependencies are private
+
+499
+00:21:05.333 --> 00:21:08.866
+okay so since we moved it to the
+
+500
+00:21:08.866 --> 00:21:09.900
+EssentialApp
+
+501
+00:21:09.900 --> 00:21:12.633
+module we need to import the Essential
+
+502
+00:21:12.633 --> 00:21:13.266
+App
+
+503
+00:21:13.266 --> 00:21:17.333
+module let's run the test again
+
+504
+00:21:17.333 --> 00:21:20.533
+passing let's commit
+
+505
+00:21:20.533 --> 00:21:23.033
+move FeedLoaderCacheDecorator to
+
+506
+00:21:23.033 --> 00:21:24.766
+production
+
+507
+00:21:24.766 --> 00:21:27.333
+any refactorings here looks pretty
+
+508
+00:21:27.333 --> 00:21:29.433
+clean to me
+
+509
+00:21:29.433 --> 00:21:32.300
+let's check the production side as well
+
+510
+00:21:32.300 --> 00:21:33.733
+looks good
+
+511
+00:21:33.733 --> 00:21:36.866
+apart from this closure here
+
+512
+00:21:36.866 --> 00:21:38.466
+we don't care about the result of the
+
+513
+00:21:38.466 --> 00:21:40.700
+save there's nothing this decorator can
+
+514
+00:21:40.700 --> 00:21:41.433
+do
+
+515
+00:21:41.433 --> 00:21:44.533
+when the save fails right
+
+516
+00:21:44.533 --> 00:21:46.533
+we are ignoring the error but for a
+
+517
+00:21:46.533 --> 00:21:47.833
+reader of the code
+
+518
+00:21:47.833 --> 00:21:50.133
+it's not very clear why so why don't we
+
+519
+00:21:50.133 --> 00:21:52.300
+create an extension instead
+
+520
+00:21:52.300 --> 00:21:54.300
+to clarify that that's what we're doing
+
+521
+00:21:54.300 --> 00:21:55.600
+we are ignoring
+
+522
+00:21:55.600 --> 00:21:58.766
+the result so save
+
+523
+00:21:58.766 --> 00:22:03.100
+ignoring result
+
+524
+00:22:03.100 --> 00:22:06.466
+so this is called as documentation yes
+
+525
+00:22:06.466 --> 00:22:09.033
+we don't need this method but it
+
+526
+00:22:09.033 --> 00:22:10.066
+clarifies
+
+527
+00:22:10.066 --> 00:22:13.266
+our intent we want to ignore the result
+
+528
+00:22:13.266 --> 00:22:15.666
+we don't care about the result I'm a big
+
+529
+00:22:15.666 --> 00:22:16.533
+fan of this
+
+530
+00:22:16.533 --> 00:22:19.900
+because it makes the code so much more
+
+531
+00:22:19.900 --> 00:22:20.866
+readable
+
+532
+00:22:20.866 --> 00:22:23.900
+especially when you come back
+
+533
+00:22:23.900 --> 00:22:27.033
+later exactly otherwise you might think
+
+534
+00:22:27.033 --> 00:22:28.000
+it was a mistake
+
+535
+00:22:28.000 --> 00:22:31.500
+not to handle the result exactly
+
+536
+00:22:31.500 --> 00:22:33.900
+you are making a little gift to your
+
+537
+00:22:33.900 --> 00:22:35.333
+future self
+
+538
+00:22:35.333 --> 00:22:38.233
+or to others if you're working in a team
+
+539
+00:22:38.233 --> 00:22:38.866
+that's it
+
+540
+00:22:38.866 --> 00:22:42.700
+let's run the tests passing
+
+541
+00:22:42.700 --> 00:22:46.633
+okay let's commit so create
+
+542
+00:22:46.633 --> 00:22:49.900
+saveIgnoringResult method to clarify
+
+543
+00:22:49.900 --> 00:22:53.833
+intent okay and that's it for the
+
+544
+00:22:53.833 --> 00:22:56.400
+FeedLoaderCacheDecorator
+
+545
+00:22:56.400 --> 00:22:58.866
+and you should do exactly the same for
+
+546
+00:22:58.866 --> 00:23:01.200
+the FeedImageDataLoader
+
+547
+00:23:01.200 --> 00:23:04.000
+exactly so again you can couple your
+
+548
+00:23:04.000 --> 00:23:04.633
+modules
+
+549
+00:23:04.633 --> 00:23:06.466
+and add this side-effect into the
+
+550
+00:23:06.466 --> 00:23:08.633
+concrete types or you can
+
+551
+00:23:08.633 --> 00:23:10.766
+follow the command query separation and
+
+552
+00:23:10.766 --> 00:23:13.200
+separate loading from saving
+
+553
+00:23:13.200 --> 00:23:16.000
+and then compose these functions it's a
+
+554
+00:23:16.000 --> 00:23:16.700
+choice
+
+555
+00:23:16.700 --> 00:23:19.333
+and you as the engineer you're supposed to
+
+556
+00:23:19.333 --> 00:23:20.533
+make this decision
+
+557
+00:23:20.533 --> 00:23:23.200
+when to use one or when to use the other
+
+558
+00:23:23.200 --> 00:23:24.633
+if you need modularity
+
+559
+00:23:24.633 --> 00:23:26.866
+you can decorate and compose your
+
+560
+00:23:26.866 --> 00:23:28.633
+components
+
+561
+00:23:28.633 --> 00:23:31.600
+when you don't need it a simple use case
+
+562
+00:23:31.600 --> 00:23:33.733
+maybe you can go to the more concrete
+
+563
+00:23:33.733 --> 00:23:37.900
+monolith approach okay
+
+564
+00:23:37.900 --> 00:23:40.766
+so let's compose our types and see what
+
+565
+00:23:40.766 --> 00:23:42.233
+it looks like
+
+566
+00:23:42.233 --> 00:23:44.466
+so every time we load from remote we
+
+567
+00:23:44.466 --> 00:23:45.500
+want to save
+
+568
+00:23:45.500 --> 00:23:48.000
+the received feed into the LocalFeed
+
+569
+00:23:48.000 --> 00:23:49.333
+Loader
+
+570
+00:23:49.333 --> 00:23:53.433
+that's it so we need to decorate
+
+571
+00:23:53.433 --> 00:23:57.833
+the RemoteFeedLoader with the Local
+
+572
+00:23:57.833 --> 00:24:01.900
+FeedLoader as the cache exactly
+
+573
+00:24:01.900 --> 00:24:04.466
+and that's it let's run the app and see
+
+574
+00:24:04.466 --> 00:24:10.766
+if it works
+
+575
+00:24:10.766 --> 00:24:14.533
+okay it's loading so we got this feed
+
+576
+00:24:14.533 --> 00:24:16.866
+from remote
+
+577
+00:24:16.866 --> 00:24:19.100
+and we expect it to have cached into the
+
+578
+00:24:19.100 --> 00:24:21.433
+local loader
+
+579
+00:24:21.433 --> 00:24:24.133
+so let's also compose the remote image
+
+580
+00:24:24.133 --> 00:24:24.933
+loader
+
+581
+00:24:24.933 --> 00:24:27.833
+but this time with the FeedImageData
+
+582
+00:24:27.833 --> 00:24:29.900
+LoaderCacheDecorator
+
+583
+00:24:29.900 --> 00:24:32.233
+so we are decorating the remote image
+
+584
+00:24:32.233 --> 00:24:33.833
+loader with
+
+585
+00:24:33.833 --> 00:24:37.733
+the local image loader as the cache
+
+586
+00:24:37.733 --> 00:24:41.733
+let's run the application
+
+587
+00:24:41.733 --> 00:24:44.700
+still working so we are saving the
+
+588
+00:24:44.700 --> 00:24:45.433
+result
+
+589
+00:24:45.433 --> 00:24:47.666
+of the RemoteFeedLoader into the Local
+
+590
+00:24:47.666 --> 00:24:49.333
+FeedLoader
+
+591
+00:24:49.333 --> 00:24:51.100
+and the result of the remote image
+
+592
+00:24:51.100 --> 00:24:53.666
+loader into the local image loader
+
+593
+00:24:53.666 --> 00:24:55.333
+and to prove this since we already
+
+594
+00:24:55.333 --> 00:24:58.466
+cached the result of this remote request
+
+595
+00:24:58.466 --> 00:25:01.333
+we can stop running the app and we can
+
+596
+00:25:01.333 --> 00:25:03.033
+run the application again
+
+597
+00:25:03.033 --> 00:25:07.600
+by composing only with the local loaders
+
+598
+00:25:07.600 --> 00:25:10.400
+so if the cache succeeded by running the
+
+599
+00:25:10.400 --> 00:25:11.900
+application with the local loaders
+
+600
+00:25:11.900 --> 00:25:12.766
+should show
+
+601
+00:25:12.766 --> 00:25:17.200
+the cached data there it is
+
+602
+00:25:17.200 --> 00:25:20.133
+awesome so that's it when you want to
+
+603
+00:25:20.133 --> 00:25:20.700
+add
+
+604
+00:25:20.700 --> 00:25:22.933
+a new behavior to a type without
+
+605
+00:25:22.933 --> 00:25:23.900
+changing it
+
+606
+00:25:23.900 --> 00:25:26.400
+you use a decorator when you want to
+
+607
+00:25:26.400 --> 00:25:27.200
+compose
+
+608
+00:25:27.200 --> 00:25:29.666
+types that conform to a common interface
+
+609
+00:25:29.666 --> 00:25:30.466
+you use
+
+610
+00:25:30.466 --> 00:25:33.033
+composites so let's have a look at the
+
+611
+00:25:33.033 --> 00:25:33.833
+diagram
+
+612
+00:25:33.833 --> 00:25:36.533
+with the decorators we introduced the
+
+613
+00:25:36.533 --> 00:25:37.433
+FeedCache
+
+614
+00:25:37.433 --> 00:25:39.266
+abstraction that the LocalFeedLoader
+
+615
+00:25:39.266 --> 00:25:41.333
+implements just like the LocalFeed
+
+616
+00:25:41.333 --> 00:25:43.733
+Loader also implements the FeedLoader
+
+617
+00:25:43.733 --> 00:25:45.266
+and we could break this down into two
+
+618
+00:25:45.266 --> 00:25:46.933
+components in the future one that
+
+619
+00:25:46.933 --> 00:25:48.300
+implements the FeedCache and one that
+
+620
+00:25:48.300 --> 00:25:50.133
+implements the FeedLoader
+
+621
+00:25:50.133 --> 00:25:52.633
+and the decorators decorate any
+
+622
+00:25:52.633 --> 00:25:54.300
+implementation of the FeedLoader
+
+623
+00:25:54.300 --> 00:25:58.300
+with any implementation of the FeedCache
+
+624
+00:25:58.300 --> 00:26:01.333
+on the image loading side we added the
+
+625
+00:26:01.333 --> 00:26:03.666
+FeedImageDataCache protocol
+
+626
+00:26:03.666 --> 00:26:05.733
+that the LocalFeedImageDataLoader
+
+627
+00:26:05.733 --> 00:26:07.833
+implements just like it implements
+
+628
+00:26:07.833 --> 00:26:10.300
+the FeedImageDataLoader and we could
+
+629
+00:26:10.300 --> 00:26:11.900
+break this down into two components in
+
+630
+00:26:11.900 --> 00:26:13.200
+the future
+
+631
+00:26:13.200 --> 00:26:15.033
+and the FeedImageDataLoaderCache
+
+632
+00:26:15.033 --> 00:26:16.700
+Decorator decorates
+
+633
+00:26:16.700 --> 00:26:19.833
+any FeedImageDataLoader by adding the
+
+634
+00:26:19.833 --> 00:26:21.333
+save functionality
+
+635
+00:26:21.333 --> 00:26:24.533
+of any FeedImageDataCache
+
+636
+00:26:24.533 --> 00:26:27.200
+so this code is super composable and
+
+637
+00:26:27.200 --> 00:26:28.933
+when you need this kind of composability
+
+638
+00:26:28.933 --> 00:26:32.066
+that's how you do it that's it and the
+
+639
+00:26:32.066 --> 00:26:33.433
+downside is that
+
+640
+00:26:33.433 --> 00:26:36.133
+your composition may start getting more
+
+641
+00:26:36.133 --> 00:26:37.433
+complex
+
+642
+00:26:37.433 --> 00:26:40.000
+that's why you also should test the
+
+643
+00:26:40.000 --> 00:26:41.433
+whole composition
+
+644
+00:26:41.433 --> 00:26:43.600
+to prove the types are composed
+
+645
+00:26:43.600 --> 00:26:45.100
+correctly
+
+646
+00:26:45.100 --> 00:26:47.733
+exactly this is going to be the topic of
+
+647
+00:26:47.733 --> 00:26:49.200
+the next lecture
+
+648
+00:26:49.200 --> 00:26:52.300
+we'll see you all next time bye y'all
+
+649
+00:26:52.300 --> 00:27:06.133
+see ya

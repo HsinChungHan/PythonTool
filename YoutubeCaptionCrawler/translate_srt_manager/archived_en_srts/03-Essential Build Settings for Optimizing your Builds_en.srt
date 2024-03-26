@@ -1,0 +1,2269 @@
+
+1
+00:00:00.800 --> 00:00:03.040 
+Hi everyone, and welcome.
+
+2
+00:00:04.440 --> 00:00:08.620 
+Thanks for joining me on this series on Xcode.
+
+3
+00:00:09.680 --> 00:00:12.560 
+Last time we went through the mechanics
+
+4
+00:00:12.560 --> 00:00:14.520 
+of Xcode build settings
+
+5
+00:00:14.520 --> 00:00:17.060 
+and how you can use them in different situations.
+
+6
+00:00:19.560 --> 00:00:24.560 
+Today, we'll continue by taking a closer look
+
+7
+00:00:24.560 --> 00:00:28.140 
+at the build settings that are used by most developers
+
+8
+00:00:28.140 --> 00:00:29.740 
+when setting up their apps.
+
+9
+00:00:30.720 --> 00:00:33.640 
+Understanding what they'll do will allow you
+
+10
+00:00:33.640 --> 00:00:38.340 
+to optimize your builds for the exact scenarios you need.
+
+11
+00:00:38.340 --> 00:00:39.180 
+Let's go.
+
+12
+00:00:41.860 --> 00:00:44.520 
+As always, we'll see what the plan looks like.
+
+13
+00:00:45.400 --> 00:00:47.440 
+We'll try to answer a few questions.
+
+14
+00:00:49.760 --> 00:00:52.880 
+Can I build targets for more than one platform
+
+15
+00:00:52.880 --> 00:00:56.200 
+and which kind of targets allow this?
+
+16
+00:00:56.200 --> 00:00:58.080 
+What is Bitcode?
+
+17
+00:00:58.080 --> 00:01:01.880 
+What are the advantages and disadvantages of Bitcode?
+
+18
+00:01:01.880 --> 00:01:02.840 
+Should I use it?
+
+19
+00:01:06.280 --> 00:01:08.720 
+What's buildActiveArchitectureOnly?
+
+20
+00:01:08.720 --> 00:01:13.240 
+And why does Xcode set it to yes for debug config only?
+
+21
+00:01:14.500 --> 00:01:18.360 
+What happens to apps where targeted device family
+
+22
+00:01:18.360 --> 00:01:20.720 
+is set to iPhone or iPad only?
+
+23
+00:01:21.880 --> 00:01:26.240 
+What's a DSYM and do all builds need one?
+
+24
+00:01:26.240 --> 00:01:27.640 
+What's an incremental build
+
+25
+00:01:27.640 --> 00:01:30.280 
+and what other types of builds are there?
+
+26
+00:01:32.920 --> 00:01:36.520 
+Can build settings control static or dynamic linking
+
+27
+00:01:36.520 --> 00:01:38.160 
+of libraries or frameworks?
+
+28
+00:01:39.920 --> 00:01:42.560 
+How can I optimize my binaries for speed, size,
+
+29
+00:01:42.560 --> 00:01:44.960 
+app launch time and more?
+
+30
+00:01:46.400 --> 00:01:48.680 
+Do settings for the unit test target
+
+31
+00:01:48.680 --> 00:01:53.040 
+differ from the settings for UI test target and more?
+
+32
+00:01:53.040 --> 00:01:55.640 
+And we'll wrap it up with the Q&A.
+
+33
+00:01:56.760 --> 00:01:59.640 
+But as always, if you have questions
+
+34
+00:01:59.640 --> 00:02:03.000 
+to a specific setting we're talking about,
+
+35
+00:02:03.960 --> 00:02:07.840 
+let me know and I'll try to answer it during the lecture.
+
+36
+00:02:10.880 --> 00:02:13.440 
+There are many build settings within Xcode.
+
+37
+00:02:15.440 --> 00:02:17.360 
+A comprehensive List can be found
+
+38
+00:02:17.360 --> 00:02:20.080 
+in the following link from Apple Docs.
+
+39
+00:02:20.080 --> 00:02:23.400 
+First of all, looking at the Xcode build settings
+
+40
+00:02:23.400 --> 00:02:26.320 
+for our EssentialFeed project,
+
+41
+00:02:27.200 --> 00:02:29.760 
+we'll notice that the build settings
+
+42
+00:02:29.760 --> 00:02:32.800 
+are grouped into several groups,
+
+43
+00:02:32.800 --> 00:02:37.240 
+like architectures or build locations or build options.
+
+44
+00:02:38.360 --> 00:02:42.040 
+We'll follow the same order as Xcode does,
+
+45
+00:02:42.040 --> 00:02:44.120 
+talking about the settings that you are building
+
+46
+00:02:44.120 --> 00:02:47.200 
+and how you can optimize your build settings.
+
+47
+00:02:47.200 --> 00:02:50.400 
+Xcode does talking about the settings that you are most
+
+48
+00:02:50.400 --> 00:02:52.240 
+likely to have to work with,
+
+49
+00:02:52.240 --> 00:02:54.520 
+or the ones that have a really important effect
+
+50
+00:02:54.520 --> 00:02:55.360 
+on the build.
+
+51
+00:02:56.920 --> 00:02:58.880 
+Let's look at the architectures group.
+
+52
+00:03:03.440 --> 00:03:07.600 
+The architecture setting contains the List of architectures
+
+53
+00:03:07.600 --> 00:03:09.440 
+for which the product will be built.
+
+54
+00:03:09.440 --> 00:03:16.440 
+The default value is set to art standard,
+
+55
+00:03:18.520 --> 00:03:23.400 
+which is an Xcode variable and is usually resolved
+
+56
+00:03:23.400 --> 00:03:28.200 
+to ARM64 and ARMv7 for iOS targets.
+
+57
+00:03:30.160 --> 00:03:35.160 
+In this case, the Result values are ARM64 and x86
+
+58
+00:03:35.160 --> 00:03:39.400 
+because we have a multi-platform target.
+
+59
+00:03:41.480 --> 00:03:44.440 
+Most projects don't need to alter this setting.
+
+60
+00:03:45.720 --> 00:03:48.000 
+You change it if you need to support
+
+61
+00:03:48.000 --> 00:03:52.240 
+older architectures or avoid new ones.
+
+62
+00:03:56.120 --> 00:03:58.040 
+As a recap, over time,
+
+63
+00:03:58.040 --> 00:04:02.200 
+the supported architectures from Apple have changed.
+
+64
+00:04:02.200 --> 00:04:07.200 
+ARM64 is the current 64-bit ARM CPU architecture,
+
+65
+00:04:07.360 --> 00:04:12.360 
+and it's used on devices newer than iPhone 5s,
+
+66
+00:04:12.600 --> 00:04:17.600 
+iPhone 6, iPhone 7, and so on, iPad Air, and newer.
+
+67
+00:04:20.440 --> 00:04:25.440 
+The ARMv7s was used on devices like the Apple's A6
+
+68
+00:04:25.440 --> 00:04:30.440 
+or A6X chips, like iPhone 5, iPhone 5c, iPad 4.
+
+69
+00:04:32.040 --> 00:04:34.680 
+Before that, we had ARMv7,
+
+70
+00:04:34.680 --> 00:04:39.680 
+which was a 32-bit architecture used on A5 chips.
+
+71
+00:04:40.160 --> 00:04:43.240 
+And before that, even ARMv6,
+
+72
+00:04:43.240 --> 00:04:46.520 
+which was used on devices shipped before 2009.
+
+73
+00:04:46.520 --> 00:04:51.520 
+The base SDK setting contains the name or path of the SDK
+
+74
+00:04:52.800 --> 00:04:55.200 
+being used for the current build.
+
+75
+00:04:56.120 --> 00:04:59.120 
+So if you're building an iOS target, it will be iOS.
+
+76
+00:05:00.120 --> 00:05:03.080 
+If you're building a Mac target, this will be macOS
+
+77
+00:05:03.080 --> 00:05:05.840 
+and the current build will be iOS.
+
+78
+00:05:05.840 --> 00:05:08.320 
+So the current build will be iOS.
+
+79
+00:05:08.320 --> 00:05:10.160 
+The current build will be iOS.
+
+80
+00:05:10.160 --> 00:05:12.080 
+The current build will be iOS.
+
+81
+00:05:12.080 --> 00:05:13.720 
+The current build will be iOS.
+
+82
+00:05:13.720 --> 00:05:17.120 
+If you're building a Mac target, this will be macOS and so on.
+
+83
+00:05:18.320 --> 00:05:20.680 
+Additional SDKs can be specified
+
+84
+00:05:20.680 --> 00:05:22.920 
+through the additional SDKs setting.
+
+85
+00:05:24.240 --> 00:05:26.240 
+Regarding the base SDK,
+
+86
+00:05:26.240 --> 00:05:28.480 
+most projects don't need to change this setting,
+
+87
+00:05:28.480 --> 00:05:31.440 
+as is properly set by Xcode when creating the project
+
+88
+00:05:31.440 --> 00:05:34.360 
+or target, depending on the platform you select.
+
+89
+00:05:34.360 --> 00:05:39.360 
+Next is the build active architecture-only setting.
+
+90
+00:05:40.360 --> 00:05:42.240 
+If this is enabled,
+
+91
+00:05:43.240 --> 00:05:46.480 
+Xcode will only build the active architecture.
+
+92
+00:05:48.560 --> 00:05:50.760 
+The active architecture is the architecture
+
+93
+00:05:50.760 --> 00:05:52.880 
+of the device you're building for.
+
+94
+00:05:54.280 --> 00:05:57.760 
+And it's selected using the scheme run destination selector.
+
+95
+00:05:59.280 --> 00:06:01.560 
+The active architecture is the architecture
+
+96
+00:06:01.560 --> 00:06:04.560 
+of the scheme run destination selector.
+
+97
+00:06:08.360 --> 00:06:12.960 
+So in this case, the iPhone 13 simulator
+
+98
+00:06:12.960 --> 00:06:15.760 
+or any device and so on.
+
+99
+00:06:26.560 --> 00:06:28.560 
+This setting is ignored
+
+100
+00:06:28.560 --> 00:06:32.560 
+when you build on any iOS device or GenericDevice.
+
+101
+00:06:39.960 --> 00:06:43.960 
+The setting is preset by Xcode to yes
+
+102
+00:06:43.960 --> 00:06:45.960 
+on the debug configuration
+
+103
+00:06:45.960 --> 00:06:50.360 
+and it's left on default no for the release configuration.
+
+104
+00:06:51.560 --> 00:06:53.960 
+And it's basically an optimization.
+
+105
+00:06:53.960 --> 00:06:55.760 
+If you're building a debug version
+
+106
+00:06:55.760 --> 00:07:00.360 
+of your target for the simulator, like in my case here,
+
+107
+00:07:00.360 --> 00:07:01.960 
+there's no point in also building
+
+108
+00:07:01.960 --> 00:07:04.360 
+the device architecture and vice versa.
+
+109
+00:07:06.960 --> 00:07:09.960 
+Of course, this optimization works well
+
+110
+00:07:09.960 --> 00:07:11.760 
+in a development environment,
+
+111
+00:07:11.760 --> 00:07:14.160 
+but whenever shipping your binary,
+
+112
+00:07:14.160 --> 00:07:16.160 
+you must include all the architectures
+
+113
+00:07:16.160 --> 00:07:17.960 
+that are supported by your binary.
+
+114
+00:07:17.960 --> 00:07:24.960 
+So let's see how this goes.
+
+115
+00:07:24.960 --> 00:07:40.960 
+If I do a clean build of the EssentialApp target.
+
+116
+00:07:55.960 --> 00:07:57.960 
+It has taken a lot of time.
+
+117
+00:08:03.960 --> 00:08:13.960 
+But if I set my build active architecture to no,
+
+118
+00:08:13.960 --> 00:08:21.960 
+it would take even longer.
+
+119
+00:08:43.960 --> 00:08:59.960 
+So I'm always showing this as an example
+
+120
+00:08:59.960 --> 00:09:03.960 
+of how the setting should be set to yes on a debug
+
+121
+00:09:03.960 --> 00:09:05.960 
+just to speed up the builds.
+
+122
+00:09:08.960 --> 00:09:11.960 
+Apparently, the build is taking longer
+
+123
+00:09:11.960 --> 00:09:15.960 
+because I'm running all the recording and zoom,
+
+124
+00:09:15.960 --> 00:09:20.960 
+but you can see a clear at least four extra seconds
+
+125
+00:09:20.960 --> 00:09:22.960 
+for this build.
+
+126
+00:09:22.960 --> 00:09:47.960 
+I'm going to reset and clean
+
+127
+00:09:47.960 --> 00:09:52.960 
+so we don't wait the next time.
+
+128
+00:10:03.960 --> 00:10:07.960 
+The next setting is excluded architectures.
+
+129
+00:10:10.960 --> 00:10:13.960 
+This contains a List of the architectures
+
+130
+00:10:13.960 --> 00:10:18.960 
+for which the target should not be built.
+
+131
+00:10:18.960 --> 00:10:21.960 
+If the resulting List is empty,
+
+132
+00:10:21.960 --> 00:10:23.960 
+no binary is produced.
+
+133
+00:10:23.960 --> 00:10:26.960 
+I mentioned this setting because it's useful nowadays
+
+134
+00:10:26.960 --> 00:10:28.960 
+when we need to build projects
+
+135
+00:10:28.960 --> 00:10:30.960 
+that have pre-compiled binaries
+
+136
+00:10:30.960 --> 00:10:46.960 
+and we're using the new M1 Max.
+
+137
+00:10:46.960 --> 00:10:49.960 
+The last setting in the architectures group
+
+138
+00:10:49.960 --> 00:10:51.960 
+is the supported platforms.
+
+139
+00:10:51.960 --> 00:10:54.960 
+This contains the List of supported platforms
+
+140
+00:10:54.960 --> 00:10:58.960 
+from which a base SDK can be used.
+
+141
+00:10:58.960 --> 00:11:01.960 
+This setting is used if the product can be built
+
+142
+00:11:01.960 --> 00:11:04.960 
+for multiple platforms using different SDKs,
+
+143
+00:11:04.960 --> 00:11:06.960 
+like in our case.
+
+144
+00:11:06.960 --> 00:11:09.960 
+By default, each project uses a single platform,
+
+145
+00:11:09.960 --> 00:11:13.960 
+so iOS, macOS, but we can change the setting
+
+146
+00:11:13.960 --> 00:11:15.960 
+and add more platforms.
+
+147
+00:11:15.960 --> 00:11:17.960 
+Like in our case here,
+
+148
+00:11:17.960 --> 00:11:21.960 
+the essential fit target supports both macOS
+
+149
+00:11:21.960 --> 00:11:23.960 
+and iOS platforms.
+
+150
+00:11:23.960 --> 00:11:29.960 
+As an exercise, I'm going to add watchOS as well.
+
+151
+00:11:29.960 --> 00:11:33.960 
+To do this, I need to add separately an entry
+
+152
+00:11:33.960 --> 00:11:37.960 
+for the watchOS device and for the watch simulator.
+
+153
+00:11:40.960 --> 00:11:44.960 
+Now you can see the resolved value is now iOS,
+
+154
+00:11:44.960 --> 00:11:46.960 
+macOS, and watchOS.
+
+155
+00:11:46.960 --> 00:11:50.960 
+The resolved value is now iOS, macOS, and watchOS.
+
+156
+00:11:50.960 --> 00:12:12.960 
+Next, we're going to look at the build options group.
+
+157
+00:12:12.960 --> 00:12:22.960 
+And the debug information format setting.
+
+158
+00:12:22.960 --> 00:12:28.960 
+This refers to the type of debug information
+
+159
+00:12:28.960 --> 00:12:32.960 
+the build produces.
+
+160
+00:12:32.960 --> 00:12:40.960 
+It has two variants, DWARF and DWARF with DSYM.
+
+161
+00:12:40.960 --> 00:12:45.960 
+The DSYM also stands for debug symbols
+
+162
+00:12:45.960 --> 00:12:48.960 
+and is a File produced by Xcode
+
+163
+00:12:48.960 --> 00:12:52.960 
+from the individual object files.
+
+164
+00:12:52.960 --> 00:13:00.960 
+By default, you see Xcode sets the debug variant to DWARF
+
+165
+00:13:00.960 --> 00:13:04.960 
+and the release configuration to DWARF with DSYM.
+
+166
+00:13:04.960 --> 00:13:07.960 
+This is useful to speed up the debug builds
+
+167
+00:13:07.960 --> 00:13:11.960 
+by not generating the debug symbols,
+
+168
+00:13:11.960 --> 00:13:15.960 
+which are used to symbolicate Crash logs.
+
+169
+00:13:19.960 --> 00:13:25.960 
+As an example, I'm going to use the product menu,
+
+170
+00:13:25.960 --> 00:13:28.960 
+show build folder in Finder,
+
+171
+00:13:28.960 --> 00:13:37.960 
+and look at my derived data contents.
+
+172
+00:13:49.960 --> 00:13:55.960 
+You see that in the debug folder,
+
+173
+00:13:55.960 --> 00:13:58.960 
+we just have the EssentialApp and the frameworks,
+
+174
+00:13:58.960 --> 00:14:01.960 
+so no DSYM.
+
+175
+00:14:01.960 --> 00:14:05.960 
+If I go to Xcode and change the setting
+
+176
+00:14:05.960 --> 00:14:12.960 
+for the EssentialFeed to DWARF with DSYM on the debug as well
+
+177
+00:14:12.960 --> 00:14:18.960 
+and rebuild,
+
+178
+00:14:18.960 --> 00:14:21.960 
+I see that the debug symbols archive
+
+179
+00:14:21.960 --> 00:14:29.960 
+was also created for the EssentialFeed.
+
+180
+00:14:29.960 --> 00:14:33.960 
+The downside is that generating these debug symbols
+
+181
+00:14:33.960 --> 00:14:36.960 
+takes more build time,
+
+182
+00:14:36.960 --> 00:14:41.960 
+so that's why it's preset to no on the debug configuration,
+
+183
+00:14:41.960 --> 00:14:48.960 
+so the build is faster.
+
+184
+00:14:48.960 --> 00:14:51.960 
+I see a few questions on chat,
+
+185
+00:14:51.960 --> 00:14:55.960 
+so I'll look at that.
+
+186
+00:14:55.960 --> 00:14:56.960 
+Joseph is asking,
+
+187
+00:14:56.960 --> 00:14:58.960 
+is there any effective difference
+
+188
+00:14:58.960 --> 00:15:03.960 
+between having a particular SDK in the base SDK setting
+
+189
+00:15:03.960 --> 00:15:07.960 
+versus having it in the additional SDKs List?
+
+190
+00:15:07.960 --> 00:15:09.960 
+If I have something that is cross iOS,
+
+191
+00:15:09.960 --> 00:15:15.960 
+macOS, does it matter which one I put as the base SDK?
+
+192
+00:15:15.960 --> 00:15:16.960 
+And as a follow-up,
+
+193
+00:15:16.960 --> 00:15:19.960 
+what are the differences between setting
+
+194
+00:15:19.960 --> 00:15:22.960 
+the supported platform setting to be cross platform
+
+195
+00:15:22.960 --> 00:15:25.960 
+and using the additional SDK settings?
+
+196
+00:15:25.960 --> 00:15:27.960 
+Are they even related?
+
+197
+00:15:27.960 --> 00:15:31.960 
+I may not have understood completely.
+
+198
+00:15:31.960 --> 00:15:34.960 
+First of all, the base SDK
+
+199
+00:15:34.960 --> 00:15:39.960 
+is one that's basically controlling
+
+200
+00:15:39.960 --> 00:15:43.960 
+what Xcode thinks this target SDK is,
+
+201
+00:15:43.960 --> 00:15:51.960 
+so even if platforms allow adding multiple platforms,
+
+202
+00:15:51.960 --> 00:15:55.960 
+you can see all the defaults are still using one SDK,
+
+203
+00:15:55.960 --> 00:15:57.960 
+one platform,
+
+204
+00:15:57.960 --> 00:16:00.960 
+and this is the one you set in base SDK.
+
+205
+00:16:00.960 --> 00:16:04.960 
+You can add additional ones to the additional SDKs,
+
+206
+00:16:04.960 --> 00:16:08.960 
+but even in this case, like for the EssentialFeed case,
+
+207
+00:16:08.960 --> 00:16:10.960 
+there's no need for that,
+
+208
+00:16:10.960 --> 00:16:13.960 
+because depending on the platform,
+
+209
+00:16:13.960 --> 00:16:18.960 
+each time the SDK will be resolved to a different SDK,
+
+210
+00:16:18.960 --> 00:16:22.960 
+so it depends on the destination target you choose.
+
+211
+00:16:25.960 --> 00:16:27.960 
+I hope I cleared that.
+
+212
+00:16:27.960 --> 00:16:42.960 
+If not, we can talk about it on Slack, as always.
+
+213
+00:16:42.960 --> 00:16:48.960 
+Next, I want to talk about enabled Bitcode.
+
+214
+00:16:48.960 --> 00:16:50.960 
+So what is Bitcode?
+
+215
+00:16:50.960 --> 00:16:54.960 
+Bitcode is a representation of the app binary
+
+216
+00:16:54.960 --> 00:17:01.960 
+that can be compiled on demand
+
+217
+00:17:01.960 --> 00:17:05.960 
+depending on the device that downloads the app from the AppStore.
+
+218
+00:17:05.960 --> 00:17:08.960 
+This also enables compiler improvements made by Apple
+
+219
+00:17:08.960 --> 00:17:10.960 
+to be implemented automatically
+
+220
+00:17:10.960 --> 00:17:14.960 
+without the developers needing to resubmit their apps,
+
+221
+00:17:14.960 --> 00:17:16.960 
+so it's pretty cool.
+
+222
+00:17:16.960 --> 00:17:19.960 
+Activating this setting indicates that the target or project
+
+223
+00:17:19.960 --> 00:17:21.960 
+should generate Bitcode during compilation
+
+224
+00:17:21.960 --> 00:17:25.960 
+for platforms and architectures that support it.
+
+225
+00:17:25.960 --> 00:17:28.960 
+For archive builds, Bitcode will be generated
+
+226
+00:17:28.960 --> 00:17:33.960 
+in the linked binary for submission to the AppStore.
+
+227
+00:17:33.960 --> 00:17:36.960 
+For other builds, the compiler and linker will check
+
+228
+00:17:36.960 --> 00:17:38.960 
+whether the code complies with the requirements
+
+229
+00:17:38.960 --> 00:17:40.960 
+for Bitcode generation,
+
+230
+00:17:40.960 --> 00:17:45.960 
+but will not generate the actual Bitcode.
+
+231
+00:17:45.960 --> 00:17:48.960 
+This setting requires that all the linked binaries
+
+232
+00:17:48.960 --> 00:17:50.960 
+also support Bitcode.
+
+233
+00:17:50.960 --> 00:17:54.960 
+So in our case, if you want to enable Bitcode
+
+234
+00:17:54.960 --> 00:17:56.960 
+for the EssentialApp,
+
+235
+00:17:56.960 --> 00:18:00.960 
+the linked EssentialFeed and EssentialFeed iOS frameworks
+
+236
+00:18:00.960 --> 00:18:03.960 
+also need to support Bitcode.
+
+237
+00:18:03.960 --> 00:18:06.960 
+Enabling Bitcode results in slower build times,
+
+238
+00:18:06.960 --> 00:18:09.960 
+especially during the archive actions,
+
+239
+00:18:09.960 --> 00:18:12.960 
+since generating the build code requires extra time,
+
+240
+00:18:12.960 --> 00:18:17.960 
+and the system also needs to regenerate the debug symbols
+
+241
+00:18:17.960 --> 00:18:20.960 
+using the new Bitcode signatures.
+
+242
+00:18:20.960 --> 00:18:27.960 
+You should still use it when possible.
+
+243
+00:18:27.960 --> 00:18:31.960 
+As an example,
+
+244
+00:18:31.960 --> 00:18:35.960 
+doing an archive with the existing settings
+
+245
+00:18:35.960 --> 00:18:39.960 
+takes around 20 seconds.
+
+246
+00:18:39.960 --> 00:18:46.960 
+Disabling Bitcode will drop the build time to around 10 seconds,
+
+247
+00:18:46.960 --> 00:18:50.960 
+so you see how big of an improvement that is.
+
+248
+00:18:50.960 --> 00:18:53.960 
+Also, using Bitcode requires more processing
+
+249
+00:18:53.960 --> 00:19:11.960 
+when exporting or uploading to the AppStore.
+
+250
+00:19:11.960 --> 00:19:15.960 
+Next is Enable Previews.
+
+251
+00:19:15.960 --> 00:19:17.960 
+If this setting is enabled,
+
+252
+00:19:17.960 --> 00:19:20.960 
+the product will be built with options appropriate
+
+253
+00:19:20.960 --> 00:19:24.960 
+for supporting SwiftUI previews.
+
+254
+00:19:24.960 --> 00:19:26.960 
+So if you're using SwiftUI,
+
+255
+00:19:26.960 --> 00:19:29.960 
+and you want to take advantage of the previews,
+
+256
+00:19:29.960 --> 00:19:31.960 
+you must set this to Yes.
+
+257
+00:19:31.960 --> 00:19:37.960 
+Otherwise, you can leave it as No.
+
+258
+00:19:37.960 --> 00:19:40.960 
+Enable Testability.
+
+259
+00:19:40.960 --> 00:19:42.960 
+When Enable Testability is activated,
+
+260
+00:19:42.960 --> 00:19:45.960 
+the product will be built with options appropriate
+
+261
+00:19:45.960 --> 00:19:47.960 
+for running automated Tests,
+
+262
+00:19:47.960 --> 00:19:52.960 
+such as making private interfaces accessible to the Tests.
+
+263
+00:19:52.960 --> 00:19:59.960 
+This may Result in slower builds and slower running Tests
+
+264
+00:19:59.960 --> 00:20:04.960 
+than they would without Testability enabled.
+
+265
+00:20:04.960 --> 00:20:05.960 
+As you remember,
+
+266
+00:20:05.960 --> 00:20:09.960 
+you should test your entities through their public interfaces
+
+267
+00:20:09.960 --> 00:20:13.960 
+so that you don't couple the Tests with the implementation details.
+
+268
+00:20:13.960 --> 00:20:19.960 
+If that is true, you can set Enable Testability to No,
+
+269
+00:20:19.960 --> 00:20:22.960 
+even for debug.
+
+270
+00:20:22.960 --> 00:20:25.960 
+So you get faster builds, faster running Tests,
+
+271
+00:20:25.960 --> 00:20:28.960 
+and you protect yourself and your teammates
+
+272
+00:20:28.960 --> 00:20:30.960 
+from using internal details,
+
+273
+00:20:30.960 --> 00:20:57.960 
+because a testable import will not be available.
+
+274
+00:20:57.960 --> 00:21:01.960 
+Next is Development Assets.
+
+275
+00:21:01.960 --> 00:21:04.960 
+This setting contains files and directories
+
+276
+00:21:04.960 --> 00:21:08.960 
+used only for development.
+
+277
+00:21:08.960 --> 00:21:12.960 
+Archive and install builds will exclude this content.
+
+278
+00:21:12.960 --> 00:21:17.960 
+This can be also set from the Target General
+
+279
+00:21:17.960 --> 00:21:22.960 
+Development Assets section.
+
+280
+00:21:22.960 --> 00:21:28.960 
+It's useful to add assets used only in development or Tests
+
+281
+00:21:28.960 --> 00:21:44.960 
+so they are guaranteed not to be added into release builds.
+
+282
+00:21:44.960 --> 00:21:48.960 
+The Targeted Device Families setting basically contains
+
+283
+00:21:48.960 --> 00:21:53.960 
+a List of supported devices.
+
+284
+00:21:53.960 --> 00:21:59.960 
+When set to 1, or iPhone, apps can still run on iPads,
+
+285
+00:21:59.960 --> 00:22:05.960 
+but in a 1x, 2x compatibility zoom mode.
+
+286
+00:22:05.960 --> 00:22:10.960 
+If you set the value to iPhone and iPad,
+
+287
+00:22:10.960 --> 00:22:14.960 
+you will add support for iPad interfaces as well.
+
+288
+00:22:14.960 --> 00:22:21.960 
+And as you can see, Mac Catalyst is also available.
+
+289
+00:22:21.960 --> 00:22:25.960 
+On the other way, if you set the value to iPad only
+
+290
+00:22:25.960 --> 00:22:28.960 
+and try to install this app on an iPhone,
+
+291
+00:22:28.960 --> 00:22:33.960 
+you will see an Error like this app was not built
+
+292
+00:22:33.960 --> 00:22:46.960 
+to support this device family.
+
+293
+00:22:46.960 --> 00:22:52.960 
+The iOS deployment target is a pretty important setting.
+
+294
+00:22:52.960 --> 00:22:56.960 
+It basically contains the minimum supported iOS version,
+
+295
+00:22:56.960 --> 00:23:01.960 
+so in our case iOS 14.
+
+296
+00:23:01.960 --> 00:23:05.960 
+Code will load on these and later versions of iOS.
+
+297
+00:23:05.960 --> 00:23:09.960 
+Framework APIs that are unavailable in earlier versions
+
+298
+00:23:09.960 --> 00:23:11.960 
+will be weak linked.
+
+299
+00:23:11.960 --> 00:23:14.960 
+Your code should check for specific system versions
+
+300
+00:23:14.960 --> 00:23:25.960 
+before calling newer APIs.
+
+301
+00:23:25.960 --> 00:23:31.960 
+Most apps will support the current major iOS version
+
+302
+00:23:31.960 --> 00:23:36.960 
+and the previous one, so in our context iOS 15 and iOS 14.
+
+303
+00:23:36.960 --> 00:23:39.960 
+But of course, depending on the product requirements
+
+304
+00:23:39.960 --> 00:23:44.960 
+or targeted users, you might need to support earlier versions.
+
+305
+00:23:44.960 --> 00:23:47.960 
+Or if the product is in development for many years
+
+306
+00:23:47.960 --> 00:23:50.960 
+or it needs to run on some pre-existing devices,
+
+307
+00:23:50.960 --> 00:23:56.960 
+you might even need to go back to iOS 8 or 9.
+
+308
+00:23:56.960 --> 00:23:59.960 
+What's important is changing the deployment target
+
+309
+00:23:59.960 --> 00:24:02.960 
+results in a different build process with new parameters
+
+310
+00:24:02.960 --> 00:24:05.960 
+like the range of supported OSes.
+
+311
+00:24:05.960 --> 00:24:09.960 
+Sometimes this can lead to Errors or warnings.
+
+312
+00:24:09.960 --> 00:24:11.960 
+If you increase the value of the deployment target,
+
+313
+00:24:11.960 --> 00:24:15.960 
+you'll need to replace the APIs that were deplicated or removed.
+
+314
+00:24:15.960 --> 00:24:18.960 
+If you decrease the value of the deployment target,
+
+315
+00:24:18.960 --> 00:24:20.960 
+some APIs may not exist.
+
+316
+00:24:20.960 --> 00:24:28.960 
+So they will require handling using if at available.
+
+317
+00:24:28.960 --> 00:24:32.960 
+The key here is that your code must run on all the supported OSes
+
+318
+00:24:32.960 --> 00:24:37.960 
+starting from the deployment target and to any newer OS.
+
+319
+00:24:37.960 --> 00:24:42.960 
+And I'm mentioning this because you can install apps on OSes
+
+320
+00:24:42.960 --> 00:24:47.960 
+that were not available when you were actually build those apps.
+
+321
+00:24:47.960 --> 00:24:51.960 
+But the compiler helps you in this way.
+
+322
+00:24:51.960 --> 00:24:57.960 
+Let's do a short demo with this.
+
+323
+00:24:57.960 --> 00:25:08.960 
+So my EssentialApp is building just fine.
+
+324
+00:25:08.960 --> 00:25:14.960 
+Hopefully.
+
+325
+00:25:14.960 --> 00:25:24.960 
+Yep. Now as an exercise, let's say we want to support everything above iOS 10.
+
+326
+00:25:24.960 --> 00:25:29.960 
+So I'm going to set the project level setting to iOS 10.
+
+327
+00:25:29.960 --> 00:25:35.960 
+So both my targets in EssentialFeed take advantage of that.
+
+328
+00:25:35.960 --> 00:25:44.960 
+And I'm going to do the same for the EssentialApp.
+
+329
+00:25:44.960 --> 00:25:48.960 
+Now let's try to build.
+
+330
+00:25:48.960 --> 00:25:56.960 
+Of course, I get a failure.
+
+331
+00:25:56.960 --> 00:26:03.960 
+The Error is UUID attributes feature requires iOS deployment target 11 or later.
+
+332
+00:26:03.960 --> 00:26:15.960 
+So the UUID attributes I set in the FeedStore for data Model require at least iOS 11.
+
+333
+00:26:15.960 --> 00:26:28.960 
+Let's try to fix that by increasing the deployment target on the EssentialFeed to iOS 11.
+
+334
+00:26:28.960 --> 00:26:50.960 
+Trying to build again.
+
+335
+00:26:50.960 --> 00:27:11.960 
+Yep. So I get an Error where relative daytime formatter is only available in iOS 13 or newer.
+
+336
+00:27:11.960 --> 00:27:20.960 
+So let's continue the exercise by setting the deployment target to iOS 13.
+
+337
+00:27:20.960 --> 00:27:40.960 
+See if we can get a successful build.
+
+338
+00:27:40.960 --> 00:27:47.960 
+So the EssentialFeed targets were building properly.
+
+339
+00:27:47.960 --> 00:28:00.960 
+But I get this compiling for iOS 10 but module EssentialFeed has a minimum deployment target of iOS 13.
+
+340
+00:28:00.960 --> 00:28:08.960 
+This happens because all the modules we strongly link against must at least support the same OS versions as our target.
+
+341
+00:28:08.960 --> 00:28:14.960 
+Remember, we set the EssentialApp deployment target to iOS 10, but we never changed it.
+
+342
+00:28:14.960 --> 00:28:22.960 
+So the EssentialApp wants to build for iOS 10, but the linked modules support only iOS 13.
+
+343
+00:28:22.960 --> 00:28:25.960 
+And that's a problem.
+
+344
+00:28:25.960 --> 00:28:38.960 
+To fix this, I'm going to go to the EssentialApp and set the deployment target to match my iOS 13.
+
+345
+00:28:38.960 --> 00:28:46.960 
+And I'll try to build.
+
+346
+00:28:46.960 --> 00:28:59.960 
+Now I get a bunch of more Errors. The first one being that the Logger class is only available in iOS 14 or newer.
+
+347
+00:28:59.960 --> 00:29:19.960 
+I can fix this by using the at available API, but I need to do this for a bunch of more cases.
+
+348
+00:29:19.960 --> 00:29:37.960 
+Let's go back to the initial settings.
+
+349
+00:29:37.960 --> 00:29:47.960 
+This time I want to increase the deployment target as an exercise.
+
+350
+00:29:47.960 --> 00:29:51.960 
+But first I want to add some interesting code.
+
+351
+00:29:51.960 --> 00:30:00.960 
+So as you can see, again, my all my targets built successfully and I want to log all my current windows.
+
+352
+00:30:00.960 --> 00:30:09.960 
+So I'll do log.info and the Message will be like current windows.
+
+353
+00:30:09.960 --> 00:30:16.960 
+And then I'll use the UIApplication.shared.windows.
+
+354
+00:30:16.960 --> 00:30:25.960 
+I'll build this and build is succeeded.
+
+355
+00:30:25.960 --> 00:30:45.960 
+Now let's try to increase my deployment target to iOS 15 and build again.
+
+356
+00:30:45.960 --> 00:31:07.960 
+I should see a warning here, so I'll do a clean. Sometimes Xcode requires a clean to display the proper results.
+
+357
+00:31:07.960 --> 00:31:17.960 
+So as you can see, this line now generates a warning where the Windows API was deprecated in iOS 15.
+
+358
+00:31:17.960 --> 00:31:24.960 
+This was not an issue before, because when supporting iOS 14, this API was perfectly valid.
+
+359
+00:31:24.960 --> 00:31:35.960 
+Now, since we're targeting iOS 15 and above, this API is deprecated and I get a warning.
+
+360
+00:31:35.960 --> 00:31:45.960 
+I'll revert the changes and look at the chat because we have a question there.
+
+361
+00:31:45.960 --> 00:31:54.960 
+So Igor is asking Xcode 13.2.1 allows to set minimum iOS deployment target to iOS 9.
+
+362
+00:31:54.960 --> 00:31:56.960 
+What if I'd like iOS 8?
+
+363
+00:31:56.960 --> 00:32:07.960 
+Well, from my knowledge, I think you can edit that value if not with the build settings editor,
+
+364
+00:32:07.960 --> 00:32:15.960 
+definitely with some XC configuration files, which we'll talk about in another episode.
+
+365
+00:32:15.960 --> 00:32:35.960 
+So I think you can do something like this.
+
+366
+00:32:35.960 --> 00:32:38.960 
+We covered the iOS deployment target.
+
+367
+00:32:38.960 --> 00:32:47.960 
+There are settings for the macOS deployment target, tvOS and watchOS, which behave in the exact same way we just showed,
+
+368
+00:32:47.960 --> 00:33:09.960 
+just that for their respective platforms. So I don't think there's a need to go into these details.
+
+369
+00:33:09.960 --> 00:33:19.960 
+Next, I want to look at the MACH-O type setting, which is pretty obscure setting, but really important one.
+
+370
+00:33:19.960 --> 00:33:28.960 
+So the MACH-O type determines the format of the produced binary and how it can be linked when building other binaries.
+
+371
+00:33:28.960 --> 00:33:36.960 
+There's a MACH-O programming topics doc from Apple, if you're curious.
+
+372
+00:33:36.960 --> 00:33:48.960 
+The values, the setting supports are executable for executables and standalone binaries that cannot be linked.
+
+373
+00:33:48.960 --> 00:33:56.960 
+So in the case of the EssentialApp, the MACH-O type is an executable.
+
+374
+00:33:56.960 --> 00:34:07.960 
+For the EssentialFeed targets, the value is dynamic library.
+
+375
+00:34:07.960 --> 00:34:15.960 
+Dynamic libraries are linked at build time and loaded automatically when needed by the system.
+
+376
+00:34:15.960 --> 00:34:31.960 
+The other values are Bundle. Bundle libraries are loaded explicitly at runtime or static libraries and are linked at build time and loaded at execution time.
+
+377
+00:34:31.960 --> 00:34:45.960 
+I've never used relocatable object File, but they're supposed to be object files that are single module files linked at build time.
+
+378
+00:34:45.960 --> 00:34:53.960 
+Why this setting is important is because it controls what type of binary will our target produce.
+
+379
+00:34:53.960 --> 00:35:06.960 
+By changing this setting, we can switch from a dynamic to a static or vice versa module, so a library or framework.
+
+380
+00:35:06.960 --> 00:35:16.960 
+Distinguishing between a library and framework is done through the wrapper extension setting, which we'll see in a minute.
+
+381
+00:35:16.960 --> 00:35:26.960 
+But this setting affects how other modules are built, so changing it may break the build.
+
+382
+00:35:26.960 --> 00:35:31.960 
+We can also look at an example.
+
+383
+00:35:31.960 --> 00:35:52.960 
+I'm going to build everything again.
+
+384
+00:35:52.960 --> 00:36:07.960 
+And use the product to build for the end finder.
+
+385
+00:36:07.960 --> 00:36:10.960 
+And I'll use the terminal.
+
+386
+00:36:10.960 --> 00:36:22.960 
+The File command with the File parameter will print out the type of the File.
+
+387
+00:36:22.960 --> 00:36:45.960 
+So as we can see here, the EssentialFeed framework is a macOS 64-bit dynamically shared library packed in a framework. And the same is true for the EssentialFeed iOS, which I'm not going to show.
+
+388
+00:36:45.960 --> 00:36:57.960 
+If I change the macro type of the EssentialFeed to a static library, I need to do a clean first.
+
+389
+00:36:57.960 --> 00:37:07.960 
+And then build it again.
+
+390
+00:37:07.960 --> 00:37:18.960 
+You'll notice that the compiler takes around the same time, so there's not a huge difference between building static or dynamic libraries.
+
+391
+00:37:18.960 --> 00:37:44.960 
+This time, sorry, there's a new folder, so I need to show build folder again and change my folder to the new folder.
+
+392
+00:37:44.960 --> 00:38:02.960 
+By running the same command on the EssentialFeed framework, prints out a different output, which is current archive. This current archive means a static module.
+
+393
+00:38:02.960 --> 00:38:26.960 
+As a note, changing the framework from a dynamic one to a static one might require extra changes in your configurations. In our case, EssentialFeed target contains some embedded CoreData Models, which are no longer embedded into the app Bundle properly, so we need to solve that differently.
+
+394
+00:38:26.960 --> 00:38:33.960 
+The only point of this exercise was to show how the macro type settings work.
+
+395
+00:38:33.960 --> 00:38:48.960 
+So I'll revert them.
+
+396
+00:38:48.960 --> 00:38:59.960 
+Any questions so far?
+
+397
+00:38:59.960 --> 00:39:01.960 
+Okay.
+
+398
+00:39:01.960 --> 00:39:05.960 
+Moving on.
+
+399
+00:39:05.960 --> 00:39:22.960 
+In this linking section, we also have the other linker flags setting, which allows passing options to the invocation of the linker.
+
+400
+00:39:22.960 --> 00:39:39.960 
+A pretty common example is passing minus Objective-C to the linker that causes all the members of static libraries that implement any Objective-C class or category to be loaded.
+
+401
+00:39:39.960 --> 00:39:50.960 
+But this can make the resulting executable larger and may pick up unnecessary objects, so for this reason, this setting is not on by default.
+
+402
+00:39:50.960 --> 00:40:05.960 
+As I said, it only affects Objective-C.
+
+403
+00:40:05.960 --> 00:40:13.960 
+Next, we'll look at the packaging group.
+
+404
+00:40:13.960 --> 00:40:17.960 
+First setting is Define Module.
+
+405
+00:40:17.960 --> 00:40:23.960 
+If this setting is enabled, the product will be treated as defining its own module.
+
+406
+00:40:23.960 --> 00:40:33.960 
+This enables the production of module Map files when appropriate and allows the product to be imported as a module.
+
+407
+00:40:33.960 --> 00:40:53.960 
+It's useful for Objective-C to enable creating modules from frameworks so you can use at import EssentialFeed syntax like.
+
+408
+00:40:53.960 --> 00:40:57.960 
+Generate Info.plist File.
+
+409
+00:40:57.960 --> 00:41:08.960 
+If enabled, this setting will automatically generate an Info.plist File with the content from build settings,
+
+410
+00:41:08.960 --> 00:41:15.960 
+in particular the ones from the Info.plist values group.
+
+411
+00:41:15.960 --> 00:41:26.960 
+This can be useful when we want to regenerate our Info.plist on every build.
+
+412
+00:41:26.960 --> 00:41:42.960 
+Talking about Info.plist, the next setting is the path to the Info.plist File.
+
+413
+00:41:42.960 --> 00:41:47.960 
+I see a question from Srikant.
+
+414
+00:41:47.960 --> 00:41:57.960 
+What is a recommended option for MACH-O type?
+
+415
+00:41:57.960 --> 00:42:01.960 
+If you're building an app, it's definitely going to be an executable.
+
+416
+00:42:01.960 --> 00:42:10.960 
+If you're building a framework, it depends if you want to link it statically or dynamically.
+
+417
+00:42:10.960 --> 00:42:19.960 
+I will not make this conversation longer on this debate, which is something we've done a couple of times already,
+
+418
+00:42:19.960 --> 00:42:28.960 
+but my recommendation for short is try to make your frameworks and libraries static
+
+419
+00:42:28.960 --> 00:42:44.960 
+unless you have a strong reason to make them dynamic, because that will make your app startup much faster.
+
+420
+00:42:44.960 --> 00:42:51.960 
+Back to our settings in the packaging group.
+
+421
+00:42:51.960 --> 00:42:53.960 
+Product BundleIdentifier.
+
+422
+00:42:53.960 --> 00:42:58.960 
+This contains a String that uniquely identifies the Bundle.
+
+423
+00:42:58.960 --> 00:43:05.960 
+These strings should be a reverse DNS that uses only alphanumeric characters.and hyphen.
+
+424
+00:43:05.960 --> 00:43:12.960 
+The value is used as the CF BundleIdentifier in the Info.plist of the build Bundle.
+
+425
+00:43:12.960 --> 00:43:20.960 
+In our case, it's chrome.essentialDeveloper.EssentialFeed.
+
+426
+00:43:20.960 --> 00:43:32.960 
+And as you remember, this value is the one you entered when creating the Xcode project.
+
+427
+00:43:32.960 --> 00:43:44.960 
+Product module name contains the name to use for the source code module and which will be used in the import statements.
+
+428
+00:43:44.960 --> 00:43:47.960 
+This must be a valid identifier.
+
+429
+00:43:47.960 --> 00:43:53.960 
+And the product name contains the base name of the product generated by the target.
+
+430
+00:43:53.960 --> 00:43:59.960 
+In our case, EssentialFeed.
+
+431
+00:43:59.960 --> 00:44:03.960 
+We mentioned wrapper extension.
+
+432
+00:44:03.960 --> 00:44:12.960 
+This contains the extension used for product wrappers, which has a default value based on the product type.
+
+433
+00:44:12.960 --> 00:44:18.960 
+In our case, for the EssentialFeed framework, the extension is a framework.
+
+434
+00:44:18.960 --> 00:44:24.960 
+If this was a library, you would see here no extension.
+
+435
+00:44:24.960 --> 00:44:40.960 
+And if you look at the app target, the wrapper extension is app.
+
+436
+00:44:40.960 --> 00:44:45.960 
+Let's move to the search paths group.
+
+437
+00:44:45.960 --> 00:44:58.960 
+First, we see the framework search paths, which is a List of paths to folder containing frameworks searched by the compiler and the linker to resolve the frameworks used by the product.
+
+438
+00:44:58.960 --> 00:45:11.960 
+The header search paths also contain folders where the compiler looks for included or imported header files, mostly used when compiling C or Objective-C.
+
+439
+00:45:11.960 --> 00:45:32.960 
+The library search paths also contains a List of folders that are searched by the linker for libraries used by the grant product.
+
+440
+00:45:32.960 --> 00:45:37.960 
+Next, the signing group.
+
+441
+00:45:37.960 --> 00:45:41.960 
+The first setting is code signing entitlements.
+
+442
+00:45:41.960 --> 00:45:45.960 
+This contains a path to a File specifying code signing entitlements.
+
+443
+00:45:45.960 --> 00:46:00.960 
+This is a plist File that contains app capability settings like the Apple push service environment, which is development or production, associated domains, Keychain Access groups, and so on.
+
+444
+00:46:00.960 --> 00:46:08.960 
+The code signing identity contains the name of a valid code signing certificate in the Keychain.
+
+445
+00:46:08.960 --> 00:46:13.960 
+A missing or invalid certificate will cause a build Error.
+
+446
+00:46:13.960 --> 00:46:27.960 
+A common practice is to set the debug configuration as Apple development and the release configuration to Apple distribution.
+
+447
+00:46:27.960 --> 00:46:36.960 
+We can cover this in a more advanced lecture.
+
+448
+00:46:36.960 --> 00:46:42.960 
+And this is because all the code signing is pretty complex.
+
+449
+00:46:42.960 --> 00:46:45.960 
+But we're still going to mention them here.
+
+450
+00:46:45.960 --> 00:46:56.960 
+The code signing style specifies the method used to acquire and locate the signing assets.
+
+451
+00:46:56.960 --> 00:47:03.960 
+Choose automatic to let Xcode automatically create and update profiles, app IDs, and certificates.
+
+452
+00:47:03.960 --> 00:47:10.960 
+Choose manual to update these yourself on the developer websites.
+
+453
+00:47:10.960 --> 00:47:21.960 
+These are the same settings you remember from the signing and capabilities tab.
+
+454
+00:47:21.960 --> 00:47:26.960 
+However, we recommend starting simple and adding more control when you need it.
+
+455
+00:47:26.960 --> 00:47:32.960 
+So the automatic style might be okay to start with.
+
+456
+00:47:32.960 --> 00:47:48.960 
+And once it no longer fulfills the needs of your project or creates more problems than it solves, you can look into the full control offered by the manual style.
+
+457
+00:47:48.960 --> 00:47:57.960 
+The development team contains the team ID of a development team to use for certificates and provisioning profiles.
+
+458
+00:47:57.960 --> 00:48:10.960 
+It's unique to your team and is populated with the value you enter during the Xcode new project flow.
+
+459
+00:48:10.960 --> 00:48:17.960 
+And the provisioning profile must contain a profile name or UUID.
+
+460
+00:48:17.960 --> 00:48:25.960 
+And of course, a missing or invalid profile will cause a build Error.
+
+461
+00:48:25.960 --> 00:48:35.960 
+Used in conjunction with the development team, they fully specify a provisioning profile.
+
+462
+00:48:35.960 --> 00:49:02.960 
+If you use the manual signing style, you can give meaningful names to your provisioning profiles, specifying the app name and the type of distribution.
+
+463
+00:49:02.960 --> 00:49:10.960 
+Next, in the Testing group, there's a test whole setting, but our production targets have no value for this one.
+
+464
+00:49:10.960 --> 00:49:17.960 
+So we're going to look at the EssentialApp test target.
+
+465
+00:49:17.960 --> 00:49:33.960 
+We see that the value is set automatically by Xcode to build product directory and then the binary, which is EssentialApp.apps-EssentialApp.
+
+466
+00:49:33.960 --> 00:49:48.960 
+So the test host setting contains the path with the executable into which a Bundle of Tests is injected. Only specify the setting if Testing an application or other executable.
+
+467
+00:49:48.960 --> 00:50:00.960 
+This is useful in unit Testing target for apps, like we just saw.
+
+468
+00:50:00.960 --> 00:50:10.960 
+From the versioning group, we're going to look at the marketing version, which defines the user visible version of the app.
+
+469
+00:50:10.960 --> 00:50:27.960 
+This value corresponds to the CF Bundle short version String key in your Info.plist.
+
+470
+00:50:27.960 --> 00:50:40.960 
+We recommend that you use the semantic versioning, which is a guideline that specifies a version number should contain three components, a major, a minor and a patch.
+
+471
+00:50:40.960 --> 00:50:50.960 
+So if we assume you already have a public version, which is 1.0.0, Future versions will follow these conventions.
+
+472
+00:50:50.960 --> 00:51:01.960 
+If your new version contains only fixes and doesn't add any new functionality, we just increment the patch version, so the new release will be 1.0.1.
+
+473
+00:51:01.960 --> 00:51:15.960 
+If the new version adds some features as well as fixes and is fully compatible with the previous version, you need to increment the minor version, so you would release a 1.1.0.
+
+474
+00:51:15.960 --> 00:51:24.960 
+Only if the new version breaks compatibility with the previous version, you need to increase the major version, so the new version would be 2.0.0.
+
+475
+00:51:24.960 --> 00:51:35.960 
+That's just an example.
+
+476
+00:51:35.960 --> 00:51:44.960 
+Another important setting is link time optimization.
+
+477
+00:51:44.960 --> 00:51:49.960 
+This allows optimizing across File boundaries during linking.
+
+478
+00:51:49.960 --> 00:51:52.960 
+It has three options.
+
+479
+00:51:52.960 --> 00:51:57.960 
+No, which means do not use link optimization, which is the default one.
+
+480
+00:51:57.960 --> 00:52:05.960 
+Monolithic, which combines all the executable code into a single unit and runs aggressive compiler optimization on it.
+
+481
+00:52:05.960 --> 00:52:11.960 
+Or incremental, which is kind of a middle ground.
+
+482
+00:52:11.960 --> 00:52:17.960 
+It still runs those aggressive compiler optimizations, but in parallel on each unit.
+
+483
+00:52:17.960 --> 00:52:23.960 
+And it enables faster incremental builds, and it uses less memory than a monolithic one.
+
+484
+00:52:23.960 --> 00:52:32.960 
+Remember, this setting can improve the runtime performance of your app, but results in a longer build time, so always experiment and measure.
+
+485
+00:52:32.960 --> 00:52:48.960 
+In our case for the EssentialApp, it increases the build time by a few seconds.
+
+486
+00:52:48.960 --> 00:52:59.960 
+Optimization level is a GCC setting that specifies the degree to which the generated code is optimized for speed and binary size.
+
+487
+00:52:59.960 --> 00:53:11.960 
+Since it's a GCC setting, it only affects the code compiled with GCC, so C, Objective-C, but not Swift.
+
+488
+00:53:11.960 --> 00:53:30.960 
+The supported values are none, so no optimization, fast, faster, fastest, fastest and smallest, fastest with aggressive optimizations or smallest with aggressive optimizations.
+
+489
+00:53:30.960 --> 00:53:48.960 
+The default is none for the debug configuration and fastest, smallest for the release configuration.
+
+490
+00:53:48.960 --> 00:54:00.960 
+This can improve the runtime performance of your app or the binary size, but definitely results in a longer build time.
+
+491
+00:54:00.960 --> 00:54:19.960 
+The reason there are different values for the debug and release is because we want fast builds in debug, but slower, more optimized release builds, which are faster at runtime.
+
+492
+00:54:19.960 --> 00:54:29.960 
+Unless you really need to, I would leave this setting as it is.
+
+493
+00:54:29.960 --> 00:54:41.960 
+Next, in the Apple Clang modules group, we have enabled modules for C and Objective-C.
+
+494
+00:54:41.960 --> 00:54:45.960 
+This enables the use of modules for system APIs.
+
+495
+00:54:45.960 --> 00:54:58.960 
+This can Result in faster builds and project indexing, so leave it to the yes value if possible.
+
+496
+00:54:58.960 --> 00:55:06.960 
+Next, in the Objective-C language settings, there's enable Objective-C exceptions.
+
+497
+00:55:06.960 --> 00:55:33.960 
+This is set to yes by default and enables add try, add catch, add throw syntax for handling exceptions in your Objective-C code. This does not impact Swift.
+
+498
+00:55:33.960 --> 00:55:46.960 
+The Objective-C automatic reference counting, or ARC, tells the compiler to resolve the memory management of objects on its own.
+
+499
+00:55:46.960 --> 00:55:58.960 
+This means that at compile time, the compiler will add retain and release messages.
+
+500
+00:55:58.960 --> 00:56:02.960 
+This applies to Objective-C only.
+
+501
+00:56:02.960 --> 00:56:17.960 
+Please note that ARC is a lot different than garbage collection from other languages, because while garbage collection happens at runtime and depends on the current memory conditions,
+
+502
+00:56:17.960 --> 00:56:30.960 
+ARC is at compile time, where the Clang compiler is really efficient in identifying where to inject those calls to retain and release.
+
+503
+00:56:30.960 --> 00:56:43.960 
+Of course, this affects only Objective-C code, but if you still have Objective-C code, it's a pretty powerful feature, so we recommend you use it.
+
+504
+00:56:43.960 --> 00:57:08.960 
+Way back to iOS 4 or something like that, ARC wasn't available, so you'd have to manually add, retain, and release to all the objects, also called manual memory management.
+
+505
+00:57:08.960 --> 00:57:24.960 
+Next, into the pre-processing group, we have the pre-processor macros, which contain a List of macros of the form key equals value.
+
+506
+00:57:24.960 --> 00:57:44.960 
+By default, Xcode presets for the debug configuration this debug macro equals one, so we can add conditional code like dash if def debug in our Objective-C files.
+
+507
+00:57:44.960 --> 00:57:59.960 
+They are available only for the C Objective-C files, so Swift cannot access these, but there's a setting for Swift as well.
+
+508
+00:57:59.960 --> 00:58:09.960 
+Next, we have a lot of warning settings, which I recommend you try on your own and see which ones are useful.
+
+509
+00:58:09.960 --> 00:58:18.960 
+I recommend turning as many as possible on.
+
+510
+00:58:18.960 --> 00:58:33.960 
+In the asset catalog compiler options, we have the primary app icon set name, which basically contains the name of the app icon set for the target default app icon.
+
+511
+00:58:33.960 --> 00:58:48.960 
+This value will be merged into the Info.plist File at compilation.
+
+512
+00:58:48.960 --> 00:58:54.960 
+Next, let's look at some Swift specific settings.
+
+513
+00:58:54.960 --> 00:59:04.960 
+First, there's the compilation mode, which controls the way Swift files from a module are being rebuilt.
+
+514
+00:59:04.960 --> 00:59:24.960 
+It has two values, incremental, which will only rebuild the source files that are out of Date, running multiple compiler processes as needed, and whole module, which always rebuilds all the files in a module in a single compiler process.
+
+515
+00:59:24.960 --> 00:59:38.960 
+The preset values from Xcode are incremental for debug builds and whole module for release builds, again for a faster build in debug and a more optimized release one that runs faster.
+
+516
+00:59:38.960 --> 00:59:56.960 
+An interesting observation is that in small projects, using the whole module option may Result in faster builds, even if in large projects you see a definite difference where incremental builds are a lot faster.
+
+517
+00:59:56.960 --> 01:00:04.960 
+As I said before, whole module compilation results in a single output File, which makes it more efficient at runtime.
+
+518
+01:00:04.960 --> 01:00:10.960 
+Using this setting results in Xcode reporting back just one log entry.
+
+519
+01:00:10.960 --> 01:00:16.960 
+Let's see how this entry looks like.
+
+520
+01:00:16.960 --> 01:00:41.960 
+If you look at any of the previous builds for EssentialApp target, we see that compile Swift source files build step is very specific and mentions each File that was compiled and the total duration.
+
+521
+01:00:41.960 --> 01:01:06.960 
+If I change my setting to whole module and rebuild,
+
+522
+01:01:06.960 --> 01:01:28.960 
+and search for my target, which is EssentialApp, instead of all the files listed here,
+
+523
+01:01:28.960 --> 01:01:42.960 
+we see only compile nice Swift source files. This is because there's just one process instead of a process for each File.
+
+524
+01:01:42.960 --> 01:02:01.960 
+Let's revert so we don't affect other examples.
+
+525
+01:02:01.960 --> 01:02:09.960 
+The other important setting in this code generation group is optimization level.
+
+526
+01:02:09.960 --> 01:02:21.960 
+This specifies the degree to which the generated code is optimized for speed and binary size. So it's pretty similar to that GCC optimization level before.
+
+527
+01:02:21.960 --> 01:02:27.960 
+The values available are no optimization,
+
+528
+01:02:27.960 --> 01:02:32.960 
+optimized for speed or optimized for size.
+
+529
+01:02:32.960 --> 01:02:46.960 
+As we can see, the default Xcode value is no optimization for debug and optimized for speed in the release.
+
+530
+01:02:46.960 --> 01:02:58.960 
+Again, this is because we want faster builds in debug, but optimized builds which may be slower on release.
+
+531
+01:02:58.960 --> 01:03:08.960 
+By setting all the targets to optimize for speed in the debug build, build increases to like
+
+532
+01:03:08.960 --> 01:03:11.960 
+extra five seconds.
+
+533
+01:03:11.960 --> 01:03:21.960 
+I won't show this.
+
+534
+01:03:21.960 --> 01:03:37.960 
+In the Swift compiler custom flags, there's the active compilation conditions setting, which basically is a List of compilation conditions that enable conditional expressions.
+
+535
+01:03:37.960 --> 01:03:40.960 
+To translate this into plain English,
+
+536
+01:03:40.960 --> 01:03:53.960 
+this is the equivalent of the GCC prep processor macros we talked about before, where we can define macros that are available in our Swift code.
+
+537
+01:03:53.960 --> 01:04:00.960 
+As you can see by default, there's a debug conditional
+
+538
+01:04:00.960 --> 01:04:08.960 
+available in the debug configuration and none for release.
+
+539
+01:04:08.960 --> 01:04:28.960 
+This enables our Swift code to do a conditional of dash if debug in our source Swift files.
+
+540
+01:04:28.960 --> 01:04:33.960 
+In the compiler general group, we have
+
+541
+01:04:33.960 --> 01:04:38.960 
+Objective-C Generated Interface header name,
+
+542
+01:04:38.960 --> 01:04:48.960 
+which is the name to use for the header that is generated by the Swift compiler for using import statements in Objective-C.
+
+543
+01:04:48.960 --> 01:04:57.960 
+So if we want to make our Swift code visible from Objective-C, we have to generate this header.
+
+544
+01:04:57.960 --> 01:05:09.960 
+By default, its Xcode sets the value to Swift module name dash Swift.H
+
+545
+01:05:09.960 --> 01:05:20.960 
+and will generate this File by default, just by including Swift in your target.
+
+546
+01:05:20.960 --> 01:05:26.960 
+In the Swift compiler language group, we have the Swift language version,
+
+547
+01:05:26.960 --> 01:05:31.960 
+which basically controls the syntax that the compiler accepts.
+
+548
+01:05:31.960 --> 01:05:35.960 
+Each Xcode version will pre-fill this with a different value,
+
+549
+01:05:35.960 --> 01:05:41.960 
+but it's not the exact same value as the Swift version embedded by each Xcode.
+
+550
+01:05:41.960 --> 01:05:48.960 
+So it's more like a compatibility version, because in our case where we run Xcode 13.2,
+
+551
+01:05:48.960 --> 01:05:58.960 
+the pre-filled value is Swift 5, while our embedded value is Swift 5.5.
+
+552
+01:05:58.960 --> 01:06:06.960 
+And an interesting setting which exists for Objective-C as for Swift is treat warning as Errors.
+
+553
+01:06:06.960 --> 01:06:14.960 
+This will basically make your compiler transform any warning into an Error and fail the build.
+
+554
+01:06:14.960 --> 01:06:23.960 
+If you set this to yes, you allow you and your team to keep your projects clean of warnings,
+
+555
+01:06:23.960 --> 01:06:31.960 
+which can be pretty nice.
+
+556
+01:06:31.960 --> 01:06:34.960 
+Thank you.
+
+557
+01:06:34.960 --> 01:06:41.960 
+So now I'll be taking any questions, if there are any.
+
+558
+01:06:41.960 --> 01:06:45.960 
+Thank you, Joseph.
+
+559
+01:06:45.960 --> 01:06:50.960 
+So not-symbolicated Crash logs are usually human-readable anime.
+
+560
+01:06:50.960 --> 01:06:55.960 
+Do you know how this varies for Objective-C and Swift?
+
+561
+01:06:55.960 --> 01:07:02.960 
+So first of all, not-symbolicated Crash logs are not human-readable.
+
+562
+01:07:02.960 --> 01:07:12.960 
+That's what the symbolication does, basically transforms some addresses into lines of code from our builds.
+
+563
+01:07:12.960 --> 01:07:18.960 
+Yeah, there is a difference between how this is resolved between Objective-C and Swift.
+
+564
+01:07:18.960 --> 01:07:28.960 
+But the thing is, if you have a DSYM for your module or modules, if you have multiple binaries,
+
+565
+01:07:28.960 --> 01:07:33.960 
+then you should be able to symbolicate properly.
+
+566
+01:07:33.960 --> 01:07:40.960 
+Have an episode dedicated to Crash reports at some point.
+
+567
+01:07:40.960 --> 01:07:59.960 
+All right. Thank you for joining in, and I'll see you soon.
+

@@ -1,0 +1,44 @@
+466
+00:16:02,366 --> 00:16:03,100
+that behave
+那種行為
+
+467
+00:16:03,100 --> 00:16:05,833
+exactly the same even though they use
+即使他們使用的是，這種行為完全相同
+
+468
+00:16:05,833 --> 00:16:07,266
+completely different
+完全不同
+
+469
+00:16:07,266 --> 00:16:10,466
+frameworks behind the scenes but
+幕後的框架，但是
+
+470
+00:16:10,466 --> 00:16:12,300
+since we have those two FeedStore
+既然我們有兩個FeedStore
+
+471
+00:16:12,300 --> 00:16:13,600
+implementations
+實現，
+
+472
+00:16:13,600 --> 00:16:15,333
+and we just need one for this
+而我們只需要這其中一個
+
+473
+00:16:15,333 --> 00:16:17,600
+application I think we can get rid of
+應用程式，我想我們可以去掉
+
+474
+00:16:17,600 --> 00:16:18,466
+one of them
+其中一個

@@ -1,0 +1,14 @@
+1. 本講座介紹如何在 iOS 中，使用 Model-View-Controller (MVC) 驅動測試 tableView 中的渲染項目。
+2. 他們討論實施會自動操作的 feed 加載邏輯，在過程中展示加載指示器。
+3. FeedViewController 繼承自 UITableViewController，並與 FeedLoader 進行通訊，根據加載狀態管理 UIRefreshControl 的狀態。
+4. 在此語境中，FeedItem 是具有描述、位置和檢索圖像數據的 URL 的 FeedImage 模型。
+5. 他們介紹了一種新的 Domain-Specific Language (DSL)，用於將測試從具體 UI 元素中抽象出來。
+6. tableView 的渲染取決於 FeedLoader 返回的 FeedImages 數組。
+7. 本講座討論當 cell 變得可見時，應觸發圖像 URL 請求。他們注意到不要直接使用 URLSession 以避免 UIViewController 與 URLSession 的實現產生耦合。
+8. 實施 FeedImageDataLoader 協議可以將加載任務分配至不同的接口中。
+9. 對 cell 渲染的測試包括具有描述和位置的情況，具有描述或位置的情況，以及都不具有的情況。
+10. 講座展示如何處理 feed 加載錯誤，其中已經加載的 feed 應該保持不變，無論結果如何加載指示器都應消失。
+11. FeedViewController 處理圖片變得接近可見時的預加載，並在圖像視圖不可見時取消加載。
+12. 加載過程包括一種閃爍的動畫，直到圖像數據請求完成，並考慮了處理加載錯誤和無效圖像數據的情況。
+13. 點擊重試按鈕將觸發另一個加載序列。
+14. 講師結束語中提到 FeedViewController 的重責大任，並暗示有可能用多個 MVC 方法來拆解複雜性。

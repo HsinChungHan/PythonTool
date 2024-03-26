@@ -1,0 +1,3915 @@
+1
+00:00:01.500 --> 00:00:03.433
+Hello Mike, hey Caio
+
+2
+00:00:03.433 --> 00:00:05.266
+so in the previous episode we finished
+
+3
+00:00:05.266 --> 00:00:09.100
+handling all the HTTPClient errors
+
+4
+00:00:09.100 --> 00:00:11.333
+now it's time to start mapping the JSON
+
+5
+00:00:11.333 --> 00:00:12.233
+response
+
+6
+00:00:12.233 --> 00:00:15.433
+into feed items right so
+
+7
+00:00:15.433 --> 00:00:18.800
+the feed items are the models that the
+
+8
+00:00:18.800 --> 00:00:20.066
+rest of the system
+
+9
+00:00:20.066 --> 00:00:22.700
+are going to use and we want the API
+
+10
+00:00:22.700 --> 00:00:23.500
+module
+
+11
+00:00:23.500 --> 00:00:26.800
+to convert the data that come from the
+
+12
+00:00:26.800 --> 00:00:30.800
+HTTPClient to this model
+
+13
+00:00:30.800 --> 00:00:34.533
+so this is our model FeedItem
+
+14
+00:00:34.533 --> 00:00:36.366
+and here we have the contract with the
+
+15
+00:00:36.366 --> 00:00:38.466
+backend on how this model is
+
+16
+00:00:38.466 --> 00:00:39.500
+represented
+
+17
+00:00:39.500 --> 00:00:42.533
+in JSON form very nice so again it's a
+
+18
+00:00:42.533 --> 00:00:43.733
+200 response
+
+19
+00:00:43.733 --> 00:00:45.900
+we are already checking that and then we
+
+20
+00:00:45.900 --> 00:00:46.866
+have an object
+
+21
+00:00:46.866 --> 00:00:49.266
+with a keypath items which contains an
+
+22
+00:00:49.266 --> 00:00:50.633
+array of objects
+
+23
+00:00:50.633 --> 00:00:52.933
+and location and description is optional
+
+24
+00:00:52.933 --> 00:00:54.633
+so we might not have one
+
+25
+00:00:54.633 --> 00:00:56.466
+and when there is no description or
+
+26
+00:00:56.466 --> 00:00:59.033
+location they are just not present
+
+27
+00:00:59.033 --> 00:01:03.266
+in the JSON representation yes
+
+28
+00:01:03.266 --> 00:01:07.333
+okay let's start with a test as always
+
+29
+00:01:07.333 --> 00:01:09.666
+let's start with the unhappy path right
+
+30
+00:01:09.666 --> 00:01:11.666
+okay so you're talking about the 200
+
+31
+00:01:11.666 --> 00:01:12.866
+response
+
+32
+00:01:12.866 --> 00:01:16.233
+but invalid JSON yes so it delivers an
+
+33
+00:01:16.233 --> 00:01:16.766
+error
+
+34
+00:01:16.766 --> 00:01:20.700
+yes on 200 HTTP response
+
+35
+00:01:20.700 --> 00:01:24.133
+but with invalid JSON right
+
+36
+00:01:24.133 --> 00:01:26.533
+can happen yeah we should be ready for
+
+37
+00:01:26.533 --> 00:01:28.700
+it regardless if it's going to happen or
+
+38
+00:01:28.700 --> 00:01:29.433
+not
+
+39
+00:01:29.433 --> 00:01:31.500
+so as before we have our sut and our
+
+40
+00:01:31.500 --> 00:01:34.066
+client
+
+41
+00:01:34.066 --> 00:01:38.400
+I think we can even copy the setup here
+
+42
+00:01:38.400 --> 00:01:41.200
+so we are capturing the errors right we
+
+43
+00:01:41.200 --> 00:01:43.200
+are completing with a 200
+
+44
+00:01:43.200 --> 00:01:46.066
+status code but now we need to pass some
+
+45
+00:01:46.066 --> 00:01:46.866
+data
+
+46
+00:01:46.866 --> 00:01:49.833
+right and it's invalid JSON yeah that's
+
+47
+00:01:49.833 --> 00:01:51.033
+the setup
+
+48
+00:01:51.033 --> 00:01:53.100
+and we want to make sure that we
+
+49
+00:01:53.100 --> 00:01:54.766
+received an invalidData
+
+50
+00:01:54.766 --> 00:01:57.500
+error yes so we need to create this
+
+51
+00:01:57.500 --> 00:01:59.733
+invalid JSON
+
+52
+00:01:59.733 --> 00:02:02.866
+so invalidJSON is equal to well it can be
+
+53
+00:02:02.866 --> 00:02:03.600
+any
+
+54
+00:02:03.600 --> 00:02:06.533
+invalid JSON data representation exactly
+
+55
+00:02:06.533 --> 00:02:07.733
+we can create some
+
+56
+00:02:07.733 --> 00:02:10.366
+data here with whatever like invalid
+
+57
+00:02:10.366 --> 00:02:11.833
+JSON
+
+58
+00:02:11.833 --> 00:02:15.166
+yeah okay
+
+59
+00:02:15.166 --> 00:02:18.133
+okay now our client spy doesn't know how
+
+60
+00:02:18.133 --> 00:02:19.900
+to handle this data yet
+
+61
+00:02:19.900 --> 00:02:23.566
+right so let's implement that right here
+
+62
+00:02:23.566 --> 00:02:26.300
+we can receive data now but this is
+
+63
+00:02:26.300 --> 00:02:27.733
+going to break the other tests
+
+64
+00:02:27.733 --> 00:02:30.400
+right but we can just give it a default
+
+65
+00:02:30.400 --> 00:02:30.933
+value
+
+66
+00:02:30.933 --> 00:02:33.333
+for now yep and what should we do with
+
+67
+00:02:33.333 --> 00:02:34.466
+this data
+
+68
+00:02:34.466 --> 00:02:36.233
+right this data should come in the
+
+69
+00:02:36.233 --> 00:02:37.666
+success branch
+
+70
+00:02:37.666 --> 00:02:40.866
+when we get the response we also expect
+
+71
+00:02:40.866 --> 00:02:42.000
+to get data
+
+72
+00:02:42.000 --> 00:02:45.033
+so we can append it in the enum
+
+73
+00:02:45.033 --> 00:02:47.266
+success tuple okay but this is going
+
+74
+00:02:47.266 --> 00:02:48.866
+to break our production code but that's
+
+75
+00:02:48.866 --> 00:02:49.500
+good
+
+76
+00:02:49.500 --> 00:02:52.133
+yep that's what we want so we need to
+
+77
+00:02:52.133 --> 00:02:53.033
+add something
+
+78
+00:02:53.033 --> 00:02:56.133
+else in this result type yes
+
+79
+00:02:56.133 --> 00:03:00.066
+it's Data and HTTPURLResponse
+
+80
+00:03:00.066 --> 00:03:03.033
+can we build now okay we can build and
+
+81
+00:03:03.033 --> 00:03:04.866
+the test is passing
+
+82
+00:03:04.866 --> 00:03:07.566
+right but I would also want to see a
+
+83
+00:03:07.566 --> 00:03:08.533
+failing test
+
+84
+00:03:08.533 --> 00:03:11.100
+right so we can quickly just comment out
+
+85
+00:03:11.100 --> 00:03:15.100
+this line of code
+
+86
+00:03:15.100 --> 00:03:17.100
+there you go so we can see a failing
+
+87
+00:03:17.100 --> 00:03:19.033
+test we are covering this
+
+88
+00:03:19.033 --> 00:03:22.300
+scenario let's put it back
+
+89
+00:03:22.300 --> 00:03:26.633
+it's passing let's commit delivers
+
+90
+00:03:26.633 --> 00:03:31.033
+invalid data error on 200 HTTP
+
+91
+00:03:31.033 --> 00:03:34.533
+response with invalid JSON yeah looks
+
+92
+00:03:34.533 --> 00:03:35.433
+good
+
+93
+00:03:35.433 --> 00:03:37.433
+okay so it seems to me there is a lot of
+
+94
+00:03:37.433 --> 00:03:39.200
+duplication in these
+
+95
+00:03:39.200 --> 00:03:42.300
+tests that are handling the error cases
+
+96
+00:03:42.300 --> 00:03:44.866
+yes they are all repeating this dance of
+
+97
+00:03:44.866 --> 00:03:47.266
+capturing errors and asserting
+
+98
+00:03:47.266 --> 00:03:50.066
+the correct value so what changes here
+
+99
+00:03:50.066 --> 00:03:50.933
+only the action
+
+100
+00:03:50.933 --> 00:03:54.133
+that generates the error and the error
+
+101
+00:03:54.133 --> 00:03:58.233
+so if we can expect a certain
+
+102
+00:03:58.233 --> 00:04:01.333
+error case and we can give it the action
+
+103
+00:04:01.333 --> 00:04:04.466
+I think we can save some lines there and
+
+104
+00:04:04.466 --> 00:04:05.333
+even make it
+
+105
+00:04:05.333 --> 00:04:07.033
+more readable okay so let's try to
+
+106
+00:04:07.033 --> 00:04:09.333
+create a helper then let me copy
+
+107
+00:04:09.333 --> 00:04:12.400
+the current setup let's create here
+
+108
+00:04:12.400 --> 00:04:14.400
+a helper function and as you say it's
+
+109
+00:04:14.400 --> 00:04:16.000
+something like expect
+
+110
+00:04:16.000 --> 00:04:19.833
+right the sut RemoteFeedLoader
+
+111
+00:04:19.833 --> 00:04:23.166
+to complete right we're completing with
+
+112
+00:04:23.166 --> 00:04:23.733
+an error
+
+113
+00:04:23.733 --> 00:04:26.133
+in these tests okay so complete with
+
+114
+00:04:26.133 --> 00:04:27.100
+error
+
+115
+00:04:27.100 --> 00:04:30.300
+and it's a RemoteFeedLoader.Error
+
+116
+00:04:30.300 --> 00:04:33.500
+and when some kind of action occurs so
+
+117
+00:04:33.500 --> 00:04:37.433
+yeah let's pass an action closure yeah
+
+118
+00:04:37.433 --> 00:04:40.466
+okay let's see is everything there so
+
+119
+00:04:40.466 --> 00:04:42.133
+this is the action part
+
+120
+00:04:42.133 --> 00:04:43.733
+right the client is not needed this is
+
+121
+00:04:43.733 --> 00:04:45.166
+going to go in the closure
+
+122
+00:04:45.166 --> 00:04:48.866
+so we can call there the action
+
+123
+00:04:48.866 --> 00:04:51.900
+yes perfect and the captured error
+
+124
+00:04:51.900 --> 00:04:54.866
+is the one we passed exactly that's it
+
+125
+00:04:54.866 --> 00:04:55.433
+yeah
+
+126
+00:04:55.433 --> 00:04:57.166
+okay let's see if we can refactor this
+
+127
+00:04:57.166 --> 00:04:58.800
+test then
+
+128
+00:04:58.800 --> 00:05:03.166
+so expect sut to complete with error
+
+129
+00:05:03.166 --> 00:05:06.300
+invalidData when yeah
+
+130
+00:05:06.300 --> 00:05:08.800
+when we complete with a 200 status code
+
+131
+00:05:08.800 --> 00:05:10.066
+and invalid JSON
+
+132
+00:05:10.066 --> 00:05:13.100
+perfect okay looks good to me
+
+133
+00:05:13.100 --> 00:05:16.133
+let's see if we can build yeah and the
+
+134
+00:05:16.133 --> 00:05:17.333
+test is passing as well
+
+135
+00:05:17.333 --> 00:05:19.033
+fantastic but I would like to see a
+
+136
+00:05:19.033 --> 00:05:20.466
+failing test what happens when this
+
+137
+00:05:20.466 --> 00:05:21.166
+fails
+
+138
+00:05:21.166 --> 00:05:24.300
+right okay we have a failing test
+
+139
+00:05:24.300 --> 00:05:27.166
+but I don't like that the error message
+
+140
+00:05:27.166 --> 00:05:28.466
+is in the wrong place I would like to
+
+141
+00:05:28.466 --> 00:05:29.833
+see the message
+
+142
+00:05:29.833 --> 00:05:33.166
+in this line right
+
+143
+00:05:33.166 --> 00:05:35.600
+so we can pass the line and file
+
+144
+00:05:35.600 --> 00:05:36.933
+parameters
+
+145
+00:05:36.933 --> 00:05:39.833
+to the assert equal function and we
+
+146
+00:05:39.833 --> 00:05:41.166
+can just add it here
+
+147
+00:05:41.166 --> 00:05:43.333
+with the default values yeah let's add
+
+148
+00:05:43.333 --> 00:05:45.100
+the file and line parameters there
+
+149
+00:05:45.100 --> 00:05:49.266
+file, file, line, line
+
+150
+00:05:49.266 --> 00:05:51.433
+great let's see if the failure now goes
+
+151
+00:05:51.433 --> 00:05:53.833
+to the right place
+
+152
+00:05:53.833 --> 00:05:56.066
+and it does so now when it fails it
+
+153
+00:05:56.066 --> 00:05:56.933
+fails
+
+154
+00:05:56.933 --> 00:05:59.733
+in the exact line where we should look
+
+155
+00:05:59.733 --> 00:06:00.633
+for the error
+
+156
+00:06:00.633 --> 00:06:03.333
+yeah it's great okay let's put it back
+
+157
+00:06:03.333 --> 00:06:04.833
+let's see if it passes
+
+158
+00:06:04.833 --> 00:06:07.733
+still yeah let's try to refactor the
+
+159
+00:06:07.733 --> 00:06:09.033
+other test as well
+
+160
+00:06:09.033 --> 00:06:13.100
+okay so here we can use the same
+
+161
+00:06:13.100 --> 00:06:16.633
+helper function and the action is to
+
+162
+00:06:16.633 --> 00:06:18.800
+complete with a status code
+
+163
+00:06:18.800 --> 00:06:21.266
+right and we expect invalidData as the
+
+164
+00:06:21.266 --> 00:06:22.133
+error
+
+165
+00:06:22.133 --> 00:06:26.800
+let's run the tests fantastic
+
+166
+00:06:26.800 --> 00:06:32.400
+now this one we expect connectivity error
+
+167
+00:06:32.400 --> 00:06:35.433
+when we complete with a client
+
+168
+00:06:35.433 --> 00:06:38.633
+error let's run the tests it's also
+
+169
+00:06:38.633 --> 00:06:39.166
+passing
+
+170
+00:06:39.166 --> 00:06:42.233
+beautiful let's commit remove
+
+171
+00:06:42.233 --> 00:06:45.600
+duplicate test code by creating
+
+172
+00:06:45.600 --> 00:06:48.700
+reusable expect helper method
+
+173
+00:06:48.700 --> 00:06:54.133
+that's it okay so now the happy path
+
+174
+00:06:54.133 --> 00:06:56.466
+but since this is a collection of items
+
+175
+00:06:56.466 --> 00:06:58.400
+let's start with the empty case
+
+176
+00:06:58.400 --> 00:07:02.400
+so delivers no items on 200
+
+177
+00:07:02.400 --> 00:07:06.133
+HTTP response with an
+
+178
+00:07:06.133 --> 00:07:09.900
+empty list right or empty
+
+179
+00:07:09.900 --> 00:07:13.266
+JSON list so the setup
+
+180
+00:07:13.266 --> 00:07:17.333
+is very similar sut and client
+
+181
+00:07:17.333 --> 00:07:20.466
+but now we want to capture right
+
+182
+00:07:20.466 --> 00:07:23.100
+these are the feed items here but our
+
+183
+00:07:23.100 --> 00:07:24.466
+function can only
+
+184
+00:07:24.466 --> 00:07:27.833
+complete with Error right at this point
+
+185
+00:07:27.833 --> 00:07:30.800
+so we are facing the same dilemma we had
+
+186
+00:07:30.800 --> 00:07:31.333
+before
+
+187
+00:07:31.333 --> 00:07:33.166
+are we going to have two optional types
+
+188
+00:07:33.166 --> 00:07:34.400
+there Error
+
+189
+00:07:34.400 --> 00:07:37.433
+and FeedItems array or I think we can
+
+190
+00:07:37.433 --> 00:07:40.866
+go with the result type here yes as we
+
+191
+00:07:40.866 --> 00:07:42.300
+said previously
+
+192
+00:07:42.300 --> 00:07:44.233
+when we combine optionals we just
+
+193
+00:07:44.233 --> 00:07:45.733
+increase exponentially
+
+194
+00:07:45.733 --> 00:07:47.566
+the number of paths and most of them are
+
+195
+00:07:47.566 --> 00:07:48.800
+just invalid paths
+
+196
+00:07:48.800 --> 00:07:51.833
+so let's just use enums yep so since
+
+197
+00:07:51.833 --> 00:07:53.100
+we're going to change the signature of
+
+198
+00:07:53.100 --> 00:07:54.066
+this method
+
+199
+00:07:54.066 --> 00:07:56.400
+let's comment out right what are we
+
+200
+00:07:56.400 --> 00:07:58.300
+doing here and
+
+201
+00:07:58.300 --> 00:08:00.300
+let's refactor the previous tests to
+
+202
+00:08:00.300 --> 00:08:01.500
+receive a result type
+
+203
+00:08:01.500 --> 00:08:04.233
+so this is a preparation step for what
+
+204
+00:08:04.233 --> 00:08:05.166
+comes next
+
+205
+00:08:05.166 --> 00:08:06.633
+I like that and since we have this
+
+206
+00:08:06.633 --> 00:08:08.466
+expect method we only have to change it
+
+207
+00:08:08.466 --> 00:08:09.333
+in one place
+
+208
+00:08:09.333 --> 00:08:11.333
+yes that was a good refactoring
+
+209
+00:08:11.333 --> 00:08:13.500
+absolutely so instead of
+
+210
+00:08:13.500 --> 00:08:15.566
+capturedErrors we are going to receive
+
+211
+00:08:15.566 --> 00:08:16.866
+some kind of captured
+
+212
+00:08:16.866 --> 00:08:21.433
+results yes
+
+213
+00:08:21.433 --> 00:08:24.133
+so what is the result type in this
+
+214
+00:08:24.133 --> 00:08:25.266
+scenario
+
+215
+00:08:25.266 --> 00:08:27.733
+right we have the success case which
+
+216
+00:08:27.733 --> 00:08:28.400
+bears
+
+217
+00:08:28.400 --> 00:08:31.433
+an array of FeedItems and then failure
+
+218
+00:08:31.433 --> 00:08:34.633
+with an error okay which error
+
+219
+00:08:34.633 --> 00:08:37.500
+well we have the Error type above right
+
+220
+00:08:37.500 --> 00:08:38.700
+okay so this Error
+
+221
+00:08:38.700 --> 00:08:41.666
+yeah perfect the RemoteFeedLoader
+
+222
+00:08:41.666 --> 00:08:42.766
+Error type
+
+223
+00:08:42.766 --> 00:08:45.200
+okay but if this is a public enum
+
+224
+00:08:45.200 --> 00:08:46.766
+exposed to the tests
+
+225
+00:08:46.766 --> 00:08:48.933
+right the FeedItem also needs to be
+
+226
+00:08:48.933 --> 00:08:50.933
+public yes and I think it's time to do
+
+227
+00:08:50.933 --> 00:08:51.266
+it
+
+228
+00:08:51.266 --> 00:08:54.466
+yep so let's make this a public
+
+229
+00:08:54.466 --> 00:08:57.666
+struct okay
+
+230
+00:08:57.666 --> 00:09:00.466
+so now when we compare the error we need
+
+231
+00:09:00.466 --> 00:09:00.866
+to
+
+232
+00:09:00.866 --> 00:09:03.900
+wrap it in a failure result
+
+233
+00:09:03.900 --> 00:09:07.200
+yes but we are using insert equal
+
+234
+00:09:07.200 --> 00:09:09.600
+which means the result type needs to be
+
+235
+00:09:09.600 --> 00:09:10.933
+Equatable yes
+
+236
+00:09:10.933 --> 00:09:12.933
+should we make the result type Equatable
+
+237
+00:09:12.933 --> 00:09:14.066
+yeah I think so
+
+238
+00:09:14.066 --> 00:09:17.200
+it's data as we say
+
+239
+00:09:17.200 --> 00:09:20.533
+right it facilitates our testing here so
+
+240
+00:09:20.533 --> 00:09:23.100
+I would like that okay and it's also the
+
+241
+00:09:23.100 --> 00:09:23.900
+easiest step
+
+242
+00:09:23.900 --> 00:09:26.633
+so we can rethink this in the future yep
+
+243
+00:09:26.633 --> 00:09:29.433
+so let's make this Equatable
+
+244
+00:09:29.433 --> 00:09:31.666
+but this cannot be Equatable because
+
+245
+00:09:31.666 --> 00:09:33.100
+field item is not Equatable so we're
+
+246
+00:09:33.100 --> 00:09:34.066
+gonna have to
+
+247
+00:09:34.066 --> 00:09:37.033
+also make the FeedItem Equatable I'm
+
+248
+00:09:37.033 --> 00:09:37.833
+fine with that
+
+249
+00:09:37.833 --> 00:09:40.300
+it's data I think it's a good argument
+
+250
+00:09:40.300 --> 00:09:40.866
+you know
+
+251
+00:09:40.866 --> 00:09:42.933
+why wouldn't it be Equatable why
+
+252
+00:09:42.933 --> 00:09:44.933
+wouldn't you be able to
+
+253
+00:09:44.933 --> 00:09:48.300
+compare FeedItems so now our
+
+254
+00:09:48.300 --> 00:09:52.133
+load method can complete with a result
+
+255
+00:09:52.133 --> 00:09:56.233
+and we need to wrap
+
+256
+00:09:56.233 --> 00:09:59.433
+our errors into the failure case yeah
+
+257
+00:09:59.433 --> 00:10:00.233
+that's it
+
+258
+00:10:00.233 --> 00:10:02.066
+now it's building and the test is
+
+259
+00:10:02.066 --> 00:10:03.500
+passing okay
+
+260
+00:10:03.500 --> 00:10:05.900
+so we may have to rethink this Equatable
+
+261
+00:10:05.900 --> 00:10:08.066
+in the result type and the FeedItem but
+
+262
+00:10:08.066 --> 00:10:10.633
+I'm happy to carry on absolutely I agree
+
+263
+00:10:10.633 --> 00:10:12.000
+let's commit
+
+264
+00:10:12.000 --> 00:10:14.933
+okay but let's not commit the commented
+
+265
+00:10:14.933 --> 00:10:16.233
+out test
+
+266
+00:10:16.233 --> 00:10:20.533
+exactly we don't need this yet
+
+267
+00:10:20.533 --> 00:10:24.466
+so add RemoteFeedLoader
+
+268
+00:10:24.466 --> 00:10:27.500
+result type with success
+
+269
+00:10:27.500 --> 00:10:31.200
+and failure cases okay now I think we
+
+270
+00:10:31.200 --> 00:10:32.000
+can carry on
+
+271
+00:10:32.000 --> 00:10:35.433
+with our test so we're also going to
+
+272
+00:10:35.433 --> 00:10:36.300
+capture
+
+273
+00:10:36.300 --> 00:10:39.333
+results so let me copy this here
+
+274
+00:10:39.333 --> 00:10:41.900
+for the action we are going to perform
+
+275
+00:10:41.900 --> 00:10:43.200
+we want to complete
+
+276
+00:10:43.200 --> 00:10:46.700
+with 200 status code
+
+277
+00:10:46.700 --> 00:10:49.900
+and an empty list
+
+278
+00:10:49.900 --> 00:10:54.233
+JSON yeah so what is an empty
+
+279
+00:10:54.233 --> 00:10:57.833
+list JSON we can create a string
+
+280
+00:10:57.833 --> 00:11:01.433
+containing the items key with an empty
+
+281
+00:11:01.433 --> 00:11:02.233
+array
+
+282
+00:11:02.233 --> 00:11:05.200
+representing the JSON so this needs to
+
+283
+00:11:05.200 --> 00:11:06.133
+be a valid JSON
+
+284
+00:11:06.133 --> 00:11:10.700
+right so it's an object with the key
+
+285
+00:11:10.700 --> 00:11:17.500
+items and an empty array inside
+
+286
+00:11:17.500 --> 00:11:21.100
+which matches our payload contract
+
+287
+00:11:21.100 --> 00:11:25.100
+exactly right so now we expect a success
+
+288
+00:11:25.100 --> 00:11:25.900
+here
+
+289
+00:11:25.900 --> 00:11:28.800
+a success with an empty array okay so
+
+290
+00:11:28.800 --> 00:11:30.366
+we're going to assert
+
+291
+00:11:30.366 --> 00:11:34.000
+equals that the capturedResults
+
+292
+00:11:34.000 --> 00:11:36.700
+is equal to an array with only one
+
+293
+00:11:36.700 --> 00:11:37.500
+completion
+
+294
+00:11:37.500 --> 00:11:40.233
+and it's a success with an empty array
+
+295
+00:11:40.233 --> 00:11:41.100
+of FeedItems
+
+296
+00:11:41.100 --> 00:11:45.100
+right hopefully that will fail yeah
+
+297
+00:11:45.100 --> 00:11:48.533
+and it does okay now we can start adding
+
+298
+00:11:48.533 --> 00:11:49.733
+some logic
+
+299
+00:11:49.733 --> 00:11:51.733
+okay so what is the minimum we can do to
+
+300
+00:11:51.733 --> 00:11:53.200
+make this pass
+
+301
+00:11:53.200 --> 00:11:57.200
+so what we need to get our data here
+
+302
+00:11:57.200 --> 00:12:01.666
+and our response
+
+303
+00:12:01.666 --> 00:12:03.666
+and to make this pass we just need to
+
+304
+00:12:03.666 --> 00:12:05.100
+make sure that we can
+
+305
+00:12:05.100 --> 00:12:07.100
+convert this JSON right it's just
+
+306
+00:12:07.100 --> 00:12:09.200
+checking if it's a valid JSON
+
+307
+00:12:09.200 --> 00:12:12.133
+yeah basically so we can use an if let
+
+308
+00:12:12.133 --> 00:12:13.033
+JSON
+
+309
+00:12:13.033 --> 00:12:18.466
+equals JSONSerialization.jsonObject
+
+310
+00:12:18.466 --> 00:12:22.000
+with data right
+
+311
+00:12:22.000 --> 00:12:25.033
+then we complete with success and let's
+
+312
+00:12:25.033 --> 00:12:27.100
+pass an empty array of FeedItems that's
+
+313
+00:12:27.100 --> 00:12:30.366
+all we need else we complete
+
+314
+00:12:30.366 --> 00:12:33.600
+with the failure invalidData what is wrong
+
+315
+00:12:33.600 --> 00:12:34.300
+here
+
+316
+00:12:34.300 --> 00:12:39.266
+this method throws so we need to use try
+
+317
+00:12:39.266 --> 00:12:41.666
+since we are using response or the JSON
+
+318
+00:12:41.666 --> 00:12:43.033
+we can just use the
+
+319
+00:12:43.033 --> 00:12:46.133
+underscore let's see
+
+320
+00:12:46.133 --> 00:12:49.666
+it's passing let's commit
+
+321
+00:12:49.666 --> 00:12:53.100
+so delivers empty items array
+
+322
+00:12:53.100 --> 00:12:56.533
+on 200 HTTP response
+
+323
+00:12:56.533 --> 00:12:59.833
+with JSON empty list
+
+324
+00:12:59.833 --> 00:13:02.133
+and I think we can even use the expect
+
+325
+00:13:02.133 --> 00:13:03.266
+method here
+
+326
+00:13:03.266 --> 00:13:05.833
+in this test right so this setup is very
+
+327
+00:13:05.833 --> 00:13:07.333
+similar to the error case
+
+328
+00:13:07.333 --> 00:13:09.500
+yes okay so we can do some refactoring
+
+329
+00:13:09.500 --> 00:13:11.200
+instead of say complete with error
+
+330
+00:13:11.200 --> 00:13:16.300
+we complete with a result yes
+
+331
+00:13:16.300 --> 00:13:18.000
+and we don't need to wrap this anymore
+
+332
+00:13:18.000 --> 00:13:20.000
+we just make sure we are completing with
+
+333
+00:13:20.000 --> 00:13:21.033
+a result
+
+334
+00:13:21.033 --> 00:13:24.133
+yeah the result is Equatable so we can
+
+335
+00:13:24.133 --> 00:13:24.866
+do that
+
+336
+00:13:24.866 --> 00:13:26.366
+but this is going to break our current
+
+337
+00:13:26.366 --> 00:13:29.200
+tests let's fix one by one we just need
+
+338
+00:13:29.200 --> 00:13:31.833
+to wrap it
+
+339
+00:13:31.833 --> 00:13:38.000
+in the failure case the same here
+
+340
+00:13:38.000 --> 00:13:43.100
+and here
+
+341
+00:13:43.100 --> 00:13:45.033
+okay it's still passing so now we can
+
+342
+00:13:45.033 --> 00:13:46.633
+use the same
+
+343
+00:13:46.633 --> 00:13:51.100
+helper method beautiful in here
+
+344
+00:13:51.100 --> 00:13:54.133
+expect sut to complete
+
+345
+00:13:54.133 --> 00:13:58.366
+with success with an empty
+
+346
+00:13:58.366 --> 00:14:01.433
+array when
+
+347
+00:14:01.433 --> 00:14:05.600
+we complete with an empty JSON list yep
+
+348
+00:14:05.600 --> 00:14:09.266
+let's run perfect
+
+349
+00:14:09.266 --> 00:14:11.100
+yeah I think it reads very nicely by the
+
+350
+00:14:11.100 --> 00:14:13.033
+way I like it
+
+351
+00:14:13.033 --> 00:14:16.633
+let's commit refactor helper
+
+352
+00:14:16.633 --> 00:14:20.366
+to receive result instead of
+
+353
+00:14:20.366 --> 00:14:24.166
+error types yeah to enable
+
+354
+00:14:24.166 --> 00:14:27.500
+reusability for different
+
+355
+00:14:27.500 --> 00:14:31.733
+potential results that's it
+
+356
+00:14:31.733 --> 00:14:35.033
+fantastic
+
+357
+00:14:35.033 --> 00:14:38.233
+so the next test is the real deal
+
+358
+00:14:38.233 --> 00:14:41.266
+where we deliver the FeedItems items
+
+359
+00:14:41.266 --> 00:14:45.266
+yep on 200 HTTP
+
+360
+00:14:45.266 --> 00:14:48.700
+response right when we have valid JSON
+
+361
+00:14:48.700 --> 00:14:49.666
+items
+
+362
+00:14:49.666 --> 00:14:51.833
+so now it's not empty it's not invalid
+
+363
+00:14:51.833 --> 00:14:52.700
+JSON
+
+364
+00:14:52.700 --> 00:14:55.433
+no it's not an invalid HTTP response
+
+365
+00:14:55.433 --> 00:14:56.000
+this is
+
+366
+00:14:56.000 --> 00:14:58.633
+the happy path like we have the items we
+
+367
+00:14:58.633 --> 00:14:59.733
+have everything we need
+
+368
+00:14:59.733 --> 00:15:03.500
+we just need to map it yes so
+
+369
+00:15:03.500 --> 00:15:06.700
+setup is the same yep
+
+370
+00:15:06.700 --> 00:15:09.433
+but now we need to create some items
+
+371
+00:15:09.433 --> 00:15:11.333
+that we can equate
+
+372
+00:15:11.333 --> 00:15:14.933
+let's say item one
+
+373
+00:15:14.933 --> 00:15:17.600
+but if I'm not mistaken we can't create
+
+374
+00:15:17.600 --> 00:15:19.166
+FeedItems
+
+375
+00:15:19.166 --> 00:15:21.100
+yes we don't have access to the
+
+376
+00:15:21.100 --> 00:15:22.533
+initializer
+
+377
+00:15:22.533 --> 00:15:25.600
+yep we need to address that
+
+378
+00:15:25.600 --> 00:15:29.033
+it's because its initializer is internal
+
+379
+00:15:29.033 --> 00:15:30.000
+by default
+
+380
+00:15:30.000 --> 00:15:31.900
+and our module doesn't have access to
+
+381
+00:15:31.900 --> 00:15:33.100
+internal types
+
+382
+00:15:33.100 --> 00:15:35.433
+right so we can either import this
+
+383
+00:15:35.433 --> 00:15:37.900
+module as testable
+
+384
+00:15:37.900 --> 00:15:40.300
+or we create a public initializer for
+
+385
+00:15:40.300 --> 00:15:41.033
+the struct
+
+386
+00:15:41.033 --> 00:15:44.000
+right but if we look at the architecture
+
+387
+00:15:44.000 --> 00:15:44.933
+other modules
+
+388
+00:15:44.933 --> 00:15:47.333
+will implement these interfaces and use
+
+389
+00:15:47.333 --> 00:15:48.000
+those
+
+390
+00:15:48.000 --> 00:15:50.366
+FeedItem models which means they might
+
+391
+00:15:50.366 --> 00:15:51.266
+create it
+
+392
+00:15:51.266 --> 00:15:53.600
+so if other modules are going to create
+
+393
+00:15:53.600 --> 00:15:54.933
+FeedItems
+
+394
+00:15:54.933 --> 00:15:58.933
+we need to have a public initializer
+
+395
+00:15:58.933 --> 00:16:01.266
+so it's time and we're going to have to
+
+396
+00:16:01.266 --> 00:16:05.333
+do this manually yep
+
+397
+00:16:05.333 --> 00:16:08.800
+so description it's an optional String
+
+398
+00:16:08.800 --> 00:16:11.900
+location it's an optional String
+
+399
+00:16:11.900 --> 00:16:15.333
+imageURL is a non-optional
+
+400
+00:16:15.333 --> 00:16:22.866
+URL now we can set the properties
+
+401
+00:16:22.866 --> 00:16:25.833
+okay okay now we should have access to
+
+402
+00:16:25.833 --> 00:16:26.800
+the initializer
+
+403
+00:16:26.800 --> 00:16:30.533
+yeah and we do fantastic so let's just
+
+404
+00:16:30.533 --> 00:16:32.866
+create any UUID they are always unique
+
+405
+00:16:32.866 --> 00:16:33.900
+every time we create it
+
+406
+00:16:33.900 --> 00:16:36.700
+it's a different one let's have this
+
+407
+00:16:36.700 --> 00:16:38.000
+first item with
+
+408
+00:16:38.000 --> 00:16:41.333
+no description okay and no location
+
+409
+00:16:41.333 --> 00:16:43.733
+but it should have an imageURL so let's
+
+410
+00:16:43.733 --> 00:16:46.000
+create a URL here
+
+411
+00:16:46.000 --> 00:16:50.000
+a-url.com
+
+412
+00:16:50.000 --> 00:16:53.333
+we also need its JSON representation
+
+413
+00:16:53.333 --> 00:16:57.600
+okay which is
+
+414
+00:16:57.600 --> 00:17:00.800
+a dictionary with the first key as
+
+415
+00:17:00.800 --> 00:17:04.766
+id and it should have the item1
+
+416
+00:17:04.766 --> 00:17:07.833
+.id but as a String right
+
+417
+00:17:07.833 --> 00:17:10.233
+so we can transform this UUID into a
+
+418
+00:17:10.233 --> 00:17:11.733
+String
+
+419
+00:17:11.733 --> 00:17:14.766
+yeah but we don't have access to the id
+
+420
+00:17:14.766 --> 00:17:17.900
+property right let's make this public
+
+421
+00:17:17.900 --> 00:17:19.100
+and actually let's make all of them
+
+422
+00:17:19.100 --> 00:17:20.300
+public because we're going to need all
+
+423
+00:17:20.300 --> 00:17:22.133
+of them
+
+424
+00:17:22.133 --> 00:17:24.700
+this FeedItem does not have a
+
+425
+00:17:24.700 --> 00:17:25.900
+description
+
+426
+00:17:25.900 --> 00:17:28.400
+and in our JSON contract when you don't
+
+427
+00:17:28.400 --> 00:17:29.566
+have a description
+
+428
+00:17:29.566 --> 00:17:32.300
+it's not added to the JSON payload yeah
+
+429
+00:17:32.300 --> 00:17:34.300
+so we're not going to add a description
+
+430
+00:17:34.300 --> 00:17:37.666
+or location but it needs a image
+
+431
+00:17:37.666 --> 00:17:41.566
+URL and the key path is just image
+
+432
+00:17:41.566 --> 00:17:44.766
+so item1.imageURL
+
+433
+00:17:44.766 --> 00:17:47.333
+.absoluteString yeah I think that's
+
+434
+00:17:47.333 --> 00:17:49.500
+what it is
+
+435
+00:17:49.500 --> 00:17:51.200
+yeah and I guess this is item1
+
+436
+00:17:51.200 --> 00:17:53.266
+JSON it is
+
+437
+00:17:53.266 --> 00:17:56.400
+and let's create another one item2
+
+438
+00:17:56.400 --> 00:18:00.633
+yeah is a FeedItem with another UUID
+
+439
+00:18:00.633 --> 00:18:01.500
+but this one is going to have a
+
+440
+00:18:01.500 --> 00:18:04.000
+description a description and
+
+441
+00:18:04.000 --> 00:18:12.833
+a location and another URL
+
+442
+00:18:12.833 --> 00:18:14.766
+fantastic
+
+443
+00:18:14.766 --> 00:18:19.433
+and the item2JSON is also a dictionary
+
+444
+00:18:19.433 --> 00:18:23.333
+with id item2.id
+
+445
+00:18:23.333 --> 00:18:26.633
+.uuidString this one has a description
+
+446
+00:18:26.633 --> 00:18:30.066
+and the key path is description
+
+447
+00:18:30.066 --> 00:18:33.266
+it has a location item2.location
+
+448
+00:18:33.266 --> 00:18:42.533
+and it has an image as well okay
+
+449
+00:18:42.533 --> 00:18:44.766
+so that's a lot of setup yeah I don't
+
+450
+00:18:44.766 --> 00:18:46.933
+think we're done
+
+451
+00:18:46.933 --> 00:18:48.933
+so those are the items we are mapping
+
+452
+00:18:48.933 --> 00:18:51.033
+right we're gonna have our item
+
+453
+00:18:51.033 --> 00:18:53.900
+one and two so we can compare it and
+
+454
+00:18:53.900 --> 00:18:54.700
+also its
+
+455
+00:18:54.700 --> 00:18:56.933
+JSON representation yes so we need to
+
+456
+00:18:56.933 --> 00:18:58.533
+wrap these into the items
+
+457
+00:18:58.533 --> 00:19:01.733
+keypath to match our
+
+458
+00:19:01.733 --> 00:19:04.766
+payload contract exactly that's the root
+
+459
+00:19:04.766 --> 00:19:08.133
+node right so let's create our
+
+460
+00:19:08.133 --> 00:19:12.466
+itemsJSON which is
+
+461
+00:19:12.466 --> 00:19:15.600
+a dictionary with the keypath items and
+
+462
+00:19:15.600 --> 00:19:16.533
+it's an array
+
+463
+00:19:16.533 --> 00:19:19.666
+with item1JSON and
+
+464
+00:19:19.666 --> 00:19:24.933
+item2JSON yeah that's it
+
+465
+00:19:24.933 --> 00:19:27.600
+and now we can use our expectation
+
+466
+00:19:27.600 --> 00:19:29.266
+expect sut
+
+467
+00:19:29.266 --> 00:19:34.000
+to complete with success
+
+468
+00:19:34.000 --> 00:19:37.200
+with our item1 and item2
+
+469
+00:19:37.200 --> 00:19:42.066
+right when
+
+470
+00:19:42.066 --> 00:19:45.500
+the client completes with 200 and our
+
+471
+00:19:45.500 --> 00:19:46.633
+JSON data
+
+472
+00:19:46.633 --> 00:19:50.533
+yes so we need to create our JSON data
+
+473
+00:19:50.533 --> 00:19:51.733
+and I think we can use JSON
+
+474
+00:19:51.733 --> 00:19:54.466
+Serialization here right data with JSON
+
+475
+00:19:54.466 --> 00:19:55.433
+object
+
+476
+00:19:55.433 --> 00:19:59.600
+items JSON yeah and we need to try that
+
+477
+00:19:59.600 --> 00:20:01.833
+yes because it throws and since we know
+
+478
+00:20:01.833 --> 00:20:03.200
+this is a valid JSON
+
+479
+00:20:03.200 --> 00:20:06.066
+we can force try it I think that's the
+
+480
+00:20:06.066 --> 00:20:07.600
+test
+
+481
+00:20:07.600 --> 00:20:10.000
+yeah and it's failing fantastic so now
+
+482
+00:20:10.000 --> 00:20:11.100
+it's time for us to
+
+483
+00:20:11.100 --> 00:20:14.400
+deserialize these items yeah decision
+
+484
+00:20:14.400 --> 00:20:18.400
+time
+
+485
+00:20:18.400 --> 00:20:21.500
+and we can use Decodable yes
+
+486
+00:20:21.500 --> 00:20:24.700
+the FeedItem can be extended
+
+487
+00:20:24.700 --> 00:20:28.466
+to conform to Decodable and we can then
+
+488
+00:20:28.466 --> 00:20:30.933
+decode the JSON and return the Feed
+
+489
+00:20:30.933 --> 00:20:31.500
+Items
+
+490
+00:20:31.500 --> 00:20:34.300
+in the FeedLoader since this array is
+
+491
+00:20:34.300 --> 00:20:35.333
+inside
+
+492
+00:20:35.333 --> 00:20:37.666
+the item's keypath we need to create this
+
+493
+00:20:37.666 --> 00:20:38.766
+root node
+
+494
+00:20:38.766 --> 00:20:43.200
+first of all and we can make it private
+
+495
+00:20:43.200 --> 00:20:46.933
+so it should have an array of items
+
+496
+00:20:46.933 --> 00:20:51.600
+and it should be Decodable
+
+497
+00:20:51.600 --> 00:20:55.833
+so we can now use our JSONDecoder
+
+498
+00:20:55.833 --> 00:20:59.500
+to decode our root
+
+499
+00:20:59.500 --> 00:21:02.933
+element from the received data
+
+500
+00:21:02.933 --> 00:21:05.033
+and if we have a root node we can
+
+501
+00:21:05.033 --> 00:21:07.033
+complete with a success
+
+502
+00:21:07.033 --> 00:21:09.500
+with the items inside the root node but
+
+503
+00:21:09.500 --> 00:21:10.466
+you get the
+
+504
+00:21:10.466 --> 00:21:12.633
+Decodable implementation for free so the
+
+505
+00:21:12.633 --> 00:21:13.833
+compiler can
+
+506
+00:21:13.833 --> 00:21:15.900
+implement it for us the FeedItem also
+
+507
+00:21:15.900 --> 00:21:17.500
+needs to implement Decodable
+
+508
+00:21:17.500 --> 00:21:21.433
+yes and since our keys do not match
+
+509
+00:21:21.433 --> 00:21:24.466
+the JSON keys we will have to
+
+510
+00:21:24.466 --> 00:21:25.900
+implement the CodingKeys
+
+511
+00:21:25.900 --> 00:21:29.033
+enum for the imageURL
+
+512
+00:21:29.033 --> 00:21:31.833
+okay because in our FeedItem model we
+
+513
+00:21:31.833 --> 00:21:32.633
+call it image
+
+514
+00:21:32.633 --> 00:21:35.833
+URL yes JSON it's just image so they
+
+515
+00:21:35.833 --> 00:21:37.333
+don't match
+
+516
+00:21:37.333 --> 00:21:40.133
+okay so we need to provide some mapping
+
+517
+00:21:40.133 --> 00:21:41.500
+instructions
+
+518
+00:21:41.500 --> 00:21:44.533
+right and with Decodable we do it with
+
+519
+00:21:44.533 --> 00:21:48.066
+our CodingKeys
+
+520
+00:21:48.066 --> 00:21:51.200
+so id is fine it matches
+
+521
+00:21:51.200 --> 00:21:54.300
+description also matches location
+
+522
+00:21:54.300 --> 00:21:55.333
+matches
+
+523
+00:21:55.333 --> 00:21:58.533
+but the imageURL does not match so we
+
+524
+00:21:58.533 --> 00:22:00.000
+need to tell it
+
+525
+00:22:00.000 --> 00:22:02.300
+what is the key we want to map yes and
+
+526
+00:22:02.300 --> 00:22:03.433
+its image
+
+527
+00:22:03.433 --> 00:22:06.766
+okay let's run the test now
+
+528
+00:22:06.766 --> 00:22:09.333
+okay passes now fantastic all right
+
+529
+00:22:09.333 --> 00:22:10.700
+let's commit
+
+530
+00:22:10.700 --> 00:22:14.866
+and clean up the mess so delivers
+
+531
+00:22:14.866 --> 00:22:18.633
+items array on 200
+
+532
+00:22:18.633 --> 00:22:22.066
+HTTP response with JSON
+
+533
+00:22:22.066 --> 00:22:25.600
+items so we have some cleanup to do here
+
+534
+00:22:25.600 --> 00:22:28.000
+but something that also bothers me is
+
+535
+00:22:28.000 --> 00:22:28.866
+this key
+
+536
+00:22:28.866 --> 00:22:32.233
+image there is an API detail
+
+537
+00:22:32.233 --> 00:22:35.333
+leaking in this FeedItem model
+
+538
+00:22:35.333 --> 00:22:38.533
+that should be agnostic about the API
+
+539
+00:22:38.533 --> 00:22:39.600
+module
+
+540
+00:22:39.600 --> 00:22:42.766
+right so the FeedItem belongs in the
+
+541
+00:22:42.766 --> 00:22:45.600
+FeedLoader module as we have in our
+
+542
+00:22:45.600 --> 00:22:46.700
+diagram
+
+543
+00:22:46.700 --> 00:22:49.200
+and it shouldn't know any sort of
+
+544
+00:22:49.200 --> 00:22:51.200
+implementations from other modules
+
+545
+00:22:51.200 --> 00:22:53.666
+like the API for example there are no
+
+546
+00:22:53.666 --> 00:22:55.100
+arrows
+
+547
+00:22:55.100 --> 00:22:58.133
+coming from the FeedLoader pointing
+
+548
+00:22:58.133 --> 00:23:00.766
+to the RemoteFeedLoader or the API
+
+549
+00:23:00.766 --> 00:23:01.833
+module
+
+550
+00:23:01.833 --> 00:23:03.200
+which means we don't want the Feed
+
+551
+00:23:03.200 --> 00:23:05.033
+Loader module here
+
+552
+00:23:05.033 --> 00:23:08.000
+the Feature module to depend on
+
+553
+00:23:08.000 --> 00:23:09.266
+implementation details
+
+554
+00:23:09.266 --> 00:23:11.266
+of the API for example we might create
+
+555
+00:23:11.266 --> 00:23:12.300
+FeedItems from
+
+556
+00:23:12.300 --> 00:23:14.766
+the LocalFeedLoader representation and
+
+557
+00:23:14.766 --> 00:23:16.766
+you might need to use Decodable as well
+
+558
+00:23:16.766 --> 00:23:18.700
+right but if something changes in the
+
+559
+00:23:18.700 --> 00:23:20.400
+API for example
+
+560
+00:23:20.400 --> 00:23:23.333
+they rename these to image-url at some
+
+561
+00:23:23.333 --> 00:23:24.633
+point
+
+562
+00:23:24.633 --> 00:23:27.200
+we might break other modules yeah if we
+
+563
+00:23:27.200 --> 00:23:28.300
+keep the knowledge
+
+564
+00:23:28.300 --> 00:23:31.333
+of this keypath in the shared module
+
+565
+00:23:31.333 --> 00:23:34.066
+and we don't want to break the UI or
+
+566
+00:23:34.066 --> 00:23:36.400
+Database because of API changes
+
+567
+00:23:36.400 --> 00:23:38.133
+right and then the question will be I
+
+568
+00:23:38.133 --> 00:23:40.133
+guess are we going to do that for just a
+
+569
+00:23:40.133 --> 00:23:41.200
+simple string there
+
+570
+00:23:41.200 --> 00:23:44.233
+just this image string absolutely
+
+571
+00:23:44.233 --> 00:23:46.133
+okay so let's fix the test first and
+
+572
+00:23:46.133 --> 00:23:47.666
+we'll get there
+
+573
+00:23:47.666 --> 00:23:49.500
+so I think that's a lot of setup for one
+
+574
+00:23:49.500 --> 00:23:52.400
+test and we can definitely simplify by
+
+575
+00:23:52.400 --> 00:23:54.300
+providing some sort of a factory method
+
+576
+00:23:54.300 --> 00:23:55.900
+for the FeedItems
+
+577
+00:23:55.900 --> 00:23:59.100
+okay let's start here then so factory
+
+578
+00:23:59.100 --> 00:23:59.666
+method
+
+579
+00:23:59.666 --> 00:24:02.933
+makeItem yeah I like that
+
+580
+00:24:02.933 --> 00:24:07.266
+and it needs a UUID, a description
+
+581
+00:24:07.266 --> 00:24:08.700
+right which I guess it can default to
+
+582
+00:24:08.700 --> 00:24:11.100
+nil a location
+
+583
+00:24:11.100 --> 00:24:14.766
+same and image
+
+584
+00:24:14.766 --> 00:24:18.066
+URL and this is going to return our
+
+585
+00:24:18.066 --> 00:24:21.833
+FeedItem yeah okay so we can just
+
+586
+00:24:21.833 --> 00:24:24.933
+create our item yeah with those
+
+587
+00:24:24.933 --> 00:24:28.466
+given values
+
+588
+00:24:28.466 --> 00:24:31.833
+and return it okay but it's not gonna
+
+589
+00:24:31.833 --> 00:24:32.766
+save a lot of
+
+590
+00:24:32.766 --> 00:24:34.933
+lines of code right what if this method
+
+591
+00:24:34.933 --> 00:24:36.066
+also created
+
+592
+00:24:36.066 --> 00:24:39.200
+the JSON right so we can return our
+
+593
+00:24:39.200 --> 00:24:40.700
+model
+
+594
+00:24:40.700 --> 00:24:43.500
+and a JSON representation which is a
+
+595
+00:24:43.500 --> 00:24:44.400
+dictionary
+
+596
+00:24:44.400 --> 00:24:47.900
+string any yeah I like that because
+
+597
+00:24:47.900 --> 00:24:50.700
+the JSON is a mirror of the actual
+
+598
+00:24:50.700 --> 00:24:51.666
+native
+
+599
+00:24:51.666 --> 00:24:54.133
+model and we get all the values here so
+
+600
+00:24:54.133 --> 00:24:55.100
+we can do that
+
+601
+00:24:55.100 --> 00:24:58.833
+so it needs the id it needs the
+
+602
+00:24:58.833 --> 00:25:00.866
+description
+
+603
+00:25:00.866 --> 00:25:04.400
+the location and the image
+
+604
+00:25:04.400 --> 00:25:07.600
+URL yeah that's it now we return the
+
+605
+00:25:07.600 --> 00:25:08.133
+item
+
+606
+00:25:08.133 --> 00:25:12.633
+and the JSON very nice
+
+607
+00:25:12.633 --> 00:25:14.700
+okay but since the description and the
+
+608
+00:25:14.700 --> 00:25:15.666
+location
+
+609
+00:25:15.666 --> 00:25:18.700
+are optional I see yes the type
+
+610
+00:25:18.700 --> 00:25:21.433
+is not matching here right we can reduce
+
+611
+00:25:21.433 --> 00:25:23.266
+it into a new dictionary and remove
+
+612
+00:25:23.266 --> 00:25:25.900
+the new values yeah so we can reduce
+
+613
+00:25:25.900 --> 00:25:26.766
+into a new
+
+614
+00:25:26.766 --> 00:25:29.733
+dictionary with the right type String
+
+615
+00:25:29.733 --> 00:25:31.100
+Any
+
+616
+00:25:31.100 --> 00:25:33.600
+and we can get our accumulated new
+
+617
+00:25:33.600 --> 00:25:34.300
+dictionary
+
+618
+00:25:34.300 --> 00:25:37.433
+and the element if
+
+619
+00:25:37.433 --> 00:25:40.533
+there is a value in the element tuple
+
+620
+00:25:40.533 --> 00:25:44.233
+we add it to the accumulated dictionary
+
+621
+00:25:44.233 --> 00:25:46.233
+otherwise we don't so all we're doing
+
+622
+00:25:46.233 --> 00:25:48.066
+here is removing the new values
+
+623
+00:25:48.066 --> 00:25:50.533
+and in Swift 5 there's a new compact
+
+624
+00:25:50.533 --> 00:25:52.400
+Map that does exactly that
+
+625
+00:25:52.400 --> 00:25:55.433
+but we don't have this yet that's fine
+
+626
+00:25:55.433 --> 00:25:58.133
+maybe the compiler will warn us in the
+
+627
+00:25:58.133 --> 00:25:59.433
+migration
+
+628
+00:25:59.433 --> 00:26:03.100
+so now we can use our new helper method
+
+629
+00:26:03.100 --> 00:26:05.833
+yeah make item and we don't need the
+
+630
+00:26:05.833 --> 00:26:07.600
+item JSON anymore
+
+631
+00:26:07.600 --> 00:26:09.433
+or the description and location in this
+
+632
+00:26:09.433 --> 00:26:11.333
+case and the item
+
+633
+00:26:11.333 --> 00:26:13.333
+to have all of them but we don't need
+
+634
+00:26:13.333 --> 00:26:15.333
+the dictionary very nice
+
+635
+00:26:15.333 --> 00:26:17.266
+I think we can also put this into one
+
+636
+00:26:17.266 --> 00:26:19.100
+line great
+
+637
+00:26:19.100 --> 00:26:22.400
+but now it's item1.json
+
+638
+00:26:22.400 --> 00:26:26.633
+and item2.json and this is item1
+
+639
+00:26:26.633 --> 00:26:27.100
+.model
+
+640
+00:26:27.100 --> 00:26:30.300
+and item2.model you can even
+
+641
+00:26:30.300 --> 00:26:31.500
+put this into a variable
+
+642
+00:26:31.500 --> 00:26:35.266
+as well okay that's much shorter
+
+643
+00:26:35.266 --> 00:26:37.833
+I like that what do you think yeah
+
+644
+00:26:37.833 --> 00:26:38.533
+absolutely
+
+645
+00:26:38.533 --> 00:26:40.933
+I think it's much cleaner anything else
+
+646
+00:26:40.933 --> 00:26:41.833
+we can do
+
+647
+00:26:41.833 --> 00:26:43.833
+we can get rid of the JSON
+
+648
+00:26:43.833 --> 00:26:45.433
+Serialization there I think it's an
+
+649
+00:26:45.433 --> 00:26:47.266
+implementation detail for the test
+
+650
+00:26:47.266 --> 00:26:50.000
+maybe we can have a function that hides
+
+651
+00:26:50.000 --> 00:26:50.466
+how
+
+652
+00:26:50.466 --> 00:26:52.866
+we serialize JSON, okay something like
+
+653
+00:26:52.866 --> 00:26:54.533
+makeItemsJSON
+
+654
+00:26:54.533 --> 00:26:57.666
+yes yes that will receive an
+
+655
+00:26:57.666 --> 00:27:00.700
+array of right
+
+656
+00:27:00.700 --> 00:27:04.700
+items JSON yeah and return
+
+657
+00:27:04.700 --> 00:27:09.200
+data so now we can move
+
+658
+00:27:09.200 --> 00:27:14.533
+the items JSON and the serialization
+
+659
+00:27:14.533 --> 00:27:17.433
+in here so we just replace this with the
+
+660
+00:27:17.433 --> 00:27:18.633
+items array
+
+661
+00:27:18.633 --> 00:27:22.866
+yeah can we return yeah that's it
+
+662
+00:27:22.866 --> 00:27:25.433
+even use a short name yeah here I like
+
+663
+00:27:25.433 --> 00:27:25.900
+it okay
+
+664
+00:27:25.900 --> 00:27:30.633
+one line beautiful so we can now say
+
+665
+00:27:30.633 --> 00:27:34.766
+make items JSON we don't need this
+
+666
+00:27:34.766 --> 00:27:39.033
+anymore let's see if it still passes
+
+667
+00:27:39.033 --> 00:27:42.066
+fantastic I like this test it's
+
+668
+00:27:42.066 --> 00:27:44.233
+short again and very descriptive very
+
+669
+00:27:44.233 --> 00:27:45.200
+descriptive yes
+
+670
+00:27:45.200 --> 00:27:47.333
+I was about to say that okay let's
+
+671
+00:27:47.333 --> 00:27:49.100
+commit this
+
+672
+00:27:49.100 --> 00:27:53.333
+so create factory methods to simplify
+
+673
+00:27:53.333 --> 00:27:57.200
+test setup all right anything we can
+
+674
+00:27:57.200 --> 00:27:58.066
+refactor
+
+675
+00:27:58.066 --> 00:28:01.033
+more before we deal with the Decodable
+
+676
+00:28:01.033 --> 00:28:02.866
+FeedItem
+
+677
+00:28:02.866 --> 00:28:04.933
+not sure one thing is bothering me is
+
+678
+00:28:04.933 --> 00:28:06.700
+that we're not using the response ever
+
+679
+00:28:06.700 --> 00:28:09.733
+so right but why is that
+
+680
+00:28:09.733 --> 00:28:12.933
+yeah and basically we don't we're not
+
+681
+00:28:12.933 --> 00:28:14.300
+using the status code there
+
+682
+00:28:14.300 --> 00:28:16.633
+that's true yeah but we have a test for
+
+683
+00:28:16.633 --> 00:28:18.066
+this yeah
+
+684
+00:28:18.066 --> 00:28:20.766
+so this means that if we complete with a
+
+685
+00:28:20.766 --> 00:28:22.233
+valid JSON
+
+686
+00:28:22.233 --> 00:28:24.466
+but with the wrong status code we will
+
+687
+00:28:24.466 --> 00:28:26.366
+map it so we're just ignoring the status
+
+688
+00:28:26.366 --> 00:28:28.233
+code and that's not what we want
+
+689
+00:28:28.233 --> 00:28:33.666
+so let's have a look at our setup
+
+690
+00:28:33.666 --> 00:28:36.133
+okay we give a default data here and
+
+691
+00:28:36.133 --> 00:28:37.266
+that's the problem
+
+692
+00:28:37.266 --> 00:28:40.133
+right so let me remove this and see
+
+693
+00:28:40.133 --> 00:28:42.833
+where it breaks
+
+694
+00:28:42.833 --> 00:28:45.433
+yeah yeah we should be more explicit
+
+695
+00:28:45.433 --> 00:28:45.900
+with
+
+696
+00:28:45.900 --> 00:28:47.900
+which kind of data we are passing when
+
+697
+00:28:47.900 --> 00:28:50.633
+we have a wrong status code
+
+698
+00:28:50.633 --> 00:28:53.200
+right so we need to pass some data now I
+
+699
+00:28:53.200 --> 00:28:55.266
+guess we can pass valid JSON here
+
+700
+00:28:55.266 --> 00:28:57.333
+and this will force us basically to
+
+701
+00:28:57.333 --> 00:28:59.666
+check that hey we need this 200 status
+
+702
+00:28:59.666 --> 00:29:00.366
+code there
+
+703
+00:29:00.366 --> 00:29:01.733
+it doesn't matter if we have just
+
+704
+00:29:01.733 --> 00:29:03.833
+valid JSON we need both
+
+705
+00:29:03.833 --> 00:29:06.766
+okay so we can use the makeItemsJSON
+
+706
+00:29:06.766 --> 00:29:08.366
+that creates a valid JSON
+
+707
+00:29:08.366 --> 00:29:11.333
+yeah just with no items very simple it's
+
+708
+00:29:11.333 --> 00:29:12.133
+valid but
+
+709
+00:29:12.133 --> 00:29:14.633
+there's nothing to map there I like that
+
+710
+00:29:14.633 --> 00:29:16.066
+I think that should do it
+
+711
+00:29:16.066 --> 00:29:19.900
+yes oh and it's failing fantastic
+
+712
+00:29:19.900 --> 00:29:22.466
+beautiful so let me get the response now
+
+713
+00:29:22.466 --> 00:29:23.900
+and let's check the
+
+714
+00:29:23.900 --> 00:29:27.600
+response status code is 200
+
+715
+00:29:27.600 --> 00:29:32.133
+and we can map it alright
+
+716
+00:29:32.133 --> 00:29:35.433
+now I'm happy with this let's commit
+
+717
+00:29:35.433 --> 00:29:39.100
+so use explicit JSON data
+
+718
+00:29:39.100 --> 00:29:42.700
+for non 200 HTTP
+
+719
+00:29:42.700 --> 00:29:45.900
+response tests just to make sure we are
+
+720
+00:29:45.900 --> 00:29:47.433
+doing the right thing here
+
+721
+00:29:47.433 --> 00:29:49.733
+all right now it's time for us to deal
+
+722
+00:29:49.733 --> 00:29:51.833
+with this Decodable thing
+
+723
+00:29:51.833 --> 00:29:55.100
+yes as we said this image
+
+724
+00:29:55.100 --> 00:29:57.600
+keypath this string leaks an
+
+725
+00:29:57.600 --> 00:29:59.666
+implementation detail of the API
+
+726
+00:29:59.666 --> 00:30:02.466
+into the FeedItem model and this is API
+
+727
+00:30:02.466 --> 00:30:03.433
+specific
+
+728
+00:30:03.433 --> 00:30:05.200
+if this changes in the API we might
+
+729
+00:30:05.200 --> 00:30:07.100
+break other modules that have nothing to
+
+730
+00:30:07.100 --> 00:30:08.133
+do with the API
+
+731
+00:30:08.133 --> 00:30:11.200
+so I don't think this knowledge of the
+
+732
+00:30:11.200 --> 00:30:12.133
+keypath
+
+733
+00:30:12.133 --> 00:30:14.133
+should be in the module the problem is
+
+734
+00:30:14.133 --> 00:30:15.833
+that if you implement Decodable into
+
+735
+00:30:15.833 --> 00:30:16.766
+your types
+
+736
+00:30:16.766 --> 00:30:19.500
+you can only implement it once right so
+
+737
+00:30:19.500 --> 00:30:20.000
+you mean
+
+738
+00:30:20.000 --> 00:30:21.733
+you can't have an extension of Decodable
+
+739
+00:30:21.733 --> 00:30:23.433
+let's say in one framework
+
+740
+00:30:23.433 --> 00:30:25.433
+and another extension of Decodable in
+
+741
+00:30:25.433 --> 00:30:27.033
+another framework
+
+742
+00:30:27.033 --> 00:30:29.266
+not for the same type yes and that's a
+
+743
+00:30:29.266 --> 00:30:30.700
+problem so
+
+744
+00:30:30.700 --> 00:30:32.533
+the advice here is to create a separate
+
+745
+00:30:32.533 --> 00:30:35.333
+model that represents the API FeedItem
+
+746
+00:30:35.333 --> 00:30:37.433
+right and keep that knowledge in the API
+
+747
+00:30:37.433 --> 00:30:39.100
+domain and I think we can do this
+
+748
+00:30:39.100 --> 00:30:40.933
+without breaking our tests
+
+749
+00:30:40.933 --> 00:30:42.366
+because at the end of the day we want
+
+750
+00:30:42.366 --> 00:30:44.766
+this module to generate FeedItems
+
+751
+00:30:44.766 --> 00:30:47.900
+but internally we can use a transitional
+
+752
+00:30:47.900 --> 00:30:49.600
+representation of it absolutely
+
+753
+00:30:49.600 --> 00:30:51.900
+absolutely from the API
+
+754
+00:30:51.900 --> 00:30:54.866
+FeedItem representation into FeedItems
+
+755
+00:30:54.866 --> 00:30:56.366
+so I would like to
+
+756
+00:30:56.366 --> 00:30:58.766
+get rid of this Decodable implementation
+
+757
+00:30:58.766 --> 00:31:00.366
+here
+
+758
+00:31:00.366 --> 00:31:06.066
+and we can do so by creating our own
+
+759
+00:31:06.066 --> 00:31:09.666
+private type here
+
+760
+00:31:09.666 --> 00:31:12.533
+just like we did with the root element
+
+761
+00:31:12.533 --> 00:31:15.266
+right
+
+762
+00:31:15.266 --> 00:31:17.833
+but now this one has the right name that
+
+763
+00:31:17.833 --> 00:31:18.700
+matches
+
+764
+00:31:18.700 --> 00:31:21.833
+the API JSON representation right
+
+765
+00:31:21.833 --> 00:31:24.000
+so this Item is the internal
+
+766
+00:31:24.000 --> 00:31:25.900
+representation of a FeedItem
+
+767
+00:31:25.900 --> 00:31:27.900
+but for the API module and this is going
+
+768
+00:31:27.900 --> 00:31:29.333
+to be Decodable now right
+
+769
+00:31:29.333 --> 00:31:32.000
+exactly I like that and the Root will
+
+770
+00:31:32.000 --> 00:31:32.766
+generate
+
+771
+00:31:32.766 --> 00:31:35.266
+an array of items and we need a way to
+
+772
+00:31:35.266 --> 00:31:35.833
+map
+
+773
+00:31:35.833 --> 00:31:38.366
+our Item into a FeedItem and we can use
+
+774
+00:31:38.366 --> 00:31:39.200
+a
+
+775
+00:31:39.200 --> 00:31:41.833
+computed var to do so right so here we
+
+776
+00:31:41.833 --> 00:31:42.766
+can return our
+
+777
+00:31:42.766 --> 00:31:46.466
+FeedItem with the same id description
+
+778
+00:31:46.466 --> 00:31:49.900
+location and imageURL right
+
+779
+00:31:49.900 --> 00:31:52.866
+and all we need to do here is to map our
+
+780
+00:31:52.866 --> 00:31:53.833
+items
+
+781
+00:31:53.833 --> 00:31:57.100
+into FeedItems right
+
+782
+00:31:57.100 --> 00:32:00.466
+that's it let's run the tests boom
+
+783
+00:32:00.466 --> 00:32:04.066
+still works fantastic so look at that we
+
+784
+00:32:04.066 --> 00:32:04.700
+have our
+
+785
+00:32:04.700 --> 00:32:06.866
+own items that represents the API Feed
+
+786
+00:32:06.866 --> 00:32:09.833
+Item in this context
+
+787
+00:32:09.833 --> 00:32:12.700
+so the FeedItem has no knowledge of the
+
+788
+00:32:12.700 --> 00:32:13.333
+API
+
+789
+00:32:13.333 --> 00:32:15.900
+again even with the keypaths because you
+
+790
+00:32:15.900 --> 00:32:17.100
+can say it's just a string
+
+791
+00:32:17.100 --> 00:32:18.866
+but no it's an implementation detail
+
+792
+00:32:18.866 --> 00:32:21.266
+that is leaking into a more abstract
+
+793
+00:32:21.266 --> 00:32:24.300
+higher level module yes this FeedItem
+
+794
+00:32:24.300 --> 00:32:27.033
+has an imageURL property which as we
+
+795
+00:32:27.033 --> 00:32:27.333
+saw
+
+796
+00:32:27.333 --> 00:32:30.633
+before if we were to implement Decodable
+
+797
+00:32:30.633 --> 00:32:33.266
+then we would have these CodingKeys and
+
+798
+00:32:33.266 --> 00:32:34.233
+we would have to
+
+799
+00:32:34.233 --> 00:32:36.366
+give mapping instructions to the
+
+800
+00:32:36.366 --> 00:32:38.700
+compiler to map the image
+
+801
+00:32:38.700 --> 00:32:42.133
+JSON property to imageURL but now
+
+802
+00:32:42.133 --> 00:32:45.333
+with the Item struct the internal
+
+803
+00:32:45.333 --> 00:32:46.700
+representation
+
+804
+00:32:46.700 --> 00:32:49.433
+of a FeedItem from the API we don't
+
+805
+00:32:49.433 --> 00:32:51.033
+have to do that
+
+806
+00:32:51.033 --> 00:32:52.366
+and as you can see we didn't break the
+
+807
+00:32:52.366 --> 00:32:54.233
+test right that was a easy
+
+808
+00:32:54.233 --> 00:32:57.100
+change to make and we keep our modules
+
+809
+00:32:57.100 --> 00:32:58.133
+abstract
+
+810
+00:32:58.133 --> 00:33:00.766
+exactly and this shows you how the tests
+
+811
+00:33:00.766 --> 00:33:01.733
+they don't contain
+
+812
+00:33:01.733 --> 00:33:04.700
+any internal implementation details and
+
+813
+00:33:04.700 --> 00:33:06.466
+it's basically input output
+
+814
+00:33:06.466 --> 00:33:08.633
+and they just check the behavior I really like
+
+815
+00:33:08.633 --> 00:33:11.333
+that let's commit
+
+816
+00:33:11.333 --> 00:33:15.666
+move Decodable logic to a new private
+
+817
+00:33:15.666 --> 00:33:16.366
+Item
+
+818
+00:33:16.366 --> 00:33:20.066
+struct to decouple the Feed
+
+819
+00:33:20.066 --> 00:33:23.333
+Feature module from API
+
+820
+00:33:23.333 --> 00:33:26.866
+implementation details look at that
+
+821
+00:33:26.866 --> 00:33:30.066
+that is fantastic
+
+822
+00:33:30.066 --> 00:33:31.266
+but to be fair I don't like this
+
+823
+00:33:31.266 --> 00:33:32.766
+implementation anymore there's too many
+
+824
+00:33:32.766 --> 00:33:33.833
+things going on
+
+825
+00:33:33.833 --> 00:33:36.300
+in this RemoteFeedLoader so why don't
+
+826
+00:33:36.300 --> 00:33:37.033
+we
+
+827
+00:33:37.033 --> 00:33:38.866
+refactor this a little bit by creating
+
+828
+00:33:38.866 --> 00:33:40.300
+maybe a new type
+
+829
+00:33:40.300 --> 00:33:42.933
+we can extract some stuff lighten up the
+
+830
+00:33:42.933 --> 00:33:43.833
+FeedLoader
+
+831
+00:33:43.833 --> 00:33:46.366
+so we can create a private class for now
+
+832
+00:33:46.366 --> 00:33:47.033
+let's say
+
+833
+00:33:47.033 --> 00:33:50.866
+a FeedItemsMapper
+
+834
+00:33:50.866 --> 00:33:52.766
+and we can have a it can be a static
+
+835
+00:33:52.766 --> 00:33:54.300
+function we don't need an instance of
+
+836
+00:33:54.300 --> 00:33:54.766
+this
+
+837
+00:33:54.766 --> 00:33:57.900
+no, a map function the
+
+838
+00:33:57.900 --> 00:34:01.900
+receives Data and
+
+839
+00:34:01.900 --> 00:34:05.266
+response yes HTTPURLResponse
+
+840
+00:34:05.266 --> 00:34:08.133
+and it can throw if you cannot map it
+
+841
+00:34:08.133 --> 00:34:09.100
+and it returns
+
+842
+00:34:09.100 --> 00:34:11.500
+an array of FeedItem right so we want
+
+843
+00:34:11.500 --> 00:34:12.700
+to assert that
+
+844
+00:34:12.700 --> 00:34:16.000
+the response's status code is going to be
+
+845
+00:34:16.000 --> 00:34:18.633
+a 200 so we can use a guard statement
+
+846
+00:34:18.633 --> 00:34:19.166
+yeah
+
+847
+00:34:19.166 --> 00:34:20.800
+yeah typically we use the guard
+
+848
+00:34:20.800 --> 00:34:22.300
+statement there
+
+849
+00:34:22.300 --> 00:34:25.266
+and if it's not 200 well we we throw
+
+850
+00:34:25.266 --> 00:34:26.300
+invalid data
+
+851
+00:34:26.300 --> 00:34:30.000
+okay so RemoteFeedLoader.Error.invalidData
+
+852
+00:34:30.000 --> 00:34:33.433
+yep else we
+
+853
+00:34:33.433 --> 00:34:36.633
+can use this logic here yes exactly copy
+
+854
+00:34:36.633 --> 00:34:37.500
+and paste
+
+855
+00:34:37.500 --> 00:34:40.800
+we decode our Root item but we want to
+
+856
+00:34:40.800 --> 00:34:42.300
+return
+
+857
+00:34:42.300 --> 00:34:45.566
+well the mapped items yes the mapped
+
+858
+00:34:45.566 --> 00:34:46.533
+items
+
+859
+00:34:46.533 --> 00:34:49.166
+okay so now we can use the FeedItems
+
+860
+00:34:49.166 --> 00:34:49.900
+Mapper
+
+861
+00:34:49.900 --> 00:34:54.066
+instead yeah
+
+862
+00:34:54.066 --> 00:34:56.466
+and we pass data and response we
+
+863
+00:34:56.466 --> 00:34:57.166
+complete
+
+864
+00:34:57.166 --> 00:35:00.833
+with the items if succeeded
+
+865
+00:35:00.833 --> 00:35:03.733
+perfect you can even use the do
+
+866
+00:35:03.733 --> 00:35:10.300
+catch syntax
+
+867
+00:35:10.300 --> 00:35:17.566
+if you want
+
+868
+00:35:17.566 --> 00:35:19.833
+so there you go if you prefer do catch
+
+869
+00:35:19.833 --> 00:35:21.433
+or if let
+
+870
+00:35:21.433 --> 00:35:24.000
+it doesn't matter much and we can even
+
+871
+00:35:24.000 --> 00:35:25.033
+hide
+
+872
+00:35:25.033 --> 00:35:28.800
+those representations privately inside
+
+873
+00:35:28.800 --> 00:35:32.633
+our class so no one has access to it
+
+874
+00:35:32.633 --> 00:35:35.900
+you can even add those structs
+
+875
+00:35:35.900 --> 00:35:39.666
+inside a method signature it also works
+
+876
+00:35:39.666 --> 00:35:42.866
+right
+
+877
+00:35:42.866 --> 00:35:45.500
+but I prefer to keep them into the class
+
+878
+00:35:45.500 --> 00:35:45.900
+scope
+
+879
+00:35:45.900 --> 00:35:47.666
+because of the namespacing yeah it's
+
+880
+00:35:47.666 --> 00:35:52.800
+just a preference
+
+881
+00:35:52.800 --> 00:35:54.400
+there's a lot of dots in this syntax as
+
+882
+00:35:54.400 --> 00:35:57.433
+well if you want you can create a root
+
+883
+00:35:57.433 --> 00:35:59.900
+element and map it we are free to change
+
+884
+00:35:59.900 --> 00:36:01.733
+this implementation because
+
+885
+00:36:01.733 --> 00:36:04.933
+in this episode we followed a classicist
+
+886
+00:36:04.933 --> 00:36:06.933
+approach to test-driven development
+
+887
+00:36:06.933 --> 00:36:08.400
+where we are not mocking
+
+888
+00:36:08.400 --> 00:36:11.033
+anything for mapping items all we are
+
+889
+00:36:11.033 --> 00:36:12.700
+doing is testing through the public
+
+890
+00:36:12.700 --> 00:36:15.166
+interface that if I pass this data
+
+891
+00:36:15.166 --> 00:36:17.733
+I get an error or I get a mapped array
+
+892
+00:36:17.733 --> 00:36:18.400
+of items
+
+893
+00:36:18.400 --> 00:36:19.333
+so we are free to change the
+
+894
+00:36:19.333 --> 00:36:21.166
+implementation without breaking the
+
+895
+00:36:21.166 --> 00:36:21.833
+tests
+
+896
+00:36:21.833 --> 00:36:25.033
+which is a big win but now we also
+
+897
+00:36:25.033 --> 00:36:26.533
+testing things in integration so when it
+
+898
+00:36:26.533 --> 00:36:27.900
+fails it might
+
+899
+00:36:27.900 --> 00:36:30.233
+be harder to find out where the issue is
+
+900
+00:36:30.233 --> 00:36:31.200
+precisely
+
+901
+00:36:31.200 --> 00:36:34.700
+yes but for starting out
+
+902
+00:36:34.700 --> 00:36:38.133
+I think this is a truthful approach
+
+903
+00:36:38.133 --> 00:36:40.633
+you know for certain input we get some
+
+904
+00:36:40.633 --> 00:36:41.833
+certain output
+
+905
+00:36:41.833 --> 00:36:43.266
+this is a very good point that you make
+
+906
+00:36:43.266 --> 00:36:45.500
+with integration sure
+
+907
+00:36:45.500 --> 00:36:47.566
+perhaps we're gonna have to revisit this
+
+908
+00:36:47.566 --> 00:36:48.633
+solution
+
+909
+00:36:48.633 --> 00:36:51.900
+but until then I'm happy to go with this
+
+910
+00:36:51.900 --> 00:36:55.200
+so let's commit yes so
+
+911
+00:36:55.200 --> 00:36:58.233
+we moved mapping
+
+912
+00:36:58.233 --> 00:37:01.900
+logic to a new type Feed
+
+913
+00:37:01.900 --> 00:37:05.500
+ItemsMapper yeah that's it
+
+914
+00:37:05.500 --> 00:37:07.200
+so a bunch of important lessons in this
+
+915
+00:37:07.200 --> 00:37:09.266
+episode yep first of all
+
+916
+00:37:09.266 --> 00:37:11.833
+being careful with the Decodable design
+
+917
+00:37:11.833 --> 00:37:12.933
+because it can
+
+918
+00:37:12.933 --> 00:37:16.233
+couple modules this is a true test of
+
+919
+00:37:16.233 --> 00:37:17.200
+discipline here
+
+920
+00:37:17.200 --> 00:37:21.666
+because it's so easy to overlook this
+
+921
+00:37:21.666 --> 00:37:23.500
+and just say you know what like this is
+
+922
+00:37:23.500 --> 00:37:25.733
+gonna be Decodable it doesn't matter
+
+923
+00:37:25.733 --> 00:37:27.666
+I'm gonna have this CodingKeys there
+
+924
+00:37:27.666 --> 00:37:29.333
+you know because for now
+
+925
+00:37:29.333 --> 00:37:31.900
+it will facilitate you to do whatever
+
+926
+00:37:31.900 --> 00:37:33.500
+your task is gonna be
+
+927
+00:37:33.500 --> 00:37:36.933
+but it has implications and
+
+928
+00:37:36.933 --> 00:37:39.733
+as I said you need to be disciplined to
+
+929
+00:37:39.733 --> 00:37:41.433
+understand these implications and to
+
+930
+00:37:41.433 --> 00:37:42.533
+resist
+
+931
+00:37:42.533 --> 00:37:45.500
+by finding a more modular solution to
+
+932
+00:37:45.500 --> 00:37:46.700
+your problem
+
+933
+00:37:46.700 --> 00:37:48.700
+also the classicist approach where we
+
+934
+00:37:48.700 --> 00:37:50.700
+kept adding tests and refactoring
+
+935
+00:37:50.700 --> 00:37:52.866
+mercilessly and the tests are still
+
+936
+00:37:52.866 --> 00:37:55.033
+passing everything is fine
+
+937
+00:37:55.033 --> 00:37:57.100
+I think there's a big win but this
+
+938
+00:37:57.100 --> 00:37:58.300
+integration like
+
+939
+00:37:58.300 --> 00:38:01.033
+tests might bite us in the future so we
+
+940
+00:38:01.033 --> 00:38:03.566
+need to keep an eye on them
+
+941
+00:38:03.566 --> 00:38:06.866
+agreed for now I'm happy with it we saw
+
+942
+00:38:06.866 --> 00:38:08.466
+some great refactorings as well
+
+943
+00:38:08.466 --> 00:38:11.500
+in my opinion and the tests are very
+
+944
+00:38:11.500 --> 00:38:12.133
+readable
+
+945
+00:38:12.133 --> 00:38:14.233
+exactly for example expect sut to
+
+946
+00:38:14.233 --> 00:38:15.433
+complete with a failure
+
+947
+00:38:15.433 --> 00:38:18.466
+invalid data when we complete with 200
+
+948
+00:38:18.466 --> 00:38:19.266
+status but
+
+949
+00:38:19.266 --> 00:38:22.466
+invalid JSON I think that's very nice
+
+950
+00:38:22.466 --> 00:38:24.533
+yeah so I think another refactoring we can do
+
+951
+00:38:24.533 --> 00:38:26.633
+here is to also use the
+
+952
+00:38:26.633 --> 00:38:29.900
+makeItemsJSON with empty dictionary
+
+953
+00:38:29.900 --> 00:38:31.033
+here so we
+
+954
+00:38:31.033 --> 00:38:33.200
+remove this data implementation detail
+
+955
+00:38:33.200 --> 00:38:34.400
+from our test setup
+
+956
+00:38:34.400 --> 00:38:39.500
+which can make it easier to read
+
+957
+00:38:39.500 --> 00:38:42.700
+let's commit replace hard
+
+958
+00:38:42.700 --> 00:38:52.133
+coded JSON with helper method
+
+959
+00:38:52.133 --> 00:38:55.200
+also the code here is pretty clean I
+
+960
+00:38:55.200 --> 00:38:57.500
+think we should start moving
+
+961
+00:38:57.500 --> 00:39:00.300
+some types to their own files but we can
+
+962
+00:39:00.300 --> 00:39:02.066
+do this in the next episode
+
+963
+00:39:02.066 --> 00:39:03.500
+yeah I think we should start the next
+
+964
+00:39:03.500 --> 00:39:06.233
+episode with a little cleanup
+
+965
+00:39:06.233 --> 00:39:08.533
+some people don't like those hard-coded
+
+966
+00:39:08.533 --> 00:39:09.900
+values in here
+
+967
+00:39:09.900 --> 00:39:14.466
+right so we could create some kind of
+
+968
+00:39:14.466 --> 00:39:19.500
+DSL here like okay 200
+
+969
+00:39:19.500 --> 00:39:21.333
+right so it's not a magic number
+
+970
+00:39:21.333 --> 00:39:26.833
+anymore it has some sort of context
+
+971
+00:39:26.833 --> 00:39:30.300
+exactly
+
+972
+00:39:30.300 --> 00:39:33.900
+so replace magic number
+
+973
+00:39:33.900 --> 00:39:38.466
+with variable given extra context
+
+974
+00:39:38.466 --> 00:39:40.533
+yeah and we're free to change this
+
+975
+00:39:40.533 --> 00:39:42.533
+implementation without breaking the test
+
+976
+00:39:42.533 --> 00:39:45.333
+which is very nice so next episode we
+
+977
+00:39:45.333 --> 00:39:46.800
+should start moving those types around
+
+978
+00:39:46.800 --> 00:39:48.933
+to clean up those files yeah
+
+979
+00:39:48.933 --> 00:40:03.433
+we'll see you next time bye y'all, see ya

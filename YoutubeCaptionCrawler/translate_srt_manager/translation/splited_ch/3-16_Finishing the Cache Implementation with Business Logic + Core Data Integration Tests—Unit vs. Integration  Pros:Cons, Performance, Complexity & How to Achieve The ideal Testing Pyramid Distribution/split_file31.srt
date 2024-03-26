@@ -1,0 +1,39 @@
+354
+00:12:12,933 --> 00:12:14,233
+within the whole stack
+在整個堆疊中
+
+355
+00:12:14,233 --> 00:12:17,333
+exactly so first we save with the
+確實如此，我們首先用
+
+356
+00:12:17,333 --> 00:12:20,133
+sut to perform the first save then we
+sut 來進行第一次保存，然後我們
+
+357
+00:12:20,133 --> 00:12:20,866
+save
+保存
+
+358
+00:12:20,866 --> 00:12:23,333
+another feed with the sut to perform the
+用sut保存另一個feed以執行
+
+359
+00:12:23,333 --> 00:12:24,233
+last save
+最後一次保存
+
+360
+00:12:24,233 --> 00:12:27,200
+and then we expect to load the latest
+然後我們預期載入最新的
+
+361
+00:12:27,200 --> 00:12:27,500
+one
+一個

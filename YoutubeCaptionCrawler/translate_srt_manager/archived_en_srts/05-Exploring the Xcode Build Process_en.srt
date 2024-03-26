@@ -1,0 +1,3097 @@
+
+1
+00:00:00.000 --> 00:00:07.080 
+Hi everyone, and welcome back to the iOS tooling series.
+
+2
+00:00:07.080 --> 00:00:14.280 
+I'm very excited to be here today with you, as I've been really waiting for this lecture
+
+3
+00:00:14.280 --> 00:00:15.520 
+to happen.
+
+4
+00:00:15.520 --> 00:00:16.520 
+Why?
+
+5
+00:00:16.520 --> 00:00:23.200 
+Because it's one of my favorite topics regarding Xcode and iOS, which is talking about the
+
+6
+00:00:23.200 --> 00:00:26.640 
+Xcode build process.
+
+7
+00:00:26.640 --> 00:00:34.360 
+I really know how frustrating it is to spend hours understanding and fixing build failures
+
+8
+00:00:34.360 --> 00:00:39.880 
+or just trying to get Xcode to do the things you want it to do.
+
+9
+00:00:39.880 --> 00:00:47.080 
+Or having to constantly wait for Xcode to finish indexing or building, where you struggle
+
+10
+00:00:47.080 --> 00:00:55.240 
+to hold to your idea until you can put it into code.
+
+11
+00:00:55.240 --> 00:01:00.520 
+Understanding how the Xcode build process works and how you can help it be more efficient
+
+12
+00:01:00.520 --> 00:01:06.520 
+is a fundamental piece of information for a senior developer.
+
+13
+00:01:06.520 --> 00:01:12.640 
+This will allow you to be more productive in Xcode, create faster builds, fix issues
+
+14
+00:01:12.640 --> 00:01:16.960 
+quicker, not to mention stand out in interviews.
+
+15
+00:01:16.960 --> 00:01:20.960 
+So stay tuned.
+
+16
+00:01:20.960 --> 00:01:27.720 
+We'll explain the steps from source code to executable code, which apply to most programming
+
+17
+00:01:27.720 --> 00:01:36.880 
+languages and see how compilers work in general.
+
+18
+00:01:36.880 --> 00:01:44.480 
+We'll see what the Xcode build process consists of and try to explain what happens when we
+
+19
+00:01:44.480 --> 00:01:49.400 
+press build or command B.
+
+20
+00:01:49.400 --> 00:01:54.520 
+We'll dive into what the build system considers to be dependencies.
+
+21
+00:01:54.520 --> 00:02:02.720 
+And we'll see how we can help it by providing extra dependency information to speed it up.
+
+22
+00:02:02.720 --> 00:02:08.480 
+The linker is this less known part of the build system, but really important.
+
+23
+00:02:08.480 --> 00:02:14.600 
+To put it simply, the linker's job is to merge all the outputs created by the compiler into
+
+24
+00:02:14.600 --> 00:02:17.080 
+a single output.
+
+25
+00:02:17.080 --> 00:02:23.200 
+We'll explain how the linker works and why it's important to the build system.
+
+26
+00:02:23.200 --> 00:02:32.520 
+And we'll wrap it up with the Q&A.
+
+27
+00:02:32.520 --> 00:02:36.120 
+Programming has evolved a lot during time.
+
+28
+00:02:36.120 --> 00:02:41.880 
+In the beginning, programmers were just a handful of people that knew how to write code,
+
+29
+00:02:41.880 --> 00:02:48.160 
+which was directly executed by machines, known as machine code, as the one you can see.
+
+30
+00:02:48.160 --> 00:02:53.840 
+But reading and writing such code is really hard, slow, and Error prone.
+
+31
+00:02:53.840 --> 00:03:02.280 
+So the programmers invested time into creating programming languages.
+
+32
+00:03:02.280 --> 00:03:07.920 
+As I mentioned, this piece of machine code is actually taken from the Xcode executable,
+
+33
+00:03:07.920 --> 00:03:13.040 
+a small part of it, of course.
+
+34
+00:03:13.040 --> 00:03:20.960 
+Programming languages are just abstractions that allow us to express better in code.
+
+35
+00:03:20.960 --> 00:03:25.600 
+Like the one you see on the left is a Swift hello word.
+
+36
+00:03:25.600 --> 00:03:30.880 
+Modern languages allow us to write code that reads like a story, making it a lot easier
+
+37
+00:03:30.880 --> 00:03:36.160 
+to understand and create.
+
+38
+00:03:36.160 --> 00:03:43.900 
+So while on the left of the slide you see some one line of Swift code, on the right
+
+39
+00:03:43.900 --> 00:03:51.040 
+you see a part of the 33 kilobytes of machine code that's generated after compiling this
+
+40
+00:03:51.040 --> 00:03:57.320 
+Swift code.
+
+41
+00:03:57.320 --> 00:04:04.160 
+It's really easy today to create apps with the help of an advanced IDE like Xcode, advanced
+
+42
+00:04:04.160 --> 00:04:10.280 
+programming languages like Swift, and a large number of frameworks which have out of the
+
+43
+00:04:10.280 --> 00:04:15.160 
+box solutions to most problems.
+
+44
+00:04:15.160 --> 00:04:20.920 
+Here you can see the CPU instructions that are part of the hello word example we saw
+
+45
+00:04:20.920 --> 00:04:24.080 
+on the previous slide.
+
+46
+00:04:24.080 --> 00:04:31.780 
+Also pretty difficult to understand and to follow.
+
+47
+00:04:31.780 --> 00:04:36.960 
+To be able to write code in a human readable programming language and translate it into
+
+48
+00:04:36.960 --> 00:04:44.420 
+valid machine code, we needed a tool, preferably automated, that could do that.
+
+49
+00:04:44.420 --> 00:04:50.600 
+This tool is called Compiler and it automates translating high level source code into low
+
+50
+00:04:50.600 --> 00:04:55.480 
+level executable machine code.
+
+51
+00:04:55.480 --> 00:05:00.680 
+So the developers can focus on writing the source code.
+
+52
+00:05:00.680 --> 00:05:06.160 
+The number of existing compilers is large and it grows by the day.
+
+53
+00:05:06.160 --> 00:05:11.840 
+There are compilers for very simple programming languages to very advanced compilers like
+
+54
+00:05:11.840 --> 00:05:19.720 
+the Swift compiler, which is actually made of many sub components.
+
+55
+00:05:19.720 --> 00:05:23.440 
+This Domain of compilers is a very complex one.
+
+56
+00:05:23.440 --> 00:05:32.280 
+I remember I took a one year course during university and only got to stretch its surface.
+
+57
+00:05:32.280 --> 00:05:39.400 
+So today, in the interest of time, we'll try to cover the essence of the compilation process
+
+58
+00:05:39.400 --> 00:05:45.440 
+and dig deeper into the particularities of the compilers we use when programming for
+
+59
+00:05:45.440 --> 00:05:50.780 
+Apple platforms.
+
+60
+00:05:50.780 --> 00:05:57.120 
+But independent of the language or the compiler, there are a few components which are part
+
+61
+00:05:57.120 --> 00:06:04.240 
+of the compilation process, which, as I said, transform source code into executable machine
+
+62
+00:06:04.240 --> 00:06:08.880 
+code.
+
+63
+00:06:08.880 --> 00:06:14.800 
+There's a component called pre compiler, which is a program that runs just before the compiler
+
+64
+00:06:14.800 --> 00:06:23.280 
+and processes the input data, which is code to produce output data, which is again code
+
+65
+00:06:23.280 --> 00:06:27.160 
+for the compiler to use as input.
+
+66
+00:06:27.160 --> 00:06:34.680 
+Not all the compilers have a pre compiler, but the C based languages like C or Objective-C
+
+67
+00:06:34.680 --> 00:06:37.000 
+do.
+
+68
+00:06:37.000 --> 00:06:46.920 
+To be more precise, the pre compiler is actually a sub component of the compiler.
+
+69
+00:06:46.920 --> 00:06:53.000 
+The name compiler is primarily used for programs that translate source code from a high level
+
+70
+00:06:53.000 --> 00:06:59.000 
+programming language to a lower level language like assembly language, object code or machine
+
+71
+00:06:59.000 --> 00:07:05.520 
+code to create an executable program.
+
+72
+00:07:05.520 --> 00:07:11.680 
+A compiler is likely to perform some or all of the following operations, often called
+
+73
+00:07:11.680 --> 00:07:21.880 
+phases pre processing, also known as pre compiling, lexical analysis, parsing, semantic analysis,
+
+74
+00:07:21.880 --> 00:07:30.880 
+conversions of input programs to their intermediate representation, code optimization, code generation.
+
+75
+00:07:30.880 --> 00:07:36.320 
+Compilers generally implement these phases as modular components, promoting efficient
+
+76
+00:07:36.320 --> 00:07:43.760 
+design and correctness of transformations of source input to target output.
+
+77
+00:07:43.760 --> 00:07:52.120 
+Finally, the linker is a program that takes one or more object files generated by a compiler
+
+78
+00:07:52.120 --> 00:07:59.520 
+or an Assembler and combines them into a single executable File, library File, or just another
+
+79
+00:07:59.520 --> 00:08:06.340 
+object File.
+
+80
+00:08:06.340 --> 00:08:11.680 
+This is just the general theory of compilers.
+
+81
+00:08:11.680 --> 00:08:23.120 
+Now let's dig into the particularities of the Xcode build process.
+
+82
+00:08:23.120 --> 00:08:31.520 
+There are a number of actions that you can do in Xcode, run, test, profile, analyze,
+
+83
+00:08:31.520 --> 00:08:38.080 
+archive, build, runs SwiftUI previews and more.
+
+84
+00:08:38.080 --> 00:08:50.440 
+Behind doors, all these actions rely on building one or more of the targets in your project.
+
+85
+00:08:50.440 --> 00:08:57.000 
+You already know Xcode uses workspaces and projects to organize files and tasks into
+
+86
+00:08:57.000 --> 00:08:59.920 
+targets.
+
+87
+00:08:59.920 --> 00:09:03.880 
+Since you want to build different products from your project, you have the ability to
+
+88
+00:09:03.880 --> 00:09:10.360 
+group them into different targets and share code, resources, settings, and more between
+
+89
+00:09:10.360 --> 00:09:12.240 
+these targets.
+
+90
+00:09:12.240 --> 00:09:20.240 
+A target specifies a product to build, like an app in the case of the EssentialApp.
+
+91
+00:09:20.240 --> 00:09:27.420 
+A framework like the EssentialFeed framework, a Bundle or a unit test Bundle like the EssentialFeedTests.
+
+92
+00:09:27.420 --> 00:09:38.400 
+A framework like the EssentialFeed framework, a Bundle or a unit test Bundle like the EssentialFeedTests.
+
+93
+00:09:38.400 --> 00:09:45.180 
+Xcode uses a build process composed of many tasks, which are created based on the type
+
+94
+00:09:45.180 --> 00:09:50.760 
+of target being built to basically translate from resources like Swift files, Objective-C
+
+95
+00:09:50.760 --> 00:09:59.360 
+headers and source files, storyboards, asset catalogs, and more into the final executable.
+
+96
+00:09:59.360 --> 00:10:07.680 
+This is basically what happens when you press command B. Apple ships two different compilers
+
+97
+00:10:07.680 --> 00:10:18.920 
+which are embedded in Xcode, Clang for compiling C-based languages like C, C++, Objective-C,
+
+98
+00:10:18.920 --> 00:10:26.280 
+Objective-C++, and a Swift compiler for compiling Swift code.
+
+99
+00:10:26.280 --> 00:10:31.080 
+They both translate source code files into object files.
+
+100
+00:10:31.080 --> 00:10:36.560 
+Object files contain pieces of executable code, but are not executable on their own
+
+101
+00:10:36.560 --> 00:10:41.880 
+as they have missing information.
+
+102
+00:10:41.880 --> 00:10:47.400 
+At the end, the output files from both compilers are used by the linker to create a single
+
+103
+00:10:47.400 --> 00:10:49.800 
+executable for each target.
+
+104
+00:10:49.800 --> 00:10:52.760 
+This time, there's no missing information.
+
+105
+00:10:52.760 --> 00:10:57.240 
+So this is real executable that the system can run.
+
+106
+00:10:57.240 --> 00:11:03.680 
+We'll see in a few minutes how the linker does this.
+
+107
+00:11:03.680 --> 00:11:13.480 
+Some of the tasks which I mentioned executed during the build process are compiling sources
+
+108
+00:11:13.480 --> 00:11:22.040 
+like Swift sources, Objective-C files, C++, and more.
+
+109
+00:11:22.040 --> 00:11:30.840 
+Generating headers or files like the Swift interface header here, compiling storyboards
+
+110
+00:11:30.840 --> 00:11:39.920 
+and asset catalogs which are catalogs that contain your assets.
+
+111
+00:11:39.920 --> 00:11:52.280 
+Run strips, processing plists like the Info.plist, linking other modules, code signing,
+
+112
+00:11:52.280 --> 00:11:55.680 
+and more.
+
+113
+00:11:55.680 --> 00:12:03.800 
+Now most of these tasks in the build process are performed by running command-line tools
+
+114
+00:12:03.800 --> 00:12:14.880 
+like Clang, LD, AC tool, IB tool, code sign, and so on.
+
+115
+00:12:14.880 --> 00:12:20.160 
+These tools have to be executed with a very specific set of arguments in a particular
+
+116
+00:12:20.160 --> 00:12:25.400 
+order based on the configuration of your Xcode project.
+
+117
+00:12:25.400 --> 00:12:30.960 
+So what the build system does for you is to automate the execution of these tasks each
+
+118
+00:12:30.960 --> 00:12:34.040 
+time you perform a build.
+
+119
+00:12:34.040 --> 00:12:38.720 
+Since there can be many tasks involved in a build process, it's definitely not something
+
+120
+00:12:38.720 --> 00:12:43.400 
+you want to be manually typing into the terminal as we'll see in a few seconds.
+
+121
+00:12:43.400 --> 00:12:49.120 
+Let the build system do that for you by using the Xcode actions we mentioned earlier like
+
+122
+00:12:49.120 --> 00:12:56.920 
+build or archive or the Xcode build command from command-line.
+
+123
+00:12:56.920 --> 00:13:08.280 
+Remember we can inspect the results and tasks of a build log using the report navigator.
+
+124
+00:13:08.280 --> 00:13:10.600 
+Let's do that.
+
+125
+00:13:10.600 --> 00:13:25.520 
+I'll select my last build here and first of all, we notice that this report navigator
+
+126
+00:13:25.520 --> 00:13:30.560 
+has a filter at the top with two controls.
+
+127
+00:13:30.560 --> 00:13:36.840 
+The first control allows the all or recent options.
+
+128
+00:13:36.840 --> 00:13:45.560 
+All means all the messages from the past builds, while recent will only show the messages executed
+
+129
+00:13:45.560 --> 00:13:51.600 
+for the last build.
+
+130
+00:13:51.600 --> 00:13:58.080 
+The other filter controls which types of messages you see, all the messages, all the issues
+
+131
+00:13:58.080 --> 00:14:02.800 
+including Errors or Errors only.
+
+132
+00:14:02.800 --> 00:14:09.020 
+If I use these filters on my successful build, there's no Errors, but if I use an older build
+
+133
+00:14:09.020 --> 00:14:21.800 
+that had Errors, I can see just the Errors.
+
+134
+00:14:21.800 --> 00:14:32.400 
+I'm going to use my last build here and show you that each of these tasks which are listed
+
+135
+00:14:32.400 --> 00:14:46.520 
+for each target can be expanded by using a small icon at each task line has at its right.
+
+136
+00:14:46.520 --> 00:14:57.440 
+So let's look at the command for building some Swift like this one.
+
+137
+00:14:57.440 --> 00:15:09.200 
+As you can see, the CommandLine is pretty huge.
+
+138
+00:15:09.200 --> 00:15:19.600 
+Let's use a command for compiling a Storyboard, this time a bit shorter, and we can also take
+
+139
+00:15:19.600 --> 00:15:28.320 
+a look at one link command which is linking the EssentialFeed iOS in this case, which
+
+140
+00:15:28.320 --> 00:15:33.680 
+uses the LD command.
+
+141
+00:15:33.680 --> 00:15:40.000 
+As you can see, these commands are usually very long and have many arguments, some of
+
+142
+00:15:40.000 --> 00:15:43.920 
+which are directly controlled through build settings.
+
+143
+00:15:43.920 --> 00:15:49.720 
+When the build fails, when the build is slow or just doesn't do exactly what we want, we
+
+144
+00:15:49.720 --> 00:16:04.600 
+can inspect the details of each task and understand it better.
+
+145
+00:16:04.600 --> 00:16:11.240 
+The tasks in a build process are executed in a particular order.
+
+146
+00:16:11.240 --> 00:16:18.120 
+The order in which tasks are executed is determined from the dependency information that is the
+
+147
+00:16:18.120 --> 00:16:25.840 
+task, the input that a Task consumes, and the output that it produces.
+
+148
+00:16:25.840 --> 00:16:33.800 
+The compilation task consumes a source File like the SceneDelegate Swift File as input
+
+149
+00:16:33.800 --> 00:16:41.320 
+and produces an object File like the SceneDelegate.o as output.
+
+150
+00:16:41.320 --> 00:16:48.640 
+Similarly, for Objective-C, the compilation takes a myfile.m as input and produces
+
+151
+00:16:48.640 --> 00:16:56.560 
+myfile.o object File as output.
+
+152
+00:16:56.560 --> 00:17:04.760 
+A linker task is more interesting because it takes multiple entries or inputs.
+
+153
+00:17:04.760 --> 00:17:12.040 
+In this case, it takes all the object files from the target that are the Result of previous
+
+154
+00:17:12.040 --> 00:17:19.520 
+compilation tasks like the myfile.o, AppDelegate.o, FeedUIComposer.o, and
+
+155
+00:17:19.520 --> 00:17:21.920 
+so on.
+
+156
+00:17:21.920 --> 00:17:34.800 
+But also the EssentialFeed framework that is linked to my target and produces an executable.
+
+157
+00:17:34.800 --> 00:17:42.480 
+This is the EssentialApp executable that will go into the EssentialApp Bundle.
+
+158
+00:17:42.480 --> 00:17:48.480 
+Compilation tasks are usually independent from each other, so they can run in parallel.
+
+159
+00:17:48.480 --> 00:17:53.880 
+The linker task needs all the outputs from the compilation tasks in the same target,
+
+160
+00:17:53.880 --> 00:18:00.300 
+so it will have to wait for all of them to complete before it can run.
+
+161
+00:18:00.300 --> 00:18:06.280 
+The build system uses dependency information to determine the order in which tasks should
+
+162
+00:18:06.280 --> 00:18:14.360 
+be run and which tasks can be run in parallel, and we call this dependency order.
+
+163
+00:18:14.360 --> 00:18:18.600 
+So what happens when you press build?
+
+164
+00:18:18.600 --> 00:18:26.680 
+Well, the first step is for the build system to read the build description from your Xcode
+
+165
+00:18:26.680 --> 00:18:35.880 
+project File.
+
+166
+00:18:35.880 --> 00:18:43.480 
+It takes into account all the files in the project, the targets, the dependency relationship,
+
+167
+00:18:43.480 --> 00:18:53.080 
+and the build settings, which we talked about in previous lectures.
+
+168
+00:18:53.080 --> 00:19:00.280 
+And it turns everything into a tree-like structure called a directed graph.
+
+169
+00:19:00.280 --> 00:19:02.600 
+Let's see how this graph looks like.
+
+170
+00:19:02.600 --> 00:19:11.800 
+In our case, building the EssentialApp depends on compiling assets and storyboards and processing
+
+171
+00:19:11.800 --> 00:19:19.360 
+the Info.plist File, but also on linking the EssentialApp executable.
+
+172
+00:19:19.360 --> 00:19:25.200 
+To link the executable, of course, we need to compile the Objective-C files first, if
+
+173
+00:19:25.200 --> 00:19:28.120 
+there are any.
+
+174
+00:19:28.120 --> 00:19:38.200 
+Objective-C files compilation depends on generating the Swift header interface.
+
+175
+00:19:38.200 --> 00:19:44.160 
+To generate the Swift header interface, we need to compile the Swift files.
+
+176
+00:19:44.160 --> 00:19:48.640 
+So this task depends on compiling the Swift files.
+
+177
+00:19:48.640 --> 00:19:55.720 
+I just mentioned a few of them.
+
+178
+00:19:55.720 --> 00:20:03.280 
+What we can notice here is between these build tasks that there can be direct dependencies,
+
+179
+00:20:03.280 --> 00:20:10.760 
+like in the case of the SceneDelegate Swift File that uses the FeedUIComposer.
+
+180
+00:20:10.760 --> 00:20:18.200 
+Also, some of these files use entities from the EssentialFeed Framework.
+
+181
+00:20:18.200 --> 00:20:24.600 
+So they depend on that task, too.
+
+182
+00:20:24.600 --> 00:20:26.800 
+Why?
+
+183
+00:20:26.800 --> 00:20:34.800 
+Because the EssentialFeed Framework is listed into the build phases of the EssentialApp
+
+184
+00:20:34.800 --> 00:20:40.800 
+under link binary with libraries.
+
+185
+00:20:40.800 --> 00:20:55.520 
+Finally, compiling the Swift files depends on compiling the bridging header.
+
+186
+00:20:55.520 --> 00:21:01.640 
+While this is just a simplified representation of a build graph, the full graph, which has
+
+187
+00:21:01.640 --> 00:21:09.560 
+more tasks, represents all the dependencies between the inputs and output files in the
+
+188
+00:21:09.560 --> 00:21:14.200 
+project and the tasks that will be executed to process them.
+
+189
+00:21:14.200 --> 00:21:21.840 
+Next, the low-level execution process, since this graph, looks at the dependency specifications
+
+190
+00:21:21.840 --> 00:21:27.640 
+and figures out which tasks to execute, the sequence or order in which they must run,
+
+191
+00:21:27.640 --> 00:21:35.720 
+and which tasks can be run in parallel, then proceeds to execute.
+
+192
+00:21:35.720 --> 00:21:47.920 
+But the bigger your project, the longer it will take for the build process to finish.
+
+193
+00:21:47.920 --> 00:21:54.160 
+So you don't want to run all of these tasks every time you build.
+
+194
+00:21:54.160 --> 00:22:02.040 
+Instead, the build system might only execute a subset of the tasks in the graph, depending
+
+195
+00:22:02.040 --> 00:22:05.840 
+on the changes you've made to your project since the last build.
+
+196
+00:22:05.840 --> 00:22:12.560 
+We refer to this as an incremental build, and having accurate dependency information
+
+197
+00:22:12.560 --> 00:22:19.040 
+is very important in order for incremental builds to work correctly and efficiently.
+
+198
+00:22:19.040 --> 00:22:27.520 
+If we just made a change to the FeedUIComposer since the last build, the build system will
+
+199
+00:22:27.520 --> 00:22:35.360 
+detect this and only execute the compile FeedUIComposer task and all the tasks that depend
+
+200
+00:22:35.360 --> 00:22:43.260 
+on it, skipping the rest of the tasks, which can definitely speed up the build.
+
+201
+00:22:43.260 --> 00:22:47.880 
+But how does the build system actually detect changes?
+
+202
+00:22:47.880 --> 00:22:58.720 
+Well, each task has a signature, which is the sort of hash that's computed from various
+
+203
+00:22:58.720 --> 00:23:03.600 
+information related to the task.
+
+204
+00:23:03.600 --> 00:23:10.840 
+This information includes the task's inputs, like File paths, modification timestamps,
+
+205
+00:23:10.840 --> 00:23:18.480 
+the CommandLine used to actually perform the command, and other task-specific metadata,
+
+206
+00:23:18.480 --> 00:23:26.120 
+such as the version of the compiler.
+
+207
+00:23:26.120 --> 00:23:31.920 
+The build system keeps track of the signatures of tasks in both the current and the previous
+
+208
+00:23:31.920 --> 00:23:39.120 
+build so that it knows whether to rerun a Task each time a build is performed.
+
+209
+00:23:39.120 --> 00:23:43.680 
+Even the signature of any given task is different than the signature it had in the previous
+
+210
+00:23:43.680 --> 00:23:47.720 
+build, then the build system reruns that task.
+
+211
+00:23:47.720 --> 00:23:52.280 
+If they are the same, then it's skipped.
+
+212
+00:23:52.280 --> 00:24:00.780 
+Let's go back to the Xcode build log and do a clean.
+
+213
+00:24:00.780 --> 00:24:09.520 
+Now I'm going to do a build, which usually a build after a clean is a clean build.
+
+214
+00:24:09.520 --> 00:24:18.340 
+And we see this build took around 3.8 seconds on my pretty fast machine and had quite a
+
+215
+00:24:18.340 --> 00:24:20.000 
+few tasks.
+
+216
+00:24:20.000 --> 00:24:34.040 
+Now if I build again, I see my build just took half a second, and the number of tasks
+
+217
+00:24:34.040 --> 00:24:43.000 
+listed are much fewer than the tasks we executed for a clean build.
+
+218
+00:24:43.000 --> 00:24:53.080 
+Again, I think this is pretty obvious.
+
+219
+00:24:53.080 --> 00:24:59.000 
+There's something interesting here which I'm not entirely sure why.
+
+220
+00:24:59.000 --> 00:25:03.720 
+Even without the change in the EssentialFeed, we still got the system to recompile all the
+
+221
+00:25:03.720 --> 00:25:09.520 
+Swift files, but that might be just a glimpse of the compiler.
+
+222
+00:25:09.520 --> 00:25:20.680 
+The essential thing here is that we got a much faster build and much fewer build tasks.
+
+223
+00:25:20.680 --> 00:25:25.840 
+Now that we see this, we ask ourselves, how can we help the build system?
+
+224
+00:25:25.840 --> 00:25:31.880 
+Well, to understand this, we need to think about the build system in terms of dependencies
+
+225
+00:25:31.880 --> 00:25:34.240 
+and not about order of tasks.
+
+226
+00:25:34.240 --> 00:25:39.600 
+The order of tasks is the job of the system.
+
+227
+00:25:39.600 --> 00:25:51.040 
+To understand this, we need to understand where do dependencies come from.
+
+228
+00:25:51.040 --> 00:26:01.800 
+So I'm using the project editor and opening the build rules tab.
+
+229
+00:26:01.800 --> 00:26:08.520 
+Because under build rules, we have the first set of dependencies, which are built-in dependencies.
+
+230
+00:26:08.520 --> 00:26:12.760 
+For certain tasks, dependency information comes from knowledge built into the build
+
+231
+00:26:12.760 --> 00:26:14.280 
+system.
+
+232
+00:26:14.280 --> 00:26:19.320 
+The build system ships with rules for the compiler, the linker, the asset catalog and
+
+233
+00:26:19.320 --> 00:26:23.680 
+Storyboard pre-processor and so on.
+
+234
+00:26:23.680 --> 00:26:28.680 
+These rules define what kind of files are accepted as input, as well as the outputs
+
+235
+00:26:28.680 --> 00:26:31.960 
+that are produced.
+
+236
+00:26:31.960 --> 00:26:35.060 
+These build rules you see here are out of the box.
+
+237
+00:26:35.060 --> 00:26:37.720 
+You don't need to do anything to use them.
+
+238
+00:26:37.720 --> 00:26:43.320 
+This is just a reminder that Xcode uses build rules to determine how to handle each type
+
+239
+00:26:43.320 --> 00:26:46.760 
+of File.
+
+240
+00:26:46.760 --> 00:26:56.360 
+This is why, for instance, the system can use the Swift compiler when compiling a.
+
+241
+00:26:56.360 --> 00:27:26.000 
+Swift File, or use Clang for C files, or a Storyboard compiler to compile storyboards.
+
+242
+00:27:26.000 --> 00:27:30.680 
+Other type of dependencies are target dependencies.
+
+243
+00:27:30.680 --> 00:27:38.520 
+To see these, I'm going to move to the build phases tab and check out the first entry here,
+
+244
+00:27:38.520 --> 00:27:44.200 
+which is dependencies.
+
+245
+00:27:44.200 --> 00:27:49.640 
+Target dependencies roughly determine the order in which targets are built.
+
+246
+00:27:49.640 --> 00:27:56.240 
+In some cases, the build system can compile sources of different targets in parallel.
+
+247
+00:27:56.240 --> 00:28:01.360 
+Previously in older versions of Xcode, when a target was built, it required the compilation
+
+248
+00:28:01.360 --> 00:28:06.320 
+of all the dependent targets to be completed before it could start.
+
+249
+00:28:06.320 --> 00:28:13.240 
+Since Xcode 10 and its new build system, targets can start building sooner.
+
+250
+00:28:13.240 --> 00:28:19.160 
+This means that your compile sources phase can start earlier, providing you with some
+
+251
+00:28:19.160 --> 00:28:22.760 
+parallelization for free.
+
+252
+00:28:22.760 --> 00:28:35.440 
+Now, if you try to add a dependency, we see that only the targets from the current project
+
+253
+00:28:35.440 --> 00:28:39.760 
+are listed here.
+
+254
+00:28:39.760 --> 00:28:45.880 
+This is because in our current setUp, the EssentialApp workspace contains the EssentialFeed
+
+255
+00:28:45.880 --> 00:28:50.120 
+and EssentialApp projects at the same level.
+
+256
+00:28:50.120 --> 00:29:01.920 
+So the targets from the EssentialFeed project are NotVisible in my dependencies selector.
+
+257
+00:29:01.920 --> 00:29:04.920 
+But there's something we can do about that.
+
+258
+00:29:04.920 --> 00:29:14.720 
+We can move the EssentialFeed project inside the EssentialApp project, and then the dependencies
+
+259
+00:29:14.720 --> 00:29:20.800 
+will become visible so we can set our explicit dependencies to EssentialFeed and EssentialFeed
+
+260
+00:29:20.800 --> 00:29:22.800 
+framework.
+
+261
+00:29:22.800 --> 00:29:26.480 
+Let's do that as an exercise.
+
+262
+00:29:26.480 --> 00:29:33.520 
+I'm going to draw drag and drop the EssentialFeed on the EssentialApp, uncheck the add
+
+263
+00:29:33.520 --> 00:29:41.080 
+to target because it's already there, and hit finish.
+
+264
+00:29:41.080 --> 00:29:48.080 
+If I expand the EssentialApp project, I see that the EssentialFeed project is embedded
+
+265
+00:29:48.080 --> 00:29:49.440 
+inside it.
+
+266
+00:29:49.440 --> 00:29:57.520 
+So I can delete this reference here as it's duplicated now.
+
+267
+00:29:57.520 --> 00:30:06.040 
+Now, if I go back to my EssentialApp dependencies and use the plus button, I can see all the
+
+268
+00:30:06.040 --> 00:30:09.360 
+targets from the EssentialFeed project.
+
+269
+00:30:09.360 --> 00:30:18.160 
+If I can set my explicit dependencies to EssentialFeed and EssentialFeed iOS frameworks, I'll
+
+270
+00:30:18.160 --> 00:30:40.640 
+do a clean just to make sure and then a build and hopefully everything will still work.
+
+271
+00:30:40.640 --> 00:30:49.360 
+But as we've noticed before, we already had the EssentialFeed framework and the EssentialFeed
+
+272
+00:30:49.360 --> 00:30:56.520 
+iOS framework listed on the link binary with libraries.
+
+273
+00:30:56.520 --> 00:31:03.000 
+This is another type of dependency called implicit dependency and coupled with an option
+
+274
+00:31:03.000 --> 00:31:05.940 
+that's available on a scheme.
+
+275
+00:31:05.940 --> 00:31:16.080 
+So if I open the scheme editor and check out build options, find implicit dependencies,
+
+276
+00:31:16.080 --> 00:31:22.440 
+if this option is enabled and it is enabled by default, the build system will establish
+
+277
+00:31:22.440 --> 00:31:30.440 
+an implicit dependency on the target even if it's not listed in the target dependencies.
+
+278
+00:31:30.440 --> 00:31:36.400 
+So again, since we had EssentialFeed and EssentialFeed iOS frameworks listed on the
+
+279
+00:31:36.400 --> 00:31:44.960 
+link binary with libraries for the EssentialApp, they were already implicit dependencies.
+
+280
+00:31:44.960 --> 00:31:52.760 
+So we actually did not gain anything by making that dependency explicit.
+
+281
+00:31:52.760 --> 00:32:05.000 
+Because of that, I will revert my changes.
+
+282
+00:32:05.000 --> 00:32:17.920 
+Let me reopen the project, clean, build, and we're back as we were.
+
+283
+00:32:17.920 --> 00:32:27.600 
+With the two frameworks I mentioned linked implicitly.
+
+284
+00:32:27.600 --> 00:32:40.440 
+The next type of dependency is also derived from the build phases tab.
+
+285
+00:32:40.440 --> 00:32:50.200 
+You can see here a number of sections, sometimes like copy headers, we have compiled sources,
+
+286
+00:32:50.200 --> 00:32:54.320 
+copy Bundle resources, and more.
+
+287
+00:32:54.320 --> 00:32:59.920 
+The tasks associated with each of these phases are usually running in groups according to
+
+288
+00:32:59.920 --> 00:33:03.760 
+the order in which the phases are listed here.
+
+289
+00:33:03.760 --> 00:33:05.480 
+But there's a catch.
+
+290
+00:33:05.480 --> 00:33:11.320 
+The build system might ignore that order if it knows better and knows that there are cases
+
+291
+00:33:11.320 --> 00:33:17.160 
+when just having the wrong build phase order can cause build issues or failures.
+
+292
+00:33:17.160 --> 00:33:21.840 
+So make sure to understand your dependencies and verify that the build phases are in the
+
+293
+00:33:21.840 --> 00:33:26.560 
+right sequence.
+
+294
+00:33:26.560 --> 00:33:30.600 
+Another type of dependencies are scheme order dependencies.
+
+295
+00:33:30.600 --> 00:33:36.560 
+So again, I'm going to select my current scheme EssentialApp, edit scheme.
+
+296
+00:33:36.560 --> 00:33:44.520 
+And under the build tab, we can see all the targets that are going to be built.
+
+297
+00:33:44.520 --> 00:33:52.160 
+At the top, there's the build order option, which has two variants.
+
+298
+00:33:52.160 --> 00:34:01.480 
+The default one is the dependency order, which means the target listed here will be built
+
+299
+00:34:01.480 --> 00:34:04.560 
+in parallel depending on the dependency information.
+
+300
+00:34:04.560 --> 00:34:11.880 
+So you get better build performance and this order of targets does not matter.
+
+301
+00:34:11.880 --> 00:34:20.140 
+However, if you set it to manual order, which by the way is now deprecated, Xcode will attempt
+
+302
+00:34:20.140 --> 00:34:25.360 
+to build your targets in the order you listed them in the build action of the scheme one
+
+303
+00:34:25.360 --> 00:34:27.720 
+by one.
+
+304
+00:34:27.720 --> 00:34:33.800 
+Target dependencies still have higher priority in determining which targets build first,
+
+305
+00:34:33.800 --> 00:34:38.540 
+but otherwise Xcode will respect that ordering.
+
+306
+00:34:38.540 --> 00:34:47.360 
+So it might be tempting to use this as it gives you a predictable build order even if
+
+307
+00:34:47.360 --> 00:34:53.160 
+you haven't set your dependencies correctly, but you're sacrificing a lot of parallelization
+
+308
+00:34:53.160 --> 00:34:57.080 
+when you do this and slowing down your build.
+
+309
+00:34:57.080 --> 00:35:02.280 
+Apple recommends that you leave the build order setting set to dependency order, setUp
+
+310
+00:35:02.280 --> 00:35:10.640 
+your targets correctly and don't rely on ordering.
+
+311
+00:35:10.640 --> 00:35:17.280 
+So how can we as developers help the build system by providing valuable dependency information?
+
+312
+00:35:17.280 --> 00:35:32.600 
+Well, first of all, if you're using any run streets, I'll just create an empty one.
+
+313
+00:35:32.600 --> 00:35:39.640 
+Make sure to tell the build system what its inputs, like input files or input File lists
+
+314
+00:35:39.640 --> 00:35:45.000 
+and outputs files or File lists are.
+
+315
+00:35:45.000 --> 00:35:51.640 
+This lets the build system avoid rerunning the script tasks unnecessarily and can help
+
+316
+00:35:51.640 --> 00:35:55.420 
+make sure that they are executed in the right order.
+
+317
+00:35:55.420 --> 00:36:03.040 
+You can define the inputs and outputs in the run script phase editor.
+
+318
+00:36:03.040 --> 00:36:09.080 
+Note that if you don't define any input or output files, the task will be executed with
+
+319
+00:36:09.080 --> 00:36:17.640 
+every build, so make sure that's what you want.
+
+320
+00:36:17.640 --> 00:36:24.120 
+Another thing we can do is avoid auto linking for project dependencies.
+
+321
+00:36:24.120 --> 00:36:39.680 
+This is actually a build setting that's available for the Clang compiler.
+
+322
+00:36:39.680 --> 00:36:45.680 
+And as you can see, this is on by default.
+
+323
+00:36:45.680 --> 00:36:53.400 
+Being a setting on the Clang compiler means this applies to C based languages only.
+
+324
+00:36:53.400 --> 00:37:00.160 
+What this setting does is it allows the compiler to automatically link the frameworks responding
+
+325
+00:37:00.160 --> 00:37:05.680 
+to any modules you import without having to explicitly link them in your link library's
+
+326
+00:37:05.680 --> 00:37:06.680 
+build phase.
+
+327
+00:37:06.680 --> 00:37:12.760 
+However, it's important to note that auto link does not establish dependencies on that
+
+328
+00:37:12.760 --> 00:37:15.640 
+framework at the build system level.
+
+329
+00:37:15.640 --> 00:37:20.120 
+So it won't guarantee that the target you depend on is actually built before you try
+
+330
+00:37:20.120 --> 00:37:22.360 
+to link against it.
+
+331
+00:37:22.360 --> 00:37:27.480 
+Google recommends you disable this setting and instead make sure you link all the frameworks
+
+332
+00:37:27.480 --> 00:37:28.920 
+you use explicitly.
+
+333
+00:37:28.920 --> 00:37:40.040 
+I also recommend that.
+
+334
+00:37:40.040 --> 00:37:47.280 
+Another thing we can do, and we've already discussed, is add explicit dependencies.
+
+335
+00:37:47.280 --> 00:37:54.200 
+However, for targets in your own projects, make sure you add these explicit dependencies.
+
+336
+00:37:54.200 --> 00:38:00.760 
+Or you might need to do an exercise like the one we did, where you drag and drop another
+
+337
+00:38:00.760 --> 00:38:06.040 
+Xcode project in your project's File navigator in order to reveal the targets of other projects
+
+338
+00:38:06.040 --> 00:38:12.280 
+you depend on, like we did when we dragged the essential feeds into the EssentialApp
+
+339
+00:38:12.280 --> 00:38:14.240 
+project.
+
+340
+00:38:14.240 --> 00:38:21.040 
+In conclusion, with accurate dependency information, the build system can better parallelize your
+
+341
+00:38:21.040 --> 00:38:27.000 
+build and help ensure that you get consistent results every time so you can spend less time
+
+342
+00:38:27.000 --> 00:38:40.560 
+building and more time developing.
+
+343
+00:38:40.560 --> 00:38:43.320 
+Now let's talk about the linker.
+
+344
+00:38:43.320 --> 00:38:48.840 
+The linker is a program that takes one or more object files generated by a compiler
+
+345
+00:38:48.840 --> 00:38:55.520 
+and combines them into a single executable File or a library.
+
+346
+00:38:55.520 --> 00:39:01.040 
+In the case of the Xcode build process, the linker takes the object File produced by both
+
+347
+00:39:01.040 --> 00:39:08.000 
+Clang and Swift compiler and combines them into a single executable File.
+
+348
+00:39:08.000 --> 00:39:13.440 
+This is pretty unique, as there are few systems that accept combining different languages
+
+349
+00:39:13.440 --> 00:39:15.920 
+and compilers like that.
+
+350
+00:39:15.920 --> 00:39:25.800 
+It's also done with a lot of under-the-hood work that the build system does for us.
+
+351
+00:39:25.800 --> 00:39:31.000 
+It's important to understand that the linker only moves and patches code, and it cannot
+
+352
+00:39:31.000 --> 00:39:34.000 
+create code.
+
+353
+00:39:34.000 --> 00:39:39.720 
+First, we need to understand what a symbol is.
+
+354
+00:39:39.720 --> 00:39:47.400 
+So a symbol is just a name that refers to a fragment of code or data.
+
+355
+00:39:47.400 --> 00:39:51.480 
+A fragment of code is just a piece of code.
+
+356
+00:39:51.480 --> 00:39:56.840 
+These fragments may refer to other symbols which you would see if you write a function
+
+357
+00:39:56.840 --> 00:40:00.260 
+that calls another function.
+
+358
+00:40:00.260 --> 00:40:05.740 
+Symbols can have attributes on them that affect how the linker behaves.
+
+359
+00:40:05.740 --> 00:40:11.280 
+One example is a weak symbol, which is an annotation on a symbol that says it might
+
+360
+00:40:11.280 --> 00:40:18.080 
+not be there when the executable runs or called runtime.
+
+361
+00:40:18.080 --> 00:40:36.360 
+An example of this would be using the atAvailable markup.
+
+362
+00:40:36.360 --> 00:40:46.800 
+Now I marked this new Store class available only on iOS 15 and above, which means that
+
+363
+00:40:46.800 --> 00:40:52.480 
+if we are in an app that runs on previous versions of the OS, this class will not be
+
+364
+00:40:52.480 --> 00:40:55.240 
+available on these versions.
+
+365
+00:40:55.240 --> 00:41:03.560 
+So the linker needs to handle this class differently, as it might not exist on the operating system
+
+366
+00:41:03.560 --> 00:41:08.160 
+that runs it.
+
+367
+00:41:08.160 --> 00:41:15.860 
+Another example would be the weak linking of a framework.
+
+368
+00:41:15.860 --> 00:41:25.720 
+So on the EssentialApp, as an exercise, I'm going to link against a very new framework,
+
+369
+00:41:25.720 --> 00:41:34.520 
+which is the code location UI framework that was introduced also in iOS 15.
+
+370
+00:41:34.520 --> 00:41:43.240 
+Again, since our app supports older versions of iOS, if we set this dependency as default
+
+371
+00:41:43.240 --> 00:41:51.560 
+on the required, it will Result in an app Crash when running on iOS 14 or over.
+
+372
+00:41:51.560 --> 00:41:57.000 
+But we have the option to set the link type as optional.
+
+373
+00:41:57.000 --> 00:42:05.520 
+What this does is it tells the linker that this framework might not be there when the
+
+374
+00:42:05.520 --> 00:42:07.260 
+app runs.
+
+375
+00:42:07.260 --> 00:42:17.400 
+So the linker is preparing the executable for that scenario.
+
+376
+00:42:17.400 --> 00:42:22.920 
+This is important because one of the linker's job is to determine which symbols are definitely
+
+377
+00:42:22.920 --> 00:42:34.120 
+going to be there versus symbols that it may have to deal with at runtime.
+
+378
+00:42:34.120 --> 00:42:39.080 
+So we have symbols, which are names referring to code and data.
+
+379
+00:42:39.080 --> 00:42:42.800 
+We know the compilers generate object files.
+
+380
+00:42:42.800 --> 00:42:47.720 
+Those object files are just collections of those code and data fragments.
+
+381
+00:42:47.720 --> 00:42:53.000 
+They contain executable code, but they are not executable on their own.
+
+382
+00:42:53.000 --> 00:42:56.200 
+While they are compiled code, they aren't finished.
+
+383
+00:42:56.200 --> 00:43:07.320 
+They have missing bits, which is what the linker is going to glue together and fix up.
+
+384
+00:43:07.320 --> 00:43:14.480 
+In our example, the SceneDelegate invokes a NullStore initializer.
+
+385
+00:43:14.480 --> 00:43:19.000 
+And the NullStore is defined in the different File.
+
+386
+00:43:19.000 --> 00:43:25.760 
+When the compiler tries to compile SceneDelegate, it treats this like a promise or a contract,
+
+387
+00:43:25.760 --> 00:43:30.960 
+like there is a File somewhere defining a class named NullStore, which contains an initializer
+
+388
+00:43:30.960 --> 00:43:33.240 
+with the signature.
+
+389
+00:43:33.240 --> 00:43:40.040 
+For the compiler, that is enough, and it marks the NullStore initializer as an undefined
+
+390
+00:43:40.040 --> 00:43:44.200 
+symbol in the object File it produces.
+
+391
+00:43:44.200 --> 00:43:49.920 
+But when the linker processes that object File, it really needs to resolve this symbol.
+
+392
+00:43:49.920 --> 00:44:00.660 
+So it will search in the inputs it has received for actual symbol definition.
+
+393
+00:44:00.660 --> 00:44:09.600 
+As you remember, the inputs are the object files from the same target, as well as the
+
+394
+00:44:09.600 --> 00:44:13.560 
+link to libraries and frameworks.
+
+395
+00:44:13.560 --> 00:44:18.720 
+The point here is the linker will either find the definition of that symbol and Embed it
+
+396
+00:44:18.720 --> 00:44:24.880 
+into a binary or fail with the linker Error.
+
+397
+00:44:24.880 --> 00:44:31.840 
+This is important because at runtime, there is no component that does this look up for
+
+398
+00:44:31.840 --> 00:44:34.480 
+symbols, as this would be inefficient.
+
+399
+00:44:34.480 --> 00:44:37.240 
+So the linker must resolve all the symbols.
+
+400
+00:44:37.240 --> 00:44:44.280 
+So the executable it creates contains all the information about how to resolve its symbol.
+
+401
+00:44:44.280 --> 00:44:50.560 
+Some symbols can exist in other modules, like dynamic frameworks.
+
+402
+00:44:50.560 --> 00:45:01.760 
+That's the case of our HTTPClient, which is defining the EssentialFeed framework.
+
+403
+00:45:01.760 --> 00:45:08.320 
+The linker will include information about exactly where and how to load this symbol.
+
+404
+00:45:08.320 --> 00:45:17.360 
+Or when linking against system frameworks like UIKit or Foundation, it will Embed the
+
+405
+00:45:17.360 --> 00:45:24.960 
+information where they are available and how to load them.
+
+406
+00:45:24.960 --> 00:45:32.280 
+As a note, at runtimes, there's a component in the operating system called a loader, which
+
+407
+00:45:32.280 --> 00:45:35.560 
+will load the executable into memory.
+
+408
+00:45:35.560 --> 00:45:40.120 
+But it will also load other modules, like system frameworks, based on the information
+
+409
+00:45:40.120 --> 00:45:49.600 
+from the executable that the linker has included.
+
+410
+00:45:49.600 --> 00:45:50.600 
+Back to the linker.
+
+411
+00:45:50.600 --> 00:46:00.960 
+The linker takes two kinds of input files, object files, or.o, and libraries.
+
+412
+00:46:00.960 --> 00:46:09.080 
+Dylibs are dynamic libraries, TBDs are text-based, Dylib Stubs, and.ar archives are static
+
+413
+00:46:09.080 --> 00:46:11.200 
+libraries.
+
+414
+00:46:11.200 --> 00:46:13.200 
+So what are libraries?
+
+415
+00:46:13.200 --> 00:46:22.560 
+Libraries are files that define symbols that are not part of the target you're building.
+
+416
+00:46:22.560 --> 00:46:28.360 
+The dynamic libraries are files that expose code and data fragments for executables to
+
+417
+00:46:28.360 --> 00:46:29.360 
+use.
+
+418
+00:46:29.360 --> 00:46:34.800 
+The system frameworks distributed as part of the system contain such dynamic libraries.
+
+419
+00:46:34.800 --> 00:46:42.880 
+Like we mentioned, UIKit, Foundation, MapKit, and all the others.
+
+420
+00:46:42.880 --> 00:46:47.680 
+But you can also create your own dynamic libraries, and there's a good chance you've used dynamic
+
+421
+00:46:47.680 --> 00:46:51.960 
+libraries from third parties.
+
+422
+00:46:51.960 --> 00:47:02.840 
+TBD files, or text-based Dylib Stubs, these are only used for distributing SDKs to reduce
+
+423
+00:47:02.840 --> 00:47:08.880 
+size, so they're basically lighter versions of the frameworks, containing just the name
+
+424
+00:47:08.880 --> 00:47:15.880 
+of the symbols without the bodies, as the bodies are only needed at runtime.
+
+425
+00:47:15.880 --> 00:47:24.240 
+And finally, static archive, or static libraries, those.a files are just collections of object
+
+426
+00:47:24.240 --> 00:47:29.520 
+files, or.o files, that have been built with the ar tool.
+
+427
+00:47:29.520 --> 00:47:35.720 
+According to the ar docs, the ar utility creates and maintains groups of files Combined into
+
+428
+00:47:35.720 --> 00:47:36.720 
+an archive.
+
+429
+00:47:36.720 --> 00:47:41.200 
+This is very similar to the zip format you're probably familiar with.
+
+430
+00:47:41.200 --> 00:47:49.760 
+So.a is basically like a zip of object files.
+
+431
+00:47:49.760 --> 00:47:54.600 
+Regarding linking, there's an important difference worth mentioning about static and dynamic
+
+432
+00:47:54.600 --> 00:47:55.600 
+libraries.
+
+433
+00:47:55.600 --> 00:48:00.320 
+But please note, this is just one of the many differences between them.
+
+434
+00:48:00.320 --> 00:48:07.560 
+So don't use only this information to decide which one to use in your project.
+
+435
+00:48:07.560 --> 00:48:10.800 
+This is subject for a more thorough analysis.
+
+436
+00:48:10.800 --> 00:48:14.880 
+We only care here about linking.
+
+437
+00:48:14.880 --> 00:48:21.840 
+So when using non-system dynamic libraries, the linker cannot make any improvements, like
+
+438
+00:48:21.840 --> 00:48:24.680 
+excluding symbols that are not used.
+
+439
+00:48:24.680 --> 00:48:29.680 
+The linker uses a cautious Strategy, so these libraries will be installed or embedded at
+
+440
+00:48:29.680 --> 00:48:31.640 
+their full size.
+
+441
+00:48:31.640 --> 00:48:37.280 
+On the other hand, the linker can work more efficiently with static libraries.
+
+442
+00:48:37.280 --> 00:48:42.240 
+So if you reference a symbol from a library that is linked statically, the linker pulls
+
+443
+00:48:42.240 --> 00:48:47.760 
+out the corresponding object File containing that symbol from the archive and includes
+
+444
+00:48:47.760 --> 00:48:49.780 
+it into the executable.
+
+445
+00:48:49.780 --> 00:48:53.040 
+But it will not include the other files.
+
+446
+00:48:53.040 --> 00:49:00.240 
+The effect of this is that the final executable will contain close to only the symbols it
+
+447
+00:49:00.240 --> 00:49:11.280 
+really uses and, of course, other symbols that were defined in the same files.
+
+448
+00:49:11.280 --> 00:49:20.600 
+So let's recap what we learned today.
+
+449
+00:49:20.600 --> 00:49:27.800 
+So we learned that the compilation process or the process from source files to executable
+
+450
+00:49:27.800 --> 00:49:31.360 
+relies on two Main components.
+
+451
+00:49:31.360 --> 00:49:38.280 
+The compiler that takes source files at input and produces object files at output and the
+
+452
+00:49:38.280 --> 00:49:43.480 
+linker that combines these object files and references to other link modules into a final
+
+453
+00:49:43.480 --> 00:49:45.760 
+executable.
+
+454
+00:49:45.760 --> 00:49:52.480 
+We know that Apple has created a unique ecosystem that relies on two compilers, Clang for C-based
+
+455
+00:49:52.480 --> 00:49:59.240 
+languages like C or Objective-C and the Swift compiler for Swift.
+
+456
+00:49:59.240 --> 00:50:06.400 
+We've explored the way the build system uses dependencies to create a build graph and we
+
+457
+00:50:06.400 --> 00:50:14.720 
+clarified how incremental builds work differently and more efficiently than clean builds.
+
+458
+00:50:14.720 --> 00:50:18.960 
+We went through what dependencies are for the build system.
+
+459
+00:50:18.960 --> 00:50:29.320 
+The built-in dependencies provided by build rules, explicit dependencies or target dependencies.
+
+460
+00:50:29.320 --> 00:50:34.760 
+You mark dependencies to other targets in the same project or sub-project.
+
+461
+00:50:34.760 --> 00:50:41.400 
+Implicit dependencies listed under link binary with libraries.
+
+462
+00:50:41.400 --> 00:50:49.720 
+The order of build phases and the order of targets in the scheme editor.
+
+463
+00:50:49.720 --> 00:50:56.360 
+And we can help the build system by declaring inputs and outputs for our run scripts, avoid
+
+464
+00:50:56.360 --> 00:51:04.400 
+the auto-linking option and adding explicit and implicit dependencies using the target
+
+465
+00:51:04.400 --> 00:51:08.720 
+dependencies or link binary with libraries.
+
+466
+00:51:08.720 --> 00:51:09.720 
+That's it.
+
+467
+00:51:09.720 --> 00:51:15.160 
+Thanks for your patience and if there are any questions, I'd be happy to answer them.
+
+468
+00:51:39.720 --> 00:51:52.600 
+Oh, we can always talk about him on Slack.
+
+469
+00:51:52.600 --> 00:51:57.240 
+Oh, sorry, I had...
+
+470
+00:51:57.240 --> 00:52:03.680 
+Just a second here, okay.
+
+471
+00:52:03.680 --> 00:52:14.680 
+Okay, can you see me, can you hear me?
+
+472
+00:52:14.680 --> 00:52:15.680 
+Yes.
+
+473
+00:52:15.680 --> 00:52:16.680 
+Cool.
+
+474
+00:52:16.680 --> 00:52:28.600 
+So I have a question about non Xcode IDE and this is AppCode by JetBrains.
+
+475
+00:52:28.600 --> 00:52:38.680 
+As far as I know, Xcode build is a CommandLine program that we use for building.
+
+476
+00:52:38.680 --> 00:52:46.880 
+So Xcode is just a fancy and beautiful interface, but basically everything happens in a CommandLine
+
+477
+00:52:46.880 --> 00:52:51.480 
+environment.
+
+478
+00:52:51.480 --> 00:52:56.280 
+So do you know anything different that we have in AppCode?
+
+479
+00:52:56.280 --> 00:52:59.440 
+And what do you think, how it works over there?
+
+480
+00:52:59.440 --> 00:53:08.360 
+Maybe they invented something new or they just replicate the same order, the same process
+
+481
+00:53:08.360 --> 00:53:13.600 
+that we have in Xcode.
+
+482
+00:53:13.600 --> 00:53:21.920 
+Interesting question, I actually used AppCode myself like a few years back.
+
+483
+00:53:21.920 --> 00:53:26.600 
+And I know Mike used to be a fan of AppCode.
+
+484
+00:53:26.600 --> 00:53:34.840 
+Well, what I know is that they do not use Xcode build behind doors, but I might be mistaken.
+
+485
+00:53:34.840 --> 00:53:45.320 
+So they just use the compiler commands like the Swift C or the, I think it's LLVM for
+
+486
+00:53:45.320 --> 00:53:47.920 
+the Clang compilation lines.
+
+487
+00:53:47.920 --> 00:53:57.000 
+Or Xcode build is actually embedded into Xcode, so I don't think AppCode can access and use
+
+488
+00:53:57.000 --> 00:53:58.000 
+that.
+
+489
+00:53:58.000 --> 00:54:04.440 
+I think they have their own components which parse the project File and then try to do
+
+490
+00:54:04.440 --> 00:54:06.680 
+the build.
+
+491
+00:54:06.680 --> 00:54:15.400 
+So that's one reason why I think not many developers use these different IDEs like AppCode,
+
+492
+00:54:15.400 --> 00:54:19.600 
+because they might actually generate different results than Xcode.
+
+493
+00:54:19.600 --> 00:54:27.640 
+So when that happens, you're basically on your own, especially if you're doing anything,
+
+494
+00:54:27.640 --> 00:54:34.560 
+I don't know, out of the box, there's little to no help available.
+
+495
+00:54:34.560 --> 00:54:42.400 
+I used it like in parallel, so at some point I know AppCode was really nice for refactorings
+
+496
+00:54:42.400 --> 00:54:48.960 
+and finding usages of entities and stuff like that.
+
+497
+00:54:48.960 --> 00:54:56.920 
+So for that, yeah, definitely I was preferring AppCode, but I would still do my due diligence
+
+498
+00:54:56.920 --> 00:55:03.200 
+and build with Xcode just to be sure everything is in check and my changes from AppCode are
+
+499
+00:55:03.200 --> 00:55:04.920 
+not breaking anything.
+
+500
+00:55:04.920 --> 00:55:07.600 
+Yeah, also CI helps here.
+
+501
+00:55:07.600 --> 00:55:12.680 
+I'm not sure if I responded to your question entirely.
+
+502
+00:55:12.680 --> 00:55:16.800 
+Yeah, basically that's how I use AppCode on my own.
+
+503
+00:55:16.800 --> 00:55:22.840 
+I use it only for writing code, for editing code, for coding itself, but when I setUp
+
+504
+00:55:22.840 --> 00:55:29.200 
+something, when I add target, even when I change target shape for different files, I
+
+505
+00:55:29.200 --> 00:55:31.000 
+prefer to use Xcode.
+
+506
+00:55:31.000 --> 00:55:37.080 
+I just wondering is it possible to ever to switch to AppCode totally, because now I have
+
+507
+00:55:37.080 --> 00:55:42.160 
+to open IDs, Xcode and AppCode.
+
+508
+00:55:42.160 --> 00:55:53.240 
+Yeah, basically that answered my question and if I'm allowed to ask another one, since
+
+509
+00:55:53.240 --> 00:55:55.080 
+I'm already talking, yeah.
+
+510
+00:55:55.080 --> 00:56:01.840 
+I'm wondering about this new fancy tools like Tuist.
+
+511
+00:56:01.840 --> 00:56:10.760 
+Really it uses YAML files to generate Xcode projects, so you don't have any collisions
+
+512
+00:56:10.760 --> 00:56:18.040 
+and any problems with big projects when you refactor it or like merge conflicts or something.
+
+513
+00:56:18.040 --> 00:56:24.800 
+And what do you think, is it like something that can be used in big production projects
+
+514
+00:56:24.800 --> 00:56:30.920 
+or it's something like a toy for playing and just forget about it?
+
+515
+00:56:30.920 --> 00:56:33.000 
+Yeah, I know about this.
+
+516
+00:56:33.000 --> 00:56:39.720 
+I just want to quickly say something about the first topic about AppCode.
+
+517
+00:56:39.720 --> 00:56:49.320 
+I don't really see a way where you could go around Xcode because Apple is really diligent
+
+518
+00:56:49.320 --> 00:56:59.040 
+about making that their primary tool, so I don't think we can do that.
+
+519
+00:56:59.040 --> 00:57:05.720 
+And that's one of the risks you expose you and your team to when you use any third party
+
+520
+00:57:05.720 --> 00:57:14.400 
+tool like AppCode or the other tools you mentioned and I'll talk about them right now.
+
+521
+00:57:14.400 --> 00:57:20.360 
+But that's always the risk when you go to third party tools, they might not work in
+
+522
+00:57:20.360 --> 00:57:28.360 
+a Future version, you might be entirely broken in your workflow because of this.
+
+523
+00:57:28.360 --> 00:57:32.480 
+So it's a risk, sometimes not worth taking.
+
+524
+00:57:32.480 --> 00:57:41.680 
+So our strong recommendation with the program is to always use the default tools from Apple,
+
+525
+00:57:41.680 --> 00:57:44.960 
+which have been maintained over time.
+
+526
+00:57:44.960 --> 00:57:53.920 
+I've been doing this since iOS 2 and none of them have really disappeared while third
+
+527
+00:57:53.920 --> 00:57:56.560 
+party tools come and go.
+
+528
+00:57:56.560 --> 00:58:06.760 
+Yeah, about your other question where I think Xcode project, there's a number of tools that
+
+529
+00:58:06.760 --> 00:58:09.440 
+can generate an Xcode project.
+
+530
+00:58:09.440 --> 00:58:18.560 
+Yeah, I know teams that use these, they can be useful, especially like you said for avoiding
+
+531
+00:58:18.560 --> 00:58:23.480 
+conflicts because if there's no project File checked into the source control, there's no
+
+532
+00:58:23.480 --> 00:58:28.960 
+conflicts when you add a File or remove a File or something like that.
+
+533
+00:58:28.960 --> 00:58:38.320 
+But again, you are adding this risk of, I don't know, these two not supporting whatever
+
+534
+00:58:38.320 --> 00:58:46.000 
+new SDK or build version and then you're stuck.
+
+535
+00:58:46.000 --> 00:58:49.920 
+So again, take it with a grain of salt.
+
+536
+00:58:49.920 --> 00:58:57.680 
+My preference is to keep to the standard tools unless I really need to.
+
+537
+00:58:57.680 --> 00:59:05.040 
+So for instance, if we see a lot of conflicts in the past, I know, months or weeks, we can
+
+538
+00:59:05.040 --> 00:59:10.640 
+talk in the team and say, okay, where are these conflicts coming from?
+
+539
+00:59:10.640 --> 00:59:12.680 
+What are the available solutions?
+
+540
+00:59:12.680 --> 00:59:19.400 
+Because sometimes one solution can be just moving to XC config files like I showed in
+
+541
+00:59:19.400 --> 00:59:29.800 
+another lecture, or there can be other options, not necessarily moving all the project generation
+
+542
+00:59:29.800 --> 00:59:31.560 
+to a third party.
+
+543
+00:59:31.560 --> 00:59:38.160 
+But again, that's something that each team has to decide on its own.
+
+544
+00:59:38.160 --> 00:59:45.560 
+But I think there's more harm in actually many people just starting to use all these
+
+545
+00:59:45.560 --> 00:59:53.640 
+third parties without making sure they really need them, as opposed to the small number
+
+546
+00:59:53.640 --> 00:59:58.200 
+of teams that really need those projects.
+
+547
+00:59:58.200 --> 01:00:03.240 
+So it's a close call, I think.
+
+548
+01:00:03.240 --> 01:00:08.720 
+Well, yeah, it's not only avoiding merge conflicts.
+
+549
+01:00:08.720 --> 01:00:17.520 
+It's also easier to read when you read this YAML File, you can see what like custom build
+
+550
+01:00:17.520 --> 01:00:22.560 
+rules, build phases, scripts or something.
+
+551
+01:00:22.560 --> 01:00:28.760 
+You can see it right here, right now, in Xcode projects, you have to jump over the different
+
+552
+01:00:28.760 --> 01:00:34.200 
+tabs and search for specific parameters, specific sections.
+
+553
+01:00:34.200 --> 01:00:37.320 
+It's not so clear what's going on in Xcode projects.
+
+554
+01:00:37.320 --> 01:00:42.200 
+It's like too fancy with a lot of UI.
+
+555
+01:00:42.200 --> 01:00:45.960 
+That's also the problem with Xcode projects.
+
+556
+01:00:45.960 --> 01:00:53.520 
+Yeah, I don't know if you saw that, I think it was one of the first lectures in this series
+
+557
+01:00:53.520 --> 01:01:01.720 
+where I actually showed the PBX File format and how it's structured.
+
+558
+01:01:01.720 --> 01:01:04.700 
+So this is the File backing up the Xcode project.
+
+559
+01:01:04.700 --> 01:01:13.440 
+So yeah, I agree with that partially, but not entirely because Apple still knows what
+
+560
+01:01:13.440 --> 01:01:14.440 
+it's doing.
+
+561
+01:01:14.440 --> 01:01:20.760 
+So I need to trust them on that one.
+
+562
+01:01:20.760 --> 01:01:30.280 
+In my experience, even ramping up junior developers to a setUp like where they need to generate
+
+563
+01:01:30.280 --> 01:01:38.680 
+their project File and need to do some custom thing to add new settings to a YAML, all that
+
+564
+01:01:38.680 --> 01:01:42.040 
+can really complicate the way they interact.
+
+565
+01:01:42.040 --> 01:01:47.760 
+If it's, again, if all your teammates are on board with that, it might be a really good
+
+566
+01:01:47.760 --> 01:01:50.620 
+decision for a particular case.
+
+567
+01:01:50.620 --> 01:01:56.280 
+But what we're teaching here cannot be built on top of that as a standard.
+
+568
+01:01:56.280 --> 01:02:00.560 
+So yeah, sure, it's a kind of custom solution.
+
+569
+01:02:00.560 --> 01:02:01.560 
+Yeah.
+
+570
+01:02:01.560 --> 01:02:02.560 
+Okay.
+
+571
+01:02:02.560 --> 01:02:03.560 
+Thank you.
+
+572
+01:02:03.560 --> 01:02:04.560 
+Thank you for answering.
+
+573
+01:02:04.560 --> 01:02:05.560 
+Thanks for the questions.
+
+574
+01:02:05.560 --> 01:02:06.560 
+Hi.
+
+575
+01:02:06.560 --> 01:02:10.080 
+Thanks a lot for your election.
+
+576
+01:02:10.080 --> 01:02:12.760 
+It has been very informative.
+
+577
+01:02:12.760 --> 01:02:20.240 
+Though I have a question a little bit specific particularly to Swift versions.
+
+578
+01:02:20.240 --> 01:02:25.560 
+So basically, there is a thing called Swift ABI, which was introduced a couple of years
+
+579
+01:02:25.560 --> 01:02:35.680 
+ago, which basically provides a way for different Swift runtime versions to load Swift symbols
+
+580
+01:02:35.680 --> 01:02:39.520 
+compiled by older versions of the compiler.
+
+581
+01:02:39.520 --> 01:02:45.320 
+And my question is, do you think it's reasonable to say you have a couple of modules in your
+
+582
+01:02:45.320 --> 01:02:51.320 
+app and the core module is not being modified at all for years, for example.
+
+583
+01:02:51.320 --> 01:02:59.080 
+So you recompile it and commit the binary to a repository or HTTP server to just download
+
+584
+01:02:59.080 --> 01:03:01.960 
+it to a Swift Package manager, for example.
+
+585
+01:03:01.960 --> 01:03:09.000 
+And do you think it's reasonable to recompile it every Swift compiler version release along
+
+586
+01:03:09.000 --> 01:03:16.800 
+with, or do you think it's fine as long as it's working to leave, say, for example, a
+
+587
+01:03:16.800 --> 01:03:25.480 
+library compiled with Swift 5.0 to be bundled up with a bunch of frameworks, dynamic libraries
+
+588
+01:03:25.480 --> 01:03:31.560 
+and the final executable, which were compiled with Swift 5.4, for example.
+
+589
+01:03:31.560 --> 01:03:36.120 
+That's a very interesting topic.
+
+590
+01:03:36.120 --> 01:03:44.960 
+So for people that I see, you know the situation pretty well about ABI.
+
+591
+01:03:44.960 --> 01:03:54.400 
+For people that might not be in possession of such depth, basically this ABI feature,
+
+592
+01:03:54.400 --> 01:03:59.240 
+like Ruslan said, was only added in, I think, in Swift 5.
+
+593
+01:03:59.240 --> 01:04:10.160 
+So before that, any executables were bound to the Swift version they were actually compiled
+
+594
+01:04:10.160 --> 01:04:16.240 
+with, so you could not compile something with Swift 3.0 and use it together with Swift 4.0
+
+595
+01:04:16.240 --> 01:04:20.960 
+just because of this ABI difference.
+
+596
+01:04:20.960 --> 01:04:30.880 
+That's the reason why if you ever used Swift before, some Swift libraries were actually
+
+597
+01:04:30.880 --> 01:04:39.480 
+system libraries were embedded into your app or framework just to be able to run these
+
+598
+01:04:39.480 --> 01:04:45.040 
+at runtime because, like I said, they were really dependent on the version of Swift you
+
+599
+01:04:45.040 --> 01:04:52.000 
+use to compile them and at runtime the system might have different versions and you would
+
+600
+01:04:52.000 --> 01:04:54.520 
+just end up with a Crash.
+
+601
+01:04:54.520 --> 01:05:02.840 
+But since Swift 5, I think, this problem was addressed, it was always a goal, but other
+
+602
+01:05:02.840 --> 01:05:09.400 
+features delayed the ABI stability.
+
+603
+01:05:09.400 --> 01:05:17.480 
+And now that we have this stability, we can, like Ruslan said, we can mix and merge, so
+
+604
+01:05:17.480 --> 01:05:25.520 
+we can use modules compiled with Swift 5 together with modules compiled with Swift 5.4 or 5.5
+
+605
+01:05:25.520 --> 01:05:29.140 
+and so on and even Future versions.
+
+606
+01:05:29.140 --> 01:05:38.520 
+I think as long as everything works, I don't see a big problem, even if Swift releases
+
+607
+01:05:38.520 --> 01:05:46.880 
+does not super often, so recompiling those modules once every, I don't know, a few months
+
+608
+01:05:46.880 --> 01:05:52.660 
+is not a huge pain.
+
+609
+01:05:52.660 --> 01:06:00.960 
+On the other side, the new versions of Swift might not really work for that codebase, so
+
+610
+01:06:00.960 --> 01:06:05.240 
+it may require some changes that also needs to be factored in.
+
+611
+01:06:05.240 --> 01:06:12.680 
+And on the other hand, this is like the more cautious approach, the more futuristic approach
+
+612
+01:06:12.680 --> 01:06:19.840 
+is where you might want to use the new features into that Swift code, so like the latest async
+
+613
+01:06:19.840 --> 01:06:26.000 
+APIs or anything new that Swift adds.
+
+614
+01:06:26.000 --> 01:06:34.240 
+But like I said, if you're happy with your module, if the Tests pass and it seems to
+
+615
+01:06:34.240 --> 01:06:45.640 
+function as appropriate, I don't see a need to recompile or redeploy that module.
+
+616
+01:06:45.640 --> 01:06:51.000 
+So yeah, that's how I look into it.
+
+617
+01:06:51.000 --> 01:06:56.360 
+It's not a clear answer where yeah, you should or you shouldn't, it's more like it really
+
+618
+01:06:56.360 --> 01:07:02.400 
+depends on the whole situation.
+
+619
+01:07:02.400 --> 01:07:07.880 
+And of course, like how much time does it take to build, if you need like a special
+
+620
+01:07:07.880 --> 01:07:13.120 
+build machine or configuration to build that project, there's many verticals here which
+
+621
+01:07:13.120 --> 01:07:16.040 
+I would advise to consider.
+
+622
+01:07:16.040 --> 01:07:23.040 
+All right, thanks a lot for your answer.
+
+623
+01:07:23.040 --> 01:07:25.040 
+Any other questions?
+
+624
+01:07:25.040 --> 01:07:31.040 
+Oh, Sergey is waving.
+
+625
+01:07:31.040 --> 01:07:40.880 
+Okay, also one question, probably it's not like 100% related to the current topic, but
+
+626
+01:07:40.880 --> 01:07:47.520 
+I just gave her opinions from people who knows, they think so.
+
+627
+01:07:47.520 --> 01:07:57.580 
+Let me ask you, what's your preference about having this nested projects inside other projects?
+
+628
+01:07:57.580 --> 01:08:04.620 
+Like in one situation, we can have one project and different targets for different frameworks
+
+629
+01:08:04.620 --> 01:08:11.440 
+or different platforms, like one project and then we have tvOS, macOS, iOS and different
+
+630
+01:08:11.440 --> 01:08:21.080 
+frameworks or we can wrap every target in its own project and Embed this project into
+
+631
+01:08:21.080 --> 01:08:24.600 
+like one big workspace.
+
+632
+01:08:24.600 --> 01:08:32.720 
+How does it feel like what approach is better and how it affects build time?
+
+633
+01:08:32.720 --> 01:08:34.200 
+Did you get it?
+
+634
+01:08:34.200 --> 01:08:36.040 
+Yeah, I think I did.
+
+635
+01:08:36.040 --> 01:08:45.360 
+So you're asking whether it's a better version to make these sub-dependencies between projects
+
+636
+01:08:45.360 --> 01:08:51.160 
+like Embed a project in another project or keep them at the same level or just keep all
+
+637
+01:08:51.160 --> 01:08:55.600 
+the targets in the same project like these different variations of setups.
+
+638
+01:08:55.600 --> 01:09:01.880 
+Again, I think at some level when the question is complicated enough, the answer is always
+
+639
+01:09:01.880 --> 01:09:12.160 
+it depends and in this case, I would say I never really fancied this sub-project setUp.
+
+640
+01:09:12.160 --> 01:09:18.640 
+I think it's a bit unnatural for me.
+
+641
+01:09:18.640 --> 01:09:26.680 
+So that's why I like the standard setUp in the essential feeds use case repo where all
+
+642
+01:09:26.680 --> 01:09:29.120 
+the projects are on the same level.
+
+643
+01:09:29.120 --> 01:09:36.360 
+And like I explained with these find implicit dependencies, basically the build system gets
+
+644
+01:09:36.360 --> 01:09:45.800 
+all the information it needs without this option to add explicit target dependencies.
+
+645
+01:09:45.800 --> 01:09:50.360 
+I don't see another reason to Embed them.
+
+646
+01:09:50.360 --> 01:09:55.920 
+Of course, if it's a different project like coming from a third party or something like
+
+647
+01:09:55.920 --> 01:10:01.520 
+that, which I saw in, like if you're not using a, I don't know, Swift Package manager or
+
+648
+01:10:01.520 --> 01:10:09.320 
+another dependency manager and you just get some project from somebody and you want to
+
+649
+01:10:09.320 --> 01:10:18.440 
+link against it, again, you can use the sub-project approach or keep it on the same level in your
+
+650
+01:10:18.440 --> 01:10:20.520 
+workspace.
+
+651
+01:10:20.520 --> 01:10:23.520 
+It's also a personal preference.
+
+652
+01:10:23.520 --> 01:10:33.960 
+The difference is not that big, so you only get a project reference in your Xcode proj
+
+653
+01:10:33.960 --> 01:10:35.680 
+File.
+
+654
+01:10:35.680 --> 01:10:45.240 
+And I guess where they all might become too crowded is like you get all these schemes
+
+655
+01:10:45.240 --> 01:10:49.600 
+together in the same workspace.
+
+656
+01:10:49.600 --> 01:10:53.640 
+So it might be too much.
+
+657
+01:10:53.640 --> 01:11:01.480 
+To launch this project separately and work on the Embed project separately without launching
+
+658
+01:11:01.480 --> 01:11:02.480 
+the big one.
+
+659
+01:11:02.480 --> 01:11:03.480 
+Yeah.
+
+660
+01:11:03.480 --> 01:11:08.520 
+For example, if you wrap some small Model in the project and you nested it in the big
+
+661
+01:11:08.520 --> 01:11:16.480 
+one, you can launch it without having everything in your memory and have your example app wrapper
+
+662
+01:11:16.480 --> 01:11:22.200 
+around your current scope and everything works fine.
+
+663
+01:11:22.200 --> 01:11:30.920 
+And only then you can nest it in the big one and you can separate your workflow from the
+
+664
+01:11:30.920 --> 01:11:32.000 
+big one.
+
+665
+01:11:32.000 --> 01:11:39.520 
+I think that's the only thing that you have to consider, like are you going to launch
+
+666
+01:11:39.520 --> 01:11:43.440 
+only this project separately or not?
+
+667
+01:11:43.440 --> 01:11:48.520 
+That's the only way that I considered before and now I'm just wondering maybe there is
+
+668
+01:11:48.520 --> 01:11:50.520 
+something pitfall.
+
+669
+01:11:50.520 --> 01:11:59.160 
+So anything I should know about approaches managing different targets, basically it's
+
+670
+01:11:59.160 --> 01:12:04.760 
+how we manage the set of targets in your projects.
+
+671
+01:12:04.760 --> 01:12:10.680 
+So I think one thing to consider and I've always had bad experiences with this is the
+
+672
+01:12:10.680 --> 01:12:17.440 
+bigger the project, like the more targets, the more projects you have in a workspace,
+
+673
+01:12:17.440 --> 01:12:19.440 
+the more work Xcode has to do.
+
+674
+01:12:19.440 --> 01:12:25.820 
+So if, for instance, if you're using like 20 CocoaPods with source files, every time
+
+675
+01:12:25.820 --> 01:12:29.640 
+you open that project, Xcode has to index everything.
+
+676
+01:12:29.640 --> 01:12:35.000 
+So it deals with a lot of symbols, a lot of frameworks, and sometimes that can lead to
+
+677
+01:12:35.000 --> 01:12:36.000 
+a bad experience.
+
+678
+01:12:36.000 --> 01:12:45.400 
+Like in our example, it's just a short app with a framework, actually two frameworks,
+
+679
+01:12:45.400 --> 01:12:46.400 
+different projects.
+
+680
+01:12:46.400 --> 01:12:48.040 
+So the setUp is pretty small.
+
+681
+01:12:48.040 --> 01:12:56.120 
+But if you scale that up, it can really lead to something that's hard to maintain.
+
+682
+01:12:56.120 --> 01:13:05.120 
+So that's why one of the recommendations from the program is to rely on modularization
+
+683
+01:13:05.120 --> 01:13:12.240 
+and actually try to have as many modules independent from each other as possible.
+
+684
+01:13:12.240 --> 01:13:17.520 
+While for starters, you can keep everything in the same repo, like the git repository
+
+685
+01:13:17.520 --> 01:13:20.400 
+can be one, but you can have multiple projects there.
+
+686
+01:13:20.400 --> 01:13:25.200 
+And as you said, if I need to work only on, I don't know, in this case, the Feed, the
+
+687
+01:13:25.200 --> 01:13:29.040 
+EssentialFeed framework, I don't even need to open the workspace.
+
+688
+01:13:29.040 --> 01:13:35.080 
+I can just open that project, deal with just a subset of the files, run my Tests there,
+
+689
+01:13:35.080 --> 01:13:37.180 
+make sure everything is in check.
+
+690
+01:13:37.180 --> 01:13:47.520 
+And then I get a much better development experience because the test takes fewer, like less time.
+
+691
+01:13:47.520 --> 01:13:48.800 
+Indexing is faster.
+
+692
+01:13:48.800 --> 01:13:56.440 
+Xcode probably won't restart every five minutes because auto-complete is off and all that
+
+693
+01:13:56.440 --> 01:13:57.440 
+stuff.
+
+694
+01:13:57.440 --> 01:14:06.800 
+From my experience, big projects always have these issues around indexing and also building.
+
+695
+01:14:06.800 --> 01:14:13.440 
+So the more decoupled you can create your setUp, the better.
+
+696
+01:14:13.440 --> 01:14:17.080 
+But this is something you go towards incrementally.
+
+697
+01:14:17.080 --> 01:14:22.440 
+So I wouldn't recommend starting with, I don't know, 20 modules, which each has one File
+
+698
+01:14:22.440 --> 01:14:25.200 
+of 10 lines just for the sake of it.
+
+699
+01:14:25.200 --> 01:14:33.300 
+So build the project as you go, define modules as they appear, and you can use this approach
+
+700
+01:14:33.300 --> 01:14:39.560 
+that's also in the program where you separate on a conceptual level.
+
+701
+01:14:39.560 --> 01:14:44.640 
+You don't actually draw them into different targets and frameworks, but you keep them
+
+702
+01:14:44.640 --> 01:14:47.920 
+separated and clear of each other.
+
+703
+01:14:47.920 --> 01:14:51.140 
+And if you need to extract them, you can.
+
+704
+01:14:51.140 --> 01:15:00.120 
+So that's all something you and your team need to decide when you are making these moves.
+
+705
+01:15:00.120 --> 01:15:07.280 
+But I've seen a lot of bad workflows where it takes a lot of time to build the whole
+
+706
+01:15:07.280 --> 01:15:10.080 
+thing, to test it.
+
+707
+01:15:10.080 --> 01:15:15.360 
+Just using Xcode with it is an unbearable experience.
+
+708
+01:15:15.360 --> 01:15:22.320 
+It might have gone better in the meantime, but nevertheless, something to consider.
+
+709
+01:15:22.320 --> 01:15:28.120 
+Yeah, I agree 100% on everything you said.
+
+710
+01:15:28.120 --> 01:15:34.760 
+I had experience working with a really big project called Build took like 45 minutes.
+
+711
+01:15:34.760 --> 01:15:44.480 
+I just went to lunch and then I just, yeah, it had this 70 sub-projects inside it, really,
+
+712
+01:15:44.480 --> 01:15:46.040 
+really big, huge project.
+
+713
+01:15:46.040 --> 01:15:51.680 
+And I struggled with Xcode a lot and AppCode just freeze like in the first two seconds.
+
+714
+01:15:51.680 --> 01:15:56.400 
+It was like nothing to do.
+
+715
+01:15:56.400 --> 01:15:59.640 
+I purchased AppCode and it just didn't work at all.
+
+716
+01:15:59.640 --> 01:16:03.280 
+Like I couldn't even type something.
+
+717
+01:16:03.280 --> 01:16:07.200 
+I know, I feel you.
+
+718
+01:16:07.200 --> 01:16:08.200 
+I quit.
+
+719
+01:16:08.200 --> 01:16:11.440 
+So now I'm fine.
+
+720
+01:16:11.440 --> 01:16:17.480 
+And why this is sad is because for once your developer experience is so bad.
+
+721
+01:16:17.480 --> 01:16:22.560 
+And I've been on projects like that where the context switching in your mind, like you
+
+722
+01:16:22.560 --> 01:16:27.560 
+were trying to work on a Task, you have your idea, maybe done the implementation and until
+
+723
+01:16:27.560 --> 01:16:33.040 
+you get the feedback from the Build, from the test, it takes so long that you can't
+
+724
+01:16:33.040 --> 01:16:34.920 
+hold on to your thoughts.
+
+725
+01:16:34.920 --> 01:16:39.920 
+And you probably context switch or talk to somebody in the meantime or do something else.
+
+726
+01:16:39.920 --> 01:16:43.000 
+And then you have to come back to that whole workflow.
+
+727
+01:16:43.000 --> 01:16:45.440 
+It's so bad.
+
+728
+01:16:45.440 --> 01:16:51.000 
+And it's also bad for the business because with smart decisions, this does not need to
+
+729
+01:16:51.000 --> 01:16:52.000 
+happen.
+
+730
+01:16:52.000 --> 01:17:00.120 
+Like this is probably the, I don't know, the end Result of people not knowing how to manage
+
+731
+01:17:00.120 --> 01:17:01.120 
+that mess.
+
+732
+01:17:01.120 --> 01:17:04.740 
+So they start with something small and they have no idea how to scale it.
+
+733
+01:17:04.740 --> 01:17:12.320 
+And then everything is just a big mess and a lot of people come with these theories where
+
+734
+01:17:12.320 --> 01:17:16.800 
+once every years you have to rewrite your project from scratch.
+
+735
+01:17:16.800 --> 01:17:23.360 
+And that's not very nice because with the same principles, they're going to write it
+
+736
+01:17:23.360 --> 01:17:24.400 
+in the same way.
+
+737
+01:17:24.400 --> 01:17:29.240 
+So after another three or four years, it's going to be the same.
+
+738
+01:17:29.240 --> 01:17:39.760 
+So I think that's why this course is built on top of the Main program, the Main course.
+
+739
+01:17:39.760 --> 01:17:47.480 
+That's where we have all these recommendations about modularization and clean architecture,
+
+740
+01:17:47.480 --> 01:17:51.040 
+clean design, low coupling between modules.
+
+741
+01:17:51.040 --> 01:17:57.880 
+All these principles are super important if you want to be working on a project that you
+
+742
+01:17:57.880 --> 01:17:59.240 
+don't hate.
+
+743
+01:17:59.240 --> 01:18:01.840 
+So yeah, that's it.
+
+744
+01:18:01.840 --> 01:18:06.520 
+Anyway, thank you for having me.
+
+745
+01:18:06.520 --> 01:18:13.280 
+And if there's any specific questions about these topics, we can, as always Slack is the
+
+746
+01:18:13.280 --> 01:18:20.140 
+way to go and we'll try to give a solid answer.
+
+747
+01:18:20.140 --> 01:18:23.820 
+Sometimes it takes time to do that, but that's fine.
+
+748
+01:18:23.820 --> 01:18:31.560 
+I didn't answer to Ruslan's point, so 45-minute build is a non-addressed tech debt and or
+
+749
+01:18:31.560 --> 01:18:33.920 
+missing build engineers in the team.
+
+750
+01:18:33.920 --> 01:18:35.580 
+Yeah, that's very true.
+
+751
+01:18:35.580 --> 01:18:40.940 
+But sometimes even adding build engineers to the team does not fix the issue.
+
+752
+01:18:40.940 --> 01:18:49.100 
+So I once worked on a project where after adding the build engineers to the team, we
+
+753
+01:18:49.100 --> 01:18:58.560 
+actually went to like a four-hour cycle of build back on CI and running the Tests.
+
+754
+01:18:58.560 --> 01:19:05.500 
+That was just so bad because every time you wanted to get feedback back on a pull request
+
+755
+01:19:05.500 --> 01:19:12.880 
+or something, you would wait for four hours and then get some results, sometimes a failure
+
+756
+01:19:12.880 --> 01:19:16.340 
+and then start to look into why that happened.
+
+757
+01:19:16.340 --> 01:19:23.800 
+So yeah, if it gets to, I think the problem is if you let it get to 45 minutes, like when
+
+758
+01:19:23.800 --> 01:19:29.840 
+it's passed, I know 10, 15 minutes, you start, you need to start to ask questions like why
+
+759
+01:19:29.840 --> 01:19:31.340 
+is this taking so long?
+
+760
+01:19:31.340 --> 01:19:33.820 
+How can we improve it?
+
+761
+01:19:33.820 --> 01:19:40.760 
+How can we, for instance, I know we, Kyle and Mike covered this in a mentoring session.
+
+762
+01:19:40.760 --> 01:19:47.720 
+How can we recompile and test and redeploy only the modules that got changed?
+
+763
+01:19:47.720 --> 01:19:53.780 
+So you don't need to rebuild everything when you know that your changes affect, I don't
+
+764
+01:19:53.780 --> 01:19:56.440 
+know, like only a component.
+
+765
+01:19:56.440 --> 01:20:03.420 
+So there's different approaches which you can take and improve these, but you first
+
+766
+01:20:03.420 --> 01:20:04.740 
+have to care about it.
+
+767
+01:20:04.740 --> 01:20:13.340 
+So if the team sets this as a high priority, then I'm sure solutions can be found if of
+
+768
+01:20:13.340 --> 01:20:16.380 
+course, if the knowledge is there.
+
+769
+01:20:16.380 --> 01:20:19.300 
+All right.
+
+770
+01:20:19.300 --> 01:20:21.040 
+This was nice.
+
+771
+01:20:21.040 --> 01:20:27.020 
+Thanks for staying up till the end and being available for this talk.
+
+772
+01:20:27.020 --> 01:20:28.820 
+This was nice.
+
+773
+01:20:28.820 --> 01:20:32.380 
+So thank you and see you soon.
+
+774
+01:20:32.380 --> 01:20:34.740 
+Bye.
+

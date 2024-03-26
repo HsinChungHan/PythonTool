@@ -1,0 +1,44 @@
+244
+00:08:26,933 --> 00:08:29,900
+shared test helpers in integration test
+將共享測試輔助者包含在集成測試中
+
+245
+00:08:29,900 --> 00:08:32,300
+so now remember
+所以現在要記住
+
+246
+00:08:32,300 --> 00:08:35,066
+we have to strategies here
+我們在這裡有兩種策略
+
+247
+00:08:35,066 --> 00:08:38,333
+we can either duplicate our test helpers
+我們可以複製我們的測試輔助者
+
+248
+00:08:38,333 --> 00:08:40,400
+or we can share them
+或者我們可以分享它們
+
+249
+00:08:40,400 --> 00:08:44,233
+if we share them we have to be careful
+如果我們分享它們，我們必須謹慎
+
+250
+00:08:44,233 --> 00:08:46,300
+with iOS symbols
+對於iOS符號
+
+251
+00:08:46,300 --> 00:08:49,900
+because sometimes iOS symbols can cause
+因為有時候iOS符號可能會引起
+
+252
+00:08:49,900 --> 00:08:52,933
+tests to fail
+測試會失敗

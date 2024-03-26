@@ -1,0 +1,34 @@
+371
+00:12:47,200 --> 00:12:48,700
+models on disk
+在磁碟上的模型
+
+372
+00:12:48,700 --> 00:12:50,933
+that's it now that we have all this
+就是這樣，現在我們有了所有這些
+
+373
+00:12:50,933 --> 00:12:52,300
+duplicate save
+重複儲存
+
+374
+00:12:52,300 --> 00:12:55,266
+methods yeah we could also extract them
+的方法，對，我們也可以提取它們
+
+375
+00:12:55,266 --> 00:12:57,100
+into helpers
+變成輔助工具
+
+376
+00:12:57,100 --> 00:13:00,700
+save feed with the sut to perform save
+用sut儲存飼料，來執行儲存
+
+377
+00:13:00,700 --> 00:13:02,466
+that sounds wonderful and in this other
+這聽起來很棒，在這個其他方面

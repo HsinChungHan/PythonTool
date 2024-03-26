@@ -1,0 +1,2199 @@
+1
+00:00:01.266 --> 00:00:03.100
+Hello Mike, hey Caio
+
+2
+00:00:03.100 --> 00:00:05.100
+so many viewers have expressed some
+
+3
+00:00:05.100 --> 00:00:06.233
+difficulty
+
+4
+00:00:06.233 --> 00:00:09.333
+when it comes to reading diagrams right
+
+5
+00:00:09.333 --> 00:00:12.066
+so why don't we explain through a simple
+
+6
+00:00:12.066 --> 00:00:13.333
+demonstration
+
+7
+00:00:13.333 --> 00:00:16.233
+all these arrows that we pull from one
+
+8
+00:00:16.233 --> 00:00:17.733
+component to another
+
+9
+00:00:17.733 --> 00:00:20.800
+and interfaces, protocols all these
+
+10
+00:00:20.800 --> 00:00:21.500
+things
+
+11
+00:00:21.500 --> 00:00:23.266
+yeah and we can write code and show the
+
+12
+00:00:23.266 --> 00:00:24.800
+diagram evolution
+
+13
+00:00:24.800 --> 00:00:28.000
+as we go yeah I like that but before we
+
+14
+00:00:28.000 --> 00:00:29.266
+start
+
+15
+00:00:29.266 --> 00:00:32.766
+why do we write diagrams right when we
+
+16
+00:00:32.766 --> 00:00:34.233
+draw them
+
+17
+00:00:34.233 --> 00:00:36.700
+why well it's a communication tool
+
+18
+00:00:36.700 --> 00:00:38.233
+for ourselves
+
+19
+00:00:38.233 --> 00:00:40.933
+and for other developers in the team and
+
+20
+00:00:40.933 --> 00:00:42.866
+when I say ourselves I mean our future
+
+21
+00:00:42.866 --> 00:00:44.700
+selves as well you know
+
+22
+00:00:44.700 --> 00:00:47.033
+understand what was the thinking
+
+23
+00:00:47.033 --> 00:00:48.533
+process at the time and
+
+24
+00:00:48.533 --> 00:00:51.500
+document it in a way the other thing
+
+25
+00:00:51.500 --> 00:00:53.600
+that I like about diagrams is
+
+26
+00:00:53.600 --> 00:00:55.833
+that you can validate your design
+
+27
+00:00:55.833 --> 00:00:56.700
+decisions
+
+28
+00:00:56.700 --> 00:01:01.100
+because you can see what module
+
+29
+00:01:01.100 --> 00:01:03.733
+talks to what module for example so it's
+
+30
+00:01:03.733 --> 00:01:04.933
+easier to see
+
+31
+00:01:04.933 --> 00:01:08.066
+the dependency graph right
+
+32
+00:01:08.066 --> 00:01:10.400
+of your objects of your classes or even
+
+33
+00:01:10.400 --> 00:01:11.600
+your functions
+
+34
+00:01:11.600 --> 00:01:13.833
+if you're writing some functional codebase
+
+35
+00:01:13.833 --> 00:01:15.033
+absolutely
+
+36
+00:01:15.033 --> 00:01:18.466
+absolutely and also it helps find memory
+
+37
+00:01:18.466 --> 00:01:19.200
+leaks
+
+38
+00:01:19.200 --> 00:01:21.333
+potential memory leaks right not actual
+
+39
+00:01:21.333 --> 00:01:22.933
+memory leaks because we would probably
+
+40
+00:01:22.933 --> 00:01:23.266
+need
+
+41
+00:01:23.266 --> 00:01:25.266
+Instruments or something to find that
+
+42
+00:01:25.266 --> 00:01:27.900
+well we can visually see some retain cycles
+
+43
+00:01:27.900 --> 00:01:28.466
+yes
+
+44
+00:01:28.466 --> 00:01:31.200
+exactly to be fair it's very easy for
+
+45
+00:01:31.200 --> 00:01:32.400
+the code to evolve
+
+46
+00:01:32.400 --> 00:01:34.633
+and the diagrams get out of sync so
+
+47
+00:01:34.633 --> 00:01:36.866
+there's a good argument not to keep them
+
+48
+00:01:36.866 --> 00:01:38.766
+as documentation I don't keep them as
+
+49
+00:01:38.766 --> 00:01:41.033
+documentation most of the times
+
+50
+00:01:41.033 --> 00:01:44.066
+I mostly use diagrams when for example
+
+51
+00:01:44.066 --> 00:01:45.733
+i'm starting to write a feature
+
+52
+00:01:45.733 --> 00:01:48.300
+in a team and we can pair in the
+
+53
+00:01:48.300 --> 00:01:50.133
+beginning and we draw some diagrams just
+
+54
+00:01:50.133 --> 00:01:50.533
+to
+
+55
+00:01:50.533 --> 00:01:53.600
+put our thoughts on paper it might take
+
+56
+00:01:53.600 --> 00:01:54.000
+us like
+
+57
+00:01:54.000 --> 00:01:55.900
+five, ten minutes to come up with an
+
+58
+00:01:55.900 --> 00:01:57.433
+initial plan
+
+59
+00:01:57.433 --> 00:01:59.666
+so it's just a framework to think it's
+
+60
+00:01:59.666 --> 00:02:01.200
+not always documentation
+
+61
+00:02:01.200 --> 00:02:04.300
+as you said it's a communication tool
+
+62
+00:02:04.300 --> 00:02:06.300
+yeah I think you make a very good point
+
+63
+00:02:06.300 --> 00:02:07.333
+there because
+
+64
+00:02:07.333 --> 00:02:09.666
+it's a bad investment actually after
+
+65
+00:02:09.666 --> 00:02:11.166
+some sort of
+
+66
+00:02:11.166 --> 00:02:13.266
+complexity being introduced in the
+
+67
+00:02:13.266 --> 00:02:14.533
+system then
+
+68
+00:02:14.533 --> 00:02:17.033
+it's just too costly to keep track of
+
+69
+00:02:17.033 --> 00:02:18.000
+all changes
+
+70
+00:02:18.000 --> 00:02:20.400
+and if you don't have a tool that will
+
+71
+00:02:20.400 --> 00:02:21.733
+produce these diagrams
+
+72
+00:02:21.733 --> 00:02:24.000
+for you that it will translate the
+
+73
+00:02:24.000 --> 00:02:25.666
+source code into diagrams I mean
+
+74
+00:02:25.666 --> 00:02:28.300
+then I agree with you 100% and I've never
+
+75
+00:02:28.300 --> 00:02:29.433
+seen a good tool
+
+76
+00:02:29.433 --> 00:02:32.133
+that can do that for me so right exactly
+
+77
+00:02:32.133 --> 00:02:32.933
+maybe there is
+
+78
+00:02:32.933 --> 00:02:35.266
+maybe unfair here but maybe one of our
+
+79
+00:02:35.266 --> 00:02:36.700
+viewers will make it
+
+80
+00:02:36.700 --> 00:02:40.000
+yes please
+
+81
+00:02:40.000 --> 00:02:41.833
+all right so let's start writing some
+
+82
+00:02:41.833 --> 00:02:43.033
+code great
+
+83
+00:02:43.033 --> 00:02:45.200
+why don't we start with the example last
+
+84
+00:02:45.200 --> 00:02:46.133
+time the
+
+85
+00:02:46.133 --> 00:02:48.800
+FeedViewController so we had a class
+
+86
+00:02:48.800 --> 00:02:51.500
+it was a FeedViewController
+
+87
+00:02:51.500 --> 00:02:54.000
+right that's how we started yes so how
+
+88
+00:02:54.000 --> 00:02:54.800
+does
+
+89
+00:02:54.800 --> 00:02:56.300
+this exact code we have right here
+
+90
+00:02:56.300 --> 00:02:58.233
+translate to a diagram right
+
+91
+00:02:58.233 --> 00:03:00.533
+so this is just a class a single
+
+92
+00:03:00.533 --> 00:03:01.333
+component
+
+93
+00:03:01.333 --> 00:03:05.033
+and it has no references no dependencies
+
+94
+00:03:05.033 --> 00:03:07.266
+no behavior nothing so we can represent
+
+95
+00:03:07.266 --> 00:03:08.133
+it with just
+
+96
+00:03:08.133 --> 00:03:11.200
+this box and its name right
+
+97
+00:03:11.200 --> 00:03:12.800
+but in our example in the previous
+
+98
+00:03:12.800 --> 00:03:14.633
+episode this class inherit
+
+99
+00:03:14.633 --> 00:03:20.633
+from UIViewController right
+
+100
+00:03:20.633 --> 00:03:24.000
+so just by doing that by importing
+
+101
+00:03:24.000 --> 00:03:24.633
+UIKit
+
+102
+00:03:24.633 --> 00:03:26.866
+and inheriting from UIViewController
+
+103
+00:03:26.866 --> 00:03:28.866
+that's a modular dependency
+
+104
+00:03:28.866 --> 00:03:30.833
+so we need to introduce that in the
+
+105
+00:03:30.833 --> 00:03:33.266
+diagram so now it looks like this
+
+106
+00:03:33.266 --> 00:03:34.933
+we inherit from ViewController and
+
+107
+00:03:34.933 --> 00:03:36.633
+since it's another module
+
+108
+00:03:36.633 --> 00:03:38.300
+let's use a different color to represent
+
+109
+00:03:38.300 --> 00:03:39.566
+it I like that so the
+
+110
+00:03:39.566 --> 00:03:40.233
+FeedViewController
+
+111
+00:03:40.233 --> 00:03:43.033
+inherits from UIViewController which means
+
+112
+00:03:43.033 --> 00:03:44.133
+we now depend
+
+113
+00:03:44.133 --> 00:03:46.133
+not just on UIViewController but UIKit
+
+114
+00:03:46.133 --> 00:03:47.733
+exactly because that's
+
+115
+00:03:47.733 --> 00:03:49.733
+the module where UIViewController is
+
+116
+00:03:49.733 --> 00:03:51.333
+defined
+
+117
+00:03:51.333 --> 00:03:53.566
+thus we had to import UIKit here and
+
+118
+00:03:53.566 --> 00:03:54.700
+that's a source
+
+119
+00:03:54.700 --> 00:03:57.433
+code dependency to UIKit from our
+
+120
+00:03:57.433 --> 00:03:58.000
+project
+
+121
+00:03:58.000 --> 00:04:00.233
+and the strongest of the couplings
+
+122
+00:04:00.233 --> 00:04:02.066
+inheritance
+
+123
+00:04:02.066 --> 00:04:04.700
+that is true but we had some more
+
+124
+00:04:04.700 --> 00:04:05.666
+dependencies here
+
+125
+00:04:05.666 --> 00:04:08.866
+in the previous episode we had the
+
+126
+00:04:08.866 --> 00:04:09.333
+loadFeed
+
+127
+00:04:09.333 --> 00:04:12.633
+closure right so let me
+
+128
+00:04:12.633 --> 00:04:14.700
+quickly paste this here there you go
+
+129
+00:04:14.700 --> 00:04:16.766
+very nice so we have a closure
+
+130
+00:04:16.766 --> 00:04:18.233
+where we could load the feed and in this
+
+131
+00:04:18.233 --> 00:04:19.600
+case let's say it's an array of strings
+
+132
+00:04:19.600 --> 00:04:21.333
+so we can render in a table view
+
+133
+00:04:21.333 --> 00:04:23.033
+yeah or a collection view it's simple
+
+134
+00:04:23.033 --> 00:04:24.933
+enough and on viewDidLoad
+
+135
+00:04:24.933 --> 00:04:26.866
+we invoke the loadFeed closure and
+
+136
+00:04:26.866 --> 00:04:28.633
+expect to get some items
+
+137
+00:04:28.633 --> 00:04:30.366
+right that's pretty common and we update
+
+138
+00:04:30.366 --> 00:04:31.833
+the UI yes
+
+139
+00:04:31.833 --> 00:04:33.600
+but now we have a new dependency it's a
+
+140
+00:04:33.600 --> 00:04:35.433
+closure right but even though it's a
+
+141
+00:04:35.433 --> 00:04:36.000
+function
+
+142
+00:04:36.000 --> 00:04:38.533
+it's still a dependency absolutely we have
+
+143
+00:04:38.533 --> 00:04:40.833
+a dependency on the signature of this
+
+144
+00:04:40.833 --> 00:04:42.866
+type and the signature
+
+145
+00:04:42.866 --> 00:04:45.266
+is this yes exactly it's a closure so we
+
+146
+00:04:45.266 --> 00:04:46.700
+can even name this
+
+147
+00:04:46.700 --> 00:04:48.933
+just to make this clear let's call it a
+
+148
+00:04:48.933 --> 00:04:50.133
+Feed
+
+149
+00:04:50.133 --> 00:04:53.900
+Loader
+
+150
+00:04:53.900 --> 00:04:56.233
+now we can replace it here and that's
+
+151
+00:04:56.233 --> 00:04:58.000
+what it is it's still a dependency
+
+152
+00:04:58.000 --> 00:04:59.666
+I can pass any closure that have the
+
+153
+00:04:59.666 --> 00:05:01.100
+same signature which means even though
+
+154
+00:05:01.100 --> 00:05:02.466
+we are passing a
+
+155
+00:05:02.466 --> 00:05:05.333
+closure we change our diagram yes so we
+
+156
+00:05:05.333 --> 00:05:05.833
+have
+
+157
+00:05:05.833 --> 00:05:08.133
+an arrow from the FeedViewController
+
+158
+00:05:08.133 --> 00:05:10.133
+towards the FeedLoader it's a closure
+
+159
+00:05:10.133 --> 00:05:10.633
+but
+
+160
+00:05:10.633 --> 00:05:13.266
+it's an interface it is it's a signature
+
+161
+00:05:13.266 --> 00:05:13.900
+exactly
+
+162
+00:05:13.900 --> 00:05:16.066
+and because it's an interface we prefix
+
+163
+00:05:16.066 --> 00:05:17.900
+and suffix with these greater
+
+164
+00:05:17.900 --> 00:05:20.800
+less than symbols there and this is a
+
+165
+00:05:20.800 --> 00:05:22.466
+reference this is a dependency
+
+166
+00:05:22.466 --> 00:05:23.833
+as a reference from the
+
+167
+00:05:23.833 --> 00:05:25.833
+FeedViewController to the FeedLoader that's why
+
+168
+00:05:25.833 --> 00:05:26.466
+we
+
+169
+00:05:26.466 --> 00:05:28.700
+choose the arrow with the closed head
+
+170
+00:05:28.700 --> 00:05:29.500
+basically
+
+171
+00:05:29.500 --> 00:05:31.500
+yeah it's a strong reference actually
+
+172
+00:05:31.500 --> 00:05:33.600
+yes and we know the closure is in Swift
+
+173
+00:05:33.600 --> 00:05:35.600
+they are reference types just like
+
+174
+00:05:35.600 --> 00:05:37.500
+classes this could very well be
+
+175
+00:05:37.500 --> 00:05:39.733
+a protocol and we have the typealias
+
+176
+00:05:39.733 --> 00:05:40.866
+there FeedLoader
+
+177
+00:05:40.866 --> 00:05:43.666
+and FeedLoader seems like a fine name
+
+178
+00:05:43.666 --> 00:05:45.333
+for a protocol
+
+179
+00:05:45.333 --> 00:05:47.600
+and basically it's exactly the same
+
+180
+00:05:47.600 --> 00:05:48.700
+thing it's a signature
+
+181
+00:05:48.700 --> 00:05:50.933
+right okay so why don't we make this
+
+182
+00:05:50.933 --> 00:05:52.233
+into a protocol then
+
+183
+00:05:52.233 --> 00:05:54.000
+let's do it so we wouldn't require much
+
+184
+00:05:54.000 --> 00:05:55.900
+work we can just
+
+185
+00:05:55.900 --> 00:05:59.033
+change this to be a protocol now with
+
+186
+00:05:59.033 --> 00:06:00.866
+one function
+
+187
+00:06:00.866 --> 00:06:04.233
+loadFeed for example
+
+188
+00:06:04.233 --> 00:06:05.900
+right and we need the completion there
+
+189
+00:06:05.900 --> 00:06:07.666
+as a named parameter
+
+190
+00:06:07.666 --> 00:06:11.033
+and we can omit the return type of void
+
+191
+00:06:11.033 --> 00:06:13.500
+because implicitly it returns void yes but
+
+192
+00:06:13.500 --> 00:06:15.433
+now we don't have an escaping
+
+193
+00:06:15.433 --> 00:06:19.100
+protocol yes and we can even change the
+
+194
+00:06:19.100 --> 00:06:22.133
+name of the loadFeed var let's call it
+
+195
+00:06:22.133 --> 00:06:25.733
+loader yeah I like loader and now it's
+
+196
+00:06:25.733 --> 00:06:26.633
+loader
+
+197
+00:06:26.633 --> 00:06:28.800
+.loadFeed since this is a protocol now
+
+198
+00:06:28.800 --> 00:06:29.666
+and we need to
+
+199
+00:06:29.666 --> 00:06:31.600
+invoke a function on the protocol where
+
+200
+00:06:31.600 --> 00:06:33.833
+before we would just invoke a closure
+
+201
+00:06:33.833 --> 00:06:35.333
+and the diagrams do the same
+
+202
+00:06:35.333 --> 00:06:36.700
+yes I wouldn't change anything in the
+
+203
+00:06:36.700 --> 00:06:39.266
+diagram I agree with you
+
+204
+00:06:39.266 --> 00:06:41.900
+they are very similar in concept they
+
+205
+00:06:41.900 --> 00:06:42.933
+are because
+
+206
+00:06:42.933 --> 00:06:44.533
+the FeedViewController only knows
+
+207
+00:06:44.533 --> 00:06:46.000
+basically about this
+
+208
+00:06:46.000 --> 00:06:49.666
+loadFeed function in the first example
+
+209
+00:06:49.666 --> 00:06:51.500
+it knew it through the closure here it
+
+210
+00:06:51.500 --> 00:06:53.033
+knows it through this protocol
+
+211
+00:06:53.033 --> 00:06:55.033
+but there is nothing else it can do with
+
+212
+00:06:55.033 --> 00:06:56.466
+this FeedLoader type
+
+213
+00:06:56.466 --> 00:06:58.466
+a protocol with one method can always be
+
+214
+00:06:58.466 --> 00:06:59.666
+replaced with a closure
+
+215
+00:06:59.666 --> 00:07:01.100
+I think that's fair to say I think
+
+216
+00:07:01.100 --> 00:07:03.100
+that's pretty much what it is
+
+217
+00:07:03.100 --> 00:07:04.533
+and some people prefer closure some
+
+218
+00:07:04.533 --> 00:07:06.400
+people prefer protocols pretty much a
+
+219
+00:07:06.400 --> 00:07:07.833
+personal choice I would say
+
+220
+00:07:07.833 --> 00:07:09.833
+although we now depend on this named
+
+221
+00:07:09.833 --> 00:07:11.900
+type FeedLoader where before
+
+222
+00:07:11.900 --> 00:07:13.666
+it could be any anonymous closure that
+
+223
+00:07:13.666 --> 00:07:16.633
+match the type signature right
+
+224
+00:07:16.633 --> 00:07:20.300
+and naming is hard it's one of those
+
+225
+00:07:20.300 --> 00:07:22.133
+big problems but sometimes you want to
+
+226
+00:07:22.133 --> 00:07:24.300
+name things to enforce some kind of
+
+227
+00:07:24.300 --> 00:07:25.333
+contract
+
+228
+00:07:25.333 --> 00:07:27.900
+so protocol defines better a contract my
+
+229
+00:07:27.900 --> 00:07:28.466
+advice
+
+230
+00:07:28.466 --> 00:07:31.900
+would be use whatever you're comfortable
+
+231
+00:07:31.900 --> 00:07:32.300
+with
+
+232
+00:07:32.300 --> 00:07:34.133
+if you're comfortable protocols go with
+
+233
+00:07:34.133 --> 00:07:35.666
+protocols but don't be afraid of getting
+
+234
+00:07:35.666 --> 00:07:37.333
+out of the comfort zone and trying out
+
+235
+00:07:37.333 --> 00:07:38.233
+some new ideas
+
+236
+00:07:38.233 --> 00:07:41.433
+absolutely very important okay so we
+
+237
+00:07:41.433 --> 00:07:42.233
+have a
+
+238
+00:07:42.233 --> 00:07:43.433
+FeedViewController we have a
+
+239
+00:07:43.433 --> 00:07:45.566
+FeedLoader well we can't do much
+
+240
+00:07:45.566 --> 00:07:47.833
+with this we need someone to implement
+
+241
+00:07:47.833 --> 00:07:50.000
+that exactly
+
+242
+00:07:50.000 --> 00:07:51.666
+let's say we have a RemoteFeedLoader
+
+243
+00:07:51.666 --> 00:07:54.300
+that implements the FeedLoader
+
+244
+00:07:54.300 --> 00:07:56.633
+interface and when you call loadFeed
+
+245
+00:07:56.633 --> 00:07:58.000
+it's going to talk to an API layer
+
+246
+00:07:58.000 --> 00:08:00.866
+URLSession, AFNetwork and call
+
+247
+00:08:00.866 --> 00:08:01.733
+the completion
+
+248
+00:08:01.733 --> 00:08:03.900
+when it's done right now how does the
+
+249
+00:08:03.900 --> 00:08:05.100
+diagram looks like
+
+250
+00:08:05.100 --> 00:08:07.433
+so now we have this dashed line with the
+
+251
+00:08:07.433 --> 00:08:08.400
+open head
+
+252
+00:08:08.400 --> 00:08:10.800
+from the RemoteFeedLoader towards the
+
+253
+00:08:10.800 --> 00:08:11.566
+FeedLoader
+
+254
+00:08:11.566 --> 00:08:13.733
+which means that the RemoteFeedLoader
+
+255
+00:08:13.733 --> 00:08:14.800
+conforms
+
+256
+00:08:14.800 --> 00:08:16.633
+to the FeedLoader protocol and I
+
+257
+00:08:16.633 --> 00:08:19.033
+decided to use some colors here to show
+
+258
+00:08:19.033 --> 00:08:21.166
+how we can bundle those types into
+
+259
+00:08:21.166 --> 00:08:22.233
+modules
+
+260
+00:08:22.233 --> 00:08:23.900
+right for example the FeedLoader can
+
+261
+00:08:23.900 --> 00:08:26.133
+live in the FeedViewController module
+
+262
+00:08:26.133 --> 00:08:27.266
+but the RemoteFeedLoader the
+
+263
+00:08:27.266 --> 00:08:28.700
+implementation can live in another
+
+264
+00:08:28.700 --> 00:08:29.900
+module that's why it has a different
+
+265
+00:08:29.900 --> 00:08:30.533
+color
+
+266
+00:08:30.533 --> 00:08:32.233
+let's say it's the blue module it could
+
+267
+00:08:32.233 --> 00:08:34.000
+be an API module
+
+268
+00:08:34.000 --> 00:08:36.633
+for example or a service module but they
+
+269
+00:08:36.633 --> 00:08:37.433
+could also be
+
+270
+00:08:37.433 --> 00:08:39.266
+all in the same module but they
+
+271
+00:08:39.266 --> 00:08:40.700
+shouldn't be immobile
+
+272
+00:08:40.700 --> 00:08:42.933
+right that's why we create those
+
+273
+00:08:42.933 --> 00:08:44.766
+separation of concerns
+
+274
+00:08:44.766 --> 00:08:46.300
+so if it's time to share these at some
+
+275
+00:08:46.300 --> 00:08:48.933
+point or have a different implementation
+
+276
+00:08:48.933 --> 00:08:50.133
+that we can replace
+
+277
+00:08:50.133 --> 00:08:52.000
+we can do it we have options or
+
+278
+00:08:52.000 --> 00:08:53.266
+facilitate testing
+
+279
+00:08:53.266 --> 00:08:56.300
+that's very important oh definitely
+
+280
+00:08:56.300 --> 00:08:57.733
+so we can have a different
+
+281
+00:08:57.733 --> 00:09:00.000
+implementation of the FeedLoader
+
+282
+00:09:00.000 --> 00:09:02.133
+right a LocalFeedLoader yes for
+
+283
+00:09:02.133 --> 00:09:04.000
+example this LocalFeedLoader
+
+284
+00:09:04.000 --> 00:09:07.100
+that just fetches some data from a cache
+
+285
+00:09:07.100 --> 00:09:10.866
+system or even a predefined JSON file
+
+286
+00:09:10.866 --> 00:09:12.866
+bundled in the app when you ship it so
+
+287
+00:09:12.866 --> 00:09:14.300
+if you don't have internet connection
+
+288
+00:09:14.300 --> 00:09:15.433
+you can still see something on the
+
+289
+00:09:15.433 --> 00:09:16.000
+screen
+
+290
+00:09:16.000 --> 00:09:18.800
+exactly you can have a persistence store
+
+291
+00:09:18.800 --> 00:09:20.300
+you can have a cache
+
+292
+00:09:20.300 --> 00:09:22.800
+mechanism, a JSON file it doesn't
+
+293
+00:09:22.800 --> 00:09:23.433
+matter
+
+294
+00:09:23.433 --> 00:09:24.866
+that's the beauty of the abstraction of
+
+295
+00:09:24.866 --> 00:09:26.466
+the FeedLoader there you can have a
+
+296
+00:09:26.466 --> 00:09:28.000
+bunch of implementations
+
+297
+00:09:28.000 --> 00:09:30.933
+conforming to a FeedLoader protocol and
+
+298
+00:09:30.933 --> 00:09:32.366
+be passed around
+
+299
+00:09:32.366 --> 00:09:34.300
+as a FeedLoader and now we have a new
+
+300
+00:09:34.300 --> 00:09:36.300
+type in our diagram okay
+
+301
+00:09:36.300 --> 00:09:38.800
+there it is the LocalFeedLoader that
+
+302
+00:09:38.800 --> 00:09:39.900
+also implements the
+
+303
+00:09:39.900 --> 00:09:42.700
+FeedLoader interface it conforms to the
+
+304
+00:09:42.700 --> 00:09:44.066
+FeedLoader interface
+
+305
+00:09:44.066 --> 00:09:45.666
+and it can be in a separate module
+
+306
+00:09:45.666 --> 00:09:47.200
+that's why it has a different color
+
+307
+00:09:47.200 --> 00:09:48.866
+but you can have everything bundled in
+
+308
+00:09:48.866 --> 00:09:51.200
+the same module but we have options
+
+309
+00:09:51.200 --> 00:09:53.333
+absolutely now imagine that your boss
+
+310
+00:09:53.333 --> 00:09:54.633
+comes to you and say
+
+311
+00:09:54.633 --> 00:09:56.466
+I want you to always try to get the
+
+312
+00:09:56.466 --> 00:09:58.133
+latest version from the remote but if
+
+313
+00:09:58.133 --> 00:09:59.033
+you have no
+
+314
+00:09:59.033 --> 00:10:01.033
+internet connection I want you to get
+
+315
+00:10:01.033 --> 00:10:03.333
+data from the cache
+
+316
+00:10:03.333 --> 00:10:05.433
+right so I think that's a that's a very
+
+317
+00:10:05.433 --> 00:10:06.466
+reasonable requirement
+
+318
+00:10:06.466 --> 00:10:09.500
+and it's often the case on iOS it's a
+
+319
+00:10:09.500 --> 00:10:09.900
+good
+
+320
+00:10:09.900 --> 00:10:11.833
+user experience and there's a bunch of
+
+321
+00:10:11.833 --> 00:10:13.033
+ways we can do that
+
+322
+00:10:13.033 --> 00:10:15.666
+yeah right for example some people might
+
+323
+00:10:15.666 --> 00:10:17.200
+have some logic
+
+324
+00:10:17.200 --> 00:10:19.500
+in the RemoteFeedLoader and say you
+
+325
+00:10:19.500 --> 00:10:21.100
+know what I should have only one type
+
+326
+00:10:21.100 --> 00:10:21.666
+that does
+
+327
+00:10:21.666 --> 00:10:23.900
+everything right and then you break the
+
+328
+00:10:23.900 --> 00:10:25.333
+single responsibility principle most
+
+329
+00:10:25.333 --> 00:10:26.933
+probably
+
+330
+00:10:26.933 --> 00:10:29.266
+yes and maybe that's that's fine for you
+
+331
+00:10:29.266 --> 00:10:30.933
+right but
+
+332
+00:10:30.933 --> 00:10:33.100
+we often see cases where there are
+
+333
+00:10:33.100 --> 00:10:34.366
+different approaches
+
+334
+00:10:34.366 --> 00:10:37.333
+to the problem yes it will be easier not
+
+335
+00:10:37.333 --> 00:10:38.300
+simpler right
+
+336
+00:10:38.300 --> 00:10:40.533
+yes and I like the easy versus simple
+
+337
+00:10:40.533 --> 00:10:41.333
+comparison
+
+338
+00:10:41.333 --> 00:10:43.900
+because for example an easy and often
+
+339
+00:10:43.900 --> 00:10:44.466
+used
+
+340
+00:10:44.466 --> 00:10:47.200
+approach is to change now our
+
+341
+00:10:47.200 --> 00:10:48.000
+ViewController
+
+342
+00:10:48.000 --> 00:10:50.633
+to depend on the concrete types again so
+
+343
+00:10:50.633 --> 00:10:51.833
+for example
+
+344
+00:10:51.833 --> 00:10:54.533
+instead of talking to an interface we
+
+345
+00:10:54.533 --> 00:10:56.633
+now depend on concrete types
+
+346
+00:10:56.633 --> 00:10:59.100
+and then we need to introduce some sort
+
+347
+00:10:59.100 --> 00:11:00.000
+of logic
+
+348
+00:11:00.000 --> 00:11:02.633
+in the ViewController to know which one
+
+349
+00:11:02.633 --> 00:11:03.333
+we should call
+
+350
+00:11:03.333 --> 00:11:06.533
+and when so let's say
+
+351
+00:11:06.533 --> 00:11:08.800
+if network is available we use the
+
+352
+00:11:08.800 --> 00:11:10.066
+remote one
+
+353
+00:11:10.066 --> 00:11:12.366
+otherwise we use the local cache so now
+
+354
+00:11:12.366 --> 00:11:13.666
+we make this code
+
+355
+00:11:13.666 --> 00:11:16.800
+more complex rather than simple but that
+
+356
+00:11:16.800 --> 00:11:17.266
+was an
+
+357
+00:11:17.266 --> 00:11:20.300
+easy change, absolutely, that was an easy
+
+358
+00:11:20.300 --> 00:11:21.100
+change
+
+359
+00:11:21.100 --> 00:11:23.666
+fulfill the requirement move on now we
+
+360
+00:11:23.666 --> 00:11:25.033
+have two dependencies they are both
+
+361
+00:11:25.033 --> 00:11:26.000
+concrete
+
+362
+00:11:26.000 --> 00:11:27.733
+and code is starting to get more
+
+363
+00:11:27.733 --> 00:11:30.000
+immobile because every time there is a
+
+364
+00:11:30.000 --> 00:11:31.733
+new requirement we're going to come here
+
+365
+00:11:31.733 --> 00:11:33.433
+and add more if statements
+
+366
+00:11:33.433 --> 00:11:36.133
+more logic and very easily this view
+
+367
+00:11:36.133 --> 00:11:37.266
+controller is going to be a thousand
+
+368
+00:11:37.266 --> 00:11:38.300
+lines long
+
+369
+00:11:38.300 --> 00:11:40.233
+and everybody is going to be afraid of
+
+370
+00:11:40.233 --> 00:11:41.333
+changing it
+
+371
+00:11:41.333 --> 00:11:44.366
+and our diagram now looks like this
+
+372
+00:11:44.366 --> 00:11:47.200
+which looks easier we have less things
+
+373
+00:11:47.200 --> 00:11:48.633
+but I don't think it's simpler
+
+374
+00:11:48.633 --> 00:11:50.366
+because it's not simple to change this
+
+375
+00:11:50.366 --> 00:11:52.233
+anymore yeah I cannot change the
+
+376
+00:11:52.233 --> 00:11:53.900
+behavior of the ViewController without
+
+377
+00:11:53.900 --> 00:11:54.533
+changing
+
+378
+00:11:54.533 --> 00:11:56.700
+the internal code which means it's not
+
+379
+00:11:56.700 --> 00:11:58.533
+open for extension
+
+380
+00:11:58.533 --> 00:12:02.466
+yeah we're going towards rigid town
+
+381
+00:12:02.466 --> 00:12:05.833
+here so how can we go back
+
+382
+00:12:05.833 --> 00:12:06.866
+and have the FeedViewController
+
+383
+00:12:06.866 --> 00:12:09.666
+depending on that interface but it still
+
+384
+00:12:09.666 --> 00:12:11.500
+have this new behavior right so we can
+
+385
+00:12:11.500 --> 00:12:12.800
+use composition
+
+386
+00:12:12.800 --> 00:12:16.133
+we can encapsulate this logic to
+
+387
+00:12:16.133 --> 00:12:18.466
+a type that checks if the network is
+
+388
+00:12:18.466 --> 00:12:19.200
+available
+
+389
+00:12:19.200 --> 00:12:21.333
+will fetch the remote otherwise it's
+
+390
+00:12:21.333 --> 00:12:22.866
+going to rely on the
+
+391
+00:12:22.866 --> 00:12:25.200
+local version of the feed so let's do
+
+392
+00:12:25.200 --> 00:12:26.633
+that and I'm going to undo the
+
+393
+00:12:26.633 --> 00:12:28.366
+changes here so we are back to having
+
+394
+00:12:28.366 --> 00:12:30.000
+just the loader
+
+395
+00:12:30.000 --> 00:12:31.666
+interface but now we're going to add a
+
+396
+00:12:31.666 --> 00:12:34.066
+new type right
+
+397
+00:12:34.066 --> 00:12:36.933
+so we move the same logic we added in
+
+398
+00:12:36.933 --> 00:12:38.066
+the ViewController but now
+
+399
+00:12:38.066 --> 00:12:40.466
+into a service but again how can we make
+
+400
+00:12:40.466 --> 00:12:41.733
+the ViewController
+
+401
+00:12:41.733 --> 00:12:43.500
+talk to this service we have to go to
+
+402
+00:12:43.500 --> 00:12:45.266
+the ViewController and change it
+
+403
+00:12:45.266 --> 00:12:47.200
+if it's a concrete type like this yeah
+
+404
+00:12:47.200 --> 00:12:48.700
+the ViewController talks to a
+
+405
+00:12:48.700 --> 00:12:49.433
+FeedLoader
+
+406
+00:12:49.433 --> 00:12:51.500
+so if we make this RemoteWithLocal
+
+407
+00:12:51.500 --> 00:12:53.200
+FallbackFeedService
+
+408
+00:12:53.200 --> 00:12:55.900
+conform to the FeedLoader protocol we
+
+409
+00:12:55.900 --> 00:12:57.900
+can then plug it to the ViewController
+
+410
+00:12:57.900 --> 00:13:00.000
+and the ViewController remains agnostic
+
+411
+00:13:00.000 --> 00:13:01.433
+from the provenance
+
+412
+00:13:01.433 --> 00:13:03.900
+of the feed and the RemoteFeedLoader
+
+413
+00:13:03.900 --> 00:13:05.900
+also is agnostic of this and the
+
+414
+00:13:05.900 --> 00:13:07.500
+LocalFeedLoader is also agnostic of those
+
+415
+00:13:07.500 --> 00:13:08.000
+types
+
+416
+00:13:08.000 --> 00:13:11.733
+absolutely these types are isolated
+
+417
+00:13:11.733 --> 00:13:14.866
+and they can be tested isolated but here
+
+418
+00:13:14.866 --> 00:13:17.666
+we can compose them into this new type
+
+419
+00:13:17.666 --> 00:13:19.666
+and separate the concerns
+
+420
+00:13:19.666 --> 00:13:24.233
+throughout the system so to do it we
+
+421
+00:13:24.233 --> 00:13:26.466
+can transform this service into actually
+
+422
+00:13:26.466 --> 00:13:27.266
+a loader
+
+423
+00:13:27.266 --> 00:13:30.700
+that also implements the FeedLoader
+
+424
+00:13:30.700 --> 00:13:33.833
+interface I like this change it reflects
+
+425
+00:13:33.833 --> 00:13:34.700
+the intent
+
+426
+00:13:34.700 --> 00:13:36.300
+of the class based on the FeedLoader
+
+427
+00:13:36.300 --> 00:13:38.300
+protocol so what we does is it composes
+
+428
+00:13:38.300 --> 00:13:38.866
+these two
+
+429
+00:13:38.866 --> 00:13:40.800
+concrete types as you can see we are
+
+430
+00:13:40.800 --> 00:13:42.300
+using the concrete types here
+
+431
+00:13:42.300 --> 00:13:44.800
+so now how does this look in the diagram
+
+432
+00:13:44.800 --> 00:13:47.500
+seems scary
+
+433
+00:13:47.500 --> 00:13:50.233
+as you can see the RemoteWithLocal
+
+434
+00:13:50.233 --> 00:13:51.500
+FallbackFeedLoader
+
+435
+00:13:51.500 --> 00:13:52.866
+implements the FeedLoader and it
+
+436
+00:13:52.866 --> 00:13:54.700
+depends on a RemoteFeedLoader and a
+
+437
+00:13:54.700 --> 00:13:55.266
+Local
+
+438
+00:13:55.266 --> 00:13:57.100
+FeedLoader everything else hasn't
+
+439
+00:13:57.100 --> 00:13:58.133
+changed yes which means the
+
+440
+00:13:58.133 --> 00:14:00.066
+ViewController has no idea of this
+
+441
+00:14:00.066 --> 00:14:02.133
+logic which means we changed the
+
+442
+00:14:02.133 --> 00:14:04.233
+behavior of the code without changing
+
+443
+00:14:04.233 --> 00:14:06.700
+the ViewController we added a new way
+
+444
+00:14:06.700 --> 00:14:08.300
+of composing these things and I really
+
+445
+00:14:08.300 --> 00:14:09.033
+like that
+
+446
+00:14:09.033 --> 00:14:11.433
+because the FeedViewController it
+
+447
+00:14:11.433 --> 00:14:12.066
+doesn't know
+
+448
+00:14:12.066 --> 00:14:14.300
+where the feed is coming from and it
+
+449
+00:14:14.300 --> 00:14:15.166
+doesn't care
+
+450
+00:14:15.166 --> 00:14:17.433
+and how easy we can test now the Feed
+
+451
+00:14:17.433 --> 00:14:18.466
+ViewController there
+
+452
+00:14:18.466 --> 00:14:20.000
+yeah we can test everything here in
+
+453
+00:14:20.000 --> 00:14:21.900
+isolation which is great
+
+454
+00:14:21.900 --> 00:14:23.333
+and we can use the type system to help
+
+455
+00:14:23.333 --> 00:14:25.500
+us compose those types together
+
+456
+00:14:25.500 --> 00:14:27.900
+and if you think this is a property of
+
+457
+00:14:27.900 --> 00:14:29.600
+protocols no it's not you can do the
+
+458
+00:14:29.600 --> 00:14:31.033
+same with closures
+
+459
+00:14:31.033 --> 00:14:33.600
+yeah I'm very happy with this design we
+
+460
+00:14:33.600 --> 00:14:35.500
+can even simplify this code here we can
+
+461
+00:14:35.500 --> 00:14:37.666
+just forward
+
+462
+00:14:37.666 --> 00:14:41.166
+the completion blocks
+
+463
+00:14:41.166 --> 00:14:42.933
+for example we can keep changing the
+
+464
+00:14:42.933 --> 00:14:44.233
+implementation of this
+
+465
+00:14:44.233 --> 00:14:46.133
+until we are happy with it let's say we
+
+466
+00:14:46.133 --> 00:14:47.500
+have a
+
+467
+00:14:47.500 --> 00:14:49.600
+load function that depending on the
+
+468
+00:14:49.600 --> 00:14:51.033
+network state
+
+469
+00:14:51.033 --> 00:14:59.266
+we do one thing or the other
+
+470
+00:14:59.266 --> 00:15:00.700
+yeah I mean it doesn't matter right as
+
+471
+00:15:00.700 --> 00:15:02.700
+long as you conform to the interface
+
+472
+00:15:02.700 --> 00:15:05.500
+you can test this behavior and refactor the
+
+473
+00:15:05.500 --> 00:15:07.266
+code until you're happy with it
+
+474
+00:15:07.266 --> 00:15:09.333
+for example instead of having just one
+
+475
+00:15:09.333 --> 00:15:10.466
+local maybe
+
+476
+00:15:10.466 --> 00:15:11.833
+you're gonna have different types of
+
+477
+00:15:11.833 --> 00:15:13.433
+fallbacks then you can have an array of
+
+478
+00:15:13.433 --> 00:15:14.466
+fallbacks
+
+479
+00:15:14.466 --> 00:15:16.700
+it's up to you as the requirements
+
+480
+00:15:16.700 --> 00:15:17.900
+change you don't have to
+
+481
+00:15:17.900 --> 00:15:19.666
+break any other part of the system to
+
+482
+00:15:19.666 --> 00:15:21.166
+add new behavior and that's the open
+
+483
+00:15:21.166 --> 00:15:21.666
+close
+
+484
+00:15:21.666 --> 00:15:24.066
+principle plus the dependency version as
+
+485
+00:15:24.066 --> 00:15:25.900
+long as you have this clear separation
+
+486
+00:15:25.900 --> 00:15:27.433
+you have options
+
+487
+00:15:27.433 --> 00:15:30.800
+and that's simple I would argue it's
+
+488
+00:15:30.800 --> 00:15:31.166
+easy
+
+489
+00:15:31.166 --> 00:15:33.033
+as well if you know how to do it it
+
+490
+00:15:33.033 --> 00:15:34.466
+doesn't take more time
+
+491
+00:15:34.466 --> 00:15:35.900
+so one thing I would like to mention
+
+492
+00:15:35.900 --> 00:15:38.700
+here is that perhaps the diagram
+
+493
+00:15:38.700 --> 00:15:41.166
+looks a little bit scary with all these
+
+494
+00:15:41.166 --> 00:15:42.800
+colors and all these blocks
+
+495
+00:15:42.800 --> 00:15:46.066
+but when we would instantiate all these
+
+496
+00:15:46.066 --> 00:15:46.933
+types
+
+497
+00:15:46.933 --> 00:15:49.266
+I think it's much simpler it could be a
+
+498
+00:15:49.266 --> 00:15:52.866
+one-liner
+
+499
+00:15:52.866 --> 00:15:54.366
+for example you can create your
+
+500
+00:15:54.366 --> 00:15:56.233
+ViewController
+
+501
+00:15:56.233 --> 00:15:58.933
+it's a FeedViewController and we pass a
+
+502
+00:15:58.933 --> 00:15:59.600
+loader
+
+503
+00:15:59.600 --> 00:16:01.333
+anything that conforms to the loader
+
+504
+00:16:01.333 --> 00:16:03.433
+interface for example we can
+
+505
+00:16:03.433 --> 00:16:06.533
+create it with a RemoteFeedLoader or we
+
+506
+00:16:06.533 --> 00:16:08.133
+can create another one
+
+507
+00:16:08.133 --> 00:16:11.833
+with a LocalFeedLoader or we can create
+
+508
+00:16:11.833 --> 00:16:12.866
+another one
+
+509
+00:16:12.866 --> 00:16:16.300
+that uses the RemoteWithLocalFallback
+
+510
+00:16:16.300 --> 00:16:19.900
+FeeLoader right and then we pass the
+
+511
+00:16:19.900 --> 00:16:21.500
+RemoteFeedLoader
+
+512
+00:16:21.500 --> 00:16:23.666
+and the LocalFeedLoader for example
+
+513
+00:16:23.666 --> 00:16:25.100
+that's my point here that
+
+514
+00:16:25.100 --> 00:16:27.833
+the code doesn't reflect the complexity
+
+515
+00:16:27.833 --> 00:16:28.933
+of the diagrams
+
+516
+00:16:28.933 --> 00:16:31.100
+because the thing is this diagram is not
+
+517
+00:16:31.100 --> 00:16:32.533
+complex
+
+518
+00:16:32.533 --> 00:16:34.233
+that is yeah that is true if you can
+
+519
+00:16:34.233 --> 00:16:36.233
+read this yeah that makes sense
+
+520
+00:16:36.233 --> 00:16:39.600
+yeah but in the beginning I think it can
+
+521
+00:16:39.600 --> 00:16:39.900
+be
+
+522
+00:16:39.900 --> 00:16:43.266
+a bit daunting especially for newcomers
+
+523
+00:16:43.266 --> 00:16:46.700
+yes and some people might say well
+
+524
+00:16:46.700 --> 00:16:47.733
+so you're creating the FeedViewController
+
+525
+00:16:47.733 --> 00:16:49.666
+with those dependencies which
+
+526
+00:16:49.666 --> 00:16:50.233
+means
+
+527
+00:16:50.233 --> 00:16:52.300
+I cannot use storyboards all right
+
+528
+00:16:52.300 --> 00:16:54.533
+because I don't have control over the
+
+529
+00:16:54.533 --> 00:16:57.833
+instantiation of my ViewController well
+
+530
+00:16:57.833 --> 00:17:00.366
+is this a fallacy or not I think it is
+
+531
+00:17:00.366 --> 00:17:02.000
+yeah because what I can do is
+
+532
+00:17:02.000 --> 00:17:05.333
+for example I can set my loader
+
+533
+00:17:05.333 --> 00:17:07.666
+after it's created we're shifting from
+
+534
+00:17:07.666 --> 00:17:09.333
+initializer injection to
+
+535
+00:17:09.333 --> 00:17:12.000
+property injection here and now we can
+
+536
+00:17:12.000 --> 00:17:14.233
+inject those dependencies
+
+537
+00:17:14.233 --> 00:17:18.233
+you can use custom segways you can use
+
+538
+00:17:18.233 --> 00:17:21.100
+custom objects in your storyboard or nib
+
+539
+00:17:21.100 --> 00:17:21.900
+files
+
+540
+00:17:21.900 --> 00:17:23.500
+we have a video where we show these
+
+541
+00:17:23.500 --> 00:17:25.266
+techniques you can find a link in the
+
+542
+00:17:25.266 --> 00:17:26.133
+description
+
+543
+00:17:26.133 --> 00:17:28.000
+so there's no excuses if you want to
+
+544
+00:17:28.000 --> 00:17:29.266
+have composable types
+
+545
+00:17:29.266 --> 00:17:32.400
+it's a choice it's just a choice there's
+
+546
+00:17:32.400 --> 00:17:34.233
+nothing magical about it
+
+547
+00:17:34.233 --> 00:17:36.700
+right you don't have to but if you want
+
+548
+00:17:36.700 --> 00:17:38.000
+to you can
+
+549
+00:17:38.000 --> 00:17:39.833
+alright I think that's it for today and
+
+550
+00:17:39.833 --> 00:17:52.300
+we'll see you again next time

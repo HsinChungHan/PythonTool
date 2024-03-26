@@ -1,0 +1,1707 @@
+1
+00:00:00.766 --> 00:00:03.166
+Hello Mike, hey Caio
+
+2
+00:00:03.166 --> 00:00:05.033
+in this lecture you'll learn how you can
+
+3
+00:00:05.033 --> 00:00:06.933
+improve and simplify your code
+
+4
+00:00:06.933 --> 00:00:10.233
+with the standard Swift Result type to use
+
+5
+00:00:10.233 --> 00:00:12.533
+the standard Swift Result type
+
+6
+00:00:12.533 --> 00:00:15.833
+you need Swift 5 or above so let's start
+
+7
+00:00:15.833 --> 00:00:18.300
+by showing how to migrate your codebase
+
+8
+00:00:18.300 --> 00:00:20.933
+if you need to just by opening Xcode
+
+9
+00:00:20.933 --> 00:00:22.533
+10.2 or later
+
+10
+00:00:22.533 --> 00:00:25.033
+we already get warnings that show all
+
+11
+00:00:25.033 --> 00:00:26.400
+the necessary steps
+
+12
+00:00:26.400 --> 00:00:29.833
+we need to take to update to Swift 5.
+
+13
+00:00:29.833 --> 00:00:34.466
+make sure to select all the targets
+
+14
+00:00:34.466 --> 00:00:37.266
+ok no source changes necessary so let's
+
+15
+00:00:37.266 --> 00:00:38.866
+just press update
+
+16
+00:00:38.866 --> 00:00:41.733
+let's run all the tests in the CI scheme
+
+17
+00:00:41.733 --> 00:00:43.266
+because during the migration we want to
+
+18
+00:00:43.266 --> 00:00:44.466
+make sure that
+
+19
+00:00:44.466 --> 00:00:46.633
+all the targets are passing and all the
+
+20
+00:00:46.633 --> 00:00:48.800
+behavior stays the same
+
+21
+00:00:48.800 --> 00:00:51.900
+exactly okay all tests are passing let's
+
+22
+00:00:51.900 --> 00:00:53.600
+commit
+
+23
+00:00:53.600 --> 00:00:56.833
+migrate to Swift 5 no source changes
+
+24
+00:00:56.833 --> 00:00:58.000
+needed
+
+25
+00:00:58.000 --> 00:01:00.933
+next let's solve the warnings first of
+
+26
+00:01:00.933 --> 00:01:01.433
+all
+
+27
+00:01:01.433 --> 00:01:04.633
+let's enable the new recommended setting
+
+28
+00:01:04.633 --> 00:01:07.333
+base internationalization run all the
+
+29
+00:01:07.333 --> 00:01:09.666
+tests again
+
+30
+00:01:09.666 --> 00:01:15.333
+passing awesome let's commit
+
+31
+00:01:15.333 --> 00:01:17.666
+next the Swift compiler is generating a
+
+32
+00:01:17.666 --> 00:01:19.266
+warning for the redundant
+
+33
+00:01:19.266 --> 00:01:22.000
+internal declarations up to now we
+
+34
+00:01:22.000 --> 00:01:23.333
+declared explicit
+
+35
+00:01:23.333 --> 00:01:25.900
+internal scopes to make access control
+
+36
+00:01:25.900 --> 00:01:27.100
+clear to you
+
+37
+00:01:27.100 --> 00:01:29.200
+during the lectures however it's not
+
+38
+00:01:29.200 --> 00:01:31.666
+mandatory as the internal access control
+
+39
+00:01:31.666 --> 00:01:33.266
+is the default access control
+
+40
+00:01:33.266 --> 00:01:36.700
+exactly so from now on we will omit it
+
+41
+00:01:36.700 --> 00:01:38.933
+so let's do a global search for internal
+
+42
+00:01:38.933 --> 00:01:40.133
+and remove it
+
+43
+00:01:40.133 --> 00:01:44.866
+globally as you can see it's now gone
+
+44
+00:01:44.866 --> 00:01:46.466
+let's run the tests nothing should
+
+45
+00:01:46.466 --> 00:01:48.700
+change because that's the default value
+
+46
+00:01:48.700 --> 00:01:51.333
+alright test is passing and the internal
+
+47
+00:01:51.333 --> 00:01:52.633
+warnings are gone
+
+48
+00:01:52.633 --> 00:01:55.333
+let's commit remove redundant internal
+
+49
+00:01:55.333 --> 00:01:57.833
+access control declarations
+
+50
+00:01:57.833 --> 00:01:59.833
+next we have a couple of deprecated
+
+51
+00:01:59.833 --> 00:02:00.866
+initializers
+
+52
+00:02:00.866 --> 00:02:02.466
+as you can see the new initializer
+
+53
+00:02:02.466 --> 00:02:04.300
+doesn't require the named parameter
+
+54
+00:02:04.300 --> 00:02:04.933
+anymore
+
+55
+00:02:04.933 --> 00:02:07.433
+so we can just remove the bytes name in
+
+56
+00:02:07.433 --> 00:02:09.100
+both places
+
+57
+00:02:09.100 --> 00:02:12.000
+let's run the tests it's passing perfect
+
+58
+00:02:12.000 --> 00:02:15.100
+let's commit
+
+59
+00:02:15.100 --> 00:02:18.300
+no more warnings migration complete
+
+60
+00:02:18.300 --> 00:02:20.300
+awesome but since we are in this test
+
+61
+00:02:20.300 --> 00:02:22.466
+file I remember we use the reduce method
+
+62
+00:02:22.466 --> 00:02:23.100
+to remove
+
+63
+00:02:23.100 --> 00:02:25.833
+optionals from a dictionary since Swift
+
+64
+00:02:25.833 --> 00:02:26.533
+5 though
+
+65
+00:02:26.533 --> 00:02:29.333
+you can use the new compactMapValues
+
+66
+00:02:29.333 --> 00:02:30.133
+instead of
+
+67
+00:02:30.133 --> 00:02:32.300
+reducing to remove all optionals which
+
+68
+00:02:32.300 --> 00:02:33.666
+is a much simpler way
+
+69
+00:02:33.666 --> 00:02:36.533
+of doing it let's run the tests or
+
+70
+00:02:36.533 --> 00:02:37.566
+passing
+
+71
+00:02:37.566 --> 00:02:41.266
+let's commit
+
+72
+00:02:41.266 --> 00:02:43.100
+finally let's deal with the standard
+
+73
+00:02:43.100 --> 00:02:45.333
+Result type let's search for
+
+74
+00:02:45.333 --> 00:02:47.566
+custom Result types we have created and
+
+75
+00:02:47.566 --> 00:02:48.400
+refactor
+
+76
+00:02:48.400 --> 00:02:50.933
+those custom Result types one by one
+
+77
+00:02:50.933 --> 00:02:51.433
+okay
+
+78
+00:02:51.433 --> 00:02:53.266
+that seems like a good strategy first of
+
+79
+00:02:53.266 --> 00:02:54.700
+all we have the LoadFeed
+
+80
+00:02:54.700 --> 00:02:56.866
+Result which was the first Result type
+
+81
+00:02:56.866 --> 00:02:57.733
+we've created
+
+82
+00:02:57.733 --> 00:03:00.400
+it has a success case with an array of
+
+83
+00:03:00.400 --> 00:03:01.500
+FeedImages and a failure
+
+84
+00:03:01.500 --> 00:03:03.433
+with the Error protocol which is very
+
+85
+00:03:03.433 --> 00:03:04.533
+similar to the Swift
+
+86
+00:03:04.533 --> 00:03:07.033
+Result type as you can see the Swift
+
+87
+00:03:07.033 --> 00:03:08.300
+standard Result type
+
+88
+00:03:08.300 --> 00:03:10.933
+also has a success and failure where the
+
+89
+00:03:10.933 --> 00:03:11.566
+success
+
+90
+00:03:11.566 --> 00:03:14.233
+holds a Success generic value and the
+
+91
+00:03:14.233 --> 00:03:14.866
+failure
+
+92
+00:03:14.866 --> 00:03:17.833
+holds a Failure generic value where the
+
+93
+00:03:17.833 --> 00:03:18.466
+Failure
+
+94
+00:03:18.466 --> 00:03:21.100
+needs to conform to the Error protocol so
+
+95
+00:03:21.100 --> 00:03:22.066
+we can replace
+
+96
+00:03:22.066 --> 00:03:24.300
+the LoadFeedResult with a new result
+
+97
+00:03:24.300 --> 00:03:25.100
+type and
+
+98
+00:03:25.100 --> 00:03:26.766
+since we want to avoid breaking too much
+
+99
+00:03:26.766 --> 00:03:29.266
+of existing code we can transform
+
+100
+00:03:29.266 --> 00:03:31.666
+the LoadFeedResult enum into a type
+
+101
+00:03:31.666 --> 00:03:32.633
+alias
+
+102
+00:03:32.633 --> 00:03:36.633
+for a result holding the array of FeedImages
+
+103
+00:03:36.633 --> 00:03:38.866
+as the Success type and the Error
+
+104
+00:03:38.866 --> 00:03:40.766
+protocol for the Failure type
+
+105
+00:03:40.766 --> 00:03:43.200
+so that should do it so let's run the
+
+106
+00:03:43.200 --> 00:03:43.900
+tests
+
+107
+00:03:43.900 --> 00:03:46.300
+okay build succeeded and the tests are
+
+108
+00:03:46.300 --> 00:03:47.333
+passing with no
+
+109
+00:03:47.333 --> 00:03:50.466
+extra changes required fantastic let's
+
+110
+00:03:50.466 --> 00:03:51.333
+commit
+
+111
+00:03:51.333 --> 00:03:54.066
+so we place custom LoadFeedResult enum
+
+112
+00:03:54.066 --> 00:03:55.266
+with the standard
+
+113
+00:03:55.266 --> 00:03:58.766
+Swift Result another improvement we can
+
+114
+00:03:58.766 --> 00:03:59.566
+make now
+
+115
+00:03:59.566 --> 00:04:02.133
+is to nest the LoadFeedResult within
+
+116
+00:04:02.133 --> 00:04:03.433
+the FeedLoader protocol
+
+117
+00:04:03.433 --> 00:04:05.500
+since they are closely related and we
+
+118
+00:04:05.500 --> 00:04:06.633
+can simply call this
+
+119
+00:04:06.633 --> 00:04:08.933
+Result now because it's already scoped
+
+120
+00:04:08.933 --> 00:04:11.666
+within the FeedLoader
+
+121
+00:04:11.666 --> 00:04:14.466
+but since this result conflicts with the
+
+122
+00:04:14.466 --> 00:04:16.000
+standard type Result name
+
+123
+00:04:16.000 --> 00:04:18.366
+we can add the Swift module name to help
+
+124
+00:04:18.366 --> 00:04:19.833
+the compiler understand
+
+125
+00:04:19.833 --> 00:04:21.900
+this type declaration yeah I really like
+
+126
+00:04:21.900 --> 00:04:23.666
+this change from the client's point of
+
+127
+00:04:23.666 --> 00:04:24.300
+view
+
+128
+00:04:24.300 --> 00:04:26.800
+it now reads FeedLoader.Result which is
+
+129
+00:04:26.800 --> 00:04:28.233
+much more descriptive
+
+130
+00:04:28.233 --> 00:04:30.700
+exactly but this is a breaking change
+
+131
+00:04:30.700 --> 00:04:32.700
+and the compiler is going to help us
+
+132
+00:04:32.700 --> 00:04:40.833
+so LoadFeedResult is now
+
+133
+00:04:40.833 --> 00:04:43.733
+FeedLoader.Result
+
+134
+00:04:43.733 --> 00:04:45.333
+okay we are done with the FeedLoader
+
+135
+00:04:45.333 --> 00:04:49.733
+Result let's commit
+
+136
+00:04:49.733 --> 00:04:52.533
+next let's do the same for the HTTP
+
+137
+00:04:52.533 --> 00:04:54.000
+ClientResult
+
+138
+00:04:54.000 --> 00:04:56.633
+let's follow the same process let's make
+
+139
+00:04:56.633 --> 00:04:57.900
+it a typealias
+
+140
+00:04:57.900 --> 00:05:01.033
+over the Result type where the success
+
+141
+00:05:01.033 --> 00:05:04.233
+is a tuple with Data and HTTPURL
+
+142
+00:05:04.233 --> 00:05:04.933
+Response
+
+143
+00:05:04.933 --> 00:05:07.333
+okay and the failure is the Error
+
+144
+00:05:07.333 --> 00:05:10.133
+protocol okay this is a breaking change
+
+145
+00:05:10.133 --> 00:05:11.333
+and the compiler is going to help us
+
+146
+00:05:11.333 --> 00:05:13.100
+find where we need to fix the type
+
+147
+00:05:13.100 --> 00:05:13.900
+information
+
+148
+00:05:13.900 --> 00:05:16.066
+and here we just need to put the values
+
+149
+00:05:16.066 --> 00:05:17.733
+inside a tuple
+
+150
+00:05:17.733 --> 00:05:19.433
+and in the test target we need to do the
+
+151
+00:05:19.433 --> 00:05:21.500
+same
+
+152
+00:05:21.500 --> 00:05:24.533
+okay tests are passing we can also nest
+
+153
+00:05:24.533 --> 00:05:27.600
+the typealias inside the protocol we
+
+154
+00:05:27.600 --> 00:05:28.866
+can call it just Result
+
+155
+00:05:28.866 --> 00:05:32.466
+exactly let's build and run the tests
+
+156
+00:05:32.466 --> 00:05:35.033
+and solve any type information required
+
+157
+00:05:35.033 --> 00:05:36.400
+by the compiler
+
+158
+00:05:36.400 --> 00:05:37.600
+so in this case we just need to add a
+
+159
+00:05:37.600 --> 00:05:42.933
+dot
+
+160
+00:05:42.933 --> 00:05:46.633
+run the test again passing awesome
+
+161
+00:05:46.633 --> 00:05:50.533
+let's commit
+
+162
+00:05:50.533 --> 00:05:53.500
+now the last custom Result type is the
+
+163
+00:05:53.500 --> 00:05:54.133
+Retrieve
+
+164
+00:05:54.133 --> 00:05:57.600
+CachedFeedResult okay but we have
+
+165
+00:05:57.600 --> 00:05:58.933
+three cases here
+
+166
+00:05:58.933 --> 00:06:01.733
+instead of two so it doesn't match the
+
+167
+00:06:01.733 --> 00:06:03.900
+standard Swift Result type
+
+168
+00:06:03.900 --> 00:06:06.233
+so we could keep it as is it works
+
+169
+00:06:06.233 --> 00:06:07.433
+perfectly fine
+
+170
+00:06:07.433 --> 00:06:08.933
+however it would be good to keep
+
+171
+00:06:08.933 --> 00:06:10.633
+consistency throughout
+
+172
+00:06:10.633 --> 00:06:12.933
+the application by using the standard
+
+173
+00:06:12.933 --> 00:06:15.333
+Result type for representing the result
+
+174
+00:06:15.333 --> 00:06:17.900
+of an operation to do so we can break
+
+175
+00:06:17.900 --> 00:06:18.400
+down
+
+176
+00:06:18.400 --> 00:06:21.166
+this custom Result type into success and
+
+177
+00:06:21.166 --> 00:06:21.833
+failure
+
+178
+00:06:21.833 --> 00:06:24.400
+where the empty and found cases both
+
+179
+00:06:24.400 --> 00:06:25.333
+represent
+
+180
+00:06:25.333 --> 00:06:29.666
+success right so empty is a success case
+
+181
+00:06:29.666 --> 00:06:32.400
+since it denotes that the retrieval
+
+182
+00:06:32.400 --> 00:06:33.433
+succeeded
+
+183
+00:06:33.433 --> 00:06:36.000
+but there was nothing in the cache the
+
+184
+00:06:36.000 --> 00:06:37.100
+found case
+
+185
+00:06:37.100 --> 00:06:40.233
+also represents success but with a found
+
+186
+00:06:40.233 --> 00:06:42.866
+cache with the collection of LocalFeed
+
+187
+00:06:42.866 --> 00:06:43.600
+Items
+
+188
+00:06:43.600 --> 00:06:46.066
+and the cache timestamp so we have two
+
+189
+00:06:46.066 --> 00:06:47.500
+cases for success
+
+190
+00:06:47.500 --> 00:06:52.233
+which can be represented by an enum
+
+191
+00:06:52.233 --> 00:06:55.666
+CachedFeed for example exactly
+
+192
+00:06:55.666 --> 00:06:58.800
+now we have a case for success holding
+
+193
+00:06:58.800 --> 00:07:00.933
+the CachedFeed that can be empty or
+
+194
+00:07:00.933 --> 00:07:02.933
+found and the failure case
+
+195
+00:07:02.933 --> 00:07:06.300
+which represents the errors exactly
+
+196
+00:07:06.300 --> 00:07:08.933
+so now this matches the standard Result
+
+197
+00:07:08.933 --> 00:07:09.900
+type
+
+198
+00:07:09.900 --> 00:07:11.566
+which we can then transform into a type
+
+199
+00:07:11.566 --> 00:07:13.266
+alias of a Result
+
+200
+00:07:13.266 --> 00:07:15.500
+with the CachedFeed type as the success
+
+201
+00:07:15.500 --> 00:07:17.033
+type and Error
+
+202
+00:07:17.033 --> 00:07:19.500
+as the failure type of course this is a
+
+203
+00:07:19.500 --> 00:07:20.400
+breaking change
+
+204
+00:07:20.400 --> 00:07:22.533
+since we have new types so the compiler
+
+205
+00:07:22.533 --> 00:07:23.666
+is going to help us
+
+206
+00:07:23.666 --> 00:07:27.566
+solve the type errors so we still have
+
+207
+00:07:27.566 --> 00:07:29.033
+the found case but it's
+
+208
+00:07:29.033 --> 00:07:32.800
+wrapped inside a success case exactly
+
+209
+00:07:32.800 --> 00:07:36.633
+the same in here found and success
+
+210
+00:07:36.633 --> 00:07:39.500
+empty which can be simplified to just
+
+211
+00:07:39.500 --> 00:07:41.666
+success
+
+212
+00:07:41.666 --> 00:07:45.566
+the same here success found
+
+213
+00:07:45.566 --> 00:07:49.500
+and success
+
+214
+00:07:49.500 --> 00:07:52.133
+now when creating a Result type we need
+
+215
+00:07:52.133 --> 00:07:53.033
+to wrap it
+
+216
+00:07:53.033 --> 00:07:56.233
+in a success case
+
+217
+00:07:56.233 --> 00:07:58.300
+okay let's run the tests and the
+
+218
+00:07:58.300 --> 00:07:59.433
+compiler is going to help us
+
+219
+00:07:59.433 --> 00:08:01.566
+also solve type issues here which will
+
+220
+00:08:01.566 --> 00:08:02.466
+be to wrap
+
+221
+00:08:02.466 --> 00:08:05.033
+all the declarations into a success case
+
+222
+00:08:05.033 --> 00:08:06.300
+as well
+
+223
+00:08:06.300 --> 00:08:10.133
+and we do it off-camera to save you time
+
+224
+00:08:10.133 --> 00:08:12.533
+okay compiler errors solved let's run
+
+225
+00:08:12.533 --> 00:08:13.666
+the tests
+
+226
+00:08:13.666 --> 00:08:16.933
+it's passing awesome and again
+
+227
+00:08:16.933 --> 00:08:19.100
+we can move the RetrieveCachedFeed
+
+228
+00:08:19.100 --> 00:08:20.066
+Result
+
+229
+00:08:20.066 --> 00:08:22.466
+within the FeedStore protocol this time
+
+230
+00:08:22.466 --> 00:08:23.566
+since we have more than one
+
+231
+00:08:23.566 --> 00:08:25.833
+type of Result let's call this a
+
+232
+00:08:25.833 --> 00:08:26.800
+Retrieval
+
+233
+00:08:26.800 --> 00:08:30.400
+Result let's fix the type information
+
+234
+00:08:30.400 --> 00:08:33.433
+much more readable yeah I think so
+
+235
+00:08:33.433 --> 00:08:36.633
+run the test again it's passing
+
+236
+00:08:36.633 --> 00:08:40.300
+let's commit
+
+237
+00:08:40.300 --> 00:08:42.133
+now if you look at the structure of the
+
+238
+00:08:42.133 --> 00:08:44.233
+CachedFeed enum
+
+239
+00:08:44.233 --> 00:08:46.700
+it looks very similar to the standard
+
+240
+00:08:46.700 --> 00:08:48.366
+optional type
+
+241
+00:08:48.366 --> 00:08:51.600
+that represents none or the absence of a
+
+242
+00:08:51.600 --> 00:08:52.233
+value
+
+243
+00:08:52.233 --> 00:08:55.500
+or some as the presence of a value
+
+244
+00:08:55.500 --> 00:08:57.433
+which is exactly what we're doing here
+
+245
+00:08:57.433 --> 00:09:00.300
+empty as the absence of a cache
+
+246
+00:09:00.300 --> 00:09:04.466
+or found as the presence of a cache
+
+247
+00:09:04.466 --> 00:09:06.800
+so we can use the standard Optional type
+
+248
+00:09:06.800 --> 00:09:07.666
+to represent
+
+249
+00:09:07.666 --> 00:09:10.633
+this concept of having or not having a
+
+250
+00:09:10.633 --> 00:09:11.666
+CachedFeed
+
+251
+00:09:11.666 --> 00:09:13.433
+so we can even represent it with a
+
+252
+00:09:13.433 --> 00:09:14.866
+struct okay
+
+253
+00:09:14.866 --> 00:09:17.033
+so we don't need the empty case anymore
+
+254
+00:09:17.033 --> 00:09:18.366
+it's just a struct
+
+255
+00:09:18.366 --> 00:09:22.700
+holding the feed and a timestamp
+
+256
+00:09:22.700 --> 00:09:25.266
+which is public as it is created by
+
+257
+00:09:25.266 --> 00:09:26.000
+external
+
+258
+00:09:26.000 --> 00:09:29.200
+modules exactly and how can we represent
+
+259
+00:09:29.200 --> 00:09:30.000
+the absence
+
+260
+00:09:30.000 --> 00:09:33.033
+of a CachedFeed by making it
+
+261
+00:09:33.033 --> 00:09:35.900
+optional in the Result there you go so
+
+262
+00:09:35.900 --> 00:09:37.666
+you may have a feed or not but they are
+
+263
+00:09:37.666 --> 00:09:38.233
+both
+
+264
+00:09:38.233 --> 00:09:40.000
+representations of a successful
+
+265
+00:09:40.000 --> 00:09:42.466
+retrieval let's build and the compiler
+
+266
+00:09:42.466 --> 00:09:42.933
+is going to
+
+267
+00:09:42.933 --> 00:09:46.133
+guide us to solve the type errors so
+
+268
+00:09:46.133 --> 00:09:47.333
+instead of found
+
+269
+00:09:47.333 --> 00:09:49.200
+now we have some which is the
+
+270
+00:09:49.200 --> 00:09:51.333
+nomenclature on Optional for the
+
+271
+00:09:51.333 --> 00:09:58.366
+presence of a value
+
+272
+00:09:58.366 --> 00:10:02.066
+now when we create the Result type some
+
+273
+00:10:02.066 --> 00:10:04.366
+CachedFeed and instead of empty it's
+
+274
+00:10:04.366 --> 00:10:06.000
+now none
+
+275
+00:10:06.000 --> 00:10:08.466
+but we can even simplify in the presence
+
+276
+00:10:08.466 --> 00:10:10.800
+of a value we don't need to say some
+
+277
+00:10:10.800 --> 00:10:13.666
+the compiler can imply that that's great
+
+278
+00:10:13.666 --> 00:10:15.200
+let's run the tests
+
+279
+00:10:15.200 --> 00:10:17.833
+and solve the type errors there as well
+
+280
+00:10:17.833 --> 00:10:19.433
+and we'll do this off camera
+
+281
+00:10:19.433 --> 00:10:22.800
+to save you time okay let's run the
+
+282
+00:10:22.800 --> 00:10:24.000
+tests
+
+283
+00:10:24.000 --> 00:10:27.100
+all passing and alternatively this could
+
+284
+00:10:27.100 --> 00:10:27.433
+be
+
+285
+00:10:27.433 --> 00:10:31.266
+just a typealias on a tuple
+
+286
+00:10:31.266 --> 00:10:34.866
+feed and a timestamp
+
+287
+00:10:34.866 --> 00:10:37.733
+let's run the tests all passing and we
+
+288
+00:10:37.733 --> 00:10:39.733
+have a much simpler way of defining
+
+289
+00:10:39.733 --> 00:10:45.100
+our data models awesome let's commit
+
+290
+00:10:45.100 --> 00:10:47.433
+so let's carry on adding typealiases to
+
+291
+00:10:47.433 --> 00:10:48.233
+better define
+
+292
+00:10:48.233 --> 00:10:50.800
+the Result types and for the insertion
+
+293
+00:10:50.800 --> 00:10:51.833
+operation
+
+294
+00:10:51.833 --> 00:10:54.000
+we are using an optional Error so far to
+
+295
+00:10:54.000 --> 00:10:55.333
+represent the result
+
+296
+00:10:55.333 --> 00:10:58.366
+of the insert operation and the same for
+
+297
+00:10:58.366 --> 00:11:00.533
+the deletion operation
+
+298
+00:11:00.533 --> 00:11:03.500
+let's run the tests passing so let's
+
+299
+00:11:03.500 --> 00:11:06.533
+commit
+
+300
+00:11:06.533 --> 00:11:09.266
+okay so far we've represented these
+
+301
+00:11:09.266 --> 00:11:10.366
+operations
+
+302
+00:11:10.366 --> 00:11:13.666
+Results as optional Errors since they
+
+303
+00:11:13.666 --> 00:11:14.300
+don't have
+
+304
+00:11:14.300 --> 00:11:17.600
+values just a potential Error
+
+305
+00:11:17.600 --> 00:11:20.300
+however to make our code more composable
+
+306
+00:11:20.300 --> 00:11:22.066
+we can use the standard Result type as
+
+307
+00:11:22.066 --> 00:11:22.800
+well
+
+308
+00:11:22.800 --> 00:11:25.200
+exactly for operations that finish with
+
+309
+00:11:25.200 --> 00:11:26.233
+no success type
+
+310
+00:11:26.233 --> 00:11:28.533
+you can declare a Result type with a
+
+311
+00:11:28.533 --> 00:11:30.366
+success case of type
+
+312
+00:11:30.366 --> 00:11:33.033
+Void and an Error type for the failure
+
+313
+00:11:33.033 --> 00:11:34.133
+case
+
+314
+00:11:34.133 --> 00:11:36.533
+now they all represent Results with the
+
+315
+00:11:36.533 --> 00:11:38.300
+standard Result type
+
+316
+00:11:38.300 --> 00:11:40.133
+this way you can better convey your
+
+317
+00:11:40.133 --> 00:11:41.733
+intent in code
+
+318
+00:11:41.733 --> 00:11:44.300
+as this is a result of an operation and
+
+319
+00:11:44.300 --> 00:11:45.600
+at the same time
+
+320
+00:11:45.600 --> 00:11:47.833
+make your code more composable with
+
+321
+00:11:47.833 --> 00:11:50.000
+other APIs that also use a standard
+
+322
+00:11:50.000 --> 00:11:51.433
+Result type
+
+323
+00:11:51.433 --> 00:11:54.000
+so using standard types like Optional
+
+324
+00:11:54.000 --> 00:11:55.100
+and Result
+
+325
+00:11:55.100 --> 00:11:57.200
+make your code more composable with
+
+326
+00:11:57.200 --> 00:11:58.233
+other modules
+
+327
+00:11:58.233 --> 00:12:00.300
+that also use the standard types to
+
+328
+00:12:00.300 --> 00:12:02.866
+represent their data models
+
+329
+00:12:02.866 --> 00:12:04.866
+so now the compiler is going to guide us
+
+330
+00:12:04.866 --> 00:12:05.900
+to solve the
+
+331
+00:12:05.900 --> 00:12:08.800
+type errors and here there's another
+
+332
+00:12:08.800 --> 00:12:10.000
+Result type
+
+333
+00:12:10.000 --> 00:12:12.533
+that can be replaced with a Result Void
+
+334
+00:12:12.533 --> 00:12:14.633
+Error so it can be composed
+
+335
+00:12:14.633 --> 00:12:16.533
+so now when invoking the deleteCached
+
+336
+00:12:16.533 --> 00:12:17.733
+Feed method
+
+337
+00:12:17.733 --> 00:12:20.700
+you get a deletion result in the
+
+338
+00:12:20.700 --> 00:12:21.733
+callback closure
+
+339
+00:12:21.733 --> 00:12:25.033
+which you can then use a normal switch
+
+340
+00:12:25.033 --> 00:12:28.366
+case success
+
+341
+00:12:28.366 --> 00:12:31.600
+we run the success branch case failure
+
+342
+00:12:31.600 --> 00:12:34.366
+with an error we complete with a failure
+
+343
+00:12:34.366 --> 00:12:37.200
+with an error
+
+344
+00:12:37.200 --> 00:12:41.100
+okay and the same everywhere else
+
+345
+00:12:41.100 --> 00:12:43.600
+okay all type information has been fixed
+
+346
+00:12:43.600 --> 00:12:45.500
+let's run the tests
+
+347
+00:12:45.500 --> 00:12:48.466
+all passing let's commit so replace
+
+348
+00:12:48.466 --> 00:12:50.366
+occurrences of optional Error
+
+349
+00:12:50.366 --> 00:12:52.800
+for representing an operation success or
+
+350
+00:12:52.800 --> 00:12:53.433
+failure
+
+351
+00:12:53.433 --> 00:12:56.866
+with the Result type of Void for success
+
+352
+00:12:56.866 --> 00:12:57.500
+and Error
+
+353
+00:12:57.500 --> 00:13:01.266
+for failure now that all our APIs use a
+
+354
+00:13:01.266 --> 00:13:02.466
+standard Result type
+
+355
+00:13:02.466 --> 00:13:04.466
+we can improve and simplify some
+
+356
+00:13:04.466 --> 00:13:06.233
+implementation code
+
+357
+00:13:06.233 --> 00:13:09.833
+for example in the CoreDataFeedStore
+
+358
+00:13:09.833 --> 00:13:12.466
+we have many branches calling the
+
+359
+00:13:12.466 --> 00:13:13.333
+completion
+
+360
+00:13:13.333 --> 00:13:16.066
+callback and they create a type of arrow
+
+361
+00:13:16.066 --> 00:13:16.866
+code
+
+362
+00:13:16.866 --> 00:13:20.866
+when chained with the do catch blocks
+
+363
+00:13:20.866 --> 00:13:22.933
+with the standard Result type we can
+
+364
+00:13:22.933 --> 00:13:24.933
+simplify this code by having just
+
+365
+00:13:24.933 --> 00:13:29.100
+one completion and using the result
+
+366
+00:13:29.100 --> 00:13:32.700
+type catching initializer where you pass
+
+367
+00:13:32.700 --> 00:13:35.500
+a closure that may throw an error so we
+
+368
+00:13:35.500 --> 00:13:36.633
+don't need a do catch block
+
+369
+00:13:36.633 --> 00:13:38.933
+anymore you can just move the code
+
+370
+00:13:38.933 --> 00:13:39.733
+inside the do
+
+371
+00:13:39.733 --> 00:13:43.166
+catch block here we think the catching
+
+372
+00:13:43.166 --> 00:13:43.833
+closure
+
+373
+00:13:43.833 --> 00:13:46.533
+because when you throw an error inside
+
+374
+00:13:46.533 --> 00:13:47.666
+the catching closure
+
+375
+00:13:47.666 --> 00:13:50.133
+it automatically wraps it into a failure
+
+376
+00:13:50.133 --> 00:13:50.800
+case
+
+377
+00:13:50.800 --> 00:13:53.100
+of the Result type so there goes our
+
+378
+00:13:53.100 --> 00:13:53.833
+failure
+
+379
+00:13:53.833 --> 00:13:57.033
+completion exactly and we don't need to
+
+380
+00:13:57.033 --> 00:13:57.666
+invoke
+
+381
+00:13:57.666 --> 00:14:01.033
+the completion because it wraps returned
+
+382
+00:14:01.033 --> 00:14:01.833
+values
+
+383
+00:14:01.833 --> 00:14:06.933
+in a success case let's run the tests
+
+384
+00:14:06.933 --> 00:14:09.900
+fantastic moreover we can eliminate the
+
+385
+00:14:09.900 --> 00:14:10.933
+if else
+
+386
+00:14:10.933 --> 00:14:13.733
+statements by mapping the optional
+
+387
+00:14:13.733 --> 00:14:15.033
+return value
+
+388
+00:14:15.033 --> 00:14:18.533
+of defined method
+
+389
+00:14:18.533 --> 00:14:22.300
+let's run the test again all passing
+
+390
+00:14:22.300 --> 00:14:25.433
+and we can even omit the catching name
+
+391
+00:14:25.433 --> 00:14:28.800
+and the cache named parameter by using
+
+392
+00:14:28.800 --> 00:14:30.300
+the $0
+
+393
+00:14:30.300 --> 00:14:33.033
+exactly very nice let's run the
+
+394
+00:14:33.033 --> 00:14:34.933
+test again
+
+395
+00:14:34.933 --> 00:14:36.700
+this is much better there is no
+
+396
+00:14:36.700 --> 00:14:38.133
+branching in this code
+
+397
+00:14:38.133 --> 00:14:40.700
+exactly we just compose and chain the
+
+398
+00:14:40.700 --> 00:14:41.500
+operations
+
+399
+00:14:41.500 --> 00:14:44.700
+and a true demonstration of the power of
+
+400
+00:14:44.700 --> 00:14:47.333
+blazing fast unit tests we change the
+
+401
+00:14:47.333 --> 00:14:48.800
+whole implementation
+
+402
+00:14:48.800 --> 00:14:51.100
+and we are sure that the system still
+
+403
+00:14:51.100 --> 00:14:53.266
+works as it's supposed to
+
+404
+00:14:53.266 --> 00:14:55.900
+fantastic and we can do the same for the
+
+405
+00:14:55.900 --> 00:14:57.033
+other methods
+
+406
+00:14:57.033 --> 00:15:03.600
+let's do it quickly
+
+407
+00:15:03.600 --> 00:15:06.466
+let's run the test again all passing and
+
+408
+00:15:06.466 --> 00:15:07.500
+the code is much
+
+409
+00:15:07.500 --> 00:15:10.800
+nicer no branching awesome
+
+410
+00:15:10.800 --> 00:15:13.266
+let's commit simplify CoreDataFeed
+
+411
+00:15:13.266 --> 00:15:13.833
+Store
+
+412
+00:15:13.833 --> 00:15:17.600
+completion code with a new result APIs
+
+413
+00:15:17.600 --> 00:15:20.133
+you can do the same in the URLSession
+
+414
+00:15:20.133 --> 00:15:21.666
+HTTPClient
+
+415
+00:15:21.666 --> 00:15:24.066
+instead of three completions we can have
+
+416
+00:15:24.066 --> 00:15:25.666
+just one
+
+417
+00:15:25.666 --> 00:15:27.900
+yeah look at that much much better let's
+
+418
+00:15:27.900 --> 00:15:30.466
+run the test again
+
+419
+00:15:30.466 --> 00:15:35.600
+passing let's commit
+
+420
+00:15:35.600 --> 00:15:38.466
+and finally let's update our CI config
+
+421
+00:15:38.466 --> 00:15:39.033
+to
+
+422
+00:15:39.033 --> 00:15:41.033
+build and test with an image that
+
+423
+00:15:41.033 --> 00:15:43.433
+supports Swift 5.
+
+424
+00:15:43.433 --> 00:15:47.333
+let's commit awesome this is it for this
+
+425
+00:15:47.333 --> 00:15:48.000
+lecture
+
+426
+00:15:48.000 --> 00:15:50.300
+we'll see you all again next time bye
+
+427
+00:15:50.300 --> 00:16:02.233
+y'all, see ya

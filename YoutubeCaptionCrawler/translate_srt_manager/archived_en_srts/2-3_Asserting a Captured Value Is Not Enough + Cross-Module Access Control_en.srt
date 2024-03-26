@@ -1,0 +1,851 @@
+1
+00:00:01.033 --> 00:00:03.600
+Hello Mike, hey Caio so in the previous
+
+2
+00:00:03.600 --> 00:00:04.133
+episode
+
+3
+00:00:04.133 --> 00:00:06.866
+we started test-driving our RemoteFeed
+
+4
+00:00:06.866 --> 00:00:07.500
+Loader
+
+5
+00:00:07.500 --> 00:00:10.000
+we got as far as testing the
+
+6
+00:00:10.000 --> 00:00:10.700
+communication
+
+7
+00:00:10.700 --> 00:00:13.266
+with the HTTPClient yeah and before we
+
+8
+00:00:13.266 --> 00:00:14.000
+carry on
+
+9
+00:00:14.000 --> 00:00:15.433
+I would like to move this production
+
+10
+00:00:15.433 --> 00:00:17.433
+code to the production package
+
+11
+00:00:17.433 --> 00:00:19.266
+outside the test file because I don't
+
+12
+00:00:19.266 --> 00:00:21.166
+want to be scrolling up and down
+
+13
+00:00:21.166 --> 00:00:24.866
+up and down, yeah let's do it
+
+14
+00:00:24.866 --> 00:00:26.933
+so let's create a new folder in
+
+15
+00:00:26.933 --> 00:00:28.866
+production
+
+16
+00:00:28.866 --> 00:00:31.500
+and let's call it Feed API yeah this is
+
+17
+00:00:31.500 --> 00:00:32.933
+the API
+
+18
+00:00:32.933 --> 00:00:35.833
+let's create a new file RemoteFeed
+
+19
+00:00:35.833 --> 00:00:37.433
+Loader
+
+20
+00:00:37.433 --> 00:00:38.866
+and now that we have a separate file we
+
+21
+00:00:38.866 --> 00:00:40.933
+can open it on the right pane
+
+22
+00:00:40.933 --> 00:00:43.100
+and keep our tests on the left pane that
+
+23
+00:00:43.100 --> 00:00:44.066
+sounds really good
+
+24
+00:00:44.066 --> 00:00:47.333
+let's make some extra space now let's
+
+25
+00:00:47.333 --> 00:00:48.866
+move the RemoteFeedLoader
+
+26
+00:00:48.866 --> 00:00:52.066
+to the file and let's move the client
+
+27
+00:00:52.066 --> 00:00:54.766
+protocol as well that's production code
+
+28
+00:00:57.033 --> 00:00:58.466
+but now since those types are in a
+
+29
+00:00:58.466 --> 00:01:01.666
+separate target we need to import
+
+30
+00:01:01.666 --> 00:01:04.000
+our EssentialFeed module but that's not
+
+31
+00:01:04.000 --> 00:01:06.133
+enough because those types are internal
+
+32
+00:01:06.133 --> 00:01:08.233
+right so we need to make a decision here
+
+33
+00:01:08.233 --> 00:01:09.733
+are we going to expose the internal
+
+34
+00:01:09.733 --> 00:01:10.533
+types
+
+35
+00:01:10.533 --> 00:01:13.333
+in the tests by using @testable or are
+
+36
+00:01:13.333 --> 00:01:15.100
+we going to make these types public
+
+37
+00:01:15.100 --> 00:01:17.333
+and use them in the test so if we make
+
+38
+00:01:17.333 --> 00:01:19.100
+this @testable import
+
+39
+00:01:19.100 --> 00:01:21.100
+the test will have access to those files
+
+40
+00:01:21.100 --> 00:01:23.733
+right
+
+41
+00:01:23.733 --> 00:01:25.600
+as you can see it builds fine but when
+
+42
+00:01:25.600 --> 00:01:27.500
+possible I like to test my components
+
+43
+00:01:27.500 --> 00:01:30.000
+only through the public interfaces so
+
+44
+00:01:30.000 --> 00:01:30.933
+why don't we try to
+
+45
+00:01:30.933 --> 00:01:32.533
+declare everything that makes sense to
+
+46
+00:01:32.533 --> 00:01:34.466
+be public and see if that's enough
+
+47
+00:01:34.466 --> 00:01:36.700
+for us to test the code absolutely first
+
+48
+00:01:36.700 --> 00:01:37.833
+of all the protocol
+
+49
+00:01:37.833 --> 00:01:40.400
+HTTPClient it can be public because it
+
+50
+00:01:40.400 --> 00:01:41.500
+can be implemented by
+
+51
+00:01:41.500 --> 00:01:44.300
+external modules right now the class
+
+52
+00:01:44.300 --> 00:01:45.333
+RemoteFeedLoader
+
+53
+00:01:45.333 --> 00:01:47.433
+can also be used by external modules so
+
+54
+00:01:47.433 --> 00:01:49.433
+it's fine for it to be public and it can
+
+55
+00:01:49.433 --> 00:01:51.500
+even be created by other modules so we
+
+56
+00:01:51.500 --> 00:01:54.000
+can make the initializer public as well
+
+57
+00:01:54.000 --> 00:01:56.366
+and then we have the load behavior it's
+
+58
+00:01:56.366 --> 00:01:57.900
+the main behavior of this
+
+59
+00:01:57.900 --> 00:02:00.466
+class so this should be public as well
+
+60
+00:02:00.466 --> 00:02:01.266
+and what about
+
+61
+00:02:01.266 --> 00:02:04.000
+the properties yeah I like those private
+
+62
+00:02:04.000 --> 00:02:04.866
+no one is using
+
+63
+00:02:04.866 --> 00:02:07.433
+these properties outside this class okay
+
+64
+00:02:07.433 --> 00:02:09.666
+can we build now
+
+65
+00:02:09.666 --> 00:02:12.233
+yes that's enough to expose our types to
+
+66
+00:02:12.233 --> 00:02:13.166
+external modules
+
+67
+00:02:13.166 --> 00:02:14.933
+and also test it through the public
+
+68
+00:02:14.933 --> 00:02:16.400
+interfaces fantastic
+
+69
+00:02:16.400 --> 00:02:20.000
+perfect do we want to allow subclass of
+
+70
+00:02:20.000 --> 00:02:20.700
+this type
+
+71
+00:02:20.700 --> 00:02:23.033
+we don't have a use case for that right
+
+72
+00:02:23.033 --> 00:02:24.066
+now so
+
+73
+00:02:24.066 --> 00:02:27.033
+I'm happy to make it final and not allow
+
+74
+00:02:27.033 --> 00:02:28.400
+subclassing
+
+75
+00:02:28.400 --> 00:02:30.700
+okay so by making it final we prevent
+
+76
+00:02:30.700 --> 00:02:31.566
+subclasses
+
+77
+00:02:31.566 --> 00:02:34.000
+of this type and the last change I can
+
+78
+00:02:34.000 --> 00:02:36.300
+see is the order of the client and the
+
+79
+00:02:36.300 --> 00:02:38.800
+url properties I think we can reverse so
+
+80
+00:02:38.800 --> 00:02:39.833
+they can reflect
+
+81
+00:02:39.833 --> 00:02:42.400
+the order of initializer okay I like
+
+82
+00:02:42.400 --> 00:02:42.933
+that
+
+83
+00:02:42.933 --> 00:02:45.733
+yeah perfect let's run the test and
+
+84
+00:02:45.733 --> 00:02:47.566
+commit
+
+85
+00:02:47.566 --> 00:02:50.633
+okay it's passing so let's commit
+
+86
+00:02:50.633 --> 00:02:53.666
+move RemoteFeedLoader components to
+
+87
+00:02:53.666 --> 00:02:54.400
+production
+
+88
+00:02:54.400 --> 00:02:57.433
+yep so now we can see both the
+
+89
+00:02:57.433 --> 00:02:58.933
+test and production code at the same
+
+90
+00:02:58.933 --> 00:03:00.700
+time I like that, very nice
+
+91
+00:03:00.700 --> 00:03:03.266
+any more refactorings there let's check
+
+92
+00:03:03.266 --> 00:03:04.300
+our test names
+
+93
+00:03:04.300 --> 00:03:07.333
+the naming convention is test underscore
+
+94
+00:03:07.333 --> 00:03:09.033
+the method we are testing and the
+
+95
+00:03:09.033 --> 00:03:10.933
+behavior we expect
+
+96
+00:03:10.933 --> 00:03:13.433
+so test init does not request data from
+
+97
+00:03:13.433 --> 00:03:14.700
+URL
+
+98
+00:03:14.700 --> 00:03:17.566
+so the second one tests the method load
+
+99
+00:03:17.566 --> 00:03:18.866
+and the behavior we expect
+
+100
+00:03:18.866 --> 00:03:22.400
+requests data from URL oh let me fix
+
+101
+00:03:22.400 --> 00:03:22.800
+this
+
+102
+00:03:22.800 --> 00:03:27.033
+requests data from URL very nice
+
+103
+00:03:27.033 --> 00:03:31.500
+so improve test name let's commit this
+
+104
+00:03:31.500 --> 00:03:34.000
+okay we can carry on now and one thing
+
+105
+00:03:34.000 --> 00:03:35.033
+that bothers me
+
+106
+00:03:35.033 --> 00:03:36.633
+when i'm testing two objects
+
+107
+00:03:36.633 --> 00:03:38.300
+collaborating like we are doing with the
+
+108
+00:03:38.300 --> 00:03:39.333
+RemoteFeedLoader
+
+109
+00:03:39.333 --> 00:03:41.833
+and the HTTPClient is that it's not
+
+110
+00:03:41.833 --> 00:03:43.666
+important to test just the message that
+
+111
+00:03:43.666 --> 00:03:44.300
+was passed
+
+112
+00:03:44.300 --> 00:03:46.133
+but how many times the message was
+
+113
+00:03:46.133 --> 00:03:48.133
+invoked for example
+
+114
+00:03:48.133 --> 00:03:50.400
+if by any chance I invoked this method
+
+115
+00:03:50.400 --> 00:03:51.200
+twice
+
+116
+00:03:51.200 --> 00:03:53.500
+the test will not fail and this is a
+
+117
+00:03:53.500 --> 00:03:54.933
+problem because this would be
+
+118
+00:03:54.933 --> 00:03:56.533
+unexpected behavior
+
+119
+00:03:56.533 --> 00:03:59.733
+right so although we are calling load
+
+120
+00:03:59.733 --> 00:04:02.700
+once in our test the client in this case
+
+121
+00:04:02.700 --> 00:04:04.000
+is called twice
+
+122
+00:04:04.000 --> 00:04:07.266
+exactly because our spy is capturing
+
+123
+00:04:07.266 --> 00:04:10.133
+the value that is passed so I can call
+
+124
+00:04:10.133 --> 00:04:11.500
+this method 10 times
+
+125
+00:04:11.500 --> 00:04:14.066
+and it always going to capture the last
+
+126
+00:04:14.066 --> 00:04:15.733
+value passed to it
+
+127
+00:04:15.733 --> 00:04:17.900
+so although we are asserting that we
+
+128
+00:04:17.900 --> 00:04:19.433
+passed the right value we are not
+
+129
+00:04:19.433 --> 00:04:21.033
+asserting how many times
+
+130
+00:04:21.033 --> 00:04:22.700
+the method was invoked and how many
+
+131
+00:04:22.700 --> 00:04:24.800
+times it was invoked in this context
+
+132
+00:04:24.800 --> 00:04:26.366
+is very important because I don't want
+
+133
+00:04:26.366 --> 00:04:28.533
+to make a bunch of API requests
+
+134
+00:04:28.533 --> 00:04:30.466
+so we need some sort of mechanism to
+
+135
+00:04:30.466 --> 00:04:32.366
+keep count of how many times
+
+136
+00:04:32.366 --> 00:04:35.033
+the client behavior is being invoked
+
+137
+00:04:35.033 --> 00:04:35.900
+exactly
+
+138
+00:04:35.900 --> 00:04:38.300
+so I would like to start by adding a new
+
+139
+00:04:38.300 --> 00:04:39.833
+test
+
+140
+00:04:39.833 --> 00:04:42.300
+if I call load twice I want to load the
+
+141
+00:04:42.300 --> 00:04:42.866
+request
+
+142
+00:04:42.866 --> 00:04:45.266
+twice but if I call load once I want to
+
+143
+00:04:45.266 --> 00:04:46.066
+load only
+
+144
+00:04:46.066 --> 00:04:49.100
+once right so let's add a load twice and
+
+145
+00:04:49.100 --> 00:04:50.000
+it should request
+
+146
+00:04:50.000 --> 00:04:53.266
+data from URL twice so if I invoke
+
+147
+00:04:53.266 --> 00:04:56.066
+the load twice we need a better way of
+
+148
+00:04:56.066 --> 00:04:56.700
+testing
+
+149
+00:04:56.700 --> 00:04:58.533
+how many times this was invoked and we
+
+150
+00:04:58.533 --> 00:05:00.800
+can do so by adding an assertion
+
+151
+00:05:00.800 --> 00:05:03.433
+that something like the requested url
+
+152
+00:05:03.433 --> 00:05:04.533
+count
+
+153
+00:05:04.533 --> 00:05:07.666
+should be two and we add a new property
+
+154
+00:05:07.666 --> 00:05:10.866
+in our spy right and then of course the
+
+155
+00:05:10.866 --> 00:05:13.600
+requested URL will reflect only the last
+
+156
+00:05:13.600 --> 00:05:16.633
+url that was captured exactly
+
+157
+00:05:16.633 --> 00:05:18.300
+because we care about the value and we
+
+158
+00:05:18.300 --> 00:05:20.233
+also care about the count
+
+159
+00:05:20.233 --> 00:05:22.700
+of how many times that was invoked yes
+
+160
+00:05:22.700 --> 00:05:26.066
+but there is a better way
+
+161
+00:05:26.066 --> 00:05:27.900
+what if we accumulate all of the
+
+162
+00:05:27.900 --> 00:05:29.600
+requestedURLs
+
+163
+00:05:29.600 --> 00:05:32.466
+in an array then we can test the value
+
+164
+00:05:32.466 --> 00:05:33.900
+and the count at the same time because
+
+165
+00:05:33.900 --> 00:05:35.600
+when we compare two arrays
+
+166
+00:05:35.600 --> 00:05:39.100
+for equality we assert order equality
+
+167
+00:05:39.100 --> 00:05:42.133
+and count at the same time that's a huge
+
+168
+00:05:42.133 --> 00:05:43.666
+enhancement in my opinion
+
+169
+00:05:43.666 --> 00:05:45.100
+and because it's a new test we don't
+
+170
+00:05:45.100 --> 00:05:47.100
+have to break previous ones right we can
+
+171
+00:05:47.100 --> 00:05:48.466
+create a new property
+
+172
+00:05:48.466 --> 00:05:51.600
+requestedURLs an array of URLs and we
+
+173
+00:05:51.600 --> 00:05:52.533
+keep the old one
+
+174
+00:05:52.533 --> 00:05:54.300
+and we keep the old one and when we're
+
+175
+00:05:54.300 --> 00:05:56.133
+done we can
+
+176
+00:05:56.133 --> 00:05:58.700
+migrate the previous tests to this new
+
+177
+00:05:58.700 --> 00:05:59.500
+API
+
+178
+00:05:59.500 --> 00:06:01.333
+so I want to see these tests failing
+
+179
+00:06:01.333 --> 00:06:03.100
+because we are invoking
+
+180
+00:06:03.100 --> 00:06:07.033
+more than we should and it does fail
+
+181
+00:06:07.033 --> 00:06:09.733
+perfect so if you remove the extra call
+
+182
+00:06:09.733 --> 00:06:12.300
+it should pass now
+
+183
+00:06:12.300 --> 00:06:15.833
+and it does so we can commit here
+
+184
+00:06:15.833 --> 00:06:19.266
+guarantee that we can load more than
+
+185
+00:06:19.266 --> 00:06:20.133
+once
+
+186
+00:06:20.133 --> 00:06:23.333
+perfect great and now we can migrate the
+
+187
+00:06:23.333 --> 00:06:24.300
+old tests
+
+188
+00:06:24.300 --> 00:06:26.933
+yes so we can use requestedURLs now and
+
+189
+00:06:26.933 --> 00:06:28.233
+here should be
+
+190
+00:06:28.233 --> 00:06:31.166
+an array with only one url and the url
+
+191
+00:06:31.166 --> 00:06:34.066
+should be the same that was passed
+
+192
+00:06:34.066 --> 00:06:36.000
+and the first one instead of assert
+
+193
+00:06:36.000 --> 00:06:37.433
+nil now we can assert
+
+194
+00:06:37.433 --> 00:06:40.933
+true that requestedURLs is empty
+
+195
+00:06:40.933 --> 00:06:43.266
+which means no messages were captured
+
+196
+00:06:43.266 --> 00:06:44.300
+fantastic
+
+197
+00:06:44.300 --> 00:06:48.000
+let's see if it passes and it does
+
+198
+00:06:48.000 --> 00:06:51.166
+great now we can remove
+
+199
+00:06:51.166 --> 00:06:54.866
+the old property run the test again
+
+200
+00:06:54.866 --> 00:06:58.800
+oh good let's commit simplify
+
+201
+00:06:58.800 --> 00:07:02.133
+spy let's have a quick recap
+
+202
+00:07:02.133 --> 00:07:04.300
+we moved our production code out of the
+
+203
+00:07:04.300 --> 00:07:05.666
+test target
+
+204
+00:07:05.666 --> 00:07:08.000
+then we improved our assertions by not
+
+205
+00:07:08.000 --> 00:07:09.333
+checking just the value that was
+
+206
+00:07:09.333 --> 00:07:09.900
+captured
+
+207
+00:07:09.900 --> 00:07:12.066
+but also how many times they were
+
+208
+00:07:12.066 --> 00:07:14.466
+captured by using arrays
+
+209
+00:07:14.466 --> 00:07:17.100
+so coming next we should start thinking
+
+210
+00:07:17.100 --> 00:07:19.033
+about the client response
+
+211
+00:07:19.033 --> 00:07:21.266
+yeah perfect so thanks for watching and
+
+212
+00:07:21.266 --> 00:07:22.866
+we'll see you next time
+
+213
+00:07:22.866 --> 00:07:34.533
+bye y'all

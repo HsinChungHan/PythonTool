@@ -1,0 +1,16 @@
+1. 講者提供了另一種實現示例，稱為CoreDataFeedStore的FeedStore實作。
+2. CoreDataFeedStore，就像Codable FeedStore一樣，遵守FeedStore並使用Core Data儲存並檢索LocalFeedImages。
+3. 他們強調，基礎設施實現可以存在於單獨的模組中，這強調了基礎設施實現與其他業務邏輯之間的區別。 
+4. 他們澄清，只要存儲器尊重規範，它就可以互換使用。
+5. 他們也提到了可重用的Feed Store規範的使用，這與他們在實施CoreDataFeedStore時遵循的流程相似。
+6. 由於可以重用所有聲明，因此開發更快，測試更乾淨。他們也必須實現makeSUT助手來創建CoreData FeedStore實例。
+7. 在對Core Data實現進行測試時，有一些特異點。他們必須在包中定位數據模型，該模型與測試包分開。 
+8. 在測試期間，他們將該包注入，而在生產中，他們使用主包。
+9. 他們提到使用/dev/null作為存儲URL以將CoreData輸出導向到一個空設備。該方法避免在磁盤中創建SQLite工件，並由於IO較少而加快了測試速度。 
+10. CoreDataFeedStore的實施方式詳細解釋：檢索，插入和刪除過程都發生在後臺環境中。錯誤得到了相應的處理。
+11. 他們評論了他們的程式碼的簡單性，強調將商業邏輯從框架邏輯分離可以減少複雜性和可能的錯誤。
+12. 然後，對CoreDataFeedStore的數據模型進行了概述。它有兩個實體，ManagedCache和ManagedFeedImage，各有各的非選擇性和選擇性屬性。
+13. ManagedFeedImage反映了LocalFeedImage的特點，但由於與ManagedCache的關系，出現了分歧。
+14. 他們強調，分離核心模型和框架模型以避免不必要的複雜性是很重要的。
+15. 鼓勵觀眾創建他們自己的Core Data解決方案作為FeedStore挑戰的一部分，並鼓勵詳細地使用git diff進行修訂。
+16. 持久性模塊快結束了被指出。對話以禮貌的告別結束，將任何進一步的討論留到下次會議。

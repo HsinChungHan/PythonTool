@@ -1,0 +1,21 @@
+1. The lecture begins with an introduction to maintaining clear architecture whether using code or storyboards for app layout.
+2. It covers animations and last optimizations, like reusing cells with an identifier.
+3. The topics proceed on how storyboards can be used without affecting clean design separation between the UI and presentation, moving some responsibilities to the storyboard such as instantiating and configuring the view hierarchy.
+4. They showcase creation of a new storyboard file, copying the prototype layout into it.
+5. They talk about the redundancy of a navigation controller in this context and explore ways to present the UI in a navigation tab bar.  
+6. As an example, the FeedViewController is pointed out to be reusable in any ViewController container.
+7. They find a missing asset in the storyboard and create a new one called "Feed assets".
+8. The conversation transitions to checking for missing connections between the code and the storyboard and rectifying any errors.
+9. The lecture moves on to the aspect of cell disposal and the need to remove missing connections.
+10. The creation of a retry button on the Image Container is demonstrated.
+11. The test-driven approach is highlighted when the storyboard is altered, conducting tests to ensure consistency.
+12. The instructors demonstrate how to instantiate the FeedViewController from the storyboard, replacing constructor injection with property injection.
+13. The downside of using storyboards, i.e., loss of compile-time composition checks, is highlighted.
+14. The transfer of UI configuration to the storyboard is discussed, eventually leading to the removal of the FeedRefreshViewController, which had become a redundant class.
+15. The refactorings migrate to setting the prefetch data source to the storyboard.
+16. The key task of connecting the storyboard outlets and dequeuing cells with the storyboard identifier is explained.
+17. The instructors delve into the intricacies of cell reusage and demonstrate how to make IBOutlets for the storyboard.
+18. Rehighlight of risks with cell reuse and potential UI inconsistencies is done.
+19. The instructors demonstrate how to mitigate this problem by releasing the cell for reuse, using tests to back up this fix.
+20. Finally, they illustrate how to add a fading animation to image display, encapsulating this logic into an extension for UIImageView.
+21. The lecture concludes by reiterating the need to prevent regressions, thanks to the non-trivial changes introduced in the UI design and refactoring, stressing the importance of testing every alteration.

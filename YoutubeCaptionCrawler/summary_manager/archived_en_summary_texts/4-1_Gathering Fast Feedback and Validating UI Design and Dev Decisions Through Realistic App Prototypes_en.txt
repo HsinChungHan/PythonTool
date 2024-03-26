@@ -1,0 +1,13 @@
+1. The lecture commences with the start of a UI module and creation of a prototype version of the Feed app.
+2. In the Feed app, the initial sketch design contains a location, an image, and a description with each of these elements having the potential to be empty, one or two-line descriptions.
+3. The speakers consider using a table view for presentation of the Feed app's list form due to its simplicity and its appropriateness for the initial iteration. 
+4. Prototyping is emphasized as a quick validation method, and a means to garnering swift feedback from peers, designers, product owners, business stakeholders and other developers.
+5. Creation of an iOS project prototype is demonstrated, using the simplest Single View Application template. CoreData, unit tests, and UI tests are omitted.
+6. After creating and running the prototype application successfully, the discussion shifts to prototyping a table view which includes configuration of prototype cells, set up of image views and arrangement of labels for location and description.
+7. Constraint warnings and conflicts are addressed by setting lower priority for vertical constraints in the cell. This prevents slowing down of the rendering process.
+8. Setting up of image views embedded in a view for feed images is explained, achieving a square with rounded corners and a gray background color with layer corner radius attribute.
+9. The feed image, local label, and description label configuration is discussed, accommodating for dynamic cell sizing, maximum line limits and font/color settings to match the design.
+10. The creation of a UITableView subclass for the Feed app is covered, calling for the construction of FeedImageCell with necessary outlets for view changes.
+11. They then discuss how to configure cells and populate a UITableView with pre-determined prototype data using a FeedImageViewModel.
+12. The topic of simulating asynchronous image loading using fading animations for a realistic user experience is broached.
+13. At the end, the prototype is successfully built with ability to validate ideas/implementation, gather feedback and test through TestFlight. The value of iterative design is underlined as it allows for early detection of potential issues in the development cycle. The session concludes by insisting prototypes be made prior to writing any code to enhance efficiency and productivity.

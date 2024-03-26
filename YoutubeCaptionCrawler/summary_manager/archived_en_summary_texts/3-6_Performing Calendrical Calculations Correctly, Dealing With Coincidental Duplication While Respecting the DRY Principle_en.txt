@@ -1,0 +1,11 @@
+1. In the discussion, Mike and Caio focus on implementing a feature that loads feed data from cache in a specific use case, with test cases designed for this scenario.
+2. They establish that the system, when loading the feed from cache, checks if the cached data is less than 7 days old. If so, it fetches the feed data from cache and delivers images to the user. 
+3. If the system encounters an error during this process or if the cached data is over 7 days old, it delivers no feed images. If the cache is empty, it also delivers no feed images.
+4. They also discuss the necessity to collapse context duplicates to build context-based assertions, rather than replicating test codes in different contexts.
+5. The use of the Result type is explored in order to handle different outcomes, including a success (with loaded images) or a failure (with error).
+6. Mike and Caio design tests to cover various scenarios: retrieval error, empty cache, expired cache, and a valid local feed less than 7 days old.
+7. A dedicated test also was written for the time span boundary at 7 days, ensuring a distinct response for caches exactly 7 days old and older than 7 days.
+8. They note the need for calendar logic in date calculations to account for potential changes due to daylight saving.
+9. The discussed implementation includes a gradual and incremental approach, typically starting with a minimum viable product, such as an initializer, and progressing with embellishments as needed.
+10. The conversation also illustrated how test-driven development (TDD) guides system implementation and helps in identifying potential issues like code duplication.
+11. They conclude the discussion planning to continue in their next meeting with tackling the requirement of the system to delete the cache when it's expired.

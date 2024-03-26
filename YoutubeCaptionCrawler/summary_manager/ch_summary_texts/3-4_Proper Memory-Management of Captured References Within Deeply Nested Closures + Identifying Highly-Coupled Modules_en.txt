@@ -1,0 +1,14 @@
+1. 討論的主題是處理可能會產生意外行為或崩潰的無主參照(Self的 unowned reference)。
+2. 我們的目標是防止在實例被釋放(deallocated)後執行完成塊(completion block)，並進行測試以確認此點。
+3. 該測試涉及設置一個存儲庫和當前日期，以FeedStoreSpy作為存儲庫，並希望“儲存(save)”任何獨特的項目。
+4. 我們捕獲了ReceivedResults以驗證該操作在解除分配(deallocation)後並未被調用，並主張該陣列應保持空的狀態。
+5. 對"self"的參照被弱化(weakified)，並檢查是否已經被釋放，如果是真的，則不返回任何東西。
+6. 通過不允許在解除分配後傳遞插入錯誤，進一步保護了系統，這一點通過另一項測試進行檢查。
+7. 隨後，改寫代碼，對if-else語句進行倒置，使代碼走向更有效的路徑。
+8. 通過提取成輔助函數(helper function)，並移除對“self”的需求，使儀理變得簡潔。
+9. 該代碼中的元素，如類(class)，協議(protocol), 與初始化器(initializer)被公開，且LocalFeedLoader和FeedStore都被移至其自己的文件。
+10. 將硬編碼的可選錯誤(Error)類型替換為SaveResult別名類型，以防止結果類型變化時破壞測試。
+11. 強調了在控制器類型或用例類型中封裝業務邏輯的重要性，認為應該改變實現，而不影響系統的其餘部分。
+12. 強依賴FeedItem的數量令人擔憂，可能導致改變時的瓶頸。
+13. 將FeedItem的源代碼依賴情況與Feed API模組中HTTPClient的情況進行了比較，在Feed API模組中，它只依賴於Foundation類型，使其具有領域特定性和解耦。
+14. 在對話中為下一集中移除對FeedItem的源代碼依賴闡述了計劃。

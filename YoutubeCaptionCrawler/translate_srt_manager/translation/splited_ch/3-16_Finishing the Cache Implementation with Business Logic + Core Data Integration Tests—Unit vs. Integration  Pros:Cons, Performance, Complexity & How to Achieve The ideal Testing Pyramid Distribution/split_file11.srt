@@ -1,0 +1,34 @@
+215
+00:07:27,733 --> 00:07:31,033
+memory spaces completely isolated now in
+記憶體空間現在完全隔離在
+
+216
+00:07:31,033 --> 00:07:33,100
+integration we can actually save data to
+整合中，我們實際上能儲存數據到
+
+217
+00:07:33,100 --> 00:07:33,733
+disk
+磁碟上
+
+218
+00:07:33,733 --> 00:07:35,566
+and use another instance to fetch it
+並用另一個實例來取得它
+
+219
+00:07:35,566 --> 00:07:37,900
+proving that the whole caching dance
+證明整個快取流程
+
+220
+00:07:37,900 --> 00:07:40,933
+works accordingly, exactly, so to run this
+完全能按照設定來運作，所以要執行這個
+
+221
+00:07:40,933 --> 00:07:41,566
+test
+測試

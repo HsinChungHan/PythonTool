@@ -1,0 +1,15 @@
+1. The lecture starts with an introduction to testing and implementing Feed User Interface using the MVC model. 
+2. The main user interface requirements are discussed, derived from feedback received from peers and clients.
+3. A key requirement is to load the feed automatically upon presentation of the view as well as allowing the user to manually refresh the feed with a pull-to-refresh mechanism.
+4. The interface must show a loading indicator while the feed is loading and render all the loaded feed items including their location, image, and description.
+5. The image loading experience is particularly emphasized. Images should load when the view is visible and request cancellation for image loading should happen when the image is out of the screen to conserve battery, data, and memory.
+6. The need for a loading indicator during image loading is stressed, and the instructors propose doing this with a shimmering animation.
+7. The possibility of an image failing to load is addressed, with noted need for an option to retry image loading.
+8. The video moves on to testing added methods in a prototype, starting with an empty feed, where the refresh function shows a refresh control and provides an impression of asynchronous loading.
+9. The video then demonstrates how to connect the refresh control action from the view controller with the refresh control valueChanged event.
+10. A segmented approach to the MVC model is discussed, explaining that a single screen can have multiple small MVCs, and each table cell could have its own independent model and controller. 
+11. The instructors then outline how to implement requirements, stressing the importance of not initiating loading until the view is presented. 
+12. Various tests are performed and discussed in detail to assure top performance, such as loading, memory leak checking, and the implementation of a loading indicator.
+13. The lecture emphasizes the importance of decoupling the testing methodology from specific UI controls, emphasizing a user-initiated feed reloading approach. 
+14. Other topics covered include the tackling of temporal coupling within the tests, improving test reliability, and the unification of all related events and assertions into one test.
+15. The lecture concludes with the transfer of the FeedViewController to production and reflections on the progress made using the MVC approach in the lecture.

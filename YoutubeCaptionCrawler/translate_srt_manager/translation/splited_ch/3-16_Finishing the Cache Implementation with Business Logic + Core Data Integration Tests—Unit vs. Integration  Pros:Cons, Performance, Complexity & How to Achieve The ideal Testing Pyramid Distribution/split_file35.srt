@@ -1,0 +1,39 @@
+386
+00:13:18,800 --> 00:13:20,366
+created the expectation
+創建了期望
+
+387
+00:13:20,366 --> 00:13:23,266
+we save the feed with the given loader
+我們用給定的加載器儲存feed
+
+388
+00:13:23,266 --> 00:13:24,133
+and we wait
+然後我們等待
+
+389
+00:13:24,133 --> 00:13:27,333
+until the save operation has finished
+直到儲存操作完成
+
+390
+00:13:27,333 --> 00:13:30,533
+let's run the tests it's passing ok
+我們來運行測試，好的，它通過了
+
+391
+00:13:30,533 --> 00:13:33,600
+let's commit so extract
+我們進行提交，然後提取
+
+392
+00:13:33,600 --> 00:13:36,466
+duplicate save operation into a shared
+重複的儲存操作變為共享
+
+393
+00:13:36,466 --> 00:13:38,633
+helper method
+輔助方法

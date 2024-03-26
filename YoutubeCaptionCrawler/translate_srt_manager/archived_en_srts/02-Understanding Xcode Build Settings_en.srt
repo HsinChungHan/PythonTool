@@ -1,0 +1,1261 @@
+
+1
+00:00:00.960 --> 00:00:08.720
+Hi everyone and welcome. We'll continue our series by taking a deep dive into the
+
+2
+00:00:08.720 --> 00:00:18.640
+Xcode build settings and their hidden secrets. So let's do it. We'll explain why can both project
+
+3
+00:00:18.640 --> 00:00:27.840
+and target set the same settings and which one to use depending on the case. We'll explore the
+
+4
+00:00:27.840 --> 00:00:35.360
+available build settings viewer styles. We'll go through the conventions used by the build settings
+
+5
+00:00:35.360 --> 00:00:43.120
+editor. We'll recap from last time how Xcode resolves build settings and we'll see some
+
+6
+00:00:43.680 --> 00:00:51.680
+concrete examples. We'll go through the accepted values and features of build settings.
+
+7
+00:00:51.680 --> 00:00:56.960
+We'll try to explain how to use user-defined build settings.
+
+8
+00:01:00.640 --> 00:01:03.840
+We'll see how we can access build settings from the CommandLine
+
+9
+00:01:05.440 --> 00:01:10.480
+and we'll build a few examples of using build settings to our advantage.
+
+10
+00:01:12.320 --> 00:01:14.640
+And we'll wrap it up with the Q&A.
+
+11
+00:01:14.640 --> 00:01:22.000
+So, what's a build setting? As we remember from last time, it's a property you can apply to your
+
+12
+00:01:22.000 --> 00:01:26.080
+Xcode targets to configure aspects of how they are built.
+
+13
+00:01:30.000 --> 00:01:37.200
+There are many build settings within Xcode. Many are there since older versions like Xcode 4
+
+14
+00:01:37.200 --> 00:01:44.080
+but with each version, new settings are added while others are deplicated or removed.
+
+15
+00:01:44.560 --> 00:01:50.080
+You can always find a comprehensive List in Apple Docs at the link I provided.
+
+16
+00:01:56.640 --> 00:02:01.360
+Some of these settings are also available through a more simplified user-defined build
+
+17
+00:02:01.360 --> 00:02:07.600
+settings. But in the end, they are still controllable through the build settings editor.
+
+18
+00:02:08.400 --> 00:02:14.960
+So, changing one will also change the other since they're stored and loaded from the same
+
+19
+00:02:14.960 --> 00:02:19.600
+place, which is the PBX profile or some configuration File.
+
+20
+00:02:19.600 --> 00:02:27.600
+Some examples of that are the project and target deployment targets.
+
+21
+00:02:29.040 --> 00:02:38.080
+So, the project deployment targets. The target deployment targets.
+
+22
+00:02:38.080 --> 00:02:48.560
+The target identity, like the BundleIdentifier version, the target development assets,
+
+23
+00:02:50.800 --> 00:02:57.920
+or the target signing. Not the capabilities which are handled through the entitlements.py List File.
+
+24
+00:02:57.920 --> 00:03:05.920
+There are two ways to manage build settings. One is through the Xcode build settings editor
+
+25
+00:03:06.960 --> 00:03:11.920
+and the others through configuration settings files, also known as xcconfig.
+
+26
+00:03:12.800 --> 00:03:19.920
+The Xcode build settings editor is the one that can be used to manage the build settings.
+
+27
+00:03:19.920 --> 00:03:27.040
+The Xcode build settings editor and the others through configuration settings files, also known as xcconfig.
+
+28
+00:03:28.160 --> 00:03:30.800
+We'll cover this topic in a separate lecture.
+
+29
+00:03:32.960 --> 00:03:38.000
+So, why can both project and target set the same settings?
+
+30
+00:03:39.520 --> 00:03:46.160
+Well, generally, project-level settings are used to share settings between targets and avoid
+
+31
+00:03:46.160 --> 00:03:52.960
+application. They're not used directly, only when the resolver cannot find explicit target-level
+
+32
+00:03:52.960 --> 00:03:59.520
+settings, thus falling back to project-level settings. On the other hand, target-level
+
+33
+00:03:59.520 --> 00:04:05.280
+settings are the most explicit form of settings and are there for us to customize each target
+
+34
+00:04:05.280 --> 00:04:13.520
+in any way we need. Our recommendation is to avoid setting both with the same value,
+
+35
+00:04:13.520 --> 00:04:19.280
+because it's unnecessary and confusing. So, if a setting applies to all the target,
+
+36
+00:04:19.280 --> 00:04:24.640
+that setting at the project level and perhaps override it only on the targets that need a
+
+37
+00:04:24.640 --> 00:04:30.960
+different value. If the setting applies only to one target, then, of course, you'll set it
+
+38
+00:04:30.960 --> 00:04:40.720
+on the target level. In the Xcode build settings viewer, there are a few options that change how
+
+39
+00:04:40.720 --> 00:04:56.320
+this View looks. Let's see what they are. So, the default mode is basic settings,
+
+40
+00:04:59.680 --> 00:05:07.120
+which means show only the basic settings and the Combined viewer, which shows the
+
+41
+00:05:07.120 --> 00:05:13.440
+the effective value of build settings for a target or project.
+
+42
+00:05:17.520 --> 00:05:22.400
+In my opinion, the Combined style doesn't make it clear where does the Result value
+
+43
+00:05:22.400 --> 00:05:29.840
+for each setting come from, but it has one big advantage. It allows us to inspect really long
+
+44
+00:05:29.840 --> 00:05:39.200
+values of settings, like, for instance, the run path search paths, which is a bit long.
+
+45
+00:05:43.040 --> 00:05:49.120
+A clear way is to use the all filter with the level setting.
+
+46
+00:05:52.400 --> 00:05:59.600
+This way, in my opinion, we can look at all the settings, which can be intimidating, I know,
+
+47
+00:05:59.600 --> 00:06:05.680
+and we see exactly all the other levels that have a set value for the setting,
+
+48
+00:06:05.680 --> 00:06:10.480
+so we understand how this Result column is computed.
+
+49
+00:06:16.320 --> 00:06:22.640
+I'd like to mention that there's another filter which is customized, and this will
+
+50
+00:06:22.640 --> 00:06:30.000
+filter only the settings that have an explicit value at the current level, but I'll be using
+
+51
+00:06:30.000 --> 00:06:32.000
+the all for now.
+
+52
+00:06:37.520 --> 00:06:43.040
+Independent of the View style we use, there are a few conventions that Xcode uses to reflect
+
+53
+00:06:43.040 --> 00:06:51.440
+the state of the settings and the way we edit them. First of all, a bold setting name and
+
+54
+00:06:51.440 --> 00:07:00.160
+a box around the bold setting with the bolded value indicates that there's an explicit value.
+
+55
+00:07:02.160 --> 00:07:06.160
+There's a screenshot here. We can also see it in Xcode,
+
+56
+00:07:10.560 --> 00:07:12.560
+like these supported platforms.
+
+57
+00:07:12.560 --> 00:07:20.800
+Another convention is to use spaces to delimit items in String or path lists. For example,
+
+58
+00:07:23.280 --> 00:07:32.480
+our run path search paths use spaces to delimit between items. We'll see what this inherited
+
+59
+00:07:32.480 --> 00:07:34.480
+means in a minute.
+
+60
+00:07:34.480 --> 00:07:40.720
+To specify an item containing white space, you must enclose it with question marks. So,
+
+61
+00:07:40.720 --> 00:07:48.720
+if I want an app name that has spaces, I need to use the question marks. Quotation marks, sorry.
+
+62
+00:07:53.520 --> 00:08:00.720
+To inspect a long value, we can hover over it, and we can see that it's a long value.
+
+63
+00:08:00.720 --> 00:08:07.920
+To inspect a long value, we can hover over it. So, we see the full definition.
+
+64
+00:08:11.840 --> 00:08:14.480
+Like in this case.
+
+65
+00:08:14.480 --> 00:08:30.640
+In this case, no matter which viewer we use, each setting will have a collapsible
+
+66
+00:08:30.640 --> 00:08:36.880
+carrot that shows extra rows for each configuration. By default, if all the
+
+67
+00:08:36.880 --> 00:08:42.480
+configurations use the same value, these rows are collapsed. If there are differences,
+
+68
+00:08:42.480 --> 00:08:52.720
+they will be expanded. In our example project, the buildActiveArchitectureOnly has a
+
+69
+00:08:52.720 --> 00:08:57.680
+different resolve value for the debug and the release configuration. So, by default, you see
+
+70
+00:08:58.320 --> 00:09:05.520
+these two rows expanded. On the other hand, for the base SDK, since both configurations
+
+71
+00:09:05.520 --> 00:09:14.400
+use the same value, the rows are collapsed. But we can always go to the base SDK, and we'll see
+
+72
+00:09:15.040 --> 00:09:26.960
+the carrot here, and we can expand it. To delete settings, explicit settings,
+
+73
+00:09:26.960 --> 00:09:38.480
+we can use the delete key. This will remove the current level setting. So, if we are looking at
+
+74
+00:09:38.480 --> 00:09:44.720
+target build settings, it will remove the target explicit setting. If we're looking at the project
+
+75
+00:09:44.720 --> 00:09:52.400
+build settings, of course it will remove the project level setting. Let's recap how Xcode
+
+76
+00:09:52.400 --> 00:10:00.000
+resolves build settings. So, before each build or any other action, the system must resolve
+
+77
+00:10:00.000 --> 00:10:05.760
+all the build settings for each target that is built. Build settings are resolved using
+
+78
+00:10:05.760 --> 00:10:12.560
+the fallback system where the resolver looks for a value from higher to lower priority levels
+
+79
+00:10:12.560 --> 00:10:19.360
+until it finds one or ends up with the platform default. In this graphical representation,
+
+80
+00:10:19.360 --> 00:10:24.960
+as well as in the Xcode build settings tab, priority decreases from left to right.
+
+81
+00:10:26.320 --> 00:10:31.920
+First, we have the target explicit settings, which override any other setting.
+
+82
+00:10:34.640 --> 00:10:41.600
+If we were to set a target configuration File, this will override all the settings,
+
+83
+00:10:41.600 --> 00:10:51.440
+except for the ones we set explicitly on the target. Next to the right is the project explicit
+
+84
+00:10:51.440 --> 00:10:56.480
+settings that are used when target settings are missing. Otherwise, they are overwritten by
+
+85
+00:10:56.480 --> 00:11:03.200
+target settings. Again, if we have a project configuration File, it will only override the
+
+86
+00:11:03.200 --> 00:11:11.280
+platform defaults. And with the lowest priority are the platform defaults. So, if all the other
+
+87
+00:11:11.280 --> 00:11:17.440
+levels are missing, the resolver will use these values. Now, back to Xcode.
+
+88
+00:11:19.760 --> 00:11:25.360
+And looking at the build settings for the EssentialFeed target using the levels viewer,
+
+89
+00:11:26.240 --> 00:11:32.480
+we can see the following columns from left to right. First, there's the setting column.
+
+90
+00:11:32.480 --> 00:11:39.920
+This is where each setting will appear, usually grouped with similar settings under
+
+91
+00:11:41.440 --> 00:11:47.920
+a united group. So, in this case, the base SDK is in the architectures group together with
+
+92
+00:11:47.920 --> 00:11:54.400
+architectures and supported platforms. Next, we have the resolved column,
+
+93
+00:11:55.120 --> 00:11:59.680
+which shows the value of the setting that's being resolved by Xcode for the selected target.
+
+94
+00:11:59.680 --> 00:12:04.400
+All the settings will have a value in this column, even if it's an empty value.
+
+95
+00:12:05.840 --> 00:12:09.280
+Like it's in this case for the excluded architecture.
+
+96
+00:12:13.280 --> 00:12:19.600
+Next, we have the EssentialFeed project level that shows the settings that have been explicitly
+
+97
+00:12:19.600 --> 00:12:26.320
+set for the current project. And the last column is macro as default. This is the
+
+98
+00:12:26.320 --> 00:12:34.560
+platform that's currently set for the selected target. This column contains the default setting
+
+99
+00:12:34.560 --> 00:12:46.640
+values. Remember, the resolver will go from left to right until it finds an explicit value or
+
+100
+00:12:46.640 --> 00:12:52.240
+fall back to the platform default. Let's take a few examples.
+
+101
+00:12:52.240 --> 00:12:58.640
+Let's take a few examples. First of all, base SDK.
+
+102
+00:13:04.640 --> 00:13:13.920
+The resolved value is macOS. But we can see that the EssentialFeed target
+
+103
+00:13:14.800 --> 00:13:22.000
+has no set value. So, the resolver moves to the project level setting where it finds macOS
+
+104
+00:13:22.000 --> 00:13:28.720
+bold and with the box around it. So, it's an explicit value. That's why the resolved value
+
+105
+00:13:28.720 --> 00:13:38.160
+is macOS. In this case, the platform default value, which is no SDK, is never used.
+
+106
+00:13:41.520 --> 00:13:46.160
+Next, let's look at the buildActiveArchitectureOnly setting.
+
+107
+00:13:46.160 --> 00:13:50.880
+We can see that it has different values for the debug and the release configurations.
+
+108
+00:13:53.360 --> 00:14:01.360
+That's why the rows are expanded. The resolved value for debug is yes, while the resolved value
+
+109
+00:14:01.360 --> 00:14:12.800
+for release is no. There are no target explicit values. So, the resolver moves to the project
+
+110
+00:14:12.800 --> 00:14:22.080
+level, where we see that the debug configuration has a setting of the value yes. There's no setting
+
+111
+00:14:22.080 --> 00:14:28.800
+for the release configuration. So, for the release configuration, the resolver will move to the
+
+112
+00:14:28.800 --> 00:14:36.960
+platform default, which is no. So, that's how we get the resolved values of yes for the debug and
+
+113
+00:14:36.960 --> 00:14:53.040
+no for release. Let's also look at supported platforms. We see the resolved value is iOS and
+
+114
+00:14:53.040 --> 00:15:00.320
+macOS, which is the value that we see set explicitly on the EssentialFeed target.
+
+115
+00:15:00.320 --> 00:15:06.560
+This overrides the platform default value, which is macOS.
+
+116
+00:15:08.880 --> 00:15:13.920
+Having a value with multiple elements is possible because this supported platforms
+
+117
+00:15:13.920 --> 00:15:18.880
+setting uses a String List value. So, we can add more than one platform.
+
+118
+00:15:18.880 --> 00:15:26.640
+Now, let's do some live editing. Let's edit the supported platforms.
+
+119
+00:15:30.640 --> 00:15:40.160
+The values displayed are iOS and macOS, but when we try to edit them and use other, we see
+
+120
+00:15:40.160 --> 00:15:50.080
+a List that contains macOSX, iPhoneOS, and iPhone simulator. These are the values used by Xcode and
+
+121
+00:15:50.080 --> 00:15:56.160
+written in the project File, while iOS and macOS are just predefined values shown only by the Xcode
+
+122
+00:15:56.160 --> 00:16:14.400
+UI. Let's add watchOS and watch simulator. You can see the resolved values now, iOS, macOS, and watchOS.
+
+123
+00:16:14.400 --> 00:16:22.320
+To understand what the actual change on the project level is, let's check the git diff.
+
+124
+00:16:23.760 --> 00:16:31.200
+So, we see two changes to the supported platforms field. As you might remember from last time,
+
+125
+00:16:31.200 --> 00:16:37.840
+one for the support platform, and the other for the support platform, and the other for the support
+
+126
+00:16:37.840 --> 00:16:45.200
+changes to the supported platforms field. As you might remember from last time, one for the debug
+
+127
+00:16:45.200 --> 00:16:51.360
+configuration of the target and one for the List configuration, where both of the values we added
+
+128
+00:16:52.800 --> 00:16:56.080
+are changed.
+
+129
+00:17:02.080 --> 00:17:05.280
+And I've reverted the change, so we can do another one.
+
+130
+00:17:05.280 --> 00:17:09.600
+Let's edit the deployment target.
+
+131
+00:17:15.760 --> 00:17:24.480
+Currently, we see there's a project level setting to iOS 14. I want to make an explicit
+
+132
+00:17:24.480 --> 00:17:33.440
+target level setting of iOS 13. And we immediately notice that the resolved value is now iOS 13,
+
+133
+00:17:33.440 --> 00:17:39.840
+overriding the project level setting and even the platform default, which is iOS 15.2.
+
+134
+00:17:41.680 --> 00:17:42.880
+Again, I'm going to check
+
+135
+00:17:45.760 --> 00:17:57.360
+the git diff. And I notice two values were added because we never had an explicit target level
+
+136
+00:17:57.360 --> 00:18:07.600
+setting. They were added to the debug and release configurations. Now, back to Xcode,
+
+137
+00:18:08.240 --> 00:18:14.880
+I mentioned we can use the delete key to delete an explicit target or project level setting. So,
+
+138
+00:18:14.880 --> 00:18:22.720
+if I hit delete now, I see the resolved value is back to iOS 14. And if I check the git diff,
+
+139
+00:18:22.720 --> 00:18:35.440
+there's no change. Next up, I want to play with Swift treat warning as Error setting,
+
+140
+00:18:36.640 --> 00:18:38.640
+which can be really useful.
+
+141
+00:18:38.640 --> 00:18:54.480
+Really useful. Let's set an explicit project level setting to yes.
+
+142
+00:18:59.360 --> 00:19:06.320
+Now, I want to make sure that all my targets are using this new value. So, I can use a hidden
+
+143
+00:19:06.320 --> 00:19:16.640
+feature of Xcode where if I hold command and click multiple targets, I'll get a View where
+
+144
+00:19:17.360 --> 00:19:22.560
+I see the resolved value for each of the selected targets. So, in this case,
+
+145
+00:19:22.560 --> 00:19:27.840
+treat warnings as Errors is yes for all my targets inside my project, which is what I wanted.
+
+146
+00:19:27.840 --> 00:19:40.320
+Also, I want to check the git diff. And I see, as always, two new values added because they were
+
+147
+00:19:40.320 --> 00:19:54.800
+never set. Now, back to Xcode, if I tap on delete, nothing happens because I have an explicit project
+
+148
+00:19:54.800 --> 00:20:05.280
+level setting and I'm using the target build settings. So, I'm actually deleting any potential
+
+149
+00:20:05.280 --> 00:20:11.280
+setting on the target level, which doesn't exist. To delete this explicit project level setting,
+
+150
+00:20:11.280 --> 00:20:18.720
+I need to go to the project build settings. And now, I hit delete and I see the value goes away.
+
+151
+00:20:18.720 --> 00:20:27.280
+And if I return to my target, I see the values back to the default. And if I check the git diff,
+
+152
+00:20:27.280 --> 00:20:37.600
+there are no diffs. So, I'm in the original state. Another example would be to
+
+153
+00:20:37.600 --> 00:20:47.280
+use the EssentialFeed iOS Tests and play with the code signing.
+
+154
+00:20:50.320 --> 00:20:56.320
+So, I can see the code signing identity is explicitly set to iOS developer.
+
+155
+00:20:56.320 --> 00:21:06.720
+As you might do in your projects, I want to set my release configuration to use iOS distribution.
+
+156
+00:21:08.720 --> 00:21:17.040
+So, I can do that. And now, let's notice a few things. First of all, the Result value
+
+157
+00:21:17.040 --> 00:21:23.200
+for debug is still iOS developer. But for release, we have a new value, which is iOS distribution,
+
+158
+00:21:23.200 --> 00:21:33.520
+as I've just explicitly said. The overall setting shows multiple values, which indicates that there
+
+159
+00:21:33.520 --> 00:21:46.320
+are different values resolved. Again, I'm going to use the git diff. And I see just one change,
+
+160
+00:21:46.320 --> 00:21:54.080
+because I actually just changed the value for the release configuration. So, I only
+
+161
+00:21:54.080 --> 00:21:58.560
+impacted one of the sets of settings from the PBX File.
+
+162
+00:21:58.560 --> 00:22:14.240
+So, let's do another one. So, I'm still going to use the Swift treat warnings as Errors.
+
+163
+00:22:20.400 --> 00:22:26.560
+I'm going to set the project level setting to yes. And now, let's assume an interesting case where
+
+164
+00:22:26.560 --> 00:22:32.800
+the essential fit target has a warning when building on the old Intel architectures,
+
+165
+00:22:32.800 --> 00:22:40.000
+which is I386. So, this results in a build failure. One way to fix this is to add a
+
+166
+00:22:40.000 --> 00:22:48.960
+different setting value for this architecture only. So, in this case, I'm going to use the
+
+167
+00:22:48.960 --> 00:22:57.280
+small plus icon here for both configurations and add an extra filter. So, the debug is set to yes.
+
+168
+00:22:57.280 --> 00:23:05.280
+And I'm going to select Intel and set the value to no. And I'm going to do the same for
+
+169
+00:23:06.800 --> 00:23:15.520
+my release configuration. Now, again, let's see what the resolved values are.
+
+170
+00:23:15.520 --> 00:23:21.120
+So, I still have a debug resolved to yes, but for the Intel architecture, the resolved value is no.
+
+171
+00:23:21.120 --> 00:23:38.000
+And same for the release configuration. If we check the common line, we see
+
+172
+00:23:38.000 --> 00:23:54.800
+the value set to yes. And then this explicit case where on architecture I386, the value is no.
+
+173
+00:23:57.120 --> 00:23:58.800
+This is pretty powerful.
+
+174
+00:23:58.800 --> 00:24:08.640
+So, I'm going to reset it again and do another example.
+
+175
+00:24:14.560 --> 00:24:22.800
+So, I'm going to set the project level back to yes. And this time, I'll assume that
+
+176
+00:24:22.800 --> 00:24:33.680
+there's a build Error, but only on the iOS platform or iOS SDK. I can also add a specific filter for
+
+177
+00:24:33.680 --> 00:24:42.160
+that. We're using the same plus button. This time, instead of architecture, I can choose
+
+178
+00:24:42.160 --> 00:24:49.920
+one of the SDKs here. And I'm going to choose any iOS SDK. And for this SDK, I'm going to set the
+
+179
+00:24:49.920 --> 00:25:00.240
+value to no. And I'm going to do the same for the release configuration. Again,
+
+180
+00:25:02.320 --> 00:25:10.560
+the resolved values are yes, except for the iOS SDK. Let's see what the diff looks like.
+
+181
+00:25:10.560 --> 00:25:20.640
+The first two are the same. And then we get this filter where SDK equals
+
+182
+00:25:21.200 --> 00:25:27.840
+iPhone iOS and a wild card. This is because I've selected any iOS platform. You can even
+
+183
+00:25:27.840 --> 00:25:44.320
+use a specific one. And again, I'm going to reset this.
+
+184
+00:25:44.320 --> 00:25:54.720
+So, each of the settings we showed and all the others,
+
+185
+00:25:55.760 --> 00:26:03.120
+they all allow different types of values. The potential types are as following. First, boolean
+
+186
+00:26:04.160 --> 00:26:12.400
+for settings like build, active architecture only or skip install. Then a String value for
+
+187
+00:26:12.400 --> 00:26:19.040
+settings like Swift version or code signing style, String List for supported platforms,
+
+188
+00:26:19.040 --> 00:26:27.760
+preprocessor macros, a path for settings like framework search paths, header search paths,
+
+189
+00:26:27.760 --> 00:26:35.040
+library search paths, and so on. Or an enumeration for settings like optimization level, Swift
+
+190
+00:26:35.040 --> 00:26:53.040
+compilation mode, linker mode, and more. Besides these default accepted value types,
+
+191
+00:26:53.760 --> 00:27:02.800
+we can reference other settings. Like in this example where settings name is computed using
+
+192
+00:27:02.800 --> 00:27:09.040
+the values of other setting one and other setting two with a space in between them. So, that's why
+
+193
+00:27:09.040 --> 00:27:17.520
+they are inside quotes. A real case use scenario is for the install path setting
+
+194
+00:27:17.520 --> 00:27:34.800
+which is computed from the local library directory setting and using the framework subfolder.
+
+195
+00:27:36.800 --> 00:27:43.360
+Another thing which we can do is reuse values across levels. So, this is where this inherited
+
+196
+00:27:43.360 --> 00:27:52.720
+variable comes into play. All the settings support the inherited variable which is resolved to any
+
+197
+00:27:52.720 --> 00:28:02.720
+value set by a lower level including the platform defaults. So, this is used to append rather than
+
+198
+00:28:02.720 --> 00:28:11.200
+replace existing definitions. For example, we can set setting name equals inherited and some
+
+199
+00:28:11.200 --> 00:28:24.080
+additional value. An interesting example would be if we have a setting where the platform default
+
+200
+00:28:24.080 --> 00:28:31.760
+is default value and on the project level we set inherited and then project value and on a target
+
+201
+00:28:31.760 --> 00:28:39.520
+level we also use inherited and set target value next to it. The Result value would be a merge of
+
+202
+00:28:39.520 --> 00:28:49.600
+all three values which is pretty useful. Again, a concrete use case is for the framework search paths
+
+203
+00:28:49.600 --> 00:28:56.080
+where instead of overriding the value we just append our project directory to it.
+
+204
+00:28:56.080 --> 00:29:13.600
+Referencing values can also provide a default in case the reference doesn't exist. So, in this case
+
+205
+00:29:13.600 --> 00:29:19.120
+my setting name equals build setting name with a default value in case that
+
+206
+00:29:19.120 --> 00:29:28.480
+build setting doesn't exist. A concrete, maybe complex example is passing some warn on long
+
+207
+00:29:28.480 --> 00:29:38.560
+expression type checking to the Swift flags. This is a setting we can pass to allow the compiler to
+
+208
+00:29:38.560 --> 00:29:49.200
+allow the compiler to highlight any expression that takes longer than the sent value which is in
+
+209
+00:29:49.200 --> 00:29:59.680
+milliseconds to compile. In this case we have set a default value of 200 milliseconds but we can
+
+210
+00:29:59.680 --> 00:30:06.560
+override it in the CI where builds are much slower. If we define a max expression checking time
+
+211
+00:30:06.560 --> 00:30:12.960
+value in an XC config File that would only exist on CI machines. So, for example,
+
+212
+00:30:12.960 --> 00:30:24.080
+we can generate it directly on the CI. When substituting or replacing a value we
+
+213
+00:30:25.360 --> 00:30:33.040
+can apply a bunch of transformations. These are the available transformations. We won't go through
+
+214
+00:30:33.040 --> 00:30:43.200
+all of them but you can see some groups. First there are identifiers. Then quotes. So, wrapping
+
+215
+00:30:43.200 --> 00:30:51.040
+strings in quotes. Lower or upper case. Standardized path. And some path extraction
+
+216
+00:30:51.040 --> 00:30:55.920
+where we can get the base name of the path directly to the File or the suffix.
+
+217
+00:30:55.920 --> 00:31:02.320
+Some concrete examples. First of all, Xcode pre-populates the product name with the
+
+218
+00:31:03.200 --> 00:31:13.280
+targetName using the C99X identifier. So, basically, what this identifier does is creates
+
+219
+00:31:13.280 --> 00:31:18.320
+a C identifier representation which supports extended characters.
+
+220
+00:31:18.320 --> 00:31:25.680
+Another example would be to set the product BundleIdentifier to com.essentialDeveloper product name
+
+221
+00:31:25.680 --> 00:31:35.840
+and use the Intel 1034 identifier, which is a representation suitable to use in a DNS name.
+
+222
+00:31:35.840 --> 00:31:48.480
+And also use the lower transformation. So, we can change that. That's the point.
+
+223
+00:31:51.120 --> 00:31:56.320
+We've already looked at some examples of conditionals, but to recap them,
+
+224
+00:31:56.320 --> 00:32:04.800
+we can set different settings depending on the SDK, on the architecture, or on the configuration.
+
+225
+00:32:06.000 --> 00:32:14.960
+What's interesting is we can even Combine these and set some, like, in the only active architecture,
+
+226
+00:32:14.960 --> 00:32:24.640
+only in the config, in the debug configuration, we can set some explicit SDK and architecture filters.
+
+227
+00:32:28.880 --> 00:32:32.240
+This will speed up the local builds.
+
+228
+00:32:32.240 --> 00:32:43.440
+At the bottom of the Build Settings Editor, there's a group called UserDefinedSettings.
+
+229
+00:32:43.440 --> 00:33:03.760
+Let's see what we can do here. So, we can define our own custom settings. An interesting example
+
+230
+00:33:03.760 --> 00:33:13.520
+is for PushNotificationsEnvironment. We can define a setting called PushNotificationsEnvironment
+
+231
+00:33:13.520 --> 00:33:20.000
+and we can set its value to development on the debug configuration and to production on the
+
+232
+00:33:20.000 --> 00:33:26.640
+release configuration. What this allows us to do is, instead of using two entitlements,
+
+233
+00:33:26.640 --> 00:33:33.840
+PlistFiles, to set the Apple Push Services environment, we can use just one. And at the
+
+234
+00:33:33.840 --> 00:33:42.880
+APNS environment key, we set a reference to our PushNotificationsEnvironment setting we just added.
+
+235
+00:33:43.760 --> 00:33:50.320
+So, that would resolve to development environment when we're building the debug configuration and
+
+236
+00:33:50.320 --> 00:33:57.680
+for the production APNS environment when we build the release configuration.
+
+237
+00:33:58.560 --> 00:34:04.320
+By default, when you create an Xcode project, you're going to see these two values,
+
+238
+00:34:05.040 --> 00:34:13.280
+two settings, MTLEnableDebugInfo and MTLFastMath. What's up with these? Well,
+
+239
+00:34:13.280 --> 00:34:21.680
+first of all, they are metal settings. So, for the metal framework, which are no longer needed,
+
+240
+00:34:21.680 --> 00:34:28.080
+but for some reason, they remained in Xcode template File. So, it still generates them.
+
+241
+00:34:28.720 --> 00:34:30.560
+It's okay to remove them.
+
+242
+00:34:30.560 --> 00:34:37.680
+If you need to use the CommandLine to access build settings, there's a
+
+243
+00:34:39.360 --> 00:34:45.600
+minus show build settings option you can pass to any Xcode build command, and it will print
+
+244
+00:34:45.600 --> 00:34:52.720
+the Xcode build command. So, if you need to use the CommandLine to access build settings,
+
+245
+00:34:52.720 --> 00:34:59.280
+minus show build settings option, you can pass to any Xcode build command, and it will print
+
+246
+00:35:00.320 --> 00:35:09.440
+all the build settings and the resolved values, like in my slide. There's an option to pass minus
+
+247
+00:35:09.440 --> 00:35:15.200
+JSON as well. So, instead of this formatting, you'll get a properly formatted JSON File.
+
+248
+00:35:15.680 --> 00:35:21.040
+This can be useful, especially on CI when you're trying to inspect and see what the resolved
+
+249
+00:35:21.040 --> 00:35:31.920
+settings are for one of your schemes. There's also the option to set through the CommandLine. So,
+
+250
+00:35:31.920 --> 00:35:38.320
+in this case, for our EssentialFeed target, we would set the architectures to arm64 and
+
+251
+00:35:38.320 --> 00:35:46.960
+Bitcode enable to no. Now, a few examples of how we can use build settings. So,
+
+252
+00:35:46.960 --> 00:35:56.800
+now, a few examples of how we can use build settings to our advantage. First, I'd like this
+
+253
+00:35:56.800 --> 00:36:05.520
+example of changing the Bundle name and app icon for different build flavors. So, in most projects,
+
+254
+00:36:05.520 --> 00:36:12.720
+we have builds that are distributed internally to our testers or maybe to some other folks in
+
+255
+00:36:12.720 --> 00:36:19.680
+our group and externally a different build that is sent to our AppStore users.
+
+256
+00:36:21.200 --> 00:36:29.120
+To be able to distinguish on a device which build we have, we can do this interesting trick where
+
+257
+00:36:29.760 --> 00:36:35.200
+we can set a product name for the debug configuration to be something like targetName
+
+258
+00:36:35.200 --> 00:36:44.080
+space dev. So, we know it's a dev build. And we can also change the asset catalog compiler,
+
+259
+00:36:44.080 --> 00:36:52.640
+which is basically the catalog with icons. For the debug configuration, we can set it to a different
+
+260
+00:36:53.520 --> 00:36:57.760
+catalog. So, the app has a different icon. Pretty useful.
+
+261
+00:36:57.760 --> 00:37:07.920
+So, another interesting thing to achieve is different code behavior depending on the
+
+262
+00:37:07.920 --> 00:37:15.200
+configuration. So, as you might know, by default, Xcode sets up a few build settings to help us
+
+263
+00:37:15.200 --> 00:37:23.920
+distinguish between debug and release configurations. For Swift, this is done through the Swift active
+
+264
+00:37:23.920 --> 00:37:34.960
+compilation conditions that is set to debug on the debug configuration. This allows our Swift code
+
+265
+00:37:34.960 --> 00:37:45.440
+to do dash if debug do this, dash else do something else. The equivalent for people that are using
+
+266
+00:37:45.440 --> 00:37:54.640
+Objective-C is GCC definitions, which, again, by default, when you create a new project with Xcode
+
+267
+00:37:54.640 --> 00:38:03.920
+is set to debug equals one on the debug. Again, this allows us to do a slight variation where
+
+268
+00:38:03.920 --> 00:38:16.960
+we use dash if debug do this, dash else do something else. This can be very useful,
+
+269
+00:38:16.960 --> 00:38:22.720
+but many projects abuse this feature and spread these conditional statements all across the code
+
+270
+00:38:22.720 --> 00:38:28.960
+base, which makes it hard to test and maintain. Our recommendation is to only use them in the
+
+271
+00:38:28.960 --> 00:38:36.160
+composition route, which is the most concrete and lowest level component. Make all your other
+
+272
+00:38:36.160 --> 00:38:41.920
+components abstract of these decisions and inject the decisions using one of the mechanisms we have
+
+273
+00:38:41.920 --> 00:38:49.840
+already shown in the course, like closures, DependencyInversion, and so on. Let's see
+
+274
+00:38:49.840 --> 00:38:59.360
+these two examples where first we have a ViewController that needs a duration for an animation,
+
+275
+00:38:59.360 --> 00:39:05.520
+and, of course, in the debug configuration, we want this duration to be zero because we don't
+
+276
+00:39:05.520 --> 00:39:12.640
+want to wait for animations. Instead of doing the conditional inside the ViewController,
+
+277
+00:39:12.640 --> 00:39:20.080
+we just pass this duration through a closure and configure this closure from the composition route
+
+278
+00:39:20.080 --> 00:39:28.480
+where we can use the conditionals. The other example on the right is creating a UI SceneConfiguration
+
+279
+00:39:28.480 --> 00:39:36.880
+where if you are on a debug config, we can set the Delegate class to a different
+
+280
+00:39:36.880 --> 00:39:49.360
+SceneDelegate. In this case, the DebuggingSceneDelegate. Another interesting use case is managing
+
+281
+00:39:49.360 --> 00:39:56.400
+constants on different environments. If we have different environments for our endpoints, as I'm
+
+282
+00:39:56.400 --> 00:40:03.040
+sure you do, staging, production, QA, and so on, you can use conditional statements to resolve these
+
+283
+00:40:03.040 --> 00:40:12.160
+URLs. You can do it through a simple example like I did. So, dash if debug, use this URL, otherwise
+
+284
+00:40:12.160 --> 00:40:23.200
+use that URL. But there's another approach using build settings. So, we're going to add a new user
+
+285
+00:40:23.200 --> 00:40:31.600
+defined build setting called API Domain. And for the debug configuration, we're going to set it to
+
+286
+00:40:31.600 --> 00:40:36.560
+a staging URL, and for the List configuration, we're going to set it to a production URL.
+
+287
+00:40:37.120 --> 00:40:50.880
+Then in the Info.plist File, we willSet a new key called API base URL, and we're going to use the
+
+288
+00:40:50.880 --> 00:41:03.120
+API Domain user defined setting we just added. This is because reading these build settings from
+
+289
+00:41:03.120 --> 00:41:13.840
+code is not easy, but as we remember, Info.plist already processes build settings, for example,
+
+290
+00:41:13.840 --> 00:41:24.560
+regarding the product name or other settings. So, it will have access to all the build settings.
+
+291
+00:41:26.320 --> 00:41:35.520
+And to read this API base URL value, we can use the for info dictionary key API on the Bundle class.
+
+292
+00:41:35.520 --> 00:41:42.640
+It's important to know that any app Bundle is easy to inspect, and the Info.plist inside it is not
+
+293
+00:41:42.640 --> 00:41:51.760
+encrypted. So, any value set inside can be easily accessible by anyone. So, do not Store any sensitive
+
+294
+00:41:51.760 --> 00:41:59.200
+data in the Info.plist. If you want to know more about security, we have a mentoring session about
+
+295
+00:41:59.200 --> 00:42:08.240
+it, but we can also cover it in another session. That's it. Thank you. And now it's time for a Q&A.
+
+296
+00:42:12.800 --> 00:42:18.480
+Any questions, anyone? Thanks, Pawan.
+
+297
+00:42:18.480 --> 00:42:25.040
+Hi, everyone. In the priorities, when you set a build setting, in the CommandLine,
+
+298
+00:42:25.840 --> 00:42:33.680
+you will override everything else, right? When you set it, yes. Let's get back to that slide.
+
+299
+00:42:35.840 --> 00:42:38.160
+Let's see if I can run this.
+
+300
+00:42:38.160 --> 00:42:47.600
+Yeah, it just overrides the target settings, and it doesn't even change the project. It's like a standalone.
+
+301
+00:42:47.600 --> 00:42:51.680
+It's just for that specific build. Exactly. It doesn't change anything.
+
+302
+00:42:51.680 --> 00:43:12.000
+Thanks for making you go through that, so it's clear now. There's another question from Bartos.
+
+303
+00:43:12.000 --> 00:43:17.280
+I hope I pronounced it correctly. What does the build for active architecture mean exactly?
+
+304
+00:43:17.280 --> 00:43:23.440
+What does the build for active architecture mean exactly? Let's look at this setting again.
+
+305
+00:43:28.240 --> 00:43:33.520
+Basically, it means that instead of building all the architectures that our target supports,
+
+306
+00:43:33.520 --> 00:43:41.760
+we're just going to build the one that's set to run on. In this case, for the EssentialFeed,
+
+307
+00:43:41.760 --> 00:43:53.280
+the value is set to ArchStandard, which is another variable, and it's usually ARM64 and 386.
+
+308
+00:43:54.480 --> 00:44:00.640
+So, those are two architectures. If we enable buildActiveArchitectureOnly
+
+309
+00:44:01.440 --> 00:44:08.160
+and try to use the simulator, we will only build the one that's needed for the simulator,
+
+310
+00:44:08.160 --> 00:44:15.280
+which is the 386. So, we're not going to build the ARM64, which we don't need in this case.
+
+311
+00:44:15.280 --> 00:44:23.360
+This is an optimization and results in a much faster build, because you only build one of the
+
+312
+00:44:23.360 --> 00:44:32.080
+architectures. As a side note, many of these settings are important and perhaps need some
+
+313
+00:44:32.080 --> 00:44:38.320
+digging into them. So, we're going to do another lecture on some of these build settings
+
+314
+00:44:39.120 --> 00:44:50.000
+and go into each one of them and see how they work. Any other questions? If not, we can wrap it up.
+
+315
+00:44:50.000 --> 00:44:57.360
+Thanks, everyone, and see you soon.
+

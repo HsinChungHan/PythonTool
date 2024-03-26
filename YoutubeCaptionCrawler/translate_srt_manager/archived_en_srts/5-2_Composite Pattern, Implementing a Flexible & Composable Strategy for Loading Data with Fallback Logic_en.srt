@@ -1,0 +1,2879 @@
+1
+00:00:00.633 --> 00:00:03.266
+Hello Mike, hey Caio
+
+2
+00:00:03.266 --> 00:00:05.733
+in this lecture you'll learn how to
+
+3
+00:00:05.733 --> 00:00:06.466
+compose
+
+4
+00:00:06.466 --> 00:00:09.733
+objects that share a common interface
+
+5
+00:00:09.733 --> 00:00:12.933
+with the Composite design pattern
+
+6
+00:00:12.933 --> 00:00:15.566
+okay so the goal is to compose both the
+
+7
+00:00:15.566 --> 00:00:16.233
+remote
+
+8
+00:00:16.233 --> 00:00:19.500
+and LocalFeedLoader and the logic
+
+9
+00:00:19.500 --> 00:00:22.533
+is try to load from remote first
+
+10
+00:00:22.533 --> 00:00:25.266
+if it fails try to load from local
+
+11
+00:00:25.266 --> 00:00:26.533
+that's it
+
+12
+00:00:26.533 --> 00:00:29.566
+and they both share a common interface
+
+13
+00:00:29.566 --> 00:00:32.366
+the FeedLoader protocol that they both
+
+14
+00:00:32.366 --> 00:00:33.833
+implement
+
+15
+00:00:33.833 --> 00:00:36.066
+and the idea is to create a new component
+
+16
+00:00:36.066 --> 00:00:38.466
+that share the same interface
+
+17
+00:00:38.466 --> 00:00:41.733
+with the logic we want but the clients
+
+18
+00:00:41.733 --> 00:00:44.000
+don't need to know about the composite
+
+19
+00:00:44.000 --> 00:00:45.433
+they're going to treat
+
+20
+00:00:45.433 --> 00:00:48.866
+this composition uniformly as a Feed
+
+21
+00:00:48.866 --> 00:00:51.033
+Loader with the common FeedLoader
+
+22
+00:00:51.033 --> 00:00:53.033
+interface exactly
+
+23
+00:00:53.033 --> 00:00:54.800
+and the same thing for the FeedImage
+
+24
+00:00:54.800 --> 00:00:56.866
+DataLoader
+
+25
+00:00:56.866 --> 00:00:58.633
+with the difference that we probably
+
+26
+00:00:58.633 --> 00:01:00.233
+want to first
+
+27
+00:01:00.233 --> 00:01:03.733
+check if we have an image locally before
+
+28
+00:01:03.733 --> 00:01:06.400
+loading it from remote right so it's the
+
+29
+00:01:06.400 --> 00:01:08.066
+inverse logic basically
+
+30
+00:01:08.066 --> 00:01:10.533
+exactly because images are quite
+
+31
+00:01:10.533 --> 00:01:12.000
+expensive to download
+
+32
+00:01:12.000 --> 00:01:14.066
+so try to load an image from the local
+
+33
+00:01:14.066 --> 00:01:15.900
+store if it fails
+
+34
+00:01:15.900 --> 00:01:18.866
+you go to remote but the idea is that
+
+35
+00:01:18.866 --> 00:01:19.666
+they also
+
+36
+00:01:19.666 --> 00:01:22.400
+both share a common interface and we can
+
+37
+00:01:22.400 --> 00:01:23.833
+create a composite
+
+38
+00:01:23.833 --> 00:01:26.066
+they also implement the interface so
+
+39
+00:01:26.066 --> 00:01:27.733
+clients don't need to know about the
+
+40
+00:01:27.733 --> 00:01:28.633
+composition
+
+41
+00:01:28.633 --> 00:01:31.100
+they can treat the whole composite
+
+42
+00:01:31.100 --> 00:01:32.233
+uniformly
+
+43
+00:01:32.233 --> 00:01:35.433
+with the FeedImageDataLoader protocol
+
+44
+00:01:35.433 --> 00:01:38.000
+exactly so let's start with the Feed
+
+45
+00:01:38.000 --> 00:01:38.766
+Loader
+
+46
+00:01:38.766 --> 00:01:41.333
+we need to load from remote and if it
+
+47
+00:01:41.333 --> 00:01:41.833
+fails
+
+48
+00:01:41.833 --> 00:01:45.433
+it loads from local okay as always
+
+49
+00:01:45.433 --> 00:01:47.600
+let's start with a test alright so
+
+50
+00:01:47.600 --> 00:01:49.333
+let's create
+
+51
+00:01:49.333 --> 00:01:52.366
+a RemoteWithLocal
+
+52
+00:01:52.366 --> 00:01:57.033
+FallbackFeedLoaderTests
+
+53
+00:01:57.033 --> 00:02:00.066
+and as you said we want to deliver a
+
+54
+00:02:00.066 --> 00:02:01.433
+remote feed
+
+55
+00:02:01.433 --> 00:02:04.366
+when the remote loading succeeds first
+
+56
+00:02:04.366 --> 00:02:04.766
+okay
+
+57
+00:02:04.766 --> 00:02:07.333
+so first test when we try to load from
+
+58
+00:02:07.333 --> 00:02:08.300
+the composite
+
+59
+00:02:08.300 --> 00:02:10.700
+it should deliver the remote feed if it
+
+60
+00:02:10.700 --> 00:02:11.666
+succeeds
+
+61
+00:02:11.666 --> 00:02:14.700
+to load from remote and so far we've
+
+62
+00:02:14.700 --> 00:02:16.633
+been testing our components
+
+63
+00:02:16.633 --> 00:02:20.233
+with spies but this time let's try
+
+64
+00:02:20.233 --> 00:02:23.666
+a different kind of test double a stub
+
+65
+00:02:23.666 --> 00:02:28.233
+okay so let's create our assertion
+
+66
+00:02:28.233 --> 00:02:31.333
+so we expect to load a feed so let's
+
+67
+00:02:31.333 --> 00:02:34.300
+have a received feed and we're going to
+
+68
+00:02:34.300 --> 00:02:35.566
+be comparing it
+
+69
+00:02:35.566 --> 00:02:38.633
+with a stubbed result let's call it
+
+70
+00:02:38.633 --> 00:02:41.733
+remoteFeed okay so
+
+71
+00:02:41.733 --> 00:02:44.400
+the received feed should be the same
+
+72
+00:02:44.400 --> 00:02:45.033
+stubbed
+
+73
+00:02:45.033 --> 00:02:48.633
+remote feed exactly so to capture
+
+74
+00:02:48.633 --> 00:02:50.466
+the received feed we need to first
+
+75
+00:02:50.466 --> 00:02:51.666
+invoke load
+
+76
+00:02:51.666 --> 00:02:54.466
+in the system under test the sut and we
+
+77
+00:02:54.466 --> 00:02:56.866
+get a result back
+
+78
+00:02:56.866 --> 00:02:58.933
+and to capture the received feed from
+
+79
+00:02:58.933 --> 00:02:59.900
+the result
+
+80
+00:02:59.900 --> 00:03:02.933
+we need an external property a variable
+
+81
+00:03:02.933 --> 00:03:05.333
+of type array of FeedImage because
+
+82
+00:03:05.333 --> 00:03:06.400
+that's the feed
+
+83
+00:03:06.400 --> 00:03:09.566
+a feed is an array of feed images okay
+
+84
+00:03:09.566 --> 00:03:11.433
+and here we can capture the received
+
+85
+00:03:11.433 --> 00:03:13.900
+feed so if we get a success
+
+86
+00:03:13.900 --> 00:03:15.733
+with the feed we can capture a received
+
+87
+00:03:15.733 --> 00:03:16.933
+feed then
+
+88
+00:03:16.933 --> 00:03:20.133
+we can assert it is exactly the same
+
+89
+00:03:20.133 --> 00:03:23.266
+as the stubbed remote feed exactly and
+
+90
+00:03:23.266 --> 00:03:24.300
+if it fails
+
+91
+00:03:24.300 --> 00:03:27.333
+we want to fail with a message expected
+
+92
+00:03:27.333 --> 00:03:29.666
+successful load feed result
+
+93
+00:03:29.666 --> 00:03:32.766
+got result instead that's it
+
+94
+00:03:32.766 --> 00:03:35.200
+and since we have the fail assertion in
+
+95
+00:03:35.200 --> 00:03:36.300
+the switch statement
+
+96
+00:03:36.300 --> 00:03:39.100
+we can move the assert equal statement
+
+97
+00:03:39.100 --> 00:03:41.433
+in the switch statement as well
+
+98
+00:03:41.433 --> 00:03:44.233
+yeah let's just rename the feed and we
+
+99
+00:03:44.233 --> 00:03:45.500
+don't need this external
+
+100
+00:03:45.500 --> 00:03:48.000
+variable that's it but since we are not
+
+101
+00:03:48.000 --> 00:03:49.666
+capturing a value of course now we need
+
+102
+00:03:49.666 --> 00:03:51.266
+an expectation
+
+103
+00:03:51.266 --> 00:03:54.633
+so we can fulfill it here and wait
+
+104
+00:03:54.633 --> 00:03:57.033
+for the expectation with a timeout thus
+
+105
+00:03:57.033 --> 00:03:58.766
+we are sure at the end of the test
+
+106
+00:03:58.766 --> 00:04:01.433
+that the closure was executed otherwise
+
+107
+00:04:01.433 --> 00:04:02.066
+we're going to get
+
+108
+00:04:02.066 --> 00:04:05.200
+a failure exactly finally
+
+109
+00:04:05.200 --> 00:04:08.233
+let's instantiate our system under test
+
+110
+00:04:08.233 --> 00:04:10.933
+which is going to be a RemoteWithLocal
+
+111
+00:04:10.933 --> 00:04:11.566
+Fallback
+
+112
+00:04:11.566 --> 00:04:14.300
+FeedLoader so we need to start with a
+
+113
+00:04:14.300 --> 00:04:15.266
+remote
+
+114
+00:04:15.266 --> 00:04:20.300
+loader and a local loader
+
+115
+00:04:20.300 --> 00:04:22.866
+so next step we need to create our type
+
+116
+00:04:22.866 --> 00:04:24.366
+the RemoteWithLocal
+
+117
+00:04:24.366 --> 00:04:27.500
+FallbackFeedLoader okay and here we
+
+118
+00:04:27.500 --> 00:04:29.433
+get the RemoteFeedLoader and the Local
+
+119
+00:04:29.433 --> 00:04:30.233
+FeedLoader
+
+120
+00:04:30.233 --> 00:04:32.533
+as dependencies so we need to import
+
+121
+00:04:32.533 --> 00:04:33.833
+EssentialFeed because
+
+122
+00:04:33.833 --> 00:04:35.600
+that's where the RemoteFeedLoader and
+
+123
+00:04:35.600 --> 00:04:37.733
+the LocalFeedLoader live
+
+124
+00:04:37.733 --> 00:04:40.000
+exactly so we are passing the concrete
+
+125
+00:04:40.000 --> 00:04:41.166
+types here
+
+126
+00:04:41.166 --> 00:04:44.866
+the concrete RemoteFeedLoader
+
+127
+00:04:44.866 --> 00:04:50.066
+and the concrete LocalFeedLoader
+
+128
+00:04:50.066 --> 00:04:52.300
+so we need to create our remote loader
+
+129
+00:04:52.300 --> 00:04:53.333
+which is the concrete
+
+130
+00:04:53.333 --> 00:04:55.600
+RemoteFeedLoader but now we need to
+
+131
+00:04:55.600 --> 00:04:56.800
+create the dependencies
+
+132
+00:04:56.800 --> 00:05:00.066
+for the RemoteFeedLoader it needs a
+
+133
+00:05:00.066 --> 00:05:03.266
+URL and a client so we need to create a
+
+134
+00:05:03.266 --> 00:05:05.433
+URL
+
+135
+00:05:05.433 --> 00:05:07.433
+now we need to create a client now which
+
+136
+00:05:07.433 --> 00:05:08.866
+client should we create
+
+137
+00:05:08.866 --> 00:05:11.166
+we don't want to use the real HTTP
+
+138
+00:05:11.166 --> 00:05:12.133
+Client
+
+139
+00:05:12.133 --> 00:05:15.333
+and actually perform a request exactly
+
+140
+00:05:15.333 --> 00:05:17.600
+we have already tested the RemoteFeed
+
+141
+00:05:17.600 --> 00:05:18.533
+Loader
+
+142
+00:05:18.533 --> 00:05:21.600
+and we don't want to test again exactly
+
+143
+00:05:21.600 --> 00:05:23.833
+we want to test the RemoteWithLocal
+
+144
+00:05:23.833 --> 00:05:25.600
+FallbackFeedLoader
+
+145
+00:05:25.600 --> 00:05:29.266
+in isolation so in the future
+
+146
+00:05:29.266 --> 00:05:31.100
+if the RemoteFeedLoader needs more
+
+147
+00:05:31.100 --> 00:05:32.300
+dependencies
+
+148
+00:05:32.300 --> 00:05:35.500
+I don't want to break this test yes
+
+149
+00:05:35.500 --> 00:05:39.166
+exactly if for example we want to add
+
+150
+00:05:39.166 --> 00:05:41.900
+any kind of access token dependency to
+
+151
+00:05:41.900 --> 00:05:43.500
+the RemoteFeedLoader
+
+152
+00:05:43.500 --> 00:05:45.833
+we would break this test we need to come
+
+153
+00:05:45.833 --> 00:05:47.166
+here and give a mock
+
+154
+00:05:47.166 --> 00:05:50.233
+token even though this test doesn't care
+
+155
+00:05:50.233 --> 00:05:52.800
+about access tokens
+
+156
+00:05:52.800 --> 00:05:54.633
+so every time we change the RemoteFeed
+
+157
+00:05:54.633 --> 00:05:56.533
+Loader or the LocalFeedLoader that has
+
+158
+00:05:56.533 --> 00:05:58.800
+its own dependencies as well
+
+159
+00:05:58.800 --> 00:06:00.800
+we might break this test that is
+
+160
+00:06:00.800 --> 00:06:02.700
+completely unrelated
+
+161
+00:06:02.700 --> 00:06:05.100
+and that's why we need to test against
+
+162
+00:06:05.100 --> 00:06:06.700
+abstractions
+
+163
+00:06:06.700 --> 00:06:09.500
+rather than concrete types otherwise we
+
+164
+00:06:09.500 --> 00:06:12.133
+end up with integration tests
+
+165
+00:06:12.133 --> 00:06:15.166
+exactly sure they have their value but
+
+166
+00:06:15.166 --> 00:06:18.133
+it's not what we want in this case yes
+
+167
+00:06:18.133 --> 00:06:20.133
+we are testing the RemoteWithLocal
+
+168
+00:06:20.133 --> 00:06:22.700
+FallbackFeedLoader at the unit level
+
+169
+00:06:22.700 --> 00:06:25.833
+thus we do not want concrete details
+
+170
+00:06:25.833 --> 00:06:27.100
+that can break this test
+
+171
+00:06:27.100 --> 00:06:29.100
+in the future we want to test against
+
+172
+00:06:29.100 --> 00:06:30.533
+abstractions
+
+173
+00:06:30.533 --> 00:06:33.433
+to test this component in isolation
+
+174
+00:06:33.433 --> 00:06:34.633
+exactly
+
+175
+00:06:34.633 --> 00:06:36.866
+and we have an abstraction already the
+
+176
+00:06:36.866 --> 00:06:37.833
+FeedLoader
+
+177
+00:06:37.833 --> 00:06:40.933
+protocol
+
+178
+00:06:40.933 --> 00:06:43.666
+so we don't need to expose the concrete
+
+179
+00:06:43.666 --> 00:06:44.866
+types here
+
+180
+00:06:44.866 --> 00:06:46.800
+we can just use the abstraction the
+
+181
+00:06:46.800 --> 00:06:49.266
+protocol that's it
+
+182
+00:06:49.266 --> 00:06:51.833
+now we don't need to use the real Remote
+
+183
+00:06:51.833 --> 00:06:52.700
+FeedLoader
+
+184
+00:06:52.700 --> 00:06:56.533
+while testing instead we can create
+
+185
+00:06:56.533 --> 00:06:59.833
+a stub or a spy or a mock
+
+186
+00:06:59.833 --> 00:07:02.133
+this way we protect this test from
+
+187
+00:07:02.133 --> 00:07:03.666
+future changes
+
+188
+00:07:03.666 --> 00:07:06.133
+we are testing the RemoteWithLocal
+
+189
+00:07:06.133 --> 00:07:07.566
+FallbackFeedLoader
+
+190
+00:07:07.566 --> 00:07:10.866
+in isolation yeah but there is another
+
+191
+00:07:10.866 --> 00:07:12.300
+problem now
+
+192
+00:07:12.300 --> 00:07:15.733
+we can get the order of the parameters
+
+193
+00:07:15.733 --> 00:07:19.666
+remote and local wrong and the compiler
+
+194
+00:07:19.666 --> 00:07:22.133
+will not help us it will not guide us as
+
+195
+00:07:22.133 --> 00:07:23.833
+to what is what
+
+196
+00:07:23.833 --> 00:07:27.033
+right so this is clearly the wrong
+
+197
+00:07:27.033 --> 00:07:30.066
+order but the compiler is just fine with
+
+198
+00:07:30.066 --> 00:07:30.866
+it
+
+199
+00:07:30.866 --> 00:07:32.633
+because we are using the abstraction
+
+200
+00:07:32.633 --> 00:07:34.233
+here not the concrete type
+
+201
+00:07:34.233 --> 00:07:37.333
+yes exactly and what do you do
+
+202
+00:07:37.333 --> 00:07:38.800
+when you don't have compile time
+
+203
+00:07:38.800 --> 00:07:40.400
+guarantees
+
+204
+00:07:40.400 --> 00:07:43.166
+you write tests exactly and that's
+
+205
+00:07:43.166 --> 00:07:44.866
+exactly what we're doing we are writing
+
+206
+00:07:44.866 --> 00:07:45.900
+tests
+
+207
+00:07:45.900 --> 00:07:48.700
+so tests can guarantee the correct order
+
+208
+00:07:48.700 --> 00:07:50.233
+because you're testing the behavior
+
+209
+00:07:50.233 --> 00:07:52.866
+if you mess up the order the behavior
+
+210
+00:07:52.866 --> 00:07:54.233
+will be wrong
+
+211
+00:07:54.233 --> 00:07:57.266
+that's it so it's a trade-off here we
+
+212
+00:07:57.266 --> 00:07:58.133
+could go
+
+213
+00:07:58.133 --> 00:08:00.300
+with the concrete types but then our
+
+214
+00:08:00.300 --> 00:08:01.500
+test will be
+
+215
+00:08:01.500 --> 00:08:04.533
+tied to concrete types and every time
+
+216
+00:08:04.533 --> 00:08:06.233
+those concrete types change
+
+217
+00:08:06.233 --> 00:08:09.433
+we break those tests and if we go with
+
+218
+00:08:09.433 --> 00:08:10.866
+the abstractions
+
+219
+00:08:10.866 --> 00:08:13.100
+we may lose a little bit of compile time
+
+220
+00:08:13.100 --> 00:08:14.466
+guarantees
+
+221
+00:08:14.466 --> 00:08:16.633
+but since we have tests I'm happy with
+
+222
+00:08:16.633 --> 00:08:18.000
+it yes
+
+223
+00:08:18.000 --> 00:08:21.100
+exactly we could also create specific
+
+224
+00:08:21.100 --> 00:08:22.300
+abstractions
+
+225
+00:08:22.300 --> 00:08:25.433
+denoting the remote and local
+
+226
+00:08:25.433 --> 00:08:28.233
+provenance of the feed right we could
+
+227
+00:08:28.233 --> 00:08:30.400
+create a RemoteFeedLoader protocol
+
+228
+00:08:30.400 --> 00:08:31.900
+that inherits from the FeedLoader
+
+229
+00:08:31.900 --> 00:08:34.133
+protocol exactly and could create a
+
+230
+00:08:34.133 --> 00:08:34.766
+local
+
+231
+00:08:34.766 --> 00:08:37.200
+FeedLoader protocol they also inherit
+
+232
+00:08:37.200 --> 00:08:38.866
+from the FeedLoader protocol
+
+233
+00:08:38.866 --> 00:08:41.333
+and we could annotate this here that's
+
+234
+00:08:41.333 --> 00:08:42.766
+it
+
+235
+00:08:42.766 --> 00:08:44.466
+so now you get back compile time
+
+236
+00:08:44.466 --> 00:08:46.366
+guarantees and we could create
+
+237
+00:08:46.366 --> 00:08:49.200
+two types of stubs the RemoteLoader
+
+238
+00:08:49.200 --> 00:08:50.366
+Stub
+
+239
+00:08:50.366 --> 00:08:53.666
+and the LocalLoaderStub one that
+
+240
+00:08:53.666 --> 00:08:55.200
+implements the RemoteFeedLoader
+
+241
+00:08:55.200 --> 00:08:57.200
+and other one that implements the Local
+
+242
+00:08:57.200 --> 00:08:58.300
+FeedLoader
+
+243
+00:08:58.300 --> 00:09:02.000
+yes now the compiler is going to tell us
+
+244
+00:09:02.000 --> 00:09:04.000
+the order is wrong
+
+245
+00:09:04.000 --> 00:09:07.733
+and we have to fix it there you go
+
+246
+00:09:07.733 --> 00:09:10.800
+yes so this solution solves
+
+247
+00:09:10.800 --> 00:09:13.733
+the concrete implementation problem it
+
+248
+00:09:13.733 --> 00:09:14.300
+also
+
+249
+00:09:14.300 --> 00:09:17.500
+solves the order yes now
+
+250
+00:09:17.500 --> 00:09:20.233
+we have these types just to annotate
+
+251
+00:09:20.233 --> 00:09:22.133
+that these two components are different
+
+252
+00:09:22.133 --> 00:09:23.900
+components
+
+253
+00:09:23.900 --> 00:09:26.366
+and we can make the concrete types
+
+254
+00:09:26.366 --> 00:09:27.100
+implement
+
+255
+00:09:27.100 --> 00:09:30.133
+those protocols with extensions
+
+256
+00:09:30.133 --> 00:09:32.000
+so the concrete type is in the Essential
+
+257
+00:09:32.000 --> 00:09:33.833
+Feed module so we need to
+
+258
+00:09:33.833 --> 00:09:36.633
+add the module name EssentialFeed.
+
+259
+00:09:36.633 --> 00:09:37.333
+Remote
+
+260
+00:09:37.333 --> 00:09:39.833
+FeedLoader when we mention the concrete
+
+261
+00:09:39.833 --> 00:09:40.366
+type
+
+262
+00:09:40.366 --> 00:09:42.300
+and we can make it implement the Remote
+
+263
+00:09:42.300 --> 00:09:44.233
+FeedLoader protocol
+
+264
+00:09:44.233 --> 00:09:46.633
+that's it you can do the same thing with
+
+265
+00:09:46.633 --> 00:09:48.366
+the Local one
+
+266
+00:09:48.366 --> 00:09:50.066
+and that's it now you are back with the
+
+267
+00:09:50.066 --> 00:09:51.833
+compile time safeties
+
+268
+00:09:51.833 --> 00:09:53.033
+and as you can see they have the same
+
+269
+00:09:53.033 --> 00:09:55.100
+name as the concrete types the Remote
+
+270
+00:09:55.100 --> 00:09:56.933
+FeedLoader and LocalFeedLoader
+
+271
+00:09:56.933 --> 00:09:59.500
+but since they are in different modules
+
+272
+00:09:59.500 --> 00:10:02.133
+we don't have naming collisions
+
+273
+00:10:02.133 --> 00:10:04.133
+I just don't think we need it because we
+
+274
+00:10:04.133 --> 00:10:05.500
+have tests
+
+275
+00:10:05.500 --> 00:10:07.833
+yes but it's nice to know that you can
+
+276
+00:10:07.833 --> 00:10:08.933
+use this technique
+
+277
+00:10:08.933 --> 00:10:11.500
+to have type annotations so we can catch
+
+278
+00:10:11.500 --> 00:10:12.233
+mistakes
+
+279
+00:10:12.233 --> 00:10:14.700
+with the help of the compiler but since
+
+280
+00:10:14.700 --> 00:10:16.700
+we are following TDD
+
+281
+00:10:16.700 --> 00:10:18.300
+I am happy to go with the simpler
+
+282
+00:10:18.300 --> 00:10:20.466
+solution and just use the abstraction
+
+283
+00:10:20.466 --> 00:10:21.266
+here
+
+284
+00:10:21.266 --> 00:10:24.366
+what do you think agreed I think it
+
+285
+00:10:24.366 --> 00:10:25.433
+gives us
+
+286
+00:10:25.433 --> 00:10:28.133
+much more freedom than creating new
+
+287
+00:10:28.133 --> 00:10:29.033
+types
+
+288
+00:10:29.033 --> 00:10:31.100
+and we have less components at the same
+
+289
+00:10:31.100 --> 00:10:32.300
+time
+
+290
+00:10:32.300 --> 00:10:34.933
+exactly less components means less code
+
+291
+00:10:34.933 --> 00:10:36.366
+less complexity
+
+292
+00:10:36.366 --> 00:10:39.833
+simpler yep and since we don't have
+
+293
+00:10:39.833 --> 00:10:42.000
+the compiler guarantees anymore I would
+
+294
+00:10:42.000 --> 00:10:43.900
+even want to rename
+
+295
+00:10:43.900 --> 00:10:47.333
+those properties yes because there is no
+
+296
+00:10:47.333 --> 00:10:50.533
+remote anymore there is no local anymore
+
+297
+00:10:50.533 --> 00:10:53.200
+these notions went away when the
+
+298
+00:10:53.200 --> 00:10:54.933
+concrete types went away
+
+299
+00:10:54.933 --> 00:10:57.033
+exactly which means we have much more
+
+300
+00:10:57.033 --> 00:10:58.300
+flexibility now
+
+301
+00:10:58.300 --> 00:11:01.033
+with the abstractions what we have here
+
+302
+00:11:01.033 --> 00:11:01.733
+actually
+
+303
+00:11:01.733 --> 00:11:04.866
+is a primary loader with a
+
+304
+00:11:04.866 --> 00:11:08.300
+fallback loader that's it
+
+305
+00:11:08.300 --> 00:11:12.833
+which means we have a primary loader
+
+306
+00:11:12.833 --> 00:11:15.200
+instance
+
+307
+00:11:15.200 --> 00:11:18.700
+and a fallback loader instance
+
+308
+00:11:18.700 --> 00:11:20.633
+by using abstractions we make our code
+
+309
+00:11:20.633 --> 00:11:22.633
+more flexible by naming things
+
+310
+00:11:22.633 --> 00:11:24.366
+differently we also make our code more
+
+311
+00:11:24.366 --> 00:11:25.433
+flexible
+
+312
+00:11:25.433 --> 00:11:28.000
+that's why naming is so important
+
+313
+00:11:28.000 --> 00:11:28.933
+exactly
+
+314
+00:11:28.933 --> 00:11:32.000
+so why don't we rename the class as well
+
+315
+00:11:32.000 --> 00:11:34.933
+so it's not a RemoteWithLocalFallback
+
+316
+00:11:34.933 --> 00:11:36.233
+anymore
+
+317
+00:11:36.233 --> 00:11:39.433
+it's much more abstract than that we can
+
+318
+00:11:39.433 --> 00:11:40.233
+compose
+
+319
+00:11:40.233 --> 00:11:42.300
+any kind of FeedLoader and give it a
+
+320
+00:11:42.300 --> 00:11:43.500
+fallback
+
+321
+00:11:43.500 --> 00:11:47.266
+so a good name could be FeedLoader
+
+322
+00:11:47.266 --> 00:11:50.366
+WithFallback and as we said this is a
+
+323
+00:11:50.366 --> 00:11:53.900
+composite so I'm happy to add
+
+324
+00:11:53.900 --> 00:11:57.433
+as a suffix Composite, FeedLoader
+
+325
+00:11:57.433 --> 00:12:02.300
+WithFallbackComposite that's it
+
+326
+00:12:02.300 --> 00:12:05.500
+look at that now instead of tying our
+
+327
+00:12:05.500 --> 00:12:06.800
+implementation to
+
+328
+00:12:06.800 --> 00:12:09.100
+concrete types we have a much more
+
+329
+00:12:09.100 --> 00:12:10.000
+flexible
+
+330
+00:12:10.000 --> 00:12:13.100
+composite that can compose any Feed
+
+331
+00:12:13.100 --> 00:12:13.666
+Loader
+
+332
+00:12:13.666 --> 00:12:16.533
+with another FeedLoader as a fallback
+
+333
+00:12:16.533 --> 00:12:17.600
+exactly
+
+334
+00:12:17.600 --> 00:12:20.533
+it's pretty powerful so let's also
+
+335
+00:12:20.533 --> 00:12:22.066
+rename the test
+
+336
+00:12:22.066 --> 00:12:24.300
+alright FeedLoaderWithFallback
+
+337
+00:12:24.300 --> 00:12:26.866
+CompositeTests
+
+338
+00:12:26.866 --> 00:12:28.933
+and also let's rename the remoteFeed
+
+339
+00:12:28.933 --> 00:12:30.000
+property
+
+340
+00:12:30.000 --> 00:12:32.700
+because this is a primary feed now and
+
+341
+00:12:32.700 --> 00:12:33.200
+let's
+
+342
+00:12:33.200 --> 00:12:36.366
+rename the test deliver
+
+343
+00:12:36.366 --> 00:12:39.900
+a primary feed on primary loader
+
+344
+00:12:39.900 --> 00:12:44.300
+success that's it now back to the test
+
+345
+00:12:44.300 --> 00:12:46.366
+the compiler is still complaining that
+
+346
+00:12:46.366 --> 00:12:47.900
+we don't have a load method
+
+347
+00:12:47.900 --> 00:12:50.233
+in the system under test because we need
+
+348
+00:12:50.233 --> 00:12:52.633
+to conform to FeedLoader
+
+349
+00:12:52.633 --> 00:12:57.033
+and implement the load method okay
+
+350
+00:12:57.033 --> 00:12:58.700
+and finally we need to create the
+
+351
+00:12:58.700 --> 00:13:00.633
+primary feed
+
+352
+00:13:00.633 --> 00:13:03.900
+which is an array of FeedImages
+
+353
+00:13:03.900 --> 00:13:07.900
+which can be any unique feed
+
+354
+00:13:07.900 --> 00:13:10.933
+because we also will need a fallback
+
+355
+00:13:10.933 --> 00:13:13.666
+feed to make sure we got the primary
+
+356
+00:13:13.666 --> 00:13:16.133
+feed instead of the fallback feed
+
+357
+00:13:16.133 --> 00:13:18.300
+we need to create unique values because
+
+358
+00:13:18.300 --> 00:13:20.133
+they are the stubbed
+
+359
+00:13:20.133 --> 00:13:23.333
+result we will use in the LoaderStub
+
+360
+00:13:23.333 --> 00:13:26.466
+that's the predefined value that's it
+
+361
+00:13:26.466 --> 00:13:28.800
+so let's implement the unique feed which
+
+362
+00:13:28.800 --> 00:13:30.000
+is simply creating
+
+363
+00:13:30.000 --> 00:13:33.333
+a unique feed and the UUID
+
+364
+00:13:33.333 --> 00:13:37.100
+makes it unique in our LoaderStub
+
+365
+00:13:37.100 --> 00:13:39.900
+needs a result so every time we call
+
+366
+00:13:39.900 --> 00:13:41.266
+load we complete
+
+367
+00:13:41.266 --> 00:13:44.233
+with the stubbed result that's it and
+
+368
+00:13:44.233 --> 00:13:45.266
+that's the difference
+
+369
+00:13:45.266 --> 00:13:48.133
+when we use stubs you set the values up
+
+370
+00:13:48.133 --> 00:13:49.100
+front
+
+371
+00:13:49.100 --> 00:13:51.500
+and with a spy you capture the values so
+
+372
+00:13:51.500 --> 00:13:52.233
+you can use it
+
+373
+00:13:52.233 --> 00:13:55.666
+later exactly so stubs are much simpler
+
+374
+00:13:55.666 --> 00:13:57.600
+but less precise about what happens
+
+375
+00:13:57.600 --> 00:13:58.800
+during tests
+
+376
+00:13:58.800 --> 00:14:02.133
+that's why they are more flexible
+
+377
+00:14:02.133 --> 00:14:04.533
+now let's run the tests and we should
+
+378
+00:14:04.533 --> 00:14:06.633
+see a failure because we never complete
+
+379
+00:14:06.633 --> 00:14:09.500
+the load so the expectation should not
+
+380
+00:14:09.500 --> 00:14:11.100
+be fulfilled
+
+381
+00:14:11.100 --> 00:14:13.900
+there it is unfulfilled expectation we
+
+382
+00:14:13.900 --> 00:14:14.633
+never
+
+383
+00:14:14.633 --> 00:14:18.366
+executed the load completion fantastic
+
+384
+00:14:18.366 --> 00:14:20.700
+let's implement the load method to make
+
+385
+00:14:20.700 --> 00:14:22.366
+the test pass
+
+386
+00:14:22.366 --> 00:14:24.366
+so we need to load from the primary
+
+387
+00:14:24.366 --> 00:14:26.000
+source from the primary
+
+388
+00:14:26.000 --> 00:14:28.300
+loader which means we need to capture
+
+389
+00:14:28.300 --> 00:14:29.100
+the primary
+
+390
+00:14:29.100 --> 00:14:32.233
+FeedLoader now we can load
+
+391
+00:14:32.233 --> 00:14:33.833
+and for now we can just pass the
+
+392
+00:14:33.833 --> 00:14:36.633
+completion just forwarding the message
+
+393
+00:14:36.633 --> 00:14:40.133
+that's it now the test should pass
+
+394
+00:14:40.133 --> 00:14:43.433
+and it does okay so that's what a stub
+
+395
+00:14:43.433 --> 00:14:44.300
+does
+
+396
+00:14:44.300 --> 00:14:47.500
+we set up the primary loader to succeed
+
+397
+00:14:47.500 --> 00:14:48.933
+with a primary feed
+
+398
+00:14:48.933 --> 00:14:51.166
+and a fallback loader to succeed with a
+
+399
+00:14:51.166 --> 00:14:52.866
+fallback feed
+
+400
+00:14:52.866 --> 00:14:55.500
+and we expect our composite to complete
+
+401
+00:14:55.500 --> 00:14:56.866
+with the primary feed
+
+402
+00:14:56.866 --> 00:14:59.100
+proving that it loaded it from the
+
+403
+00:14:59.100 --> 00:15:00.700
+primary loader
+
+404
+00:15:00.700 --> 00:15:04.800
+fantastic let's commit
+
+405
+00:15:04.800 --> 00:15:07.266
+FeedLoaderWithFallbackComposite
+
+406
+00:15:07.266 --> 00:15:08.066
+delivers
+
+407
+00:15:08.066 --> 00:15:12.000
+primary feed on primary loader success
+
+408
+00:15:12.000 --> 00:15:14.633
+that's it so stubs are very simple and
+
+409
+00:15:14.633 --> 00:15:15.733
+very useful
+
+410
+00:15:15.733 --> 00:15:17.600
+but we had to make a lot of upfront
+
+411
+00:15:17.600 --> 00:15:18.866
+decisions
+
+412
+00:15:18.866 --> 00:15:21.500
+when you have a simple use case stubs
+
+413
+00:15:21.500 --> 00:15:23.166
+are much more flexible
+
+414
+00:15:23.166 --> 00:15:25.733
+so I'm happy with it yes we can go with
+
+415
+00:15:25.733 --> 00:15:26.866
+it for this
+
+416
+00:15:26.866 --> 00:15:29.900
+test case okay but before we carry on
+
+417
+00:15:29.900 --> 00:15:33.100
+let's create our makeSUT factory method
+
+418
+00:15:33.100 --> 00:15:35.733
+okay so we can create our primary loader
+
+419
+00:15:35.733 --> 00:15:36.866
+and fallback loader
+
+420
+00:15:36.866 --> 00:15:39.833
+in here and simplify a little bit the
+
+421
+00:15:39.833 --> 00:15:40.866
+instantiation
+
+422
+00:15:40.866 --> 00:15:43.733
+here so we make the sut with the primary
+
+423
+00:15:43.733 --> 00:15:44.300
+result
+
+424
+00:15:44.300 --> 00:15:47.033
+and a fallback result that's it let's
+
+425
+00:15:47.033 --> 00:15:49.100
+commit
+
+426
+00:15:49.100 --> 00:15:52.300
+extract system under test creation into
+
+427
+00:15:52.300 --> 00:15:53.100
+a factory
+
+428
+00:15:53.100 --> 00:15:56.866
+method now the next test
+
+429
+00:15:56.866 --> 00:15:59.433
+so if the primary loader succeeds we
+
+430
+00:15:59.433 --> 00:16:01.166
+just complete with the primary
+
+431
+00:16:01.166 --> 00:16:04.000
+feed but what happens if the primary
+
+432
+00:16:04.000 --> 00:16:04.800
+loader
+
+433
+00:16:04.800 --> 00:16:07.666
+fails then we need to deliver the
+
+434
+00:16:07.666 --> 00:16:08.366
+fallback
+
+435
+00:16:08.366 --> 00:16:12.866
+feed exactly that's the strategy here
+
+436
+00:16:12.866 --> 00:16:15.600
+so that's the next test so we create the
+
+437
+00:16:15.600 --> 00:16:16.300
+sut
+
+438
+00:16:16.300 --> 00:16:19.100
+with the primary result of a failure and
+
+439
+00:16:19.100 --> 00:16:20.133
+a fallback result
+
+440
+00:16:20.133 --> 00:16:23.433
+as a success the fallback feed
+
+441
+00:16:23.433 --> 00:16:26.700
+and we expect to receive success
+
+442
+00:16:26.700 --> 00:16:29.600
+with the fallback feed which is
+
+443
+00:16:29.600 --> 00:16:31.266
+different from the first test where we
+
+444
+00:16:31.266 --> 00:16:34.700
+expected the primary feed
+
+445
+00:16:34.700 --> 00:16:37.733
+in case of failure again we have a nice
+
+446
+00:16:37.733 --> 00:16:38.466
+assertion
+
+447
+00:16:38.466 --> 00:16:42.533
+to help us identify the issue
+
+448
+00:16:42.533 --> 00:16:45.433
+let's create the anyNSError factory
+
+449
+00:16:45.433 --> 00:16:46.700
+helper
+
+450
+00:16:46.700 --> 00:16:49.733
+just create a simple error
+
+451
+00:16:49.733 --> 00:16:53.433
+and let's run the test should fail
+
+452
+00:16:53.433 --> 00:16:56.533
+there you go expect a successful load
+
+453
+00:16:56.533 --> 00:16:57.500
+feed result
+
+454
+00:16:57.500 --> 00:17:00.633
+got failure okay let's go back to
+
+455
+00:17:00.633 --> 00:17:02.300
+production
+
+456
+00:17:02.300 --> 00:17:05.900
+so now we need the fallback loader
+
+457
+00:17:05.900 --> 00:17:08.466
+yes and it's time to unwrap the primary
+
+458
+00:17:08.466 --> 00:17:09.266
+loading
+
+459
+00:17:09.266 --> 00:17:12.466
+completion because we need to examine
+
+460
+00:17:12.466 --> 00:17:13.666
+the result
+
+461
+00:17:13.666 --> 00:17:17.433
+exactly if it is success
+
+462
+00:17:17.433 --> 00:17:20.000
+we simply complete with the result
+
+463
+00:17:20.000 --> 00:17:21.666
+that's it
+
+464
+00:17:21.666 --> 00:17:25.100
+now if it's a failure we load
+
+465
+00:17:25.100 --> 00:17:28.233
+from the fallback but of course
+
+466
+00:17:28.233 --> 00:17:32.066
+let's weakify self here
+
+467
+00:17:32.066 --> 00:17:35.100
+let's run the test
+
+468
+00:17:35.100 --> 00:17:40.233
+now it's passing let's commit
+
+469
+00:17:40.233 --> 00:17:42.633
+FeedLoaderWithFallbackComposite
+
+470
+00:17:42.633 --> 00:17:43.433
+delivers
+
+471
+00:17:43.433 --> 00:17:47.433
+fallback feed on primary loader failure
+
+472
+00:17:47.433 --> 00:17:50.933
+that's it it's time to remove some
+
+473
+00:17:50.933 --> 00:17:52.400
+duplication
+
+474
+00:17:52.400 --> 00:17:55.266
+exactly look at this expectation wait
+
+475
+00:17:55.266 --> 00:17:56.533
+load, expectation
+
+476
+00:17:56.533 --> 00:18:00.066
+wait load as always you can go into
+
+477
+00:18:00.066 --> 00:18:03.100
+a helper that creates a reusable
+
+478
+00:18:03.100 --> 00:18:05.900
+way of loading and asserting the
+
+479
+00:18:05.900 --> 00:18:07.433
+received values
+
+480
+00:18:07.433 --> 00:18:10.133
+and now we can simplify this logic we
+
+481
+00:18:10.133 --> 00:18:10.933
+expect
+
+482
+00:18:10.933 --> 00:18:14.066
+sut to complete with success
+
+483
+00:18:14.066 --> 00:18:17.500
+fallback feed look at that adding the
+
+484
+00:18:17.500 --> 00:18:18.133
+first one
+
+485
+00:18:18.133 --> 00:18:21.266
+we expect sut to complete with
+
+486
+00:18:21.266 --> 00:18:25.600
+success primary feed so that's it
+
+487
+00:18:25.600 --> 00:18:28.133
+if there is a primary successful result
+
+488
+00:18:28.133 --> 00:18:28.866
+we expect
+
+489
+00:18:28.866 --> 00:18:31.833
+to get the primary successful result if
+
+490
+00:18:31.833 --> 00:18:32.933
+the primary result
+
+491
+00:18:32.933 --> 00:18:36.633
+is failure and the fallback is a success
+
+492
+00:18:36.633 --> 00:18:39.200
+we expect to get a successful fallback
+
+493
+00:18:39.200 --> 00:18:40.066
+result
+
+494
+00:18:40.066 --> 00:18:44.233
+that's it awesome let's run the tests
+
+495
+00:18:44.233 --> 00:18:47.733
+passing let's commit
+
+496
+00:18:47.733 --> 00:18:50.400
+extract duplicate load logic into a
+
+497
+00:18:50.400 --> 00:18:51.200
+helper
+
+498
+00:18:51.200 --> 00:18:54.400
+method that's it
+
+499
+00:18:54.400 --> 00:18:57.600
+now what happens if both fail
+
+500
+00:18:57.600 --> 00:19:00.233
+so it should deliver an error it should
+
+501
+00:19:00.233 --> 00:19:01.100
+deliver an error
+
+502
+00:19:01.100 --> 00:19:04.066
+exactly so delivers error on both
+
+503
+00:19:04.066 --> 00:19:07.200
+primary and fallback loader failure
+
+504
+00:19:07.200 --> 00:19:11.433
+so we stub both loaders to fail
+
+505
+00:19:11.433 --> 00:19:14.466
+and we expect our system under test to
+
+506
+00:19:14.466 --> 00:19:15.266
+complete
+
+507
+00:19:15.266 --> 00:19:19.033
+also with a failure that's it
+
+508
+00:19:19.033 --> 00:19:22.933
+passing fantastic let's commit
+
+509
+00:19:22.933 --> 00:19:26.133
+so delivers error on both primary
+
+510
+00:19:26.133 --> 00:19:30.133
+and fallback failure okay
+
+511
+00:19:30.133 --> 00:19:33.033
+and that's it that's all that's how
+
+512
+00:19:33.033 --> 00:19:33.600
+simple
+
+513
+00:19:33.600 --> 00:19:37.433
+it is but how powerful this composite is
+
+514
+00:19:37.433 --> 00:19:40.866
+we can compose infinitely FeedLoaders
+
+515
+00:19:40.866 --> 00:19:44.000
+with a fallback because we can compose
+
+516
+00:19:44.000 --> 00:19:46.766
+composites as well because the composite
+
+517
+00:19:46.766 --> 00:19:48.133
+implements the same
+
+518
+00:19:48.133 --> 00:19:50.300
+interface the same protocol we can
+
+519
+00:19:50.300 --> 00:19:53.033
+compose composites exactly
+
+520
+00:19:53.033 --> 00:19:55.733
+as we said it's pretty powerful and we
+
+521
+00:19:55.733 --> 00:19:56.933
+keep the clients
+
+522
+00:19:56.933 --> 00:19:59.100
+and the FeedLoader implementations
+
+523
+00:19:59.100 --> 00:20:00.066
+agnostic
+
+524
+00:20:00.066 --> 00:20:03.433
+of fallbacks agnostic of other concrete
+
+525
+00:20:03.433 --> 00:20:04.466
+types
+
+526
+00:20:04.466 --> 00:20:06.866
+we have ultimate freedom to compose
+
+527
+00:20:06.866 --> 00:20:08.000
+FeedLoaders
+
+528
+00:20:08.000 --> 00:20:10.533
+in any way we want if you want to load
+
+529
+00:20:10.533 --> 00:20:12.400
+first from the local loader
+
+530
+00:20:12.400 --> 00:20:14.466
+and then from the remote we can compose
+
+531
+00:20:14.466 --> 00:20:15.733
+them like this
+
+532
+00:20:15.733 --> 00:20:17.833
+if you want to load first from remote we
+
+533
+00:20:17.833 --> 00:20:19.833
+can also compose it like this
+
+534
+00:20:19.833 --> 00:20:22.933
+awesome let's move the FeedLoader with
+
+535
+00:20:22.933 --> 00:20:26.533
+FallbackComposite to production
+
+536
+00:20:26.533 --> 00:20:28.066
+and now we need to deal with access
+
+537
+00:20:28.066 --> 00:20:31.100
+control so this is a public type
+
+538
+00:20:31.100 --> 00:20:35.833
+so that test has access to it
+
+539
+00:20:35.833 --> 00:20:37.900
+and the tests don't have access to this
+
+540
+00:20:37.900 --> 00:20:40.533
+type yet because we need to import
+
+541
+00:20:40.533 --> 00:20:42.700
+the module where this type is which is
+
+542
+00:20:42.700 --> 00:20:43.900
+not the EssentialFeed
+
+543
+00:20:43.900 --> 00:20:47.500
+it's the EssentialApp
+
+544
+00:20:47.500 --> 00:20:50.533
+okay let's run the tests
+
+545
+00:20:50.533 --> 00:20:53.666
+fantastic it's passing awesome
+
+546
+00:20:53.666 --> 00:20:57.100
+let's commit so
+
+547
+00:20:57.100 --> 00:21:00.000
+move FeedLoaderWithFallbackComposite
+
+548
+00:21:00.000 --> 00:21:01.500
+to production
+
+549
+00:21:01.500 --> 00:21:06.133
+okay and we need to do the same thing
+
+550
+00:21:06.133 --> 00:21:09.333
+for the FeedImageDataLoader protocol
+
+551
+00:21:09.333 --> 00:21:11.833
+we want to be able to compose image data
+
+552
+00:21:11.833 --> 00:21:12.633
+loaders
+
+553
+00:21:12.633 --> 00:21:15.200
+with fallbacks but since it's very
+
+554
+00:21:15.200 --> 00:21:17.500
+similar we're going to do it off camera
+
+555
+00:21:17.500 --> 00:21:19.266
+and we believe you should implement it
+
+556
+00:21:19.266 --> 00:21:21.333
+yourself to practice how to create
+
+557
+00:21:21.333 --> 00:21:25.266
+composites
+
+558
+00:21:25.266 --> 00:21:28.000
+and here it is the FeedImageData
+
+559
+00:21:28.000 --> 00:21:28.633
+Loader
+
+560
+00:21:28.633 --> 00:21:31.600
+WithFallbackComposite also using
+
+561
+00:21:31.600 --> 00:21:33.100
+abstractions
+
+562
+00:21:33.100 --> 00:21:35.600
+the FeedImageDataLoader protocol thus
+
+563
+00:21:35.600 --> 00:21:37.200
+we can compose
+
+564
+00:21:37.200 --> 00:21:39.500
+any data loader with a fallback and
+
+565
+00:21:39.500 --> 00:21:40.466
+compose
+
+566
+00:21:40.466 --> 00:21:44.300
+composites as well exactly
+
+567
+00:21:44.300 --> 00:21:46.633
+so in the load image data we create a
+
+568
+00:21:46.633 --> 00:21:49.266
+task wrapper
+
+569
+00:21:49.266 --> 00:21:51.266
+we start loading the image data from the
+
+570
+00:21:51.266 --> 00:21:53.100
+primary loader
+
+571
+00:21:53.100 --> 00:21:55.733
+and we hold a reference to the task so
+
+572
+00:21:55.733 --> 00:21:56.866
+if we cancel
+
+573
+00:21:56.866 --> 00:21:59.900
+the operation at this stage we cancel
+
+574
+00:21:59.900 --> 00:22:00.633
+the primary
+
+575
+00:22:00.633 --> 00:22:03.833
+load image data then again if we get
+
+576
+00:22:03.833 --> 00:22:04.466
+success
+
+577
+00:22:04.466 --> 00:22:07.900
+we complete with result if it fails
+
+578
+00:22:07.900 --> 00:22:10.000
+we try to load the image data from the
+
+579
+00:22:10.000 --> 00:22:12.633
+fallback data loader and now we hold a
+
+580
+00:22:12.633 --> 00:22:13.433
+reference
+
+581
+00:22:13.433 --> 00:22:16.933
+to the fallback task so if we cancel
+
+582
+00:22:16.933 --> 00:22:19.033
+during a fallback load we cancel the
+
+583
+00:22:19.033 --> 00:22:20.633
+fallback load
+
+584
+00:22:20.633 --> 00:22:23.033
+that's it as simple as that and we can
+
+585
+00:22:23.033 --> 00:22:24.300
+reuse these
+
+586
+00:22:24.300 --> 00:22:27.666
+infinitely awesome and as you said
+
+587
+00:22:27.666 --> 00:22:30.400
+it's up to whoever composes this type to
+
+588
+00:22:30.400 --> 00:22:32.766
+compose it accordingly with the primary
+
+589
+00:22:32.766 --> 00:22:35.666
+and fallback sources and this can scale
+
+590
+00:22:35.666 --> 00:22:37.100
+infinitely
+
+591
+00:22:37.100 --> 00:22:41.600
+that's it so let's see it in action
+
+592
+00:22:41.600 --> 00:22:44.533
+let's create our RemoteFeedLoader and
+
+593
+00:22:44.533 --> 00:22:47.500
+ImageLoader with the URLSession client
+
+594
+00:22:47.500 --> 00:22:49.900
+and also let's create a LocalImage
+
+595
+00:22:49.900 --> 00:22:51.900
+Loader in a LocalFeedLoader
+
+596
+00:22:51.900 --> 00:22:56.000
+with the local CoreDataStore
+
+597
+00:22:56.000 --> 00:22:57.900
+and now we can compose them using the
+
+598
+00:22:57.900 --> 00:23:00.300
+composite
+
+599
+00:23:00.300 --> 00:23:03.333
+so the FeedLoader is the FeedLoader
+
+600
+00:23:03.333 --> 00:23:05.266
+WithFallbackComposite
+
+601
+00:23:05.266 --> 00:23:08.633
+where the primary loader is the Remote
+
+602
+00:23:08.633 --> 00:23:12.233
+FeedLoader and the fallback is the Local
+
+603
+00:23:12.233 --> 00:23:15.333
+FeedLoader that's it and the image
+
+604
+00:23:15.333 --> 00:23:16.300
+loader
+
+605
+00:23:16.300 --> 00:23:18.766
+is the FeedImageDataLoaderWith
+
+606
+00:23:18.766 --> 00:23:20.300
+FallbackComposite
+
+607
+00:23:20.300 --> 00:23:23.333
+where the primary source is the local
+
+608
+00:23:23.333 --> 00:23:26.066
+image loader and the fallback is the
+
+609
+00:23:26.066 --> 00:23:27.500
+remote
+
+610
+00:23:27.500 --> 00:23:32.133
+image loader okay the opposite here
+
+611
+00:23:32.133 --> 00:23:36.300
+but we could invert it freely as needed
+
+612
+00:23:36.300 --> 00:23:39.733
+we can even have another composite there
+
+613
+00:23:39.733 --> 00:23:42.700
+loading from an in-memory cache before
+
+614
+00:23:42.700 --> 00:23:43.266
+going
+
+615
+00:23:43.266 --> 00:23:46.933
+directly to the persistent store exactly
+
+616
+00:23:46.933 --> 00:23:49.033
+the fallback for the FeedLoader for
+
+617
+00:23:49.033 --> 00:23:51.333
+example could be another composite
+
+618
+00:23:51.333 --> 00:23:54.133
+where the primary could be an in-memory
+
+619
+00:23:54.133 --> 00:23:55.333
+store
+
+620
+00:23:55.333 --> 00:23:59.200
+with a fallback if it fails of a local
+
+621
+00:23:59.200 --> 00:24:01.666
+FeedLoader so we can compose the
+
+622
+00:24:01.666 --> 00:24:02.533
+composites
+
+623
+00:24:02.533 --> 00:24:05.900
+yes infinitely and look how nicely the
+
+624
+00:24:05.900 --> 00:24:09.033
+nested code represents the steps of the
+
+625
+00:24:09.033 --> 00:24:10.400
+algorithm here
+
+626
+00:24:10.400 --> 00:24:13.100
+the primary step and the fallback step
+
+627
+00:24:13.100 --> 00:24:14.233
+which has a primary
+
+628
+00:24:14.233 --> 00:24:17.033
+and a fallback again that's it it's
+
+629
+00:24:17.033 --> 00:24:19.333
+beautiful
+
+630
+00:24:19.333 --> 00:24:21.900
+so let's go back RemoteFeedLoader has
+
+631
+00:24:21.900 --> 00:24:22.533
+primary
+
+632
+00:24:22.533 --> 00:24:26.300
+and the LocalFeedLoader as a fallback
+
+633
+00:24:26.300 --> 00:24:29.833
+let's run the application
+
+634
+00:24:29.833 --> 00:24:33.833
+and it works there you go awesome
+
+635
+00:24:33.833 --> 00:24:36.866
+you can even implement a retry strategy
+
+636
+00:24:36.866 --> 00:24:38.066
+with this composite
+
+637
+00:24:38.066 --> 00:24:40.400
+for example if you want to retry twice
+
+638
+00:24:40.400 --> 00:24:41.500
+the remote loader
+
+639
+00:24:41.500 --> 00:24:44.466
+before going to the fallback you can
+
+640
+00:24:44.466 --> 00:24:45.666
+create a composite
+
+641
+00:24:45.666 --> 00:24:48.133
+with the primary as the RemoteFeed
+
+642
+00:24:48.133 --> 00:24:49.033
+Loader
+
+643
+00:24:49.033 --> 00:24:51.733
+and the fallback of the LocalFeedLoader
+
+644
+00:24:51.733 --> 00:24:53.200
+so now it's going to try
+
+645
+00:24:53.200 --> 00:24:55.833
+to load from remote fallback is going to
+
+646
+00:24:55.833 --> 00:24:57.900
+try to load from remote again
+
+647
+00:24:57.900 --> 00:24:58.933
+and then it's going to go for the
+
+648
+00:24:58.933 --> 00:25:01.600
+fallback how awesome is that no counters
+
+649
+00:25:01.600 --> 00:25:02.400
+needed
+
+650
+00:25:02.400 --> 00:25:05.033
+no state, nothing and that's it you can
+
+651
+00:25:05.033 --> 00:25:07.033
+keep composing these things infinitely
+
+652
+00:25:07.033 --> 00:25:09.200
+as much as you want and when you need
+
+653
+00:25:09.200 --> 00:25:10.400
+this kind of freedom
+
+654
+00:25:10.400 --> 00:25:13.033
+in this kind of composability that's a
+
+655
+00:25:13.033 --> 00:25:14.533
+great way of doing it
+
+656
+00:25:14.533 --> 00:25:17.833
+awesome so that's it at the end
+
+657
+00:25:17.833 --> 00:25:19.900
+we created a much more flexible
+
+658
+00:25:19.900 --> 00:25:21.333
+composite
+
+659
+00:25:21.333 --> 00:25:24.766
+simple yet powerful we could go with the
+
+660
+00:25:24.766 --> 00:25:25.733
+concrete types
+
+661
+00:25:25.733 --> 00:25:28.700
+but again we would tie our test code
+
+662
+00:25:28.700 --> 00:25:30.300
+with concrete implementations
+
+663
+00:25:30.300 --> 00:25:32.700
+so we would end up with integration
+
+664
+00:25:32.700 --> 00:25:35.600
+tests that are fragile
+
+665
+00:25:35.600 --> 00:25:37.033
+it's much better to test things in
+
+666
+00:25:37.033 --> 00:25:39.033
+isolation at the unit level
+
+667
+00:25:39.033 --> 00:25:41.100
+and then you test things in integration
+
+668
+00:25:41.100 --> 00:25:43.266
+at a higher level
+
+669
+00:25:43.266 --> 00:25:44.933
+we also demonstrated how to test things
+
+670
+00:25:44.933 --> 00:25:47.033
+with a stub as you saw
+
+671
+00:25:47.033 --> 00:25:50.300
+all these options have merits but they
+
+672
+00:25:50.300 --> 00:25:51.200
+also have
+
+673
+00:25:51.200 --> 00:25:55.033
+their disadvantages nothing is perfect
+
+674
+00:25:55.033 --> 00:25:56.866
+the more techniques you know the more
+
+675
+00:25:56.866 --> 00:25:58.633
+options you have to solve different
+
+676
+00:25:58.633 --> 00:26:02.066
+problems exactly it's all about managing
+
+677
+00:26:02.066 --> 00:26:03.266
+the trade-offs
+
+678
+00:26:03.266 --> 00:26:06.633
+that's it okay and let's set up the CI
+
+679
+00:26:06.633 --> 00:26:08.466
+pipeline
+
+680
+00:26:08.466 --> 00:26:10.400
+exactly now that we have a new project
+
+681
+00:26:10.400 --> 00:26:12.933
+we need to add it to the CI pipeline
+
+682
+00:26:12.933 --> 00:26:15.833
+what we can do here is to migrate our
+
+683
+00:26:15.833 --> 00:26:16.700
+CI_iOS
+
+684
+00:26:16.700 --> 00:26:19.500
+to the workspace so let's select the
+
+685
+00:26:19.500 --> 00:26:21.333
+workspace as the container
+
+686
+00:26:21.333 --> 00:26:25.333
+for the CI_iOS scheme
+
+687
+00:26:25.333 --> 00:26:28.300
+let's select the test configuration
+
+688
+00:26:28.300 --> 00:26:29.100
+let's add
+
+689
+00:26:29.100 --> 00:26:32.066
+the EssentialAppTests target let's
+
+690
+00:26:32.066 --> 00:26:32.766
+randomize
+
+691
+00:26:32.766 --> 00:26:36.766
+the execution order as always
+
+692
+00:26:36.766 --> 00:26:40.533
+let's include the EssentialApp target
+
+693
+00:26:40.533 --> 00:26:43.833
+for gathering coverage
+
+694
+00:26:43.833 --> 00:26:46.633
+okay let's update the CI configuration
+
+695
+00:26:46.633 --> 00:26:48.133
+file
+
+696
+00:26:48.133 --> 00:26:50.000
+okay so now we're not using a project
+
+697
+00:26:50.000 --> 00:26:53.100
+anymore for the CI_iOS scheme
+
+698
+00:26:53.100 --> 00:26:56.066
+it's a workspace in the workspace is the
+
+699
+00:26:56.066 --> 00:26:58.766
+EssentialApp
+
+700
+00:26:58.766 --> 00:27:01.133
+xcworkspace
+
+701
+00:27:02.866 --> 00:27:04.833
+okay let's have a look at the dependency
+
+702
+00:27:04.833 --> 00:27:07.033
+diagram
+
+703
+00:27:07.033 --> 00:27:09.733
+that's it we have two new types the
+
+704
+00:27:09.733 --> 00:27:10.533
+composite
+
+705
+00:27:10.533 --> 00:27:12.533
+that implements the FeedLoader and
+
+706
+00:27:12.533 --> 00:27:15.100
+composes any type of FeedLoader with a
+
+707
+00:27:15.100 --> 00:27:16.466
+fallback
+
+708
+00:27:16.466 --> 00:27:18.000
+and a FeedImageDataLoader with
+
+709
+00:27:18.000 --> 00:27:19.500
+FallbackComposite
+
+710
+00:27:19.500 --> 00:27:21.200
+that implements the FeedImageData
+
+711
+00:27:21.200 --> 00:27:23.333
+Loader protocol and composes
+
+712
+00:27:23.333 --> 00:27:24.866
+other types that implement the Feed
+
+713
+00:27:24.866 --> 00:27:26.700
+ImageDataLoader with
+
+714
+00:27:26.700 --> 00:27:29.833
+a fallback there you have it no more
+
+715
+00:27:29.833 --> 00:27:33.333
+arrows to concrete types, so that's it
+
+716
+00:27:33.333 --> 00:27:34.866
+for this lecture
+
+717
+00:27:34.866 --> 00:27:37.333
+okay a long one but an extremely
+
+718
+00:27:37.333 --> 00:27:38.866
+important one
+
+719
+00:27:38.866 --> 00:27:42.066
+we'll see you again next time bye y'all
+
+720
+00:27:42.066 --> 00:27:53.900
+see ya

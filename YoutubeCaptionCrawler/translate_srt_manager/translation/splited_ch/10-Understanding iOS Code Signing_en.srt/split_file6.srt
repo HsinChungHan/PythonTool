@@ -1,0 +1,23 @@
+33
+00:05:16,000 --> 00:05:29,000
+證書簽名請求是從申請者（我們）發送到證書權威（在此情況下是Apple）以申請數字身份證書的訊息。
+
+34
+00:05:29,000 --> 00:05:36,000
+這個CSR是使用來自Keychain Access Mac app的Certificate Assistant來創建的。
+
+35
+00:05:36,000 --> 00:05:41,000
+那麼讓我們看看實際操作。
+
+36
+00:05:41,000 --> 00:05:51,000
+如果我們開啟Keychain Access app並使用其菜單，在Certificate Assistant下面有一些選項。
+
+37
+00:05:51,000 --> 00:05:59,000
+我們要使用的是這個Request a Certificate from a Certificate Authority。
+
+38
+00:05:59,000 --> 00:06:03,000
+這就是Certificate Assistant的樣子。

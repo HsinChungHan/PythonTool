@@ -1,0 +1,2231 @@
+1
+00:00:01.033 --> 00:00:03.833
+Hello Mike, hey Caio
+
+2
+00:00:03.833 --> 00:00:05.900
+in the previous lecture we validated the
+
+3
+00:00:05.900 --> 00:00:07.200
+acceptance criteria
+
+4
+00:00:07.200 --> 00:00:09.666
+with integration tests and in this
+
+5
+00:00:09.666 --> 00:00:10.933
+lecture we're going to show you how you
+
+6
+00:00:10.933 --> 00:00:11.900
+can validate
+
+7
+00:00:11.900 --> 00:00:15.033
+your user interface with snapshot
+
+8
+00:00:15.033 --> 00:00:18.533
+tests okay so in the EssentialFeed
+
+9
+00:00:18.533 --> 00:00:21.666
+iOS module let's create a new
+
+10
+00:00:21.666 --> 00:00:27.666
+test file FeedSnapshotTests
+
+11
+00:00:27.666 --> 00:00:29.900
+and the idea with snapshot tests is that
+
+12
+00:00:29.900 --> 00:00:31.166
+we are going to render
+
+13
+00:00:31.166 --> 00:00:34.066
+the user interface and take a snapshot
+
+14
+00:00:34.066 --> 00:00:35.200
+exactly
+
+15
+00:00:35.200 --> 00:00:38.300
+so first of all the simplest view is the
+
+16
+00:00:38.300 --> 00:00:39.033
+empty
+
+17
+00:00:39.033 --> 00:00:41.733
+feed right so we're going to instantiate
+
+18
+00:00:41.733 --> 00:00:43.200
+a FeedViewController
+
+19
+00:00:43.200 --> 00:00:45.033
+which is going to be the system under
+
+20
+00:00:45.033 --> 00:00:47.200
+test and we are going to take a snapshot
+
+21
+00:00:47.200 --> 00:00:52.133
+of it after rendering an empty feed
+
+22
+00:00:52.133 --> 00:00:54.300
+that's it so we need to create our
+
+23
+00:00:54.300 --> 00:00:55.433
+system under test
+
+24
+00:00:55.433 --> 00:00:58.300
+as always with the makeSUT function
+
+25
+00:00:58.300 --> 00:00:59.833
+which is very simple
+
+26
+00:00:59.833 --> 00:01:01.333
+we just need to instantiate the
+
+27
+00:01:01.333 --> 00:01:04.766
+FeedViewController from the storyboard
+
+28
+00:01:04.766 --> 00:01:07.266
+and load the view so it's ready to be
+
+29
+00:01:07.266 --> 00:01:08.133
+rendered
+
+30
+00:01:08.133 --> 00:01:10.066
+and the FeedViewController lives in the
+
+31
+00:01:10.066 --> 00:01:12.300
+EssentialFeediOS module
+
+32
+00:01:12.300 --> 00:01:15.500
+so we need to import that alright
+
+33
+00:01:15.500 --> 00:01:18.766
+and the display method takes an array
+
+34
+00:01:18.766 --> 00:01:23.600
+of FeedImageCellControllers
+
+35
+00:01:23.600 --> 00:01:27.600
+so an empty feed would be simply
+
+36
+00:01:27.600 --> 00:01:29.833
+an empty array of FeedImageCell
+
+37
+00:01:29.833 --> 00:01:31.100
+Controllers
+
+38
+00:01:31.100 --> 00:01:34.466
+yes that's it the test reads very nicely
+
+39
+00:01:34.466 --> 00:01:36.466
+alright now we need to take a snapshot
+
+40
+00:01:36.466 --> 00:01:37.733
+of the view controller
+
+41
+00:01:37.733 --> 00:01:39.666
+and to do so we can introduce an
+
+42
+00:01:39.666 --> 00:01:42.133
+extension on UIViewController
+
+43
+00:01:42.133 --> 00:01:45.333
+with a method snapshot that returns
+
+44
+00:01:45.333 --> 00:01:48.700
+a UIImage so the idea is to render
+
+45
+00:01:48.700 --> 00:01:50.766
+the view of the view controller and take
+
+46
+00:01:50.766 --> 00:01:52.866
+a snapshot of that view
+
+47
+00:01:52.866 --> 00:01:55.833
+exactly so let's render it with a
+
+48
+00:01:55.833 --> 00:01:56.866
+renderer
+
+49
+00:01:56.866 --> 00:02:00.300
+which is a UIGraphicsImageRenderer
+
+50
+00:02:00.300 --> 00:02:03.500
+so the bounds is the view bounds
+
+51
+00:02:03.500 --> 00:02:05.666
+exactly because we want the whole view
+
+52
+00:02:05.666 --> 00:02:06.866
+here
+
+53
+00:02:06.866 --> 00:02:10.466
+and we return the renderer image
+
+54
+00:02:10.466 --> 00:02:13.733
+by rendering the view
+
+55
+00:02:13.733 --> 00:02:17.100
+in the action context
+
+56
+00:02:17.100 --> 00:02:18.866
+alright that's all that's how we can
+
+57
+00:02:18.866 --> 00:02:22.000
+take a snapshot of a view
+
+58
+00:02:22.000 --> 00:02:24.933
+so let's see if the snapshot is working
+
+59
+00:02:24.933 --> 00:02:26.800
+let's capture the snapshot
+
+60
+00:02:26.800 --> 00:02:29.333
+let's add a breakpoint here let's run
+
+61
+00:02:29.333 --> 00:02:30.466
+the test
+
+62
+00:02:30.466 --> 00:02:32.533
+and let's investigate the value of the
+
+63
+00:02:32.533 --> 00:02:34.300
+snapshot
+
+64
+00:02:34.300 --> 00:02:38.066
+there it is an empty screen okay
+
+65
+00:02:38.066 --> 00:02:40.400
+might not have a lot but that's exactly
+
+66
+00:02:40.400 --> 00:02:41.833
+what we want
+
+67
+00:02:41.833 --> 00:02:44.133
+that's it when the feed is empty we see
+
+68
+00:02:44.133 --> 00:02:45.566
+an empty screen
+
+69
+00:02:45.566 --> 00:02:48.300
+that's it okay so the snapshot is
+
+70
+00:02:48.300 --> 00:02:49.100
+working
+
+71
+00:02:49.100 --> 00:02:51.266
+but the idea of snapshot testing is that
+
+72
+00:02:51.266 --> 00:02:52.700
+we take a snapshot
+
+73
+00:02:52.700 --> 00:02:56.000
+we store the snapshot to the File system
+
+74
+00:02:56.000 --> 00:02:59.100
+and then we can compare new snapshots
+
+75
+00:02:59.100 --> 00:03:02.300
+to the previous stored snapshot
+
+76
+00:03:02.300 --> 00:03:05.200
+so now we need to record that snapshot
+
+77
+00:03:05.200 --> 00:03:05.500
+or
+
+78
+00:03:05.500 --> 00:03:08.300
+save it to the File system and we can
+
+79
+00:03:08.300 --> 00:03:09.433
+create a new function
+
+80
+00:03:09.433 --> 00:03:12.933
+called recordSnapshot
+
+81
+00:03:12.933 --> 00:03:16.133
+and we can give it a unique name so it
+
+82
+00:03:16.133 --> 00:03:20.866
+doesn't conflict with other snapshots
+
+83
+00:03:20.866 --> 00:03:23.500
+okay so here it is the record function
+
+84
+00:03:23.500 --> 00:03:24.866
+takes a snapshot
+
+85
+00:03:24.866 --> 00:03:28.133
+which is a UIImage and a name so first
+
+86
+00:03:28.133 --> 00:03:30.300
+thing we need to do is to convert
+
+87
+00:03:30.300 --> 00:03:33.266
+our UIImage snapshot into data that we
+
+88
+00:03:33.266 --> 00:03:35.266
+can store to disk
+
+89
+00:03:35.266 --> 00:03:38.000
+and we can use a PNG representation if
+
+90
+00:03:38.000 --> 00:03:39.433
+you fail to create it
+
+91
+00:03:39.433 --> 00:03:41.900
+we fail with an assertion failure and a
+
+92
+00:03:41.900 --> 00:03:43.266
+nice message
+
+93
+00:03:43.266 --> 00:03:46.633
+okay next we need a path for storing it
+
+94
+00:03:46.633 --> 00:03:48.700
+and we can use the file path to create
+
+95
+00:03:48.700 --> 00:03:49.733
+the URL
+
+96
+00:03:49.733 --> 00:03:52.700
+as the file parameter holds the path to
+
+97
+00:03:52.700 --> 00:03:54.133
+the current file
+
+98
+00:03:54.133 --> 00:03:56.233
+exactly ideally we should store the
+
+99
+00:03:56.233 --> 00:03:57.266
+snapshots
+
+100
+00:03:57.266 --> 00:03:59.833
+close to the test file so we can use the
+
+101
+00:03:59.833 --> 00:04:01.333
+current file path
+
+102
+00:04:01.333 --> 00:04:04.866
+which is the FeedSnapshotTests file
+
+103
+00:04:04.866 --> 00:04:08.133
+as the base path for our snapshots
+
+104
+00:04:08.133 --> 00:04:10.633
+exactly and storing it in the same
+
+105
+00:04:10.633 --> 00:04:12.400
+directory as a test file
+
+106
+00:04:12.400 --> 00:04:14.533
+it means that we can add it to git as
+
+107
+00:04:14.533 --> 00:04:15.900
+well
+
+108
+00:04:15.900 --> 00:04:18.866
+exactly those snapshots should be stored
+
+109
+00:04:18.866 --> 00:04:19.500
+and pushed
+
+110
+00:04:19.500 --> 00:04:22.133
+to git so others can validate their
+
+111
+00:04:22.133 --> 00:04:23.100
+changes
+
+112
+00:04:23.100 --> 00:04:26.066
+against the stored snapshots so that's
+
+113
+00:04:26.066 --> 00:04:26.633
+it
+
+114
+00:04:26.633 --> 00:04:28.800
+let's create a URL for the snapshot with
+
+115
+00:04:28.800 --> 00:04:31.166
+the current file path
+
+116
+00:04:31.166 --> 00:04:33.666
+which will look something like this the
+
+117
+00:04:33.666 --> 00:04:35.500
+folder where the test file is
+
+118
+00:04:35.500 --> 00:04:38.633
+the EssentialFeediOSTests and
+
+119
+00:04:38.633 --> 00:04:42.233
+the file name
+
+120
+00:04:42.233 --> 00:04:45.100
+so we can delete the last path component
+
+121
+00:04:45.100 --> 00:04:46.233
+which would give us
+
+122
+00:04:46.233 --> 00:04:49.333
+the folder where the file is which
+
+123
+00:04:49.333 --> 00:04:53.166
+is the EssentialFeediOSTests folder
+
+124
+00:04:53.166 --> 00:04:55.666
+and we can append a path component to
+
+125
+00:04:55.666 --> 00:04:56.933
+create a new folder structure
+
+126
+00:04:56.933 --> 00:05:00.000
+for the snapshot that's it and finally
+
+127
+00:05:00.000 --> 00:05:03.100
+we can append the name of the file
+
+128
+00:05:03.100 --> 00:05:06.133
+which in this case is empty feed so we
+
+129
+00:05:06.133 --> 00:05:06.866
+would end up
+
+130
+00:05:06.866 --> 00:05:09.166
+with a file path like this the base
+
+131
+00:05:09.166 --> 00:05:10.066
+folder
+
+132
+00:05:10.066 --> 00:05:11.900
+plus the snapshots folder and the file
+
+133
+00:05:11.900 --> 00:05:14.066
+name yes
+
+134
+00:05:14.066 --> 00:05:17.600
+alright now we have the data to store to
+
+135
+00:05:17.600 --> 00:05:18.133
+disk
+
+136
+00:05:18.133 --> 00:05:20.800
+and the URL where we want to store it so
+
+137
+00:05:20.800 --> 00:05:21.166
+next
+
+138
+00:05:21.166 --> 00:05:23.100
+we need to make sure that this folder
+
+139
+00:05:23.100 --> 00:05:24.866
+structure exists
+
+140
+00:05:24.866 --> 00:05:26.800
+in the File system so we can use the
+
+141
+00:05:26.800 --> 00:05:28.800
+FileManager to create the folder
+
+142
+00:05:28.800 --> 00:05:31.433
+if needed and if it fails to create it
+
+143
+00:05:31.433 --> 00:05:33.100
+again we get a nice
+
+144
+00:05:33.100 --> 00:05:36.633
+assertion failure with the error
+
+145
+00:05:36.633 --> 00:05:41.433
+finally we can save our snapshot data
+
+146
+00:05:41.433 --> 00:05:44.800
+let's run the test okay
+
+147
+00:05:44.800 --> 00:05:47.166
+it's passing which means it should have
+
+148
+00:05:47.166 --> 00:05:48.400
+stored it to disk
+
+149
+00:05:48.400 --> 00:05:51.733
+so let's have a look okay it created the
+
+150
+00:05:51.733 --> 00:05:53.100
+directory
+
+151
+00:05:53.100 --> 00:05:55.733
+and it stored the image look at that
+
+152
+00:05:55.733 --> 00:05:56.866
+that's awesome
+
+153
+00:05:56.866 --> 00:06:00.633
+EMPTY_FEED.png fantastic
+
+154
+00:06:00.633 --> 00:06:03.833
+so let's commit okay
+
+155
+00:06:03.833 --> 00:06:06.466
+as you can see in the git diff we now
+
+156
+00:06:06.466 --> 00:06:07.033
+have the
+
+157
+00:06:07.033 --> 00:06:09.833
+empty feed image so our peers can also
+
+158
+00:06:09.833 --> 00:06:11.100
+use it to compare
+
+159
+00:06:11.100 --> 00:06:14.933
+with their changes so record empty feed
+
+160
+00:06:14.933 --> 00:06:18.233
+snapshot commit
+
+161
+00:06:18.233 --> 00:06:21.500
+next test now
+
+162
+00:06:21.500 --> 00:06:24.933
+a feed with content the empty one
+
+163
+00:06:24.933 --> 00:06:29.100
+is too easy right now we need to create
+
+164
+00:06:29.100 --> 00:06:32.000
+FeedImageCellControllers and populate
+
+165
+00:06:32.000 --> 00:06:32.933
+it
+
+166
+00:06:32.933 --> 00:06:36.300
+with an image so the
+
+167
+00:06:36.300 --> 00:06:38.866
+FeedImageCellController requests the
+
+168
+00:06:38.866 --> 00:06:39.666
+image
+
+169
+00:06:39.666 --> 00:06:42.933
+from its delegate right which should
+
+170
+00:06:42.933 --> 00:06:45.266
+call the display view model when it's
+
+171
+00:06:45.266 --> 00:06:46.400
+done requesting
+
+172
+00:06:46.400 --> 00:06:49.833
+the image so we need to create
+
+173
+00:06:49.833 --> 00:06:52.466
+some image stubs that we can use during
+
+174
+00:06:52.466 --> 00:06:53.666
+tests
+
+175
+00:06:53.666 --> 00:06:55.166
+we can simply render things on the
+
+176
+00:06:55.166 --> 00:06:57.166
+screen without any other
+
+177
+00:06:57.166 --> 00:07:01.433
+dependency okay I like that
+
+178
+00:07:01.433 --> 00:07:04.633
+so let's create a class ImageStub that
+
+179
+00:07:04.633 --> 00:07:06.066
+implements
+
+180
+00:07:06.066 --> 00:07:09.100
+the ImageCellControllerDelegate
+
+181
+00:07:09.100 --> 00:07:11.666
+which has two methods did request image
+
+182
+00:07:11.666 --> 00:07:14.066
+and did cancel image request
+
+183
+00:07:14.066 --> 00:07:16.300
+and when the controller requests the
+
+184
+00:07:16.300 --> 00:07:18.400
+image we need to tell the controller to
+
+185
+00:07:18.400 --> 00:07:19.100
+display
+
+186
+00:07:19.100 --> 00:07:22.133
+a stubbed view model so we need a
+
+187
+00:07:22.133 --> 00:07:22.800
+reference
+
+188
+00:07:22.800 --> 00:07:25.666
+to a controller but since the controller
+
+189
+00:07:25.666 --> 00:07:27.666
+has a strong reference to the delegate
+
+190
+00:07:27.666 --> 00:07:29.900
+we need to make the image stub reference
+
+191
+00:07:29.900 --> 00:07:31.033
+to the controller
+
+192
+00:07:31.033 --> 00:07:35.500
+weak to avoid any retain cycles
+
+193
+00:07:35.500 --> 00:07:38.700
+ok done then
+
+194
+00:07:38.700 --> 00:07:42.066
+we need a view model yes
+
+195
+00:07:42.066 --> 00:07:48.066
+which is a FeedImageViewModel
+
+196
+00:07:48.066 --> 00:07:49.733
+and we need an initializer that can
+
+197
+00:07:49.733 --> 00:07:51.666
+simplify that work for us
+
+198
+00:07:51.666 --> 00:07:55.033
+we pass description, location and the
+
+199
+00:07:55.033 --> 00:07:55.666
+UIImage
+
+200
+00:07:55.666 --> 00:07:57.500
+and that will create the view model for
+
+201
+00:07:57.500 --> 00:07:58.800
+us
+
+202
+00:07:58.800 --> 00:08:01.033
+so we now just need to import the
+
+203
+00:08:01.033 --> 00:08:02.533
+EssentialFeed module
+
+204
+00:08:02.533 --> 00:08:06.000
+where the FeedImageViewModel lives
+
+205
+00:08:06.000 --> 00:08:08.933
+however the FeedImageViewModel
+
+206
+00:08:08.933 --> 00:08:12.633
+doesn't have a public initializer
+
+207
+00:08:12.633 --> 00:08:15.566
+so we either add a public initializer or
+
+208
+00:08:15.566 --> 00:08:16.466
+we import
+
+209
+00:08:16.466 --> 00:08:19.666
+the module as testable so we can create
+
+210
+00:08:19.666 --> 00:08:22.300
+the view model struct adding it as
+
+211
+00:08:22.300 --> 00:08:23.100
+@testable
+
+212
+00:08:23.100 --> 00:08:26.466
+is fine for now okay finally we need to
+
+213
+00:08:26.466 --> 00:08:28.133
+create the feed with content
+
+214
+00:08:28.133 --> 00:08:31.900
+helper which should just
+
+215
+00:08:31.900 --> 00:08:35.833
+create an array of ImageStubs
+
+216
+00:08:35.833 --> 00:08:37.900
+so it has some long description, some
+
+217
+00:08:37.900 --> 00:08:38.866
+multiline
+
+218
+00:08:38.866 --> 00:08:42.066
+location string and
+
+219
+00:08:42.066 --> 00:08:44.466
+an image and we can use the helper to
+
+220
+00:08:44.466 --> 00:08:46.633
+just make an image based on a color
+
+221
+00:08:46.633 --> 00:08:53.433
+let me add it from the other module
+
+222
+00:08:53.433 --> 00:08:57.900
+make sure to copy the item if needed
+
+223
+00:08:57.900 --> 00:09:01.266
+that's it
+
+224
+00:09:01.266 --> 00:09:03.266
+now we just need to convert the Image
+
+225
+00:09:03.266 --> 00:09:04.766
+Stubs into the
+
+226
+00:09:04.766 --> 00:09:08.300
+ImageCellControllers so we're going to
+
+227
+00:09:08.300 --> 00:09:08.700
+map
+
+228
+00:09:08.700 --> 00:09:12.233
+the stubs and create a cell controller
+
+229
+00:09:12.233 --> 00:09:16.233
+for each stub
+
+230
+00:09:16.233 --> 00:09:20.833
+and set the stub controller as the cell
+
+231
+00:09:20.833 --> 00:09:23.500
+controller
+
+232
+00:09:23.500 --> 00:09:26.633
+finally let's call display cells and that
+
+233
+00:09:26.633 --> 00:09:28.300
+should do it
+
+234
+00:09:28.300 --> 00:09:32.133
+okay let's run the test alright
+
+235
+00:09:32.133 --> 00:09:35.200
+there it is empty feed and
+
+236
+00:09:35.200 --> 00:09:37.900
+feed with content without running the
+
+237
+00:09:37.900 --> 00:09:38.933
+application
+
+238
+00:09:38.933 --> 00:09:42.633
+awesome alright let's commit
+
+239
+00:09:42.633 --> 00:09:45.733
+as you can see again the image is also
+
+240
+00:09:45.733 --> 00:09:49.500
+added to the git history
+
+241
+00:09:49.500 --> 00:09:54.533
+so record feed with content snapshot
+
+242
+00:09:54.533 --> 00:09:57.900
+next let's render
+
+243
+00:09:57.900 --> 00:10:02.466
+a feed with an error message
+
+244
+00:10:02.466 --> 00:10:06.366
+let's run the test
+
+245
+00:10:06.366 --> 00:10:09.333
+okay there's the error message and we
+
+246
+00:10:09.333 --> 00:10:11.666
+can even test it against the multi-line
+
+247
+00:10:11.666 --> 00:10:15.266
+error message exactly it's a good idea
+
+248
+00:10:15.266 --> 00:10:17.900
+to test labels with multiple lines
+
+249
+00:10:17.900 --> 00:10:19.500
+especially because some translations
+
+250
+00:10:19.500 --> 00:10:20.133
+might be
+
+251
+00:10:20.133 --> 00:10:23.833
+longer than others exactly so this is a
+
+252
+00:10:23.833 --> 00:10:24.533
+multi-line
+
+253
+00:10:24.533 --> 00:10:27.900
+error message let's record the snapshot
+
+254
+00:10:27.900 --> 00:10:29.033
+again
+
+255
+00:10:29.033 --> 00:10:32.233
+let's see, a-ha, look at that
+
+256
+00:10:32.233 --> 00:10:34.866
+it is cropping the error message and we
+
+257
+00:10:34.866 --> 00:10:36.133
+don't want that
+
+258
+00:10:36.133 --> 00:10:39.433
+no we don't and that's one benefit of
+
+259
+00:10:39.433 --> 00:10:42.000
+screenshot testing no other tests picked
+
+260
+00:10:42.000 --> 00:10:43.500
+that up so far
+
+261
+00:10:43.500 --> 00:10:46.366
+yes you cannot test these easily with
+
+262
+00:10:46.366 --> 00:10:46.933
+unit
+
+263
+00:10:46.933 --> 00:10:49.833
+or integration tests because they're not
+
+264
+00:10:49.833 --> 00:10:50.300
+meant
+
+265
+00:10:50.300 --> 00:10:53.833
+to test things on the screen exactly
+
+266
+00:10:53.833 --> 00:10:57.100
+let's fix it, Feed
+
+267
+00:10:57.100 --> 00:11:00.633
+storyboard let's select the error label
+
+268
+00:11:00.633 --> 00:11:03.433
+make sure it supports multiline and it
+
+269
+00:11:03.433 --> 00:11:04.233
+does
+
+270
+00:11:04.233 --> 00:11:08.133
+it has no limit of lines
+
+271
+00:11:08.133 --> 00:11:11.266
+but the view is the table
+
+272
+00:11:11.266 --> 00:11:14.300
+header view and table headers
+
+273
+00:11:14.300 --> 00:11:17.500
+don't play nicely with auto layout
+
+274
+00:11:17.500 --> 00:11:21.100
+right so we need to resize this header
+
+275
+00:11:21.100 --> 00:11:23.666
+manually no problem let's create a
+
+276
+00:11:23.666 --> 00:11:26.066
+helper here
+
+277
+00:11:26.066 --> 00:11:29.833
+UITableView+Header
+
+278
+00:11:29.833 --> 00:11:33.033
+Sizing so we need to check
+
+279
+00:11:33.033 --> 00:11:35.333
+if there is a frame change so we can
+
+280
+00:11:35.333 --> 00:11:36.866
+update the table header
+
+281
+00:11:36.866 --> 00:11:39.266
+manually let's update the FeedView
+
+282
+00:11:39.266 --> 00:11:40.633
+Controller now
+
+283
+00:11:40.633 --> 00:11:43.733
+so every time viewDidLayoutSubviews is
+
+284
+00:11:43.733 --> 00:11:44.366
+called
+
+285
+00:11:44.366 --> 00:11:46.800
+we need to resize the table header
+
+286
+00:11:46.800 --> 00:11:48.066
+manually
+
+287
+00:11:48.066 --> 00:11:51.900
+run the test again there it is
+
+288
+00:11:51.900 --> 00:11:55.500
+okay perfect so let's commit this
+
+289
+00:11:55.500 --> 00:12:00.000
+in parts first let's commit the fix
+
+290
+00:12:00.000 --> 00:12:02.866
+fix table header resizing for multiline
+
+291
+00:12:02.866 --> 00:12:04.466
+label
+
+292
+00:12:04.466 --> 00:12:07.433
+and then let's commit the snapshot
+
+293
+00:12:07.433 --> 00:12:08.133
+record
+
+294
+00:12:08.133 --> 00:12:11.500
+feed with error message snapshot
+
+295
+00:12:11.500 --> 00:12:16.000
+alright back to the tests
+
+296
+00:12:16.000 --> 00:12:19.033
+next test let's render
+
+297
+00:12:19.033 --> 00:12:22.133
+a feed with a failed image loading so it
+
+298
+00:12:22.133 --> 00:12:24.700
+should show the retry button
+
+299
+00:12:24.700 --> 00:12:27.666
+again makeSUT display the feed with
+
+300
+00:12:27.666 --> 00:12:29.033
+failed image loading
+
+301
+00:12:29.033 --> 00:12:32.233
+and record a snapshot
+
+302
+00:12:32.233 --> 00:12:35.333
+let's create now the factory method for
+
+303
+00:12:35.333 --> 00:12:38.233
+the feed with failed image loading
+
+304
+00:12:38.233 --> 00:12:41.333
+any image stub with no image should do
+
+305
+00:12:41.333 --> 00:12:46.633
+okay let's run the tests
+
+306
+00:12:46.633 --> 00:12:50.300
+okay boom there it is
+
+307
+00:12:50.300 --> 00:12:53.833
+that's it fantastic
+
+308
+00:12:53.833 --> 00:12:57.266
+let's commit record feed
+
+309
+00:12:57.266 --> 00:13:00.933
+with failed image loading snapshot
+
+310
+00:13:00.933 --> 00:13:04.633
+done okay the recording part is done
+
+311
+00:13:04.633 --> 00:13:07.200
+now it's the second part asserting that
+
+312
+00:13:07.200 --> 00:13:08.700
+the recorded snapshot
+
+313
+00:13:08.700 --> 00:13:12.466
+matches a new snapshot okay
+
+314
+00:13:12.466 --> 00:13:14.300
+because just recording the snapshot will
+
+315
+00:13:14.300 --> 00:13:15.500
+just override
+
+316
+00:13:15.500 --> 00:13:19.200
+the existing snapshot after we record it
+
+317
+00:13:19.200 --> 00:13:21.200
+and we are happy with the result we need
+
+318
+00:13:21.200 --> 00:13:22.300
+to assert
+
+319
+00:13:22.300 --> 00:13:24.700
+the rendering against the stored
+
+320
+00:13:24.700 --> 00:13:26.366
+snapshot
+
+321
+00:13:26.366 --> 00:13:36.866
+so we need an assert function
+
+322
+00:13:36.866 --> 00:13:39.033
+and the assert function will start the
+
+323
+00:13:39.033 --> 00:13:41.833
+same we need to get the snapshot data
+
+324
+00:13:41.833 --> 00:13:44.466
+and the snapshot URL but now instead of
+
+325
+00:13:44.466 --> 00:13:45.033
+storing
+
+326
+00:13:45.033 --> 00:13:47.166
+and overriding the current snapshot we
+
+327
+00:13:47.166 --> 00:13:48.633
+are going to load
+
+328
+00:13:48.633 --> 00:13:52.133
+the stored snapshot if it fails
+
+329
+00:13:52.133 --> 00:13:54.366
+we're gonna fail with an assertion and a
+
+330
+00:13:54.366 --> 00:13:55.666
+nice message
+
+331
+00:13:55.666 --> 00:13:57.266
+letting us know that we need to record
+
+332
+00:13:57.266 --> 00:13:59.333
+first before we assert
+
+333
+00:13:59.333 --> 00:14:00.933
+yeah that's very helpful I really like
+
+334
+00:14:00.933 --> 00:14:02.466
+that then
+
+335
+00:14:02.466 --> 00:14:05.033
+we need to compare if the new snapshot
+
+336
+00:14:05.033 --> 00:14:05.733
+data
+
+337
+00:14:05.733 --> 00:14:08.933
+matches the stored one
+
+338
+00:14:08.933 --> 00:14:12.133
+if they don't we have a problem right
+
+339
+00:14:12.133 --> 00:14:14.933
+and to help you debug this problem we
+
+340
+00:14:14.933 --> 00:14:15.733
+can create
+
+341
+00:14:15.733 --> 00:14:19.100
+a temporary URL where you can write
+
+342
+00:14:19.100 --> 00:14:21.433
+the new snapshot data so we can compare
+
+343
+00:14:21.433 --> 00:14:23.266
+visually against the other one
+
+344
+00:14:23.266 --> 00:14:26.000
+right and finally finish with an
+
+345
+00:14:26.000 --> 00:14:27.266
+assertion failure
+
+346
+00:14:27.266 --> 00:14:29.900
+that the new snapshot does not match the
+
+347
+00:14:29.900 --> 00:14:30.466
+stored
+
+348
+00:14:30.466 --> 00:14:33.900
+snapshot with the URL to verify
+
+349
+00:14:33.900 --> 00:14:38.700
+their differences let's run the tests
+
+350
+00:14:38.700 --> 00:14:42.000
+ok it's passing which means the new
+
+351
+00:14:42.000 --> 00:14:43.033
+snapshots
+
+352
+00:14:43.033 --> 00:14:46.000
+are exactly the same as the stored ones
+
+353
+00:14:46.000 --> 00:14:48.233
+but let's prove that it will fail
+
+354
+00:14:48.233 --> 00:14:51.333
+if we change this
+
+355
+00:14:51.333 --> 00:14:54.533
+and it does look at that and it gives
+
+356
+00:14:54.533 --> 00:14:54.866
+you
+
+357
+00:14:54.866 --> 00:14:57.500
+a nice URL where you can investigate
+
+358
+00:14:57.500 --> 00:14:58.633
+what's wrong
+
+359
+00:14:58.633 --> 00:15:02.000
+let's see look at that
+
+360
+00:15:02.000 --> 00:15:05.433
+an error message is the new snapshot
+
+361
+00:15:05.433 --> 00:15:07.266
+and the stored one of course is
+
+362
+00:15:07.266 --> 00:15:08.700
+different
+
+363
+00:15:08.700 --> 00:15:10.366
+so the test is telling us that
+
+364
+00:15:10.366 --> 00:15:12.233
+something's wrong
+
+365
+00:15:12.233 --> 00:15:15.100
+now if you think the new one is fine you
+
+366
+00:15:15.100 --> 00:15:15.833
+can just
+
+367
+00:15:15.833 --> 00:15:18.533
+record it exactly if it's not fine you
+
+368
+00:15:18.533 --> 00:15:20.866
+need to fix the problem
+
+369
+00:15:20.866 --> 00:15:22.466
+but in this case we're going to keep it
+
+370
+00:15:22.466 --> 00:15:24.233
+as a multi-line label
+
+371
+00:15:24.233 --> 00:15:25.500
+so let's run the test again and it
+
+372
+00:15:25.500 --> 00:15:28.000
+should pass so the assert function
+
+373
+00:15:28.000 --> 00:15:31.733
+does not override the stored snapshot
+
+374
+00:15:31.733 --> 00:15:35.433
+it just asserts against it exactly
+
+375
+00:15:35.433 --> 00:15:38.800
+and we can refactor the record and
+
+376
+00:15:38.800 --> 00:15:40.533
+assert methods by extracting
+
+377
+00:15:40.533 --> 00:15:43.266
+some of the duplication, this duplicate
+
+378
+00:15:43.266 --> 00:15:43.733
+code
+
+379
+00:15:43.733 --> 00:15:47.166
+can go into helpers makeSnapshotURL
+
+380
+00:15:47.166 --> 00:15:50.800
+and makeSnapshotData
+
+381
+00:15:50.800 --> 00:15:56.933
+okay much nicer
+
+382
+00:15:56.933 --> 00:16:00.800
+that's it run the tests again
+
+383
+00:16:00.800 --> 00:16:03.733
+passing let's have a look at our images
+
+384
+00:16:03.733 --> 00:16:04.466
+again
+
+385
+00:16:04.466 --> 00:16:07.900
+empty feed, feed with content, feed with
+
+386
+00:16:07.900 --> 00:16:09.166
+error message
+
+387
+00:16:09.166 --> 00:16:12.233
+and feed with failed image loading you
+
+388
+00:16:12.233 --> 00:16:13.833
+can keep rendering this view
+
+389
+00:16:13.833 --> 00:16:17.100
+with any data we want without having to
+
+390
+00:16:17.100 --> 00:16:17.600
+mock
+
+391
+00:16:17.600 --> 00:16:20.800
+any network connection or database we
+
+392
+00:16:20.800 --> 00:16:21.266
+check
+
+393
+00:16:21.266 --> 00:16:23.266
+just the rendering of the user interface
+
+394
+00:16:23.266 --> 00:16:25.433
+without any other collaborators
+
+395
+00:16:25.433 --> 00:16:27.100
+because the idea with snapshot tests is
+
+396
+00:16:27.100 --> 00:16:29.500
+to test just the rendering
+
+397
+00:16:29.500 --> 00:16:33.833
+do not test logic with snapshot tests
+
+398
+00:16:33.833 --> 00:16:36.933
+use unit and integration tests to test
+
+399
+00:16:36.933 --> 00:16:42.466
+logic that's it let's commit
+
+400
+00:16:42.466 --> 00:16:45.600
+assert snapshots match the stored
+
+401
+00:16:45.600 --> 00:16:48.866
+snapshots okay so
+
+402
+00:16:48.866 --> 00:16:51.166
+the infrastructure for recording and
+
+403
+00:16:51.166 --> 00:16:52.633
+inserting snapshots
+
+404
+00:16:52.633 --> 00:16:55.500
+is done and it's reusable we can
+
+405
+00:16:55.500 --> 00:16:56.633
+snapshot
+
+406
+00:16:56.633 --> 00:16:59.833
+view controllers or simple views
+
+407
+00:16:59.833 --> 00:17:03.166
+but this is a very simple implementation
+
+408
+00:17:03.166 --> 00:17:06.000
+we can make it more robust by allowing
+
+409
+00:17:06.000 --> 00:17:07.500
+some configurations before taking the
+
+410
+00:17:07.500 --> 00:17:08.466
+snapshot
+
+411
+00:17:08.466 --> 00:17:12.300
+for example rendering it in an iPhone 8
+
+412
+00:17:12.300 --> 00:17:15.833
+frame with a light style
+
+413
+00:17:15.833 --> 00:17:19.333
+and also render it in an iPhone 8
+
+414
+00:17:19.333 --> 00:17:22.700
+with a dark style we could also create
+
+415
+00:17:22.700 --> 00:17:23.900
+different configurations
+
+416
+00:17:23.900 --> 00:17:27.166
+like an iPhone 11 or the iPhone
+
+417
+00:17:27.166 --> 00:17:30.466
+SE or any frame we want
+
+418
+00:17:30.466 --> 00:17:32.933
+so let's delete the old ones let's
+
+419
+00:17:32.933 --> 00:17:34.233
+re-record it
+
+420
+00:17:34.233 --> 00:17:38.766
+with a specific configuration
+
+421
+00:17:38.766 --> 00:17:41.200
+so the snapshot extension now needs to
+
+422
+00:17:41.200 --> 00:17:41.833
+take
+
+423
+00:17:41.833 --> 00:17:44.833
+a snapshot configuration where we can
+
+424
+00:17:44.833 --> 00:17:47.200
+define a size
+
+425
+00:17:47.200 --> 00:17:50.133
+the safe areas inset, the layout margins
+
+426
+00:17:50.133 --> 00:17:51.433
+we want to use
+
+427
+00:17:51.433 --> 00:17:54.766
+trait collection and etc
+
+428
+00:17:54.766 --> 00:17:57.266
+and we can define some predefined
+
+429
+00:17:57.266 --> 00:17:58.233
+configurations
+
+430
+00:17:58.233 --> 00:18:00.866
+as we said the iPhone 8 with a given
+
+431
+00:18:00.866 --> 00:18:01.833
+style
+
+432
+00:18:01.833 --> 00:18:04.866
+so we set the size for the iPhone 8
+
+433
+00:18:04.866 --> 00:18:07.900
+the safe area insets, the layout margins
+
+434
+00:18:07.900 --> 00:18:10.066
+and the trait collection where we set
+
+435
+00:18:10.066 --> 00:18:11.566
+the given style so light
+
+436
+00:18:11.566 --> 00:18:13.600
+or dark and of course you can use any
+
+437
+00:18:13.600 --> 00:18:14.700
+configuration for
+
+438
+00:18:14.700 --> 00:18:18.133
+your use case exactly and to override
+
+439
+00:18:18.133 --> 00:18:20.400
+the current configuration we need a
+
+440
+00:18:20.400 --> 00:18:21.666
+custom window
+
+441
+00:18:21.666 --> 00:18:23.600
+and we use this snapshot window just
+
+442
+00:18:23.600 --> 00:18:25.666
+during tests to override
+
+443
+00:18:25.666 --> 00:18:27.833
+the view configuration so now the
+
+444
+00:18:27.833 --> 00:18:30.300
+rendering happens in the window
+
+445
+00:18:30.300 --> 00:18:33.200
+exactly so the renderer doesn't happen
+
+446
+00:18:33.200 --> 00:18:35.266
+in the view controller anymore
+
+447
+00:18:35.266 --> 00:18:38.000
+we need to embed it into the snapshot
+
+448
+00:18:38.000 --> 00:18:38.766
+window
+
+449
+00:18:38.766 --> 00:18:42.233
+and then take a snapshot of it right
+
+450
+00:18:42.233 --> 00:18:46.066
+okay let's run
+
+451
+00:18:46.066 --> 00:18:49.733
+look at that we have now the
+
+452
+00:18:49.733 --> 00:18:52.066
+dark representation of the empty feed
+
+453
+00:18:52.066 --> 00:18:53.833
+and the light one
+
+454
+00:18:53.833 --> 00:18:56.533
+and the same for the other tests both
+
+455
+00:18:56.533 --> 00:18:57.100
+dark
+
+456
+00:18:57.100 --> 00:18:59.600
+and light and as you can see there are
+
+457
+00:18:59.600 --> 00:19:00.933
+some things we need to improve
+
+458
+00:19:00.933 --> 00:19:04.000
+to support dark mode here right but
+
+459
+00:19:04.000 --> 00:19:05.266
+before we do that
+
+460
+00:19:05.266 --> 00:19:07.666
+I would like to remove the scroll
+
+461
+00:19:07.666 --> 00:19:08.866
+indicators
+
+462
+00:19:08.866 --> 00:19:11.266
+from this snapshot yes we want our
+
+463
+00:19:11.266 --> 00:19:12.533
+snapshots clean
+
+464
+00:19:12.533 --> 00:19:14.766
+there is no reason for the scroll bars
+
+465
+00:19:14.766 --> 00:19:15.833
+to be there
+
+466
+00:19:15.833 --> 00:19:17.733
+we can just set the show scroll
+
+467
+00:19:17.733 --> 00:19:19.500
+indicator to false
+
+468
+00:19:19.500 --> 00:19:23.266
+let's record the snapshot again
+
+469
+00:19:23.266 --> 00:19:26.700
+now it's gone okay
+
+470
+00:19:26.700 --> 00:19:30.000
+okay now let's fix the layout
+
+471
+00:19:30.000 --> 00:19:32.866
+to support dark mode let's open the Feed
+
+472
+00:19:32.866 --> 00:19:34.233
+storyboard again
+
+473
+00:19:34.233 --> 00:19:38.000
+let's select the interface style to dark
+
+474
+00:19:38.000 --> 00:19:40.533
+and let's fix the colors first of all
+
+475
+00:19:40.533 --> 00:19:41.900
+the table view
+
+476
+00:19:41.900 --> 00:19:44.933
+background should not be white let's use
+
+477
+00:19:44.933 --> 00:19:46.000
+the default
+
+478
+00:19:46.000 --> 00:19:49.033
+system background color
+
+479
+00:19:49.033 --> 00:19:52.533
+the same for the footer
+
+480
+00:19:52.533 --> 00:19:55.200
+now the pin container also needs the
+
+481
+00:19:55.200 --> 00:19:58.133
+system background color
+
+482
+00:19:58.133 --> 00:20:00.700
+the description label should be the
+
+483
+00:20:00.700 --> 00:20:04.233
+secondary label color
+
+484
+00:20:04.233 --> 00:20:08.233
+much better the same for the location
+
+485
+00:20:08.233 --> 00:20:11.433
+secondary label color
+
+486
+00:20:11.433 --> 00:20:14.066
+now the image container background we
+
+487
+00:20:14.066 --> 00:20:15.433
+can use the
+
+488
+00:20:15.433 --> 00:20:19.266
+secondary system background color
+
+489
+00:20:19.266 --> 00:20:22.000
+finally the retry button can be the
+
+490
+00:20:22.000 --> 00:20:23.333
+system
+
+491
+00:20:23.333 --> 00:20:27.033
+background color okay
+
+492
+00:20:27.033 --> 00:20:29.666
+let's run the tests and record the new
+
+493
+00:20:29.666 --> 00:20:31.666
+snapshots
+
+494
+00:20:31.666 --> 00:20:35.033
+fantastic let's see the light one
+
+495
+00:20:35.033 --> 00:20:38.633
+nice, the dark also looks nice
+
+496
+00:20:38.633 --> 00:20:40.766
+same for the message, the feed with
+
+497
+00:20:40.766 --> 00:20:42.000
+content
+
+498
+00:20:42.000 --> 00:20:46.000
+and the empty feed okay
+
+499
+00:20:46.000 --> 00:20:50.866
+let's commit first just the storyboard
+
+500
+00:20:50.866 --> 00:20:58.000
+add dark mode support
+
+501
+00:20:58.000 --> 00:21:01.433
+now back to the tests
+
+502
+00:21:01.433 --> 00:21:03.733
+now that we are happy with the recorded
+
+503
+00:21:03.733 --> 00:21:04.633
+images
+
+504
+00:21:04.633 --> 00:21:08.066
+we can change the function now to assert
+
+505
+00:21:08.066 --> 00:21:09.666
+so we stop overriding it and start
+
+506
+00:21:09.666 --> 00:21:12.133
+asserting the snapshot
+
+507
+00:21:12.133 --> 00:21:16.700
+rendering let's run again
+
+508
+00:21:16.700 --> 00:21:20.466
+passing fantastic that's it
+
+509
+00:21:20.466 --> 00:21:22.766
+so that's a simple implementation of
+
+510
+00:21:22.766 --> 00:21:24.466
+snapshot testing
+
+511
+00:21:24.466 --> 00:21:26.533
+you can find frameworks out there but if
+
+512
+00:21:26.533 --> 00:21:28.000
+you just need a simple implementation
+
+513
+00:21:28.000 --> 00:21:29.033
+you can have
+
+514
+00:21:29.033 --> 00:21:32.133
+your own the concept is to record
+
+515
+00:21:32.133 --> 00:21:34.933
+a snapshot in the File system keep it
+
+516
+00:21:34.933 --> 00:21:35.433
+under
+
+517
+00:21:35.433 --> 00:21:38.233
+source control and assert against it as
+
+518
+00:21:38.233 --> 00:21:40.066
+you refactor your code to make sure
+
+519
+00:21:40.066 --> 00:21:43.266
+your views are rendering as you expect
+
+520
+00:21:43.266 --> 00:21:46.400
+and again you should not test logic with
+
+521
+00:21:46.400 --> 00:21:50.000
+snapshot tests only the user interface
+
+522
+00:21:50.000 --> 00:21:53.100
+the visuals exactly if you want to check
+
+523
+00:21:53.100 --> 00:21:54.000
+the logic
+
+524
+00:21:54.000 --> 00:21:56.766
+use unit tests or if you want to check
+
+525
+00:21:56.766 --> 00:21:58.300
+the logic in integration
+
+526
+00:21:58.300 --> 00:22:02.133
+you can use integration tests alright
+
+527
+00:22:02.133 --> 00:22:05.600
+that's it let's commit assert
+
+528
+00:22:05.600 --> 00:22:08.633
+snapshots for light and dark mode
+
+529
+00:22:08.633 --> 00:22:12.766
+using an iPhone 8 configuration
+
+530
+00:22:12.766 --> 00:22:15.500
+and that's snapshot testing it's a very
+
+531
+00:22:15.500 --> 00:22:16.066
+simple
+
+532
+00:22:16.066 --> 00:22:18.133
+idea and it's very helpful for
+
+533
+00:22:18.133 --> 00:22:20.933
+validating the rendering of your views
+
+534
+00:22:20.933 --> 00:22:23.500
+it can pick up details that is not as
+
+535
+00:22:23.500 --> 00:22:24.000
+easy
+
+536
+00:22:24.000 --> 00:22:26.466
+to do with unit tests or integration
+
+537
+00:22:26.466 --> 00:22:27.433
+tests
+
+538
+00:22:27.433 --> 00:22:30.233
+and it can assist the collaboration with
+
+539
+00:22:30.233 --> 00:22:31.333
+the designers
+
+540
+00:22:31.333 --> 00:22:33.266
+because you can actually show them
+
+541
+00:22:33.266 --> 00:22:35.266
+images not code
+
+542
+00:22:35.266 --> 00:22:37.600
+exactly the images now are part of the
+
+543
+00:22:37.600 --> 00:22:38.466
+git history
+
+544
+00:22:38.466 --> 00:22:40.000
+which means you're constantly validating
+
+545
+00:22:40.000 --> 00:22:42.066
+them in your merge requests
+
+546
+00:22:42.066 --> 00:22:44.233
+and you can show them to the designers
+
+547
+00:22:44.233 --> 00:22:46.400
+to validate your implementation before
+
+548
+00:22:46.400 --> 00:22:49.500
+pushing the code to production moreover
+
+549
+00:22:49.500 --> 00:22:52.066
+if you create nice snapshots you can
+
+550
+00:22:52.066 --> 00:22:53.100
+even use them
+
+551
+00:22:53.100 --> 00:22:55.733
+as screenshots when submitting new
+
+552
+00:22:55.733 --> 00:22:57.833
+versions of your application
+
+553
+00:22:57.833 --> 00:23:01.266
+exactly but use it with care do not test
+
+554
+00:23:01.266 --> 00:23:03.266
+logic with snapshot tests
+
+555
+00:23:03.266 --> 00:23:06.700
+just the rendering so that's it for this
+
+556
+00:23:06.700 --> 00:23:07.600
+lecture
+
+557
+00:23:07.600 --> 00:23:10.533
+we'll see you again next time bye y'all
+
+558
+00:23:10.533 --> 00:23:22.133
+see ya

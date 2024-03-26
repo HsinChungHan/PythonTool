@@ -1,0 +1,13 @@
+1. The discussion begins with the implementation of the cache feed use case starting with creating a feature-image-feed branch. 
+2. The implementation of the use case states that the feed items are the input and the command is to save them. The old cache is then deleted, new feed items are encoded, a timestamp is created for the new cache, and it is then saved.
+3. If there is any failure in deleting the old cache or saving the new cache, an error should be delivered. Saving new data and deleting the old cache is considered as mixed responsibilities.
+4. The discussion emphasizes the importance of separating framework logic from application logic and to create a dependency inversion.
+5. The implementation begins with creating a new group for the module "Feed Cache" and considers the first step, deleting the old cache. It is assured that the cache is not deleted upon creation.
+6. The store delete cachedFeedCallCount should be 1 when the second test, calling the save command, is performed.
+7. The LocalFeedLoader is then developed where its creation guarantees that it does not delete the cache.
+8. The discussion then moves towards the communication with the store and how this might be implemented by specific frameworks.
+9. The implementation and specifications of Feed API module, FeedStore, FeedItem, cache deletion, cache insertion and how to handle various associated errors are discussed. 
+10. The use of enum to declare two different types of messages for insertion and deletion, and the combining of these messages to ensure the right order of execution is discussed. 
+11. The use of the optional Error to notify errors or success is explained, with a note that custom types could be created if needed in the future.
+12. Finally, they discuss extracting the production interface from the helper FeedStore class used in testing. A private class, FeedStoreSpy, is created that implements the FeedStore protocol, and is used in making the system under test (SUT). The FeedStore protocol is then extracted from the test spy helper. 
+13. They conclude with reiterating the importance of separating business logic from the frameworks for freedom in framework choice, and a teaser about improvements to be discussed in the next lecture.

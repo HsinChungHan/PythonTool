@@ -1,0 +1,479 @@
+1
+00:00:00.000 --> 00:00:02.533
+Welcome to the iOS Lead Essentials
+
+2
+00:00:02.533 --> 00:00:03.500
+program
+
+3
+00:00:03.500 --> 00:00:06.633
+we're so excited to have you with us and
+
+4
+00:00:06.633 --> 00:00:08.533
+you may be excited to join as well
+
+5
+00:00:08.533 --> 00:00:11.100
+hopefully or you may be wondering if you
+
+6
+00:00:11.100 --> 00:00:11.666
+made
+
+7
+00:00:11.666 --> 00:00:14.466
+the right choice what I want to say for
+
+8
+00:00:14.466 --> 00:00:14.933
+sure
+
+9
+00:00:14.933 --> 00:00:18.400
+is that this program works you will see
+
+10
+00:00:18.400 --> 00:00:19.500
+and interact with
+
+11
+00:00:19.500 --> 00:00:22.400
+lead iOS developers working in exciting
+
+12
+00:00:22.400 --> 00:00:24.233
+apps and companies
+
+13
+00:00:24.233 --> 00:00:26.800
+so seeing their success will inspire you
+
+14
+00:00:26.800 --> 00:00:27.500
+to get there
+
+15
+00:00:27.500 --> 00:00:30.133
+too so don't forget to say hi and
+
+16
+00:00:30.133 --> 00:00:31.333
+present yourself
+
+17
+00:00:31.333 --> 00:00:35.200
+in the Slack community exactly
+
+18
+00:00:35.200 --> 00:00:37.900
+in our community there are bootcamp and
+
+19
+00:00:37.900 --> 00:00:39.833
+university graduates
+
+20
+00:00:39.833 --> 00:00:42.933
+self-taught developers, juniors, mid-level
+
+21
+00:00:42.933 --> 00:00:46.066
+seniors, lead developers so
+
+22
+00:00:46.066 --> 00:00:48.300
+regardless your current level there is
+
+23
+00:00:48.300 --> 00:00:50.466
+space for you to thrive in the program
+
+24
+00:00:50.466 --> 00:00:53.733
+definitely so before you jump right in
+
+25
+00:00:53.733 --> 00:00:55.033
+the lectures
+
+26
+00:00:55.033 --> 00:00:57.033
+we'd like to get you ready for what's to
+
+27
+00:00:57.033 --> 00:00:59.333
+come so this dev program is designed to
+
+28
+00:00:59.333 --> 00:01:00.466
+get your dev skills
+
+29
+00:01:00.466 --> 00:01:02.533
+to the next level your goal in this
+
+30
+00:01:02.533 --> 00:01:03.900
+program is to achieve
+
+31
+00:01:03.900 --> 00:01:06.300
+technical excellence as an iOS developer
+
+32
+00:01:06.300 --> 00:01:08.466
+and position yourself as a leader
+
+33
+00:01:08.466 --> 00:01:10.633
+in the software industry so there are
+
+34
+00:01:10.633 --> 00:01:12.000
+over 60 lectures
+
+35
+00:01:12.000 --> 00:01:14.866
+here plus mentoring sessions and live
+
+36
+00:01:14.866 --> 00:01:15.900
+sessions
+
+37
+00:01:15.900 --> 00:01:19.100
+lots and lots of detail but just like
+
+38
+00:01:19.100 --> 00:01:20.066
+you don't learn
+
+39
+00:01:20.066 --> 00:01:22.466
+to ride a bike by watching videos you
+
+40
+00:01:22.466 --> 00:01:24.300
+don't master software development
+
+41
+00:01:24.300 --> 00:01:27.333
+by watching videos you master it by
+
+42
+00:01:27.333 --> 00:01:28.533
+doing it
+
+43
+00:01:28.533 --> 00:01:31.200
+exactly and this program is all about
+
+44
+00:01:31.200 --> 00:01:33.733
+getting you doing the right things
+
+45
+00:01:33.733 --> 00:01:35.500
+hundreds of developers have taken this
+
+46
+00:01:35.500 --> 00:01:37.333
+course because it works
+
+47
+00:01:37.333 --> 00:01:40.466
+but you need to do the work so just
+
+48
+00:01:40.466 --> 00:01:42.766
+watching a lecture and watching it with
+
+49
+00:01:42.766 --> 00:01:43.833
+intention
+
+50
+00:01:43.833 --> 00:01:45.900
+is 100% different it's a completely
+
+51
+00:01:45.900 --> 00:01:47.100
+different thing
+
+52
+00:01:47.100 --> 00:01:50.633
+so do it with the intention to learn
+
+53
+00:01:50.633 --> 00:01:53.733
+take notes and practice
+
+54
+00:01:53.733 --> 00:01:56.766
+so you need to complete all lectures
+
+55
+00:01:56.766 --> 00:01:59.666
+all of them all of them and it is your
+
+56
+00:01:59.666 --> 00:02:00.766
+practice
+
+57
+00:02:00.766 --> 00:02:03.433
+so follow the instructions and complete
+
+58
+00:02:03.433 --> 00:02:05.333
+all challenges as well
+
+59
+00:02:05.333 --> 00:02:07.100
+Mike and I will review all your
+
+60
+00:02:07.100 --> 00:02:09.033
+challenges one by one
+
+61
+00:02:09.033 --> 00:02:12.533
+and will provide feedback to you exactly
+
+62
+00:02:12.533 --> 00:02:14.466
+and every time you complete a lecture
+
+63
+00:02:14.466 --> 00:02:15.733
+don't forget to press
+
+64
+00:02:15.733 --> 00:02:18.300
+the complete button and also to submit
+
+65
+00:02:18.300 --> 00:02:20.633
+your challenge solutions to GitHub
+
+66
+00:02:20.633 --> 00:02:23.200
+exactly if you complete the lectures in
+
+67
+00:02:23.200 --> 00:02:23.833
+order
+
+68
+00:02:23.833 --> 00:02:25.833
+and you solve the challenges you will
+
+69
+00:02:25.833 --> 00:02:27.900
+get invited to mentoring sessions with
+
+70
+00:02:27.900 --> 00:02:28.800
+us
+
+71
+00:02:28.800 --> 00:02:30.466
+we are here to help you but we cannot do
+
+72
+00:02:30.466 --> 00:02:31.900
+the work for you
+
+73
+00:02:31.900 --> 00:02:33.733
+so if you do the work you get the
+
+74
+00:02:33.733 --> 00:02:35.100
+results
+
+75
+00:02:35.100 --> 00:02:37.200
+exactly and of course during the
+
+76
+00:02:37.200 --> 00:02:40.133
+lectures a lot of questions will come up
+
+77
+00:02:40.133 --> 00:02:41.900
+so you need to ask questions about the
+
+78
+00:02:41.900 --> 00:02:43.333
+lectures that's how you're gonna get the
+
+79
+00:02:43.333 --> 00:02:43.733
+most
+
+80
+00:02:43.733 --> 00:02:45.433
+of this program you need to interact
+
+81
+00:02:45.433 --> 00:02:48.400
+with us because we're here to help you
+
+82
+00:02:48.400 --> 00:02:50.066
+so you'll find guidelines to ask
+
+83
+00:02:50.066 --> 00:02:52.400
+questions to ask good questions
+
+84
+00:02:52.400 --> 00:02:54.800
+so don't skip this section you need to
+
+85
+00:02:54.800 --> 00:02:56.933
+go one by one and you need to read it
+
+86
+00:02:56.933 --> 00:03:00.533
+exactly one by one in order
+
+87
+00:03:00.533 --> 00:03:03.433
+so you get the most of this program
+
+88
+00:03:03.433 --> 00:03:04.000
+you'll also learn
+
+89
+00:03:04.000 --> 00:03:06.233
+from answers to thousands of questions
+
+90
+00:03:06.233 --> 00:03:07.566
+from the students
+
+91
+00:03:07.566 --> 00:03:10.300
+you have access to all of them so you'll
+
+92
+00:03:10.300 --> 00:03:11.266
+see how people
+
+93
+00:03:11.266 --> 00:03:15.200
+like you are leveling up for example
+
+94
+00:03:15.200 --> 00:03:18.000
+let's search for Core Data we have
+
+95
+00:03:18.000 --> 00:03:20.066
+lectures about Core Data
+
+96
+00:03:20.066 --> 00:03:22.066
+and there are threads and threads and
+
+97
+00:03:22.066 --> 00:03:23.433
+threads about Core Data
+
+98
+00:03:23.433 --> 00:03:25.433
+from other students from questions
+
+99
+00:03:25.433 --> 00:03:27.333
+that's it so you can find here by
+
+100
+00:03:27.333 --> 00:03:28.066
+keyword
+
+101
+00:03:28.066 --> 00:03:30.700
+the topics you want to learn about but
+
+102
+00:03:30.700 --> 00:03:32.233
+you need to follow the lectures in order
+
+103
+00:03:32.233 --> 00:03:33.433
+you need to complete
+
+104
+00:03:33.433 --> 00:03:37.033
+all of them yes so your next step
+
+105
+00:03:37.033 --> 00:03:39.100
+is to read all the information in the
+
+106
+00:03:39.100 --> 00:03:40.700
+Start here module
+
+107
+00:03:40.700 --> 00:03:42.866
+in this first section read all of them
+
+108
+00:03:42.866 --> 00:03:44.700
+in order to make the most
+
+109
+00:03:44.700 --> 00:03:47.566
+of this program and of course we're here
+
+110
+00:03:47.566 --> 00:03:48.400
+to help
+
+111
+00:03:48.400 --> 00:03:51.500
+but you need to do the work we cannot do
+
+112
+00:03:51.500 --> 00:03:52.700
+the work for you
+
+113
+00:03:52.700 --> 00:03:57.033
+no so that's it it starts now
+
+114
+00:03:57.033 --> 00:03:58.766
+keep doing the work go through the
+
+115
+00:03:58.766 --> 00:04:00.066
+lectures one by one
+
+116
+00:04:00.066 --> 00:04:03.033
+complete them practice take notes ask
+
+117
+00:04:03.033 --> 00:04:04.133
+questions
+
+118
+00:04:04.133 --> 00:04:07.200
+and we are here to help that's it we'll
+
+119
+00:04:07.200 --> 00:04:07.733
+see you
+
+120
+00:04:07.733 --> 00:04:12.533
+in the next lecture see ya

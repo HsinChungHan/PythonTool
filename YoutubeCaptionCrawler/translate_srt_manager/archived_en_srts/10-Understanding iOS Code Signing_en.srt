@@ -1,0 +1,1697 @@
+
+1
+00:00:00.000 --> 00:00:12.000 
+Hi everyone and welcome. We will continue our tooling series with a deep dive into the topic of code signing for iOS.
+
+2
+00:00:12.000 --> 00:00:20.000 
+The plan for today is to explain what is code signing and how it works.
+
+3
+00:00:20.000 --> 00:00:32.000 
+We'll go through the Main elements of code signing, so certificates and keys, app identifiers, capabilities and entitlements, provisioning profiles.
+
+4
+00:00:32.000 --> 00:00:43.000 
+We'll demo how code signing works and we'll explore the most common code signing problems and see how we can address them.
+
+5
+00:00:43.000 --> 00:00:53.000 
+Code signing was introduced from the very first version of the iOS and the iOS AppStore, so it's here to stay.
+
+6
+00:00:53.000 --> 00:01:05.000 
+It can be a complicated subject and getting it right has probably been frustrating to all developers at some point, but with proper knowledge it can be manageable.
+
+7
+00:01:05.000 --> 00:01:19.000 
+In the past years Apple has noticed code signing is a problem for app developers, so they have built an automatic way to handle code signing that works fine in general for most projects.
+
+8
+00:01:19.000 --> 00:01:27.000 
+But when it doesn't, and it happens from time to time, we are just stuck in an unknown territory.
+
+9
+00:01:27.000 --> 00:01:40.000 
+That's why it's worth learning about code signing, how it works under the hood, all the individual components, so we can verify and find solutions to particular problems.
+
+10
+00:01:40.000 --> 00:01:55.000 
+But first, let's see what code signing is. First of all, it's a security technology that you use to certify that an app was indeed created by the listed developer, in this case yourself or your company.
+
+11
+00:01:55.000 --> 00:02:07.000 
+And once an app is signed, the system can detect any change to the app, whether the change is introduced accidentally or by a malicious code.
+
+12
+00:02:07.000 --> 00:02:15.000 
+You participate in code signing as a developer when you obtain a signing identity and apply your signatures to the apps you ship.
+
+13
+00:02:15.000 --> 00:02:22.000 
+And the certificate authority, in this case Apple, vouches for your signing identity.
+
+14
+00:02:22.000 --> 00:02:27.000 
+Code signing allows the operating system to do the following.
+
+15
+00:02:27.000 --> 00:02:32.000 
+First, ensure that a piece of code has not been altered since it was signed.
+
+16
+00:02:32.000 --> 00:02:44.000 
+The system can detect even the smallest change, whether it was intentional by a malicious attacker, for example, or accidental, when a File just gets corrupted.
+
+17
+00:02:44.000 --> 00:02:53.000 
+When a code signature is intact, the system can be sure the code is as the signer intended it to be.
+
+18
+00:02:53.000 --> 00:03:01.000 
+Next, the OS can identify code as coming from a specific source, a developer or a signer.
+
+19
+00:03:01.000 --> 00:03:10.000 
+The code signatures includes cryptographic information that unambiguously points to a particular author, so it's very specific.
+
+20
+00:03:10.000 --> 00:03:16.000 
+And the OS can also determine whether the code is trustworthy for a specific purpose.
+
+21
+00:03:16.000 --> 00:03:26.000 
+Among other things, a developer can use a code signature to state that an updated version of an app should be considered by the system to be the same app as the previous version.
+
+22
+00:03:26.000 --> 00:03:35.000 
+Apple's code signing is built on top of the X509 standard that describes the format of public key certificates.
+
+23
+00:03:35.000 --> 00:03:43.000 
+So if you want to research, just research this standard or I'll have a link in the lecture page.
+
+24
+00:03:43.000 --> 00:03:53.000 
+An X509 certificate binds an identity to a public key, and it does this by using a digital signature.
+
+25
+00:03:53.000 --> 00:04:07.000 
+A certificate contains an identity, a hostname or organization or an individual and a public key, which can be of many types like RSA, DSA, SCDSA and so on.
+
+26
+00:04:07.000 --> 00:04:11.000 
+There are multiple types of public keys.
+
+27
+00:04:11.000 --> 00:04:19.000 
+And this certificate is either signed by a certificate authority like Apple or can be Self-signed.
+
+28
+00:04:19.000 --> 00:04:39.000 
+When a certificate is signed by a trusted certificate authority or validated by other means, someone holding that certificate can use the public key it contains to establish a secure communication with another party or validate documents digitally signed by the corresponding private key.
+
+29
+00:04:39.000 --> 00:04:53.000 
+So Apple's code signing is based on having a set of keys, a public key that is shared with the certificate authority, in this case Apple, and a corresponding private key.
+
+30
+00:04:53.000 --> 00:05:06.000 
+Code signing can be done only using the private key and the public key is only usable for verifying an artifact's code signing.
+
+31
+00:05:06.000 --> 00:05:12.000 
+Let's see how to create such a private and public pair of keys.
+
+32
+00:05:12.000 --> 00:05:16.000 
+Maybe you've heard about a certificate signing request.
+
+33
+00:05:16.000 --> 00:05:29.000 
+A certificate signing request is a Message sent from an applicant, us, to a certificate authority, in this case Apple, in order to apply for a digital identity certificate.
+
+34
+00:05:29.000 --> 00:05:36.000 
+This CSR is created using the Certificate Assistant from the Keychain Access Mac app.
+
+35
+00:05:36.000 --> 00:05:41.000 
+So let's see this in practice.
+
+36
+00:05:41.000 --> 00:05:51.000 
+If we open the Keychain Access app and use its menu, under Certificate Assistant there are a few options.
+
+37
+00:05:51.000 --> 00:05:59.000 
+The one we want to use is this Request a Certificate from a Certificate Authority.
+
+38
+00:05:59.000 --> 00:06:03.000 
+This is how the Certificate Assistant looks like.
+
+39
+00:06:03.000 --> 00:06:23.000 
+It's going to ask some information about the owner of the Future certificate, like the email address, a common name, and we can email it directly to the certificate authority or save it to disk, and we can also specify a key information, the key type.
+
+40
+00:06:23.000 --> 00:06:36.000 
+And if we don't check this, then the key type is just default to RSA 2048 bits, which is standard and pretty good option, so we don't need to change it.
+
+41
+00:06:36.000 --> 00:06:42.000 
+So as an example, I'll do a key called john at email.com.
+
+42
+00:06:42.000 --> 00:06:52.000 
+And the common name, let's use John McClain, because we are a fan of the Die Hard movies, and I'll save it to disk.
+
+43
+00:06:52.000 --> 00:06:55.000 
+Hit Continue.
+
+44
+00:06:55.000 --> 00:06:59.000 
+Let's choose Desktop and save.
+
+45
+00:06:59.000 --> 00:07:07.000 
+And now I can use Show in Finder to see this File.
+
+46
+00:07:07.000 --> 00:07:13.000 
+So the File that was created, Certificate Signing Request.Cert Signing Request.
+
+47
+00:07:13.000 --> 00:07:22.000 
+This is the File we will use to upload to the Apple Developers platform where we can request a certificate.
+
+48
+00:07:22.000 --> 00:07:28.000 
+This is a certificate signing request, so we don't have a certificate yet.
+
+49
+00:07:28.000 --> 00:07:40.000 
+An important thing that happened during this Certificate Assistant flow is the Certificate Assistant also generated a pair of public and private keys, which are stored now in our key chain.
+
+50
+00:07:40.000 --> 00:07:48.000 
+And until now, all the operations here happened locally on my machine. There's no communication with Apple services.
+
+51
+00:07:48.000 --> 00:07:55.000 
+So if I switch back to the key chain, there's no new key here.
+
+52
+00:07:55.000 --> 00:08:01.000 
+We can sort by expiration Date and we see there's no key added.
+
+53
+00:08:01.000 --> 00:08:16.000 
+But if we use this filter on top and select keys, you see that we have a new set of keys, a public and private John McClain keys from the Certificate Assistant I just ran.
+
+54
+00:08:16.000 --> 00:08:23.000 
+So this is very important. Once you generate the Certificate Signing Request, you generate a pair of keys.
+
+55
+00:08:23.000 --> 00:08:35.000 
+And the most important thing is this private key here that I'm selecting now. So you see John McClain private only exists on the machine where the CSR was generated.
+
+56
+00:08:35.000 --> 00:08:42.000 
+But as I mentioned earlier, this key is needed when we want to apply the code signing with the certificate.
+
+57
+00:08:42.000 --> 00:08:45.000 
+So we need to be very careful about this key.
+
+58
+00:08:45.000 --> 00:08:55.000 
+The CSR contains the information you just input into the assistant. So like the name and the email and the value of the public key that was generated.
+
+59
+00:08:55.000 --> 00:08:58.000 
+So this John McClain public key.
+
+60
+00:08:58.000 --> 00:09:05.000 
+Once we have the CSR, we can upload it to Apple's developer platform and generate a certificate.
+
+61
+00:09:05.000 --> 00:09:10.000 
+A certificate is an electronic document that proves an identity.
+
+62
+00:09:10.000 --> 00:09:24.000 
+In the case of a certificate used for Apple's code signing, the certificate contains a public key and some additional information like name, email, the information you saw I input into the certificate assistant.
+
+63
+00:09:24.000 --> 00:09:32.000 
+It's important that this certificate is signed by Apple, so it states that the information in the certificate is correct.
+
+64
+00:09:32.000 --> 00:09:39.000 
+The certificate will guarantee that you, the developer, build the code and you are a member of the developer program.
+
+65
+00:09:39.000 --> 00:09:48.000 
+To see this in action, I've logged into Apple developer platform.
+
+66
+00:09:48.000 --> 00:10:00.000 
+Go to account and over here there's an entry called certificates, identifiers and profiles, which if we open, we have all the entities that are involved in code signing.
+
+67
+00:10:00.000 --> 00:10:04.000 
+And the first tab here is called certificates.
+
+68
+00:10:04.000 --> 00:10:12.000 
+Since I generated the CSR, let's see how the CSR can be transformed into a real certificate.
+
+69
+00:10:12.000 --> 00:10:17.000 
+So the flow is pretty simple. We have a plus button here.
+
+70
+00:10:17.000 --> 00:10:30.000 
+And now we have a few options. We can either create an Apple development certificate that can be used to sign all the platforms like iOS, macOS, tvOS, watchOS.
+
+71
+00:10:30.000 --> 00:10:34.000 
+This one was introduced with Xcode 11, so it's pretty new.
+
+72
+00:10:34.000 --> 00:10:41.000 
+Or the iOS dedicated development certificate that can only be used to sign iOS apps.
+
+73
+00:10:41.000 --> 00:10:47.000 
+To conform to Apple's newest technologies, we will use the Apple development option.
+
+74
+00:10:47.000 --> 00:10:53.000 
+We'll hit continue and we just simply need to upload the CSR.
+
+75
+00:10:53.000 --> 00:11:02.000 
+So we hit choose File, we select the File we just generated, which we stored on the desktop, upload, continue.
+
+76
+00:11:02.000 --> 00:11:07.000 
+And now we have a certificate.
+
+77
+00:11:07.000 --> 00:11:11.000 
+Next, we will download this certificate using the download button.
+
+78
+00:11:11.000 --> 00:11:17.000 
+And this will download a certificate in our downloads folder.
+
+79
+00:11:17.000 --> 00:11:24.000 
+The name is development.sr because it's a development certificate.
+
+80
+00:11:24.000 --> 00:11:30.000 
+To install this certificate locally, I need to double tap on the certificate File.
+
+81
+00:11:30.000 --> 00:11:37.000 
+So if we do this and switch back to the Keychain.
+
+82
+00:11:37.000 --> 00:11:42.000 
+I'll switch to my certificates because it's a better filter.
+
+83
+00:11:42.000 --> 00:11:48.000 
+This is my new certificate. It's called Apple development Bogdan.
+
+84
+00:11:48.000 --> 00:11:55.000 
+Because when Apple generated the certificate, it used the name from my developer's platform account.
+
+85
+00:11:55.000 --> 00:11:58.000 
+So my full name Bogdan.
+
+86
+00:11:58.000 --> 00:12:04.000 
+Even though during the system I used the John McClain name, that's just the name of the key.
+
+87
+00:12:04.000 --> 00:12:09.000 
+The certificate name is still under my official Apple name.
+
+88
+00:12:09.000 --> 00:12:19.000 
+And very important is using this expand button, we immediately see the private key, which corresponds to this certificate.
+
+89
+00:12:19.000 --> 00:12:25.000 
+By doing this flow, I now have a development certificate, which is installed locally.
+
+90
+00:12:25.000 --> 00:12:32.000 
+If I switch back to Apple certificate platform.
+
+91
+00:12:32.000 --> 00:12:38.000 
+And go to all certificates, we notice there are different types here.
+
+92
+00:12:38.000 --> 00:12:44.000 
+So this is because Apple supports multiple types of certificates.
+
+93
+00:12:44.000 --> 00:12:49.000 
+And there are two Main types, which I want to mention.
+
+94
+00:12:49.000 --> 00:12:53.000 
+First, there's a development certificate like the one we just created.
+
+95
+00:12:53.000 --> 00:13:00.000 
+Those are used during development to install the app on our devices and we can debug it.
+
+96
+00:13:00.000 --> 00:13:03.000 
+And there are also distribution certificates.
+
+97
+00:13:03.000 --> 00:13:11.000 
+As you see, there are two types, distribution and iOS distribution. The only difference that older certificates like this one are specific to iOS.
+
+98
+00:13:11.000 --> 00:13:17.000 
+Whereas this newer one is used for distribution on all platforms. That's the only difference.
+
+99
+00:13:17.000 --> 00:13:22.000 
+And you use distribution certificates to share builds with other people.
+
+100
+00:13:22.000 --> 00:13:25.000 
+And you can do this to the following options.
+
+101
+00:13:25.000 --> 00:13:37.000 
+You can create an ad hoc build and share them directly by sending an IPA File or you can send them via a third party distribution service like Firebase distribution.
+
+102
+00:13:37.000 --> 00:13:46.000 
+You can create enterprise builds if you have enterprise accounts and they will be shared exactly like ad hoc builds.
+
+103
+00:13:46.000 --> 00:13:51.000 
+Or you can create AppStore builds and share them via TestFlight or to the AppStore.
+
+104
+00:13:51.000 --> 00:13:56.000 
+All of these can be achieved using a distribution certificate.
+
+105
+00:13:56.000 --> 00:14:07.000 
+And going back to our Keychain, I will underline again that you cannot use a certificate for signing unless you have its corresponding private key.
+
+106
+00:14:07.000 --> 00:14:15.000 
+And I've shown that you can use this expand button to make sure that under your certificate, there's the private key.
+
+107
+00:14:15.000 --> 00:14:23.000 
+To backup a key or to backup a certificate or both, you can export them from the Keychain as a P2L File.
+
+108
+00:14:23.000 --> 00:14:31.000 
+This File is encrypted and password protected, so make sure you remember the password as there's no way to go around it.
+
+109
+00:14:31.000 --> 00:14:36.000 
+And you can use these P2L files to share keys and certificates with your team.
+
+110
+00:14:36.000 --> 00:14:49.000 
+And as an example, I'll select my new certificate and the private key. I'll right click and use export the two items option.
+
+111
+00:14:49.000 --> 00:14:59.000 
+I'll call this my. I'll Store it on the desktop and use the P2L format, personal information exchange format I just mentioned.
+
+112
+00:14:59.000 --> 00:15:08.000 
+I'll hit save and when exporting the Keychain assistant will ask me to add a password to it, so I'll add a password.
+
+113
+00:15:08.000 --> 00:15:13.000 
+As you can see, not a very good one, but it works for demo and hit OK.
+
+114
+00:15:13.000 --> 00:15:29.000 
+And now I'm asked for my Keychain Access password, which is my account's password, to make sure whoever is doing this is entitled to do so. And there's my File.
+
+115
+00:15:29.000 --> 00:15:44.000 
+It's mine.p12 and it contains both the certificate and the private key and they are encrypted. So to import it, you need to double tap it and you need to enter the password.
+
+116
+00:15:44.000 --> 00:15:50.000 
+And I'll hit cancel and probably going to get an Error from the Keychain. Yeah.
+
+117
+00:15:50.000 --> 00:15:58.000 
+Because the import was unsuccessful. OK.
+
+118
+00:15:58.000 --> 00:16:05.000 
+As I shown, if you need to share keys or certificates with anyone in your team, P2L files are a good way to do that.
+
+119
+00:16:05.000 --> 00:16:11.000 
+And you can share the password to another medium, like maybe tell them on the phone or something.
+
+120
+00:16:11.000 --> 00:16:20.000 
+So use like a double standard security. You don't share the File and the password in the same email or other option.
+
+121
+00:16:20.000 --> 00:16:29.000 
+Since I mentioned Apple developer accounts, you should know that there are a few types of accounts because it's useful information.
+
+122
+00:16:29.000 --> 00:16:38.000 
+So first, there's a personal developer account, which you can get by just register your Apple ID with Apple.
+
+123
+00:16:38.000 --> 00:16:44.000 
+And this is a convenience. So Apple allows you to install builds on your devices only.
+
+124
+00:16:44.000 --> 00:16:50.000 
+This is a free account, so you cannot use this account to share builds with others or to upload to the AppStore.
+
+125
+00:16:50.000 --> 00:16:57.000 
+But you can play around with Xcode and one device. So it's pretty useful to start with.
+
+126
+00:16:57.000 --> 00:17:07.000 
+Then there's a company or a personal developer account that's enrolled into Apple's developer program, which costs $100 each year.
+
+127
+00:17:07.000 --> 00:17:19.000 
+This is the standard account where you can add multiple developer members. You can share apps internally with ad hoc TestFlight or via the AppStore.
+
+128
+00:17:19.000 --> 00:17:28.000 
+And there's an enterprise developer account. Only companies with 100 or more employees can enroll into this program.
+
+129
+00:17:28.000 --> 00:17:39.000 
+It costs $300 per year. And the Apple developer enterprise program is only for the internal use and distribution of proprietary apps
+
+130
+00:17:39.000 --> 00:17:44.000 
+in specific use cases that cannot be achieved with the other sharing options we just described.
+
+131
+00:17:44.000 --> 00:17:53.000 
+So you only see this account when working for big companies that really need to distribute apps internally.
+
+132
+00:17:53.000 --> 00:17:58.000 
+What you must remember here is enterprise accounts can only be used to distribute internally.
+
+133
+00:17:58.000 --> 00:18:05.000 
+There's no option to upload to the AppStore here.
+
+134
+00:18:05.000 --> 00:18:12.000 
+I see a question in the chat. $300 per account per year, but you have less possibilities.
+
+135
+00:18:12.000 --> 00:18:22.000 
+Well, you don't have less possibilities. Enterprise accounts are useful when you need to share apps, like real apps internally.
+
+136
+00:18:22.000 --> 00:18:29.000 
+And they are unlimited because with the standard account, you can only distribute internally to 100 devices.
+
+137
+00:18:29.000 --> 00:18:34.000 
+With enterprise accounts, you can distribute to an unlimited number of accounts.
+
+138
+00:18:34.000 --> 00:18:45.000 
+And you can also do automatic management of multiple devices and people like it's specifically designated for large businesses.
+
+139
+00:18:45.000 --> 00:18:53.000 
+I mentioned it because it's useful. Sometimes you might have both a company and an enterprise account at your disposal.
+
+140
+00:18:53.000 --> 00:19:03.000 
+And then you need to know how to use each one to its strengths.
+
+141
+00:19:03.000 --> 00:19:07.000 
+Next, each developer account has a unique identifier.
+
+142
+00:19:07.000 --> 00:19:13.000 
+For example, the essential developer team has this unique identifier.
+
+143
+00:19:13.000 --> 00:19:21.000 
+Each developer account has its own code signing entities, certificates, identifiers, profiles, devices, and so on.
+
+144
+00:19:21.000 --> 00:19:27.000 
+This team ID will be set in your build settings under development team.
+
+145
+00:19:27.000 --> 00:19:30.000 
+Let's see this in Xcode.
+
+146
+00:19:30.000 --> 00:19:39.000 
+So if we use the signing and capabilities tab, we can set this same team.
+
+147
+00:19:39.000 --> 00:19:50.000 
+And if we go to build settings and go to the signing options.
+
+148
+00:19:50.000 --> 00:19:54.000 
+Again, development team and essential developer LTD.
+
+149
+00:19:54.000 --> 00:19:59.000 
+And if I hover this, you will see the exact ID I just mentioned.
+
+150
+00:19:59.000 --> 00:20:06.000 
+So VRJ2 and so on. So they need to match.
+
+151
+00:20:06.000 --> 00:20:10.000 
+That's that's a team ID.
+
+152
+00:20:10.000 --> 00:20:18.000 
+Besides the team ID, we also use Bundle identifiers and we'll see immediately how those two are connected.
+
+153
+00:20:18.000 --> 00:20:31.000 
+So the BundleIdentifier, in this case com.essentialdeveloper.essentialappcase study, is an ID in reverse DNS format that uniquely identifies a Bundle.
+
+154
+00:20:31.000 --> 00:20:36.000 
+So all bundles have it. In the case of apps, they identify the app Bundle.
+
+155
+00:20:36.000 --> 00:20:41.000 
+And you can use different Bundle identifiers for different variants of your app.
+
+156
+00:20:41.000 --> 00:20:48.000 
+This is just a String you set to the Xcode build settings, so you can almost set anything here.
+
+157
+00:20:48.000 --> 00:20:59.000 
+Now, if we go back to the Apple developer portal, another entity here under identifiers is app identifier.
+
+158
+00:20:59.000 --> 00:21:11.000 
+So an app identifier is an entity that exists on this developer portal and represents a unique combination of a team identifier and a Bundle ID.
+
+159
+00:21:11.000 --> 00:21:18.000 
+So the com.essentialdeveloper.essentialappcase study I shown before.
+
+160
+00:21:18.000 --> 00:21:24.000 
+What's important to know is app identifiers are unique across the Apple system.
+
+161
+00:21:24.000 --> 00:21:30.000 
+So you cannot create an app ID if it already exists under any other account.
+
+162
+00:21:30.000 --> 00:21:42.000 
+And also, if you have multiple developer accounts, like a company developer account and an enterprise account, like a scenario I just mentioned, you cannot use the same app ID on both accounts.
+
+163
+00:21:42.000 --> 00:21:48.000 
+So if someone else already registered an app ID, you just cannot create it.
+
+164
+00:21:48.000 --> 00:21:55.000 
+An app ID is also used to specify the platform supported by that app.
+
+165
+00:21:55.000 --> 00:22:18.000 
+So in our case, iOS, tvOS, watchOS, and the capabilities or services it allows. So things like GameCenter, in-app purchases, push notifications, signing with Apple, and so on.
+
+166
+00:22:18.000 --> 00:22:30.000 
+While most app IDs are explicit, like in this case with a very explicit Bundle ID, there's also the possibility to create an app ID with a wild card.
+
+167
+00:22:30.000 --> 00:22:41.000 
+This is an app ID with a wild card. So instead of an explicit Bundle ID, it just uses this star that basically can match any Bundle ID.
+
+168
+00:22:41.000 --> 00:22:51.000 
+And you can be creative here. So you can do something like com.essentialdeveloper.star and it will match any String that follows the regex.
+
+169
+00:22:51.000 --> 00:22:55.000 
+That's kind of the logic behind it.
+
+170
+00:22:55.000 --> 00:23:06.000 
+These wild cards are useful if you have many apps that you need to deploy locally, like small proofs of concepts or multiple variants of the same app with different Bundle IDs.
+
+171
+00:23:06.000 --> 00:23:11.000 
+So you could just use the same wild card app ID for all.
+
+172
+00:23:11.000 --> 00:23:17.000 
+But wild card app IDs cannot be used to deploy apps through the AppStore.
+
+173
+00:23:17.000 --> 00:23:27.000 
+They also don't support enabling capabilities like, for instance, push notifications, which are very explicit and require an explicit Bundle ID.
+
+174
+00:23:27.000 --> 00:23:36.000 
+So they have a limited use case, but for internal builds and playing around, it's useful to have a wild card app ID.
+
+175
+00:23:36.000 --> 00:23:44.000 
+Otherwise, for any Bundle ID, you need to create an app ID on your platform, so that can be tedious.
+
+176
+00:23:44.000 --> 00:23:48.000 
+Now let's talk about device identifiers.
+
+177
+00:23:48.000 --> 00:23:53.000 
+Each device has a unique identifier that identifies that device.
+
+178
+00:23:53.000 --> 00:24:07.000 
+And in order to install a development or ad hoc build on a device, the device must be listed under the Apple Developer Portal devices and added to a provision profile that's used to sign the app build.
+
+179
+00:24:07.000 --> 00:24:12.000 
+Let's see how we can retrieve this device identifier.
+
+180
+00:24:12.000 --> 00:24:17.000 
+So we use Xcode and the devices and simulators window.
+
+181
+00:24:17.000 --> 00:24:29.000 
+And you see my device is connected and I see here my device identifier, so I can copy and paste it to the developer portal.
+
+182
+00:24:29.000 --> 00:24:41.000 
+But if you need to get the device ID from one of your colleagues that doesn't use Xcode, there are some small apps you can install on iOS devices and then they show you the device ID.
+
+183
+00:24:41.000 --> 00:24:45.000 
+And you can ask your colleagues to send these to you.
+
+184
+00:24:45.000 --> 00:24:56.000 
+Also, if you use Firebase Distribution, they collect the device ID for you and send it over via email, which can be pretty convenient.
+
+185
+00:24:56.000 --> 00:25:01.000 
+Now let's talk about capabilities and entitlements.
+
+186
+00:25:01.000 --> 00:25:16.000 
+We also have the possibility to enable the capabilities where we grant our app access to. So all the services from Apple like CloudKit, GameCenter, push notification, in-app purchases.
+
+187
+00:25:16.000 --> 00:25:31.000 
+And in order for these services to be enabled in our apps, we need to make sure they are enabled through the app ID. So as I've shown with the Apple Developer Portal and the app ID and also to Xcode.
+
+188
+00:25:31.000 --> 00:25:46.000 
+In Xcode, under signing and capabilities, you see this capability button. And if we tap it, we see all the services I just mentioned again, like signing with Apple, push notification, iCloud, and so on.
+
+189
+00:25:46.000 --> 00:25:53.000 
+So you need to add each one that you are going to use, otherwise they are disabled by default.
+
+190
+00:25:53.000 --> 00:26:09.000 
+And if we add one as an exercise, let's say we add the push notifications, Xcode immediately created an entitlements.plist File for us, which is this File.
+
+191
+00:26:09.000 --> 00:26:17.000 
+And it contains an APNS environment, which is the Apple Push Services environment set to development.
+
+192
+00:26:17.000 --> 00:26:24.000 
+Whenever you're adding a new capability, it will automatically be added to this entitlements.plist File.
+
+193
+00:26:24.000 --> 00:26:35.000 
+And as you can see, now I have push notifications as a capability here under signing and capabilities. And if there's any configuration, it will show up here.
+
+194
+00:26:35.000 --> 00:26:48.000 
+So at build time, the contents of this entitlements File is compared to the capabilities and services enabled for the app ID. And if they don't match, the build will fail.
+
+195
+00:26:48.000 --> 00:26:57.000 
+Now, the final piece of the puzzle that's connecting all the other pieces together is the provisioning profile.
+
+196
+00:26:57.000 --> 00:27:15.000 
+The provisioning profile is a relationship entity that groups together one app identifier, a List of supported devices, a set of app capabilities and services, and one or more signing certificates.
+
+197
+00:27:15.000 --> 00:27:30.000 
+That's basically what a provisioning profile is. It just connects all these dots together. So when you're selecting a provisioning profile to use for signing, you kind of specify, OK, this is the app identifier.
+
+198
+00:27:30.000 --> 00:27:41.000 
+These are the capabilities I'm going to use. Those are the certificates that can be used for signing. And these are the devices that can be used to install the app.
+
+199
+00:27:41.000 --> 00:27:54.000 
+If we switch back to the developer portal and go to profiles, we see types here. So let's see what they are.
+
+200
+00:27:54.000 --> 00:28:00.000 
+Apple supports the following types of provision profiles. First, development.
+
+201
+00:28:00.000 --> 00:28:10.000 
+Again, like the development certificate, the development profile is used for development and Debugging and it supports multiple development certificates.
+
+202
+00:28:10.000 --> 00:28:17.000 
+Then there's the ad hoc type, which is used for distributing apps internally to limit the number of people and devices.
+
+203
+00:28:17.000 --> 00:28:25.000 
+And this number is 100 devices. So you cannot enable more than 100 devices in an ad hoc profile.
+
+204
+00:28:25.000 --> 00:28:31.000 
+And ad hoc provisioning profile can only use distribution certificates.
+
+205
+00:28:31.000 --> 00:28:43.000 
+Then there's an enterprise provisioning profile, which is very similar to ad hoc. So it's also used to distribute apps internally, but it has no limitation over the number of supported devices.
+
+206
+00:28:43.000 --> 00:28:49.000 
+Actually, you don't even need to mention any device ID. It can be installed on any device.
+
+207
+00:28:49.000 --> 00:28:55.000 
+And enterprise profiles also require the use of a distribution certificate.
+
+208
+00:28:55.000 --> 00:29:10.000 
+And finally, AppStore profiles used for both TestFlight and AppStore don't contain a List of supported devices, and they also use the distribution certificate.
+
+209
+00:29:10.000 --> 00:29:20.000 
+So if all the keys and certificates live in the Keychain, the provisioning profiles are simple files that live on disk.
+
+210
+00:29:20.000 --> 00:29:31.000 
+And you will find these if you go to library, so the library folder for the current user, mobile device, and you'll see a provisioning profiles folder.
+
+211
+00:29:31.000 --> 00:29:39.000 
+This contains all the provisioning profiles which are installed locally and Xcode can work with.
+
+212
+00:29:39.000 --> 00:29:47.000 
+They can be quickly inspected through the finder if we tap space on one.
+
+213
+00:29:47.000 --> 00:29:56.000 
+First, you see the name, EssentialAppCaseStudy, iOS distribution, then an expiration Date because they do expire.
+
+214
+00:29:56.000 --> 00:30:01.000 
+And over here, as a convenience, you see that it expires in 11 months.
+
+215
+00:30:01.000 --> 00:30:11.000 
+Then there's an app ID, like in this case, column Essential Developer EssentialAppCaseStudy, a team ID, a platform, and so on.
+
+216
+00:30:11.000 --> 00:30:14.000 
+So all the information about the app ID.
+
+217
+00:30:14.000 --> 00:30:18.000 
+Then a List of entitlements and capabilities.
+
+218
+00:30:18.000 --> 00:30:21.000 
+So in our case, APNS environment.
+
+219
+00:30:21.000 --> 00:30:30.000 
+So this is the Apple Push Services for push notification, Keychain, and all the other services that are enabled.
+
+220
+00:30:30.000 --> 00:30:32.000 
+And one or more certificates.
+
+221
+00:30:32.000 --> 00:30:40.000 
+In this case, it's only one certificate, which is the iPhone distribution for Essential Developer.
+
+222
+00:30:40.000 --> 00:30:53.000 
+If we look at the other profile I have installed locally, you see this one has also the provision devices section where each device is specified with its ID.
+
+223
+00:30:53.000 --> 00:30:58.000 
+And also it has multiple development certificates.
+
+224
+00:30:58.000 --> 00:31:01.000 
+So they are different.
+
+225
+00:31:01.000 --> 00:31:14.000 
+To remember here is that each time we make a change to a profile, like changing the List of certificates or changing the List of supported devices, the profile is updated and regenerated.
+
+226
+00:31:14.000 --> 00:31:19.000 
+So it's going to have a different ID like this unique identifier here is going to change.
+
+227
+00:31:19.000 --> 00:31:27.000 
+So basically we have a different version of that profile, even though the name will be the same.
+
+228
+00:31:27.000 --> 00:31:39.000 
+And this is important because in a few minutes we'll see exactly the situation where having multiple versions of the same profile can lead to some problems.
+
+229
+00:31:39.000 --> 00:31:43.000 
+At first, let's see how code signing works.
+
+230
+00:31:43.000 --> 00:31:47.000 
+So we've covered all the different pieces that we need for code signing.
+
+231
+00:31:47.000 --> 00:31:58.000 
+We've talked about keys, certificates, app identifiers, team identifiers, device identifiers, capabilities and entitlements, and at the end the provision profile.
+
+232
+00:31:58.000 --> 00:32:06.000 
+Now let's see how to mix all these concepts together and how code signing works.
+
+233
+00:32:06.000 --> 00:32:15.000 
+Each build we do for device, because we don't need to sign simulator builds, requires a valid signing certificate.
+
+234
+00:32:15.000 --> 00:32:20.000 
+And also a valid provisioning profile.
+
+235
+00:32:20.000 --> 00:32:24.000 
+Code signing is performed after the build is done.
+
+236
+00:32:24.000 --> 00:32:27.000 
+And it has a few prerequisites.
+
+237
+00:32:27.000 --> 00:32:39.000 
+The provisioning profile must be installed on the library mobile device provisioning profiles, as I've shown, and the provisioning profile must be valid so it cannot be expired or revoked.
+
+238
+00:32:39.000 --> 00:32:50.000 
+At least one of the certificates specified in the provisioning profile must be installed in the Keychain and this certificate must have its corresponding private key also installed in the Keychain.
+
+239
+00:32:50.000 --> 00:32:56.000 
+And again, the certificate must be valid, so not expired, not revoked.
+
+240
+00:32:56.000 --> 00:33:04.000 
+The BundleIdentifier of the app must match the app ID from the provisioning profile.
+
+241
+00:33:04.000 --> 00:33:09.000 
+Even if it's a wildcard app ID, they still need to match.
+
+242
+00:33:09.000 --> 00:33:17.000 
+And the entitlements File from Xcode must match the capabilities and services we've selected on the app ID.
+
+243
+00:33:17.000 --> 00:33:27.000 
+And remember that all the individual components of the app are signed, so this means pieces of code, libraries and frameworks, assets, billis, and so on.
+
+244
+00:33:27.000 --> 00:33:32.000 
+In all the cases, the code signature consists of three parts.
+
+245
+00:33:32.000 --> 00:33:34.000 
+First, a seal.
+
+246
+00:33:34.000 --> 00:33:41.000 
+This is a collection of checksums or hashes of the various parts of the code created by the code signing software.
+
+247
+00:33:41.000 --> 00:33:47.000 
+The seal can be used at verification time to detect alterations.
+
+248
+00:33:47.000 --> 00:33:51.000 
+So each component that is signed will have a resulting seal.
+
+249
+00:33:51.000 --> 00:33:58.000 
+Then the code signing software encrypts the seal using the signer's identity to create a digital signature.
+
+250
+00:33:58.000 --> 00:34:01.000 
+This guarantees the seal's integrity.
+
+251
+00:34:01.000 --> 00:34:07.000 
+The digital signature is actually the key we've used for signing.
+
+252
+00:34:07.000 --> 00:34:09.000 
+And finally, code requirements.
+
+253
+00:34:09.000 --> 00:34:14.000 
+These are the rules governing verification of the signature.
+
+254
+00:34:14.000 --> 00:34:18.000 
+Some are inherent to the verifier, depending on its goals.
+
+255
+00:34:18.000 --> 00:34:23.000 
+Others are specified by the signer and sealed with the rest of the code.
+
+256
+00:34:23.000 --> 00:34:34.000 
+A good example is when the gatekeeper on Mac is asking us to allow running an app that was downloaded and is running for the first time.
+
+257
+00:34:34.000 --> 00:34:39.000 
+That's a good example of a code requirement.
+
+258
+00:34:39.000 --> 00:34:48.000 
+Now let's see our EssentialFeed case study project as an example how the code signing setUp is done.
+
+259
+00:34:48.000 --> 00:34:57.000 
+So for the debug configuration first, you see we have the enabled automatically managed signing.
+
+260
+00:34:57.000 --> 00:35:05.000 
+This allows Xcode to generate update and delete certificates and profiles so we can always build the app for debug.
+
+261
+00:35:05.000 --> 00:35:14.000 
+When we enabled automatic signing, Xcode doesn't use any of the profiles we have created manually, but it creates Xcode managed profiles.
+
+262
+00:35:14.000 --> 00:35:22.000 
+Like in this case, you see the profile is Xcode managed profile, so they don't collide.
+
+263
+00:35:22.000 --> 00:35:30.000 
+It uses a development certificate installed locally. In this case is the Apple development, Bogdan's certificate.
+
+264
+00:35:30.000 --> 00:35:41.000 
+Enabling automatic code signing for debug is pretty convenient as we allow Xcode to take care of code signing for our internal debug builds.
+
+265
+00:35:41.000 --> 00:35:51.000 
+As you see, it requires just a development certificate and a provisioning profile, in this case managed by Xcode.
+
+266
+00:35:51.000 --> 00:35:58.000 
+The values you see in signing and capabilities are actually populated from build setting values.
+
+267
+00:35:58.000 --> 00:36:04.000 
+So I'm going to filter by signing so you don't have so many build settings to look at.
+
+268
+00:36:04.000 --> 00:36:12.000 
+And first, let's look at code signing style, which you see is set for debug to automatic.
+
+269
+00:36:12.000 --> 00:36:19.000 
+So this is controlling whether the code signing is done automatically or manually.
+
+270
+00:36:19.000 --> 00:36:32.000 
+Then on the provisioning profile selector, it's also set for debug to automatic because Xcode needs to choose whatever profile it needs to use.
+
+271
+00:36:32.000 --> 00:36:36.000 
+So it's not bound to a specific profile name.
+
+272
+00:36:36.000 --> 00:36:44.000 
+And the other important setting here is code signing identity, which will specify the certificate we'll use for signing.
+
+273
+00:36:44.000 --> 00:36:52.000 
+We can set a very specific certificate here, like, I don't know, Apple development, Bogdan's and with a specific ID.
+
+274
+00:36:52.000 --> 00:37:02.000 
+Or we can use a more Generic specifier of development or distribution, like in our case.
+
+275
+00:37:02.000 --> 00:37:10.000 
+So we have set the debug configuration to use Apple development, which means it will match any development certificate installed locally.
+
+276
+00:37:10.000 --> 00:37:14.000 
+So this gives you a bit of a flexibility.
+
+277
+00:37:14.000 --> 00:37:26.000 
+If you want to set this and I don't know, you have one development certificate and your colleague on another machine has another development certificate, then you don't need to change the setting to be able to build.
+
+278
+00:37:26.000 --> 00:37:31.000 
+All of them will match the development certificate.
+
+279
+00:37:31.000 --> 00:37:37.000 
+And of course, these certificates must be included in the provisioning profile, as we've said.
+
+280
+00:37:37.000 --> 00:37:43.000 
+For the List builds, which are going to be shared outside the team, we are a bit stricter.
+
+281
+00:37:43.000 --> 00:37:46.000 
+So we have disabled automatic signing.
+
+282
+00:37:46.000 --> 00:37:50.000 
+So actually using manual code signing like you see here.
+
+283
+00:37:50.000 --> 00:37:56.000 
+And we rely on manually specifying which profile to use.
+
+284
+00:37:56.000 --> 00:38:05.000 
+So this we use exactly for the List configuration, the EssentialAppCaseStudy iOS distribution profile.
+
+285
+00:38:05.000 --> 00:38:11.000 
+This is an AppStore provision profile, so it needs a distribution certificate so it can be used.
+
+286
+00:38:11.000 --> 00:38:21.000 
+In this case, Xcode will use the installed distribution certificate as instructed to the code signing identity, which is set to iOS distribution.
+
+287
+00:38:21.000 --> 00:38:30.000 
+So for uploading builds to the AppStoreConnect, Xcode requires a distribution certificate and an AppStore provisioning profile.
+
+288
+00:38:30.000 --> 00:38:34.000 
+Let's do a simple build of the project.
+
+289
+00:38:34.000 --> 00:38:38.000 
+So I'll just do a command B.
+
+290
+00:38:38.000 --> 00:38:41.000 
+Which will build the debug version.
+
+291
+00:38:41.000 --> 00:38:55.000 
+And since I just created a new development certificate, which Xcode automatically added to our development provisioning profile, I need to allow code signing to use my new key.
+
+292
+00:38:55.000 --> 00:38:57.000 
+So this happens the first time.
+
+293
+00:38:57.000 --> 00:39:01.000 
+So I will input my Keychain password and hit always allow.
+
+294
+00:39:01.000 --> 00:39:05.000 
+And most of the time you'll be prompted twice to do this.
+
+295
+00:39:05.000 --> 00:39:08.000 
+And now I see the build succeeded.
+
+296
+00:39:08.000 --> 00:39:16.000 
+And if we use the report navigator to inspect the build logs, I just want to focus on the sign EssentialApp part.
+
+297
+00:39:16.000 --> 00:39:19.000 
+So I'll expand this build task.
+
+298
+00:39:19.000 --> 00:39:34.000 
+And we'll see here that code signing worked and it used the signing identity, Apple development, bookdance certificate and the provisioning profile is this one.
+
+299
+00:39:34.000 --> 00:39:42.000 
+So that's how we know exactly which certificate and profile was used for code signing.
+
+300
+00:39:42.000 --> 00:39:45.000 
+If we use the product menu.
+
+301
+00:39:45.000 --> 00:39:50.000 
+And use the show build folder in Finder.
+
+302
+00:39:50.000 --> 00:39:54.000 
+We will see the build folder of the recently built app.
+
+303
+00:39:54.000 --> 00:39:58.000 
+So if we right click show Package contents.
+
+304
+00:39:58.000 --> 00:40:04.000 
+I want to mention two things here inside the app Bundle.
+
+305
+00:40:04.000 --> 00:40:11.000 
+First, there's this code signature folder that contains code resources.
+
+306
+00:40:11.000 --> 00:40:16.000 
+This is a text document containing all the code resources that were signed.
+
+307
+00:40:16.000 --> 00:40:29.000 
+So pieces of code frameworks, assets, they all have an entry here and also they have the seal which resulted from code signing you find in this document.
+
+308
+00:40:29.000 --> 00:40:36.000 
+And the other thing is the provisioning profile used for signing is embedded into the app Bundle.
+
+309
+00:40:36.000 --> 00:40:39.000 
+So it's exactly the.
+
+310
+00:40:39.000 --> 00:40:43.000 
+The profile I showed before.
+
+311
+00:40:43.000 --> 00:40:51.000 
+If at some point you have an app Bundle or app archive and you want to know which profile was used to sign it.
+
+312
+00:40:51.000 --> 00:41:00.000 
+You just inspect it, go in and look at the profile which is embedded.
+
+313
+00:41:00.000 --> 00:41:03.000 
+So back to Xcode.
+
+314
+00:41:03.000 --> 00:41:06.000 
+This time I want to.
+
+315
+00:41:06.000 --> 00:41:10.000 
+Do an archive which will use the release configuration.
+
+316
+00:41:10.000 --> 00:41:20.000 
+So let's see how that works. I'll use the product menu it archive.
+
+317
+00:41:20.000 --> 00:41:24.000 
+And success.
+
+318
+00:41:24.000 --> 00:41:28.000 
+Back to Xcode just to go through the same exercise.
+
+319
+00:41:28.000 --> 00:41:33.000 
+So we expand the sign EssentialApp task.
+
+320
+00:41:33.000 --> 00:41:42.000 
+And we see that this time the signing identity was the iPhone distribution certificate and EssentialAppCaseStudy profile.
+
+321
+00:41:42.000 --> 00:41:48.000 
+Now let's finish the exercise by uploading to the AppStore.
+
+322
+00:41:48.000 --> 00:41:54.000 
+So with this archive I just created I'll hit DistributeApp.
+
+323
+00:41:54.000 --> 00:42:02.000 
+Use the AppStoreConnect because I want to upload it to AppStoreConnect. I'll have two options to upload or export so I want to upload.
+
+324
+00:42:02.000 --> 00:42:07.000 
+Xcode is now talking to the AppStoreConnect API.
+
+325
+00:42:07.000 --> 00:42:13.000 
+And before the upload happens I have a few options here which I want to briefly mention.
+
+326
+00:42:13.000 --> 00:42:16.000 
+So first we have an include Bitcode.
+
+327
+00:42:16.000 --> 00:42:23.000 
+So if the app supports Bitcode we need to leave this option enabled so the Bitcode is uploaded along with the AppCode.
+
+328
+00:42:23.000 --> 00:42:32.000 
+Also this will enable AppStoreConnect to process the Bitcode and generate new D seams after the upload.
+
+329
+00:42:32.000 --> 00:42:45.000 
+And the next option upload your app's symbols and this is independent of if Bitcode is enabled or not will upload the debug symbols of your app to the Apple AppStoreConnect service.
+
+330
+00:42:45.000 --> 00:42:53.000 
+And if you don't upload the app symbols you will not get symbolicated trash reports from Apple's report service.
+
+331
+00:42:53.000 --> 00:43:05.000 
+And finally this option third option is a utility which helps you make sure the version and bill number are following the requirements that they are incremented.
+
+332
+00:43:05.000 --> 00:43:20.000 
+So each build has a different version. In our case it has detected that there's already in 1.0 41 build so it's going to change my bill number to 1.0 42.
+
+333
+00:43:20.000 --> 00:43:36.000 
+So I'll hit next and we just need to allow using the distribution certificate because it's just one and we need to select which profile to use. There's only one that matches my Bundle ID.
+
+334
+00:43:36.000 --> 00:43:40.000 
+And I'll hit next and hopefully this won't take too long.
+
+335
+00:43:40.000 --> 00:43:49.000 
+First I'll see a summary of the binaries so even the embedded binaries which are also code signed.
+
+336
+00:43:49.000 --> 00:43:54.000 
+We see with the iOS distribution certificate.
+
+337
+00:43:54.000 --> 00:44:03.000 
+And then the upload you probably done this exercise a few times on your own. This is how you upload the build to the AppStoreConnect.
+
+338
+00:44:03.000 --> 00:44:11.000 
+And at that point you can distribute it internally to TestFlight or just publish it on the AppStore.
+
+339
+00:44:11.000 --> 00:44:18.000 
+OK so that's how you upload to the AppStoreConnect.
+
+340
+00:44:18.000 --> 00:44:27.000 
+And now I want to go through a few scenarios where code signing might go wrong.
+
+341
+00:44:27.000 --> 00:44:36.000 
+First of all, I'm going to go to the provision profile folder so under library mobile device provision profiles.
+
+342
+00:44:36.000 --> 00:44:42.000 
+And I'll pick this EssentialAppCaseStudy as distribution profile and move it to the desktop.
+
+343
+00:44:42.000 --> 00:44:51.000 
+Very simple accidents can happen. And now I'll try to do an archive again.
+
+344
+00:44:51.000 --> 00:44:58.000 
+You see immediately Xcode detects that the profile is missing and I have the option to download it.
+
+345
+00:44:58.000 --> 00:45:04.000 
+This is pretty cool because in the older days you would not get this Message.
+
+346
+00:45:04.000 --> 00:45:09.000 
+So you have no idea that the profile is valid is just not installed on your machine.
+
+347
+00:45:09.000 --> 00:45:13.000 
+So of course if I hit cancel then I get these Errors here.
+
+348
+00:45:13.000 --> 00:45:20.000 
+So I can use the download buttons provided by Xcode or just download it manually.
+
+349
+00:45:20.000 --> 00:45:24.000 
+I'll just put this back here so my build works again.
+
+350
+00:45:24.000 --> 00:45:30.000 
+But a common problem occurs when on a machine there are multiple versions of the same provision profile.
+
+351
+00:45:30.000 --> 00:45:38.000 
+As I said when talking about profiles any change to a provision profile will regenerate the profile and issue a new profile ID.
+
+352
+00:45:38.000 --> 00:45:45.000 
+So if your provision profile build setting is using a specific profile name like we do for distribution
+
+353
+00:45:45.000 --> 00:45:50.000 
+then all the local profiles that have that name will be a match.
+
+354
+00:45:50.000 --> 00:45:54.000 
+And from my experience Xcode does not always use the latest one.
+
+355
+00:45:54.000 --> 00:46:01.000 
+So you might have different variants of the same profile installed locally and you can see issues.
+
+356
+00:46:01.000 --> 00:46:14.000 
+And a common issue is you have a version of your ad hoc profile installed locally and your team got a new device and you want to add it to the profile.
+
+357
+00:46:14.000 --> 00:46:25.000 
+So you do so you go to the AppStore portal you add a new device you refresh the profile you download the profile install it through Xcode or manually.
+
+358
+00:46:25.000 --> 00:46:33.000 
+And now you have two versions at least of the same ad hoc profile and one contains this new device and one doesn't.
+
+359
+00:46:33.000 --> 00:46:39.000 
+As I see in many cases Xcode will still use the old version of the profile.
+
+360
+00:46:39.000 --> 00:46:47.000 
+You will get a OK build so the build will succeed but you won't be able to install this app on your new device.
+
+361
+00:46:47.000 --> 00:46:57.000 
+And this might be very cumbersome for some people like OK I just added the device why doesn't Xcode allow you to install it because it is there.
+
+362
+00:46:57.000 --> 00:47:03.000 
+But actually the problem is Xcode could not know which of the profiles you want to use.
+
+363
+00:47:03.000 --> 00:47:08.000 
+So the fix here and what I always recommend you do is to clean up.
+
+364
+00:47:08.000 --> 00:47:24.000 
+So this provision profiles folder I tend to keep it as clean as possible so I regularly check it and if I see multiple versions of the same profile I'll delete the older ones because Xcode does not do this for you.
+
+365
+00:47:24.000 --> 00:47:28.000 
+And as I said you can get into trouble.
+
+366
+00:47:28.000 --> 00:47:35.000 
+Another common occurrence is when the private key is missing.
+
+367
+00:47:35.000 --> 00:47:49.000 
+You see the certificate but the private key is missing. So for this exercise I will export this key here as a P12 because I want to delete it now.
+
+368
+00:47:49.000 --> 00:47:54.000 
+So I'll just go in and delete my key.
+
+369
+00:47:54.000 --> 00:47:59.000 
+So you see the certificate but there's no disclosure because the key is missing the private key.
+
+370
+00:47:59.000 --> 00:48:05.000 
+So I go back to Xcode and try to archive again.
+
+371
+00:48:05.000 --> 00:48:08.000 
+Of course I get a build failure.
+
+372
+00:48:08.000 --> 00:48:16.000 
+This time the Error is no signing certificate match this team ID with the private key was found because the private key is missing.
+
+373
+00:48:16.000 --> 00:48:29.000 
+So this is a common situation like you maybe download the certificate from the Apple developer portal and you don't have the private key and the code signing will not work. So you need the private key.
+
+374
+00:48:29.000 --> 00:48:38.000 
+Now since I have it here or let's say somebody just send it over via a P12 I will import it.
+
+375
+00:48:38.000 --> 00:48:50.000 
+And if I inspect Keychain you see that the private key is again available and I can archive again.
+
+376
+00:48:50.000 --> 00:49:05.000 
+So another common issue. So whenever this happens just make sure you go to the Keychain and inspect the keys there and you see the problem most likely.
+
+377
+00:49:05.000 --> 00:49:12.000 
+Also you see these certificates have an expiration Date.
+
+378
+00:49:12.000 --> 00:49:15.000 
+They are valid for one year and then they expire.
+
+379
+00:49:15.000 --> 00:49:19.000 
+And once they expire you can no longer use them to code sign.
+
+380
+00:49:19.000 --> 00:49:28.000 
+Also when the certificate expires the provisioning profiles associated with them are invalidated automatically by Apple.
+
+381
+00:49:28.000 --> 00:49:37.000 
+And any builds that were signed with this combination of provisioning profile and certificate are also invalidated and can no longer be installed.
+
+382
+00:49:37.000 --> 00:49:45.000 
+So even if you have the IPA or.app or archive you won't be able to install this on a device.
+
+383
+00:49:45.000 --> 00:49:53.000 
+The exception here is AppStore builds which never expire. So expiration affects only internal builds.
+
+384
+00:49:53.000 --> 00:49:58.000 
+And to regenerate the expired certificate you have two options.
+
+385
+00:49:58.000 --> 00:50:05.000 
+You can either just invalidate it and go through the cycle of creating a new certificate from scratch as I've shown.
+
+386
+00:50:05.000 --> 00:50:14.000 
+Or you can do a bit of an optimization and you can use the same certificate signing request that you used in the previous year.
+
+387
+00:50:14.000 --> 00:50:16.000 
+So you need to Store this.
+
+388
+00:50:16.000 --> 00:50:27.000 
+The advantage is if you use the same CSR you will just regenerate the certificate and the public and private keys that were generated with the CSR will still remain the same.
+
+389
+00:50:27.000 --> 00:50:33.000 
+In this case if you shared these private keys with your team you won't need to share them again.
+
+390
+00:50:33.000 --> 00:50:35.000 
+So they already have them.
+
+391
+00:50:35.000 --> 00:50:49.000 
+And if the certificate is regenerated they will just need to go to the Apple developer platform and re-download it and they will be able to build again. So for me that's convenient.
+
+392
+00:50:49.000 --> 00:51:00.000 
+And the same as I recommended with provisioning profiles I really recommend keeping a clean Keychain and periodically deleting expired certificates.
+
+393
+00:51:00.000 --> 00:51:09.000 
+If you see certificates that expired make sure you delete them and if you want to use the CSR trick I mentioned so using the same CSR more than once
+
+394
+00:51:09.000 --> 00:51:16.000 
+make sure when you delete a certificate you delete only the certificate and not the private key because you are going to need it.
+
+395
+00:51:16.000 --> 00:51:25.000 
+And as you've seen you can manage certificates and provision profiles manually and Xcode can also automate a part of that.
+
+396
+00:51:25.000 --> 00:51:31.000 
+I also want to mention tools like Fastlane that can provide some more automation.
+
+397
+00:51:31.000 --> 00:51:42.000 
+So check it out especially Fastlane Match. It might help you manage your certificates and profiles through a unified repository.
+
+398
+00:51:42.000 --> 00:51:52.000 
+Also there's a lecture in the Main program on continuous delivery where we show how to automate deployment and safely adding certificates to the CD pipeline.
+
+399
+00:51:52.000 --> 00:51:58.000 
+Make sure to check it out and I'll link it to the lecture page.
+
+400
+00:51:58.000 --> 00:52:01.000 
+That's it. Thank you.
+
+401
+00:52:01.000 --> 00:52:10.000 
+If there are any questions I'll be happy to respond to them.
+
+402
+00:52:10.000 --> 00:52:18.000 
+Sure thing Vitaly. Glad you found it useful.
+
+403
+00:52:18.000 --> 00:52:23.000 
+Andreas is asking have you used Match? Is it okay to use?
+
+404
+00:52:23.000 --> 00:52:26.000 
+So I have used Match.
+
+405
+00:52:26.000 --> 00:52:35.000 
+As always I recommend you don't start with adding a lot of extra tools like third party tools to your workflow.
+
+406
+00:52:35.000 --> 00:52:45.000 
+But Match can be useful when you have a large team and you're dealing with many certificates many profiles and you need to make sure that
+
+407
+00:52:45.000 --> 00:52:51.000 
+everyone or the developers or the CI machines use the same version of certificate or profile.
+
+408
+00:52:51.000 --> 00:53:00.000 
+Then Match can be helpful because it basically uses a centralized repository to Store all these certificates and profiles in an encrypted version.
+
+409
+00:53:00.000 --> 00:53:04.000 
+And by default they use a git repository for that.
+
+410
+00:53:04.000 --> 00:53:12.000 
+So it can be useful. I've seen it be very practical in large teams.
+
+411
+00:53:12.000 --> 00:53:27.000 
+But of course with the added element of an extra tool that might or might not work at some times and you probably have to dig into its details or try to maintain it or something.
+
+412
+00:53:27.000 --> 00:53:32.000 
+So make sure you you weigh in the pros and cons.
+
+413
+00:53:32.000 --> 00:53:36.000 
+But yeah it can can be useful.
+
+414
+00:53:36.000 --> 00:53:39.000 
+Any other questions?
+
+415
+00:53:39.000 --> 00:53:45.000 
+Andreas is saying he was always hesitant about the overhead of using Fastlane Match.
+
+416
+00:53:45.000 --> 00:53:53.000 
+Indeed it is an overhead and if you've never used Fastlane before it's not very straightforward to setUp.
+
+417
+00:53:53.000 --> 00:54:01.000 
+So it takes you a while until you put all the pieces in and also it can be hard to manage.
+
+418
+00:54:01.000 --> 00:54:12.000 
+So sometimes I've seen this happen like one developer sets up Fastlane in a team and they leave the team and nobody else knows how to deal with that.
+
+419
+00:54:12.000 --> 00:54:23.000 
+So they're pretty much stuck and have to take guesses at that setUp and try to understand it.
+
+420
+00:54:23.000 --> 00:54:37.000 
+So I would say only add it when needed. So if you have a super valid reason it's like with any other third party tool or framework.
+
+421
+00:54:37.000 --> 00:54:49.000 
+I wouldn't start with these just develop naturally and if we see a recurring problem then yeah we can explore a tool for it.
+
+422
+00:54:49.000 --> 00:54:52.000 
+That's it.
+
+423
+00:54:52.000 --> 00:54:57.000 
+Okay. Thank you for attending and for staying up till the end.
+
+424
+00:54:57.000 --> 00:55:24.000 
+Have a good day.
+

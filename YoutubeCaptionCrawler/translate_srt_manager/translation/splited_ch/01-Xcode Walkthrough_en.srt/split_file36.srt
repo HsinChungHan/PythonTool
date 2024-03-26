@@ -1,0 +1,27 @@
+515
+00:44:06,120 --> 00:44:14,120
+並且在 info P 列表中，新創建的 Main Storyboard 被設定為初始的 Storyboard。
+
+516
+00:44:14,120 --> 00:44:19,120
+我們可以輕易地移除 Storyboard 並且完全用代碼創建所有的 UI。
+
+517
+00:44:19,120 --> 00:44:48,120
+我們只需要去 SceneDelegate 並做三件事情。創建一個 UI window instance，將它的 root ViewController 設定為我們需要先顯示的控制器，然後呼叫 make key invisible。
+
+518
+00:44:48,120 --> 00:44:59,120
+我們將快速地看一下預設的 project 結構。
+
+519
+00:44:59,120 --> 00:45:06,120
+所以，大多數的 projects 都會有幾個我想要強調的共通元素。
+
+520
+00:45:06,120 --> 00:45:15,120
+首先，AppDelegate 和 SceneDelegate。
+
+521
+00:45:15,120 --> 00:45:27,120
+所以 AppDelegate 和 SceneDelegate 是 app 的主要進入點。這通常是我們將我們的 CompositionRoot components 掛勾到的地方。

@@ -1,0 +1,35 @@
+1. The focus of the previous lecture was the implementation of LocalFeedLoader and all its use cases, but did not cover the infrastructure that will persist and fetch data.
+
+2. Infrastructure components with side effects are pushed to the system boundaries, these components can include frameworks like Core Data.
+
+3. The system already implemented an infrastructure component, URLSessionHTTPClient, that communicates with the external world, specifically the network, but it is not directly dependent on other components, making it more like a plugin.
+
+4. Infrastructure components, which commonly deal with network and disk, can be easily replaced, tested in isolation and maintain dependencies on business logic, keeping codebase clean and clear.
+
+5. An abstraction and business logic-maintaining implementation, RemoteFeedLoader, helps avoid a strong dependency on a concrete framework.
+
+6. The discussion underlines the importance of separating framework and side-effects from core logic to maintain a side-effect free core where business logic resides.
+
+7. The system is designed to have business logic and models, which should be side-effect free, live within a green circle, and frameworks are placed in the outer red circle.
+
+8. Operations such as insert, delete, and retrieve are defined in the interface, with no business logic included.
+
+9. Any implementation of the interface adheres to the protocol and needs to obey commands.
+
+10. The same system expectations apply regardless of the implementation, whether using a File system or Core Data.
+
+11. The conversation highlights the importance of understanding our expectations on the infrastructure implementations before starting the process.
+
+12. The discussion emphasizes the iterative process and importance of testing and refining system requirements.
+
+13. The actions retrieve, insert, and delete are fundamental in the FeedStore, each having different behaviors based on whether the cache is empty or not, and whether it is supposed to have side effects or not.
+
+14. The testing process uses triangulation technique, starting with an empty cache and progressing to a cache with data and then the error case.
+
+15. The importance of considering multi-threaded environment is pointed out, as race conditions can lead to application ending up in an invalid state.
+
+16. Side-effects must run sequentially to prevent race conditions.
+
+17. The checklist of expectations is considered vital as it serves as a map for development, testing, and refinement of the system's production side.
+
+18. The conversation ends with a decision to begin the next lecture following technical specifications and using a File system implementation.

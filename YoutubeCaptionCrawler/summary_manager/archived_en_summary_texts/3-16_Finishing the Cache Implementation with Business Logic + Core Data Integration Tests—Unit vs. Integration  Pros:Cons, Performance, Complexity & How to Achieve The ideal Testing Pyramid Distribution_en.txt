@@ -1,0 +1,29 @@
+1. In this lecture, the focus is on creating and separating integration tests from unit or isolated tests to maintain test speed.
+   
+2. The goal is to keep the isolated tests fast as they are critical for providing feedback during the development process. These tests should be run multiple times in a day and ideally after every small code change.
+
+3. Isolated tests provide fast and continuous feedback and confidence that the components of the application work as intended. 
+
+4. Integration tests, which run less frequently and are a part of the continuous integration pipeline, verify that the components of the application work well when acting together. 
+
+5. Code should be merged to the master branch only if all integration and isolated tests pass. These checks should be automated for efficiency and to avoid bottlenecks.
+
+6. A new test target is created for cache integration tests, given the name EssentialFeedCacheIntegrationTests. 
+
+7. In order to ensure that there is no dependency occurring between tests, the execution order of the tests is randomized.
+
+8. They create a separate XCTestCase subclass inside a new folder for integration tests. 
+
+9. Integration tests have the goal of testing the entire cache model objects' collaboration and how they behave in integration. This accomplished by involving real instances of the production types, as opposed to using test doubles as in isolated tests.
+
+10. Edge cases are handled at the component level in unit tests, to avoid an exponential increase in the number of test cases required in integration testing. 
+
+11. By applying principles like dependency inversion, Liskov Substitution, interface segregation, and dependency injection, the team was able to replace the Core Data Feed Store with a Codable Feed Store, and the tests still passed. 
+
+12. Due to the complexity that would arise from having two Feed Store implementations, the Codable Feed Store was removed in favour of Core Data.
+
+13. The essential feed tests and the cache integration tests are then run, with everything passing successfully.
+
+14. To ensure test coverage, the cache integration tests are included in the CI scheme and set to run in random order. 
+
+15. The lecture concludes with an emphasis on separating integration tests from unit or isolated tests, particularly when there's a performance impact. Developers are encouraged to measure build and test times continuously to avoid bottlenecks in the development process.
